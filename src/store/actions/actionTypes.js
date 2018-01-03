@@ -1,0 +1,5 @@
+export const RESET_SANDBOX = "RESET_SANDBOX";
+export const DELETE_SANDBOX = "DELETE_SANDBOX";
+export const UPDATE_SANDBOX = "UPDATE_SANDBOX";
+export const GET_SANDBOX = "GET_SANDBOX";
+export const SELECT_SANDBOX = "SELECT_SANDBOX";
