@@ -22,7 +22,88 @@ const initialState = {
                 description:"",
                 apiEndpointIndex:"6",
                 fhirServerEndPoint:null,
-                allowOpenAccess:false
+                allowOpenAccess:false,
+                userRoles:
+                    [
+                        {
+                            id:47,
+                            user:
+                                {
+                                    id:1,
+                                    createdTimestamp:1489617608000,
+                                    email:"admin",
+                                    sbmUserId:"90342.ASDFJWFA",
+                                    name:"Demo Admin",
+                                    hasAcceptedLatestTermsOfUse:true
+                                },
+                            role:"ADMIN"
+                        },
+                        {
+                            id:48,
+                            user:
+                                {
+                                    id:1,
+                                    createdTimestamp:1489617608000,
+                                    email:"admin",
+                                    sbmUserId:"90342.ASDFJWFA",
+                                    name:"Demo Admin",
+                                    hasAcceptedLatestTermsOfUse:true
+                                },
+                            role:"MANAGE_USERS"
+                        },
+                        {
+                            id:49,
+                            user:
+                                {
+                                    id:1,
+                                    createdTimestamp:1489617608000,
+                                    email:"admin",
+                                    sbmUserId:"90342.ASDFJWFA",
+                                    name:"Demo Admin",
+                                    hasAcceptedLatestTermsOfUse:true
+                                },
+                            role:"MANAGE_DATA"
+                        },
+                        {
+                            id:50,
+                            user:
+                                {
+                                    id:2,
+                                    createdTimestamp:1512789172000,
+                                    email:"lisa_reynolds57@yahoo.com",
+                                    sbmUserId:"90342.ASDFJWFF",
+                                    name:"Lisa Morf",
+                                    hasAcceptedLatestTermsOfUse:null
+                                },
+                            role:"ADMIN"
+                        },
+                        {
+                            id:51,
+                            user:
+                                {
+                                    id:2,
+                                    createdTimestamp:1512789172000,
+                                    email:"lisa_reynolds57@yahoo.com",
+                                    sbmUserId:"90342.ASDFJWFF",
+                                    name:"Lisa Morf",
+                                    hasAcceptedLatestTermsOfUse:null
+                                },
+                            role:"MANAGE_USERS"
+                        },
+                        {
+                            id:52,
+                            user:
+                                {
+                                    id:2,
+                                    createdTimestamp:1512789172000,
+                                    email:"lisa_reynolds57@yahoo.com",
+                                    sbmUserId:"90342.ASDFJWFF",
+                                    name:"Lisa Morf",
+                                    hasAcceptedLatestTermsOfUse:null
+                                },
+                            role:"MANAGE_DATA"
+                        }
+                    ]
             },
             {
                 id:8,
@@ -100,6 +181,30 @@ const updateSandbox = (state, action) => {
     return updateObject(state, {sandboxes: updatedSandboxes})
 };
 
+const removeUser = (state, action) => {
+    const cloneState = {...state};
+    const sandbox = {...cloneState.sandboxes.filter(s => s.sandboxId === state.selectedSandbox)[0]};
+    const remainingUsers = sandbox.userRoles.slice()
+        .filter(role => role.user.id !== action.userId);
+
+    sandbox.userRoles = remainingUsers;
+
+    let ind = 0;
+    for (let index in state.sandboxes) {
+        if (state.sandboxes[index].sandboxId === state.selectedSandbox) {
+            ind = index;
+            break;
+        }
+    }
+
+    const updatedSandboxes = [
+        ...state.sandboxes.slice(0, ind),
+        sandbox,
+        ...state.sandboxes.slice(ind + 1)
+    ];
+    return updateObject(cloneState, {sandboxes: updatedSandboxes});
+};
+
 const reducer = (state = initialState, action) => {
 
     switch(action.type){
@@ -112,6 +217,8 @@ const reducer = (state = initialState, action) => {
             return updateObject(state, updateSandbox(state, action));
         case actionTypes.SELECT_SANDBOX:
             return selectSandbox(state, action);
+        case actionTypes.REMOVE_SANDBOX_USER:
+            return removeUser(state, action);
         default:
             return state;
     }

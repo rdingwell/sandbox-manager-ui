@@ -3,5 +3,6 @@ export {
     resetSandbox,
     updateSandbox,
     getSandbox,
-    selectSandbox
+    selectSandbox,
+    removeUser
 } from './sandbox';

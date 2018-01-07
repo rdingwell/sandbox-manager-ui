@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+
+import * as  actions from '../../../store/actions/index';
+
 
 import {
     Table,
@@ -16,28 +20,85 @@ import { connect } from 'react-redux';
 
 class Users extends Component {
 
+    state = {
+        userToRemove: '',
+        open: false
+    };
 
+    deleteButton = (userId, email, canDelete) => {
+        const actions = [
+            <RaisedButton
+                label="Cancel"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+            <RaisedButton
+                label="Remove"
+                primary={true}
+                keyboardFocused={true}
+                onClick={this.deleteSandboxUserHandler}
+            />,
+        ];
+        if(canDelete){
+            return(
+                <TableRowColumn>
+                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId, email)}/>
+                    <Dialog
+                        title="Remove User from Sandbox"
+                        actions={actions}
+                        modal={false}
+                        open={this.state.open}
+                        onRequestClose={this.handleClose}
+                    >
+                        Are you sure you want to remove {email}?
+                    </Dialog>
+                </TableRowColumn>
+            )
+        } else {
+            return null;
+        }
+    };
+
+    handleOpen = (userId, email) => {
+        this.setState({open: true});
+        this.setState({userToRemove: userId});
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
+
+    deleteSandboxUserHandler = () => {
+        this.props.onRemoveUser(this.state.userToRemove);
+    };
 
     render() {
         const resendStyle = {
             margin: 10
+        };
+        
+        let role = this.props.sandbox.userRoles.filter(role => role.role === 'ADMIN');
+
+        let canDelete = false;
+
+        if(role.length > 1){
+            canDelete = true;
         }
 
-        let rows = this.props.pendingUsers.map( pendingUser => (
-            <TableRow key={pendingUser.id}>
-                <TableRowColumn>
-                    {pendingUser.status}
-                </TableRowColumn>
-                <TableRowColumn>
-                    {pendingUser.invitee.email}
-                </TableRowColumn>
-                <TableRowColumn>
-
-                </TableRowColumn>
-            </TableRow>
-        ) );
-
-
+        let rows = role.map(row => (
+           <TableRow key={row.user.id}>
+               <TableRowColumn>
+                   {row.user.name}
+               </TableRowColumn>
+               <TableRowColumn>
+                   {row.user.email}
+               </TableRowColumn>
+               <TableRowColumn>
+                   ADMIN
+               </TableRowColumn>
+               {this.deleteButton(row.user.id, row.user.email, canDelete)}
+           </TableRow>
+        ));
 
         return(
             <Paper className="PaperCard">
@@ -67,9 +128,16 @@ class Users extends Component {
 
 const mapStateToProps = state => {
     return {
-        pendingUsers : state.user.pendingUsers
+        sandbox : state.sandbox.sandboxes.filter(sandbox => sandbox.sandboxId === state.sandbox.selectedSandbox)[0]
     }
-}
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onRemoveUser: (userId) => dispatch( actions.removeUser(userId) )
+    };
+};
 
 
-export default connect(mapStateToProps)(Users);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Users);

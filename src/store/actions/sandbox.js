@@ -33,3 +33,10 @@ export const selectSandbox = (sandboxId) => {
         sandboxId : sandboxId
     }
 };
+
+export const removeUser = (userId) => {
+    return {
+        type: actionTypes.REMOVE_SANDBOX_USER,
+        userId : userId
+    }
+}
