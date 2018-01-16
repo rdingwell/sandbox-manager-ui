@@ -42,7 +42,7 @@ class Users extends Component {
         if(canDelete){
             return(
                 <TableRowColumn>
-                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId, email)}/>
+                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId)}/>
                     <Dialog
                         title="Remove User from Sandbox"
                         actions={actions}
@@ -59,7 +59,7 @@ class Users extends Component {
         }
     };
 
-    handleOpen = (userId, email) => {
+    handleOpen = (userId) => {
         this.setState({open: true});
         this.setState({userToRemove: userId});
     };
@@ -73,10 +73,6 @@ class Users extends Component {
     };
 
     render() {
-        const resendStyle = {
-            margin: 10
-        };
-        
         let role = this.props.sandbox.userRoles.filter(role => role.role === 'ADMIN');
 
         let canDelete = false;
@@ -94,7 +90,7 @@ class Users extends Component {
                    {row.user.email}
                </TableRowColumn>
                <TableRowColumn>
-                   ADMIN
+                   Administrator
                </TableRowColumn>
                {this.deleteButton(row.user.id, row.user.email, canDelete)}
            </TableRow>
@@ -122,9 +118,7 @@ class Users extends Component {
             </Paper>
         );
     }
-
 }
-
 
 const mapStateToProps = state => {
     return {
@@ -137,7 +131,5 @@ const mapDispatchToProps = dispatch => {
         onRemoveUser: (userId) => dispatch( actions.removeUser(userId) )
     };
 };
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

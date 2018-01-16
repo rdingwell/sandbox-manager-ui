@@ -9,12 +9,14 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import sandboxReducer from './store/reducers/sandbox';
 import userReducer from './store/reducers/user';
+import fhirReducer from './store/reducers/fhirauth';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     sandbox: sandboxReducer,
-    user: userReducer
+    user: userReducer,
+    fhir : fhirReducer
 });
 
 

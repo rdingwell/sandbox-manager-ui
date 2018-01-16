@@ -39,4 +39,11 @@ export const removeUser = (userId) => {
         type: actionTypes.REMOVE_SANDBOX_USER,
         userId : userId
     }
-}
+};
+
+export const inviteNewUser = (email) => {
+    return {
+        type: actionTypes.INVITE_NEW_USER,
+        email : email
+    }
+};

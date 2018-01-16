@@ -2,11 +2,12 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialState = {
-    user: {
-        name: '',
-        preferred_username: '',
-        sub: ''
+    oauthUser : {
+        sbmUserId: null,
+        email: null, 
+        name: null
     },
+    user : null,
     pendingUsers: [
         {
             id:4,
@@ -312,9 +313,31 @@ const initialState = {
     rejectedUsers: [],
 };
 
+const inviteNewUser = (state, action) => {
+    return state;
+};
+
+const saveOauthUser = (state, action) => {
+    const user = {...state.oauthUser};
+    user.sbmUserId = action.sbmUserId;
+    user.email = action.email;
+    user.name = action.name;
+    return updateObject(state, {oauthUser: user})
+};
+
+const saveUser = (state, action) => {
+    return updateObject(state, {user: action.user})
+};
+
 
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
+        case actionTypes.INVITE_NEW_USER:
+            return inviteNewUser(state, action);
+        case actionTypes.SAVE_OAUTH_USER:
+            return saveOauthUser(state, action);
+        case actionTypes.SAVE_SANDBOX_USER:
+            return saveUser(state, action);
         default: return state;
     }
 };
