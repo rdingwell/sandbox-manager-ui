@@ -16,6 +16,7 @@ import AfterAuth from '../containers/AfterAuth/AfterAuth';
 
 
 import './App.css';
+import CreateSandbox from "./CreateSandbox/CreateSandbox";
 
 
 class App extends Component {
@@ -37,6 +38,7 @@ class App extends Component {
                         <Route path='/dashboard' component={Dashboard} />
                         <Route path='/start' component={Start} />
                         <Route path='/after-auth' component={AfterAuth} />
+                        <Route path='/create-sandbox' component={CreateSandbox} />
                         <Route path='/' component={Dashboard} />
                     </Switch>
                 </Layout>

@@ -6,11 +6,14 @@
     left: 0;
     top: 64px;
     box-sizing: border-box;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.5s ease-out;
     box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
     position: fixed;
     z-index: 1300;
     overflow: auto;
+    position: fixed;
+    padding-top: 60px;
+    overflow-x: hidden;
 }
 
 .Open{

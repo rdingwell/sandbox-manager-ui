@@ -2,157 +2,21 @@ import * as actionTypes from '../actions/actionTypes';
 import {updateObject} from "../utility";
 
 const initialState = {
+    loading: false,
     selectedSandbox : '',
-        sandboxes : [
-            {
-                id:7,
-                createdBy:
-                    {
-                        id:1,
-                        createdTimestamp:1489617608000,
-                        email:"admin",
-                        sbmUserId:"90342.ASDFJWFA",
-                        name:"Demo Admin",
-                        hasAcceptedLatestTermsOfUse:true
-                    },
-                createdTimestamp:1514332333000,
-                visibility:"PRIVATE",
-                sandboxId:"sandbox1",
-                name:"First Sandbox",
-                description:"",
-                apiEndpointIndex:"6",
-                fhirServerEndPoint:null,
-                allowOpenAccess:false,
-                userRoles:
-                    [
-                        {
-                            id:47,
-                            user:
-                                {
-                                    id:1,
-                                    createdTimestamp:1489617608000,
-                                    email:"admin",
-                                    sbmUserId:"90342.ASDFJWFA",
-                                    name:"Demo Admin",
-                                    hasAcceptedLatestTermsOfUse:true
-                                },
-                            role:"ADMIN"
-                        },
-                        {
-                            id:48,
-                            user:
-                                {
-                                    id:1,
-                                    createdTimestamp:1489617608000,
-                                    email:"admin",
-                                    sbmUserId:"90342.ASDFJWFA",
-                                    name:"Demo Admin",
-                                    hasAcceptedLatestTermsOfUse:true
-                                },
-                            role:"MANAGE_USERS"
-                        },
-                        {
-                            id:49,
-                            user:
-                                {
-                                    id:1,
-                                    createdTimestamp:1489617608000,
-                                    email:"admin",
-                                    sbmUserId:"90342.ASDFJWFA",
-                                    name:"Demo Admin",
-                                    hasAcceptedLatestTermsOfUse:true
-                                },
-                            role:"MANAGE_DATA"
-                        },
-                        {
-                            id:50,
-                            user:
-                                {
-                                    id:2,
-                                    createdTimestamp:1512789172000,
-                                    email:"lisa_reynolds57@yahoo.com",
-                                    sbmUserId:"90342.ASDFJWFF",
-                                    name:"Lisa Morf",
-                                    hasAcceptedLatestTermsOfUse:null
-                                },
-                            role:"ADMIN"
-                        },
-                        {
-                            id:51,
-                            user:
-                                {
-                                    id:2,
-                                    createdTimestamp:1512789172000,
-                                    email:"lisa_reynolds57@yahoo.com",
-                                    sbmUserId:"90342.ASDFJWFF",
-                                    name:"Lisa Morf",
-                                    hasAcceptedLatestTermsOfUse:null
-                                },
-                            role:"MANAGE_USERS"
-                        },
-                        {
-                            id:52,
-                            user:
-                                {
-                                    id:2,
-                                    createdTimestamp:1512789172000,
-                                    email:"lisa_reynolds57@yahoo.com",
-                                    sbmUserId:"90342.ASDFJWFF",
-                                    name:"Lisa Morf",
-                                    hasAcceptedLatestTermsOfUse:null
-                                },
-                            role:"MANAGE_DATA"
-                        }
-                    ]
-            },
-            {
-                id:8,
-                createdBy:
-                    {
-                        id:1,
-                        createdTimestamp:1489617608000,
-                        email:"admin",
-                        sbmUserId:"90342.ASDFJWFA",
-                        name:"Demo Admin",
-                        hasAcceptedLatestTermsOfUse:true
-                    },
-                createdTimestamp:1514332333000,
-                visibility:"PRIVATE",
-                sandboxId:"sandbox2",
-                name:"Second Sandbox",
-                description:"",
-                apiEndpointIndex:"6",
-                fhirServerEndPoint:null,
-                allowOpenAccess:false
-
-            },
-            {
-                id:9,
-                createdBy:
-                    {
-                        id:1,
-                        createdTimestamp:1489617608000,
-                        email:"admin",
-                        sbmUserId:"90342.ASDFJWFA",
-                        name:"Demo Admin",
-                        hasAcceptedLatestTermsOfUse:true
-                    },
-                createdTimestamp:1514332333000,
-                visibility:"PRIVATE",
-                sandboxId:"sandbox3",
-                name:"Third Sandbox",
-                description:"",
-                apiEndpointIndex:"6",
-                fhirServerEndPoint:null,
-                allowOpenAccess:false
-
-            }
-        ]
+    sandboxes : [],
+    invitations : [],
+    invitesLoading: false,
+    creatingSandbox: false,
+    createSandboxError: '',
+    lookingForSandbox: false,
+    lookingForSandboxError: '',
+    lookupSandbox: ''
 };
 
 const selectSandbox = (state, action) => {
     return updateObject(state, {selectedSandbox : action.sandboxId});
-}
+};
 
 const removeSandbox = (state, action) => {
     const sandboxes = state.sandboxes.filter(sandbox => sandbox.id !== action.sandboxId);
@@ -205,20 +69,94 @@ const removeUser = (state, action) => {
     return updateObject(cloneState, {sandboxes: updatedSandboxes});
 };
 
+const fetchStart = (state, action) => {
+    return updateObject( state, { loading: true } );
+};
+
+const fetchSuccess = (state, action) => {
+    return updateObject( state, {
+        sandboxes: action.sandboxes,
+        loading: false
+    } );
+};
+
+const fetchFail = (state, action) => {
+    return updateObject( state, { loading: false } );
+};
+
+const fetchInvitesStart = (state, action) => {
+  return updateObject(state, {invitesLoading: true});
+};
+
+const fetchInvitesSuccess = (state, action) => {
+  return updateObject(state, {
+      invitations: action.invitations,
+      invitesLoading: false
+  });
+};
+
+const fetchInvitesFail = (state, action) => {
+    return updateObject(state, {invitesLoading: false});
+};
+
+const createSandboxStart = (state, action) => {
+    updateObject(state, {createSandboxError: ''});
+    return updateObject(state, {creatingSandbox: true});
+};
+
+const createSandboxFail = (state, action) => {
+    updateObject(state, {creatingSandbox: false});
+    return updateObject(state, {createSandboxError: action.error});
+};
+
+const lookupSandboxStart = (state, action) => {
+    return updateObject(state, {lookingForSandbox: true});
+};
+
+const lookupSandboxSuccess = (state, action) => {
+    return updateObject(state, {lookupSandbox: action.sandbox});
+};
+
+const lookupSandboxByIdFail = (state, action) => {
+    updateObject(state, {lookingForSandbox: false});
+    return updateObject(state, {lookingForSandboxError: action.error});
+};
+
 const reducer = (state = initialState, action) => {
 
     switch(action.type){
-        case actionTypes.GET_SANDBOX :
-            return state.sandboxes.filter(sandbox => sandbox.id === state.selectedSandbox);
+        case actionTypes.FETCH_SANDBOXES_START :
+            return fetchStart(state, action);
+        case actionTypes.FETCH_SANDBOXES_SUCCESS:
+            return fetchSuccess(state, action);
+        case actionTypes.FETCH_SANDBOXES_FAIL:
+            return fetchFail(state, action);
         case actionTypes.DELETE_SANDBOX :
             return removeSandbox(state, action);
         case actionTypes.UPDATE_SANDBOX :
         case actionTypes.RESET_SANDBOX :
+        case actionTypes.CREATE_SANDBOX_SUCCESS:
             return updateObject(state, updateSandbox(state, action));
         case actionTypes.SELECT_SANDBOX:
             return selectSandbox(state, action);
         case actionTypes.REMOVE_SANDBOX_USER:
             return removeUser(state, action);
+        case actionTypes.FETCH_SANDBOX_INVITES_START:
+            return fetchInvitesStart(state, action);
+        case actionTypes.FETCH_SANDBOX_INVITES_SUCCESS:
+            return fetchInvitesSuccess(state, action);
+        case actionTypes.FETCH_SANDBOX_INVITES_FAIL:
+            return fetchInvitesFail(state, action);
+        case actionTypes.CREATE_SANDBOX_START:
+            return createSandboxStart(state, action);
+        case actionTypes.CREAT_SANDBOX_FAIL:
+            return createSandboxFail(state, action);
+        case actionTypes.LOOKUP_SANDBOX_BY_ID_START:
+            return lookupSandboxStart(state, action);
+        case actionTypes.LOOKUP_SANDBOX_BY_ID_SUCCESS:
+            return lookupSandboxSuccess(state, action);
+        case actionTypes.LOOKUP_SANDBOX_BY_ID_FAIL:
+            return lookupSandboxByIdFail(state, action);
         default:
             return state;
     }

@@ -45,11 +45,22 @@ class Start extends Component{
 
         const buttonStyle = {
             marginRight: 10
-        }
+        };
 
         let checkboxes = this.state.checkboxes.map( (checkbox, index) => (
             <p key={index}><i style={iconStyle} className="fa fa-check" aria-hidden="true"></i>{checkbox}</p>
         ) );
+
+        let buttons = (
+            <div>
+                <RaisedButton label="Sign In" style={buttonStyle} primary={true} onClick={this.handleSignIn}/>
+                <RaisedButton label="Sign Up" style={buttonStyle} primary={true} onClick={this.handleSignUp}/>
+            </div>
+            );
+
+        if(this.props.skipLogin){
+            buttons = null;
+        }
 
         return(
             <Paper className="PaperCard" >
@@ -58,8 +69,7 @@ class Start extends Component{
                     <p>{this.state.description}</p>
                     {checkboxes}
                     <p>{this.state.note}</p>
-                    <RaisedButton label="Sign In" style={buttonStyle} primary={true} onClick={this.handleSignIn}/>
-                    <RaisedButton label="Sign Up" style={buttonStyle} primary={true} onClick={this.handleSignUp}/>
+                    {buttons}
                 </div>
             </Paper>
         );

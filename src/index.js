@@ -10,13 +10,15 @@ import thunk from 'redux-thunk';
 import sandboxReducer from './store/reducers/sandbox';
 import userReducer from './store/reducers/user';
 import fhirReducer from './store/reducers/fhirauth';
+import appsReducer from './store/reducers/apps';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     sandbox: sandboxReducer,
     user: userReducer,
-    fhir : fhirReducer
+    fhir : fhirReducer,
+    apps : appsReducer
 });
 
 
