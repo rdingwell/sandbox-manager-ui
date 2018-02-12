@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
-
-
 import RaisedButton from 'material-ui/RaisedButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-
-import * as  actions from '../../../store/actions/index';
-import { connect } from 'react-redux';
-import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
-
-
-import axios from '../../../axiox';
 
 class RegisteredApp extends Component{
     state = {
@@ -21,6 +12,36 @@ class RegisteredApp extends Component{
 
     handleChange = (event, index, value) => {
         this.setState({value: value});
+    };
+
+    handleLaunch = () => {
+
+/*
+            var patientQuery;
+            if (sample !== undefined) {
+                app.samplePatients = sample;
+            }
+            var queryString = app.samplePatients;
+
+            // Some parsing to see if there's exactly one patient id
+            if (queryString !== null && queryString !== undefined && queryString.indexOf("_id=") > -1) {
+                var i = queryString.indexOf("_id=");
+                queryString = queryString.substr(i + "_id=".length);
+
+                var queryItems = queryString.split("&");
+                queryItems = queryItems[0];
+                queryItems = queryItems.split(",");
+                if (queryItems.length === 1) {
+                    patientQuery = queryItems[0];
+                }
+            }
+
+            if (patientQuery !== undefined) {
+                launchApp.launchFromApp(app, {fhirId: patientQuery}, defaultPersona);
+            } else {
+                openPatientPicker(app);
+            }
+*/
     };
 
 
@@ -38,7 +59,6 @@ class RegisteredApp extends Component{
             width: '100%'
         };
 
-        let clientUri = null;
         let clientId = null;
 
         if(this.props.app){
@@ -53,7 +73,7 @@ class RegisteredApp extends Component{
         if(!this.props.app.isDefault){
             buttons = (
                 <div>
-                    <RaisedButton style={buttonStyle} primary={true} label="Launch"/>
+                    <RaisedButton style={buttonStyle} primary={true} onClick={this.handleLaunch} label="Launch"/>
                     <RaisedButton style={buttonStyle} primary={true} label="Save"/>
                     <RaisedButton style={buttonStyle} primary={true} label="Delete"/>
                 </div>

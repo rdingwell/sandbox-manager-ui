@@ -39,7 +39,7 @@ class App extends Component {
                         <Route path='/start' component={Start} />
                         <Route path='/after-auth' component={AfterAuth} />
                         <Route path='/create-sandbox' component={CreateSandbox} />
-                        <Route path='/' component={Dashboard} />
+                        <Route path='/' component={Start} />
                     </Switch>
                 </Layout>
             </div>

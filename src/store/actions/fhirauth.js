@@ -1,8 +1,10 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axiox';
-import * as FHIR from 'fhirclient/fhir-client';
+import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
 
- const getQueryParams = (url) => {
+let fhirClient = null;
+
+const getQueryParams = (url) => {
     if(url.search){
         let urlParams;
         let match,
@@ -20,7 +22,7 @@ import * as FHIR from 'fhirclient/fhir-client';
     }
 };
 
- export const clearToken = () => {
+export const clearToken = () => {
     return {
         type: actionTypes.FHIR_CLEAR_TOKEN
     }
@@ -61,6 +63,26 @@ export const setOauthUserInfo = (sbmUserId, email, name) => {
     };
 };
 
+export const savePatients = (patients) => {
+  return{
+      type: actionTypes.LOOKUP_PATIENTS_SUCCESS,
+      patients : patients
+  };
+};
+
+export const lookupPatientsStart = () => {
+    return{
+        type: actionTypes.LOOKUP_PATIENTS_START
+    }
+};
+
+export const lookupPatientsFail = (error) => {
+    return {
+        type: actionTypes.LOOKUP_PATIENTS_FAIL,
+        error : error
+    }
+};
+
 export const saveSandboxManagerUser = (sandboxManagerUser) => {
     return{
         type: actionTypes.SAVE_SANDBOX_USER,
@@ -68,19 +90,31 @@ export const saveSandboxManagerUser = (sandboxManagerUser) => {
     }
 };
 
+export const saveSandboxApiEndpointIndex = (index) => {
+    return{
+        type: actionTypes.SAVE_ENDPOINT_INDEX,
+        index: index
+    }
+};
 
-const queryFhirVersion = (dispatch, fhirClient) => {
+
+const queryFhirVersion = (dispatch, fhirClient, state) => {
     fhirClient.api.conformance({})
         .then(
             response => {
                 console.log(response);
                 dispatch(setFhirVersion(response.data.fhirVersion));
+                state.sandbox.sandboxApiEndpointIndexes.forEach((sandboxEndpoint) => {
+                    if(response.data.fhirVersion === sandboxEndpoint.fhirVersion){
+                        dispatch(saveSandboxApiEndpointIndex(sandboxEndpoint.index));
+                    }
+                });
             }
         );
 };
 
-const authorize = (url, state) => {
-    let thisUri = window.location.origin + "/after-auth?path=" + window.location.pathname;
+const authorize = (url, state, sandboxId) => {
+    let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth?path=" + window.location.pathname;
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
 
@@ -90,14 +124,87 @@ const authorize = (url, state) => {
         "scope": state.fhir.scope
     };
 
+    let config = JSON.parse(localStorage.getItem('config'));
+
+    let serviceUrl = config.defaultServiceUrl;
+    if (sandboxId !== undefined && sandboxId !== "") {
+        serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
+        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "2") {
+            serviceUrl = config.baseServiceUrl_2 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "3") {
+            serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "4") {
+            serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "5") {
+            serviceUrl = config.baseServiceUrl_5  + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
+            serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
+        }
+    }
+
+
+
+
     window.FHIR.oauth2.authorize({
         client: client,
-        server: state.fhir.defaultServiceUrl,
-        from: url.pathname
+        server: serviceUrl,
+        from: url.pathname ? url.pathname : '/'
     }, function (err) {
         //error
     });
 };
+
+export const authorizeSandbox = (sandboxId) => {
+    return(dispatch, getState) => {
+        const state = getState();
+        authorize(window.location, state, sandboxId);
+    }
+};
+
+
+export const fetchPatients = () => {
+    return (dispatch, getState) => {
+        dispatch(lookupPatientsStart());
+        let state = getState();
+        let count = 50;
+
+/*
+        if(!count){
+            count = 50;
+        }
+*/
+
+        let searchParams = {type: "Patient", count: count};
+        searchParams.query = {};
+/*
+        if(searchValue) {
+            searchParams.query = searchValue;
+        }
+        if(sort) {
+            searchParams.query['$sort'] = sort;
+            searchParams.query['name'] = tokens;
+        }
+*/
+
+        ///sandbox1/data/Patient?_sort:desc=family&_sort:desc=given&name=&_count=50
+        //http://localhost:8076/stu3/data/Patient?&_count=50
+
+        window.fhirClient.api.search(searchParams)
+            .then(response => {
+                let resourceResults = [];
+
+                for(let key in response.data){
+                    response.data[key].resource.fullUrl = response.data.fullUrl;
+                    resourceResults.push(response.data[key]);
+                }
+                dispatch(savePatients(resourceResults));
+        }).fail(error => {
+            dispatch(lookupPatientsFail(error));
+        });
+    };
+};
+
+
 
 
 export const init = (url) => {
@@ -108,8 +215,10 @@ export const init = (url) => {
 };
 
 
+
 export const afterFhirAuth = (url) => {
     return (dispatch, getState) => {
+        let configuration = JSON.parse(localStorage.getItem('config'));
         const state = getState();
         let params = getQueryParams(url);
         if(params && params.code) {
@@ -117,27 +226,25 @@ export const afterFhirAuth = (url) => {
             window.FHIR.oauth2.ready(params, function(newSmart) {
                 dispatch(hspcAuthorized());
                 dispatch(setFhirClient(newSmart));
-                queryFhirVersion(dispatch, newSmart);
+                fhirClient = newSmart;
+                window.fhirClient = newSmart;
+                queryFhirVersion(dispatch, fhirClient, state);
                 const config = {
                     headers: {
-                        Authorization: 'BEARER ' + newSmart.server.auth.token
+                        Authorization: 'BEARER ' + fhirClient.server.auth.token
                     }
                 };
-                axios.post(state.fhir.oauthUserInfoUrl, null, config)
+                axios.post(configuration.oauthUserInfoUrl, null, config)
                     .then(response => {
-                        dispatch(setOauthUserInfo(response.data.sub, response.data.preferred_username, response.data.name))
+                        dispatch(setOauthUserInfo(response.data.sub, response.data.preferred_username, response.data.name));
 
-                        axios.get(state.fhir.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(response.data.sub), config)
+                        axios.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(response.data.sub), config)
                             .then(userResponse => {
                                 dispatch(saveSandboxManagerUser(userResponse.data));
                             });
                     });
             });
         }
-        if(state.fhir.hspcAccountCookieName){
-            console.log("cookie");
-        }
-        // if not oauth auth against server
     }
 };
 

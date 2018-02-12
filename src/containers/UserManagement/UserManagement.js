@@ -2,16 +2,6 @@ import React, { Component } from 'react';
 import Invitations from './Invitations/Invitations';
 import Users from './Users/Users';
 
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
-
-
 import { connect } from 'react-redux';
 
 class UserManagement extends Component {

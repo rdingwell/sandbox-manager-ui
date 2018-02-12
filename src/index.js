@@ -11,6 +11,8 @@ import sandboxReducer from './store/reducers/sandbox';
 import userReducer from './store/reducers/user';
 import fhirReducer from './store/reducers/fhirauth';
 import appsReducer from './store/reducers/apps';
+import patientReducer from './store/reducers/patient';
+import appConfig from './assets/config/sandbox-manager'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -18,13 +20,16 @@ const rootReducer = combineReducers({
     sandbox: sandboxReducer,
     user: userReducer,
     fhir : fhirReducer,
-    apps : appsReducer
+    apps : appsReducer,
+    patient: patientReducer
 });
-
 
 const store = createStore(rootReducer, composeEnhancers(
     applyMiddleware(thunk)
 ));
+
+localStorage.setItem('config', JSON.stringify(appConfig));
+
 
 const app =  (
     <Provider store={store}>

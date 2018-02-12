@@ -322,6 +322,7 @@ const saveOauthUser = (state, action) => {
     user.sbmUserId = action.sbmUserId;
     user.email = action.email;
     user.name = action.name;
+    localStorage.setItem("oauthUser", JSON.stringify(user));
     return updateObject(state, {oauthUser: user})
 };
 

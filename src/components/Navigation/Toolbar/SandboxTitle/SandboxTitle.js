@@ -3,18 +3,45 @@ import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler'
 import axios from '../../../../axiox';
 import * as  actions from '../../../../store/actions/index';
 import { connect } from 'react-redux';
-
+import { withRouter } from 'react-router';
 
 
 class SandboxTitle extends Component {
+
+    state = {
+        onDashboard: false
+    };
+
+    shouldComponentUpdate(nextProps, nextState){
+        let url = nextProps.location;
+        if(url.pathname === '/dashboard'){
+            this.setState({onDashboard: true});
+        }
+
+        return nextState.onDashboard !== this.state.onDashboard;
+    }
+
+
     render() {
-        let title = "Dashboard";
-        if(this.props.selectedSandbox){
+        const sandboxTitleStyle = {
+            textAlign: 'center',
+            paddingTop: '11px',
+            color:'#FFF',
+            fontSize: '28px',
+            fontWeight: 100,
+            display: 'inline-block'
+        };
+
+        let title = "The Healthcare Innovation Ecosystem";
+
+        if(this.state.onDashboard){
+            title = "Dashboard";
+        } else if(this.props.selectedSandbox) {
             title = this.props.sandbox.name;
         }
 
         return(
-            <div>{title}</div>
+            <div style={sandboxTitleStyle}>{title}</div>
         );
     }
 }
@@ -33,4 +60,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( SandboxTitle, axios ) );
+export default connect( mapStateToProps, mapDispatchToProps )( withRouter(withErrorHandler( SandboxTitle, axios ) ))

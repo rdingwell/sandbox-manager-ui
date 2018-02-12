@@ -11,6 +11,8 @@ import SideNavToggle from '../SideNav/SideNavToggle/SideNavToggle';
 import SandboxSelector from './SandboxSelector/SandboxSelector';
 import SandboxTitle from './SandboxTitle/SandboxTitle';
 import Logo from '../../Logo/Logo';
+import User from '../Toolbar/User/User';
+
 
 class Toolbar extends Component {
 
@@ -22,17 +24,30 @@ class Toolbar extends Component {
             backgroundColor: '#0186d5',
             padding: 7,
             boxSizing: 'border-box'
-
         };
+
+
+        let sideNavToggle = null;
+        let sandboxSelector = "";
+
+        let sandboxId = localStorage.getItem("sandboxId");
+
+        if(sandboxId){
+           sideNavToggle = (<SideNavToggle click={this.props.click}/>);
+           sandboxSelector = (<SandboxSelector/>);
+        }
+
+
+
         return(
             <header className={classes.Toolbar}>
                 <div style={style}>
                     <Logo/>
-                    <SideNavToggle click={this.props.click}/>
+                    {sideNavToggle}
                 </div>
-                <SandboxSelector/>
+                {sandboxSelector}
                 <SandboxTitle/>
-                <div>User</div>
+                <User user={this.props.user}></User>
             </header>
         );
     };
@@ -51,5 +66,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-
-export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( Toolbar, axios ) );
+export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( Toolbar, axios ) )

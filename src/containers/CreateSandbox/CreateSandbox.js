@@ -63,7 +63,7 @@ class CreateSandbox extends Component {
     };
 
     sandboxIdChangedHandler = (event) => {
-        this.setState({sandboxId : event.target.value, createDisabled: event.target.value == 0})
+        this.setState({sandboxId : event.target.value, createDisabled: event.target.value === 0})
     };
 
     sandboxNameChangedHandler = (event) => {

@@ -16,5 +16,6 @@ export {
     fhirLoginSuccess,
     fhirLoginFail,
     clearToken,
-    afterFhirAuth
+    afterFhirAuth,
+    fetchPatients
 } from './fhirauth';

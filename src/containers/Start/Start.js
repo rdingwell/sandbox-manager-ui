@@ -12,6 +12,7 @@ import axios from '../../axiox';
 
 class Start extends Component{
 
+
     state = {
         title: 'What is a sandbox?',
         description: 'A sandbox is your very own instance of an HSPC Platform* combined with tools and utilities to help you build and test your medical apps.',
