@@ -1,7 +1,7 @@
 [
   {
-    "name": "react-sandbox-manager",
-    "image": "nexus.hspconsortium.org:18083/hspc/react-sandbox-manager-prod:0.0.1",
+    "name": "sandbox-manager-prototype",
+    "image": "nexus.hspconsortium.org:18083/hspc/react-sandbox-manager:0.1.0",
     "cpu": 0,
     "portMappings": [
       {
