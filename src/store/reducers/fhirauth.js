@@ -8,12 +8,7 @@ const initialState = {
     hspcAuthorized : false,
     fhirClient: null,
     fhirVersion: null,
-    hspcAccountCookieName: 'hspc-token',
-    defaultServiceUrl: 'http://localhost:8076/stu3/data',
     scope: 'smart/orchestrate_launch user/*.* profile openid',
-    oauthUserInfoUrl: 'http://localhost:8060/userinfo',
-    sandboxManagerApiUrl: 'http://localhost:12000'
-
 };
 
 const authStart = ( state, action ) => {
@@ -36,12 +31,23 @@ const setFhirVersion = ( state, action ) => {
     return updateObject(state, {fhirVersion: action.fhirVersion});
 };
 
+const setServerUrl = (state, action) => {
+    const fhirClient = {...state.fhirClient};
+    const server = {...fhirClient.server};
+    server.serviceUrl = "http://localhost:8076/" + action.sandboxId + "/data";
+    fhirClient.server = server;
+
+    return updateObject(state, {fhirClient: fhirClient});
+
+};
+
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.FHIR_LOGIN: return authStart(state, action);
         case actionTypes.FHIR_HSPC_AUTHORIZED: return hspcAuthorized(state, action);
         case actionTypes.FHIR_CLIENT: return setFhirClient(state, action);
         case actionTypes.FHIR_VERSION: return setFhirVersion(state, action);
+        case actionTypes.SET_FHIR_SERVER_URL: return setServerUrl(state, action);
         default:
             return state;
     }

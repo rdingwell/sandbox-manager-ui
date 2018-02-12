@@ -1,8 +1,9 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axiox';
+import {authorizeSandbox} from "./fhirauth";
 
 
-export const selectSandbox = (sandboxId) => {
+export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
     return {
         type : actionTypes.SELECT_SANDBOX,
@@ -134,14 +135,40 @@ const getConfig = (state) => {
     };
 };
 
+const setDefaultUrl = (sandboxId) => {
+    return{
+        type: actionTypes.SET_FHIR_SERVER_URL,
+        sandboxId: sandboxId
+    }
+};
+
+export const selectSandbox = (sandboxId) => {
+    return(dispatch, getState) => {
+        let state = getState();
+        let config = JSON.parse(localStorage.getItem('config'));
+        let queryParams = "?userId=" + encodeURIComponent(state.user.oauthUser.sbmUserId);
+
+        //log in to the sandbox
+        axios.post(config.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, null, getConfig(state))
+            .then(res => {})
+            .catch(err => {});
+        dispatch(authorizeSandbox(sandboxId));
+        dispatch(setDefaultUrl(sandboxId));
+        dispatch(selectSandboxById(sandboxId));
+    };
+
+};
+
+
 export const createSandbox = (sandboxDetails) => {
     return (dispatch, getState) => {
         const state = getState();
         if(!state.fhir.fhirClient){
             return;
         }
+        let configuration = JSON.parse(localStorage.getItem('config'));
         dispatch(createSandboxStart());
-        axios.post(state.fhir.sandboxManagerApiUrl + '/sandbox', sandboxDetails, getConfig(state))
+        axios.post(configuration.sandboxManagerApiUrl + '/sandbox', sandboxDetails, getConfig(state))
             .then(res => {
                 dispatch(createSandboxSuccess(res.data));
             })
@@ -159,9 +186,10 @@ export const fetchSandboxById = (sandboxId) => {
       if(!state.fhir.fhirClient) {
           return;
       }
+      let configuration = JSON.parse(localStorage.getItem('config'));
       dispatch(lookupSandboxByIdStart());
       const queryParams = '?lookupId=' + sandboxId;
-      axios.get(state.fhir.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
+      axios.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
           .then(res => {
                 const sandboxes = [];
                 for(let key in res.data){
@@ -185,9 +213,10 @@ export const fetchSandboxes = () => {
             return;
         }
         dispatch(fetchSandboxesStart());
+        let configuration = JSON.parse(localStorage.getItem('config'));
         const queryParams = '?userId=' + state.user.oauthUser.sbmUserId;
 
-        axios.get(state.fhir.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
+        axios.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
             .then(res => {
                 const sandboxes = [];
                 for (let key in res.data){
@@ -210,9 +239,11 @@ export const fetchSandboxInvites = () => {
           return;
       }
       dispatch(fetchSandboxInvitesStart());
+      let configuration = JSON.parse(localStorage.getItem('config'));
+
       const queryParams = '?sbmUserId=' + state.user.oauthUser.sbmUserId + '&status=PENDING';
 
-      axios.get(state.fhir.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig(state))
+      axios.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig(state))
           .then(res => {
               const invitations = [];
               for(let key in res.data){

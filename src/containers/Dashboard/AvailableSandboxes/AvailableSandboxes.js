@@ -22,7 +22,7 @@ import axios from '../../../axiox';
 
 class AvailableSandboxes extends Component{
 
-    componentDidMount () {
+    componentWillMount() {
         this.props.onFetchSandboxes();
     }
 
@@ -30,8 +30,9 @@ class AvailableSandboxes extends Component{
         this.props.history.push("/create-sandbox");
     };
 
-    handleRowSelect = (rows) => {
+    handleRowSelect = (event, rows) => {
         let sandbox = this.props.sandboxes.slice(rows, 1)[0];
+        localStorage.setItem('sandboxId', sandbox.sandboxId);
         this.props.onSelectSandbox(sandbox.sandboxId);
         this.props.history.push("/launch")
     };
@@ -72,7 +73,7 @@ class AvailableSandboxes extends Component{
                         selectable={false}
                         height="300px"
                         fixedHeader={true}
-                        width="100%"
+                        width="100vw"
                         onCellClick={this.handleRowSelect}>
                         <TableHeader displaySelectAll={false}
                                      adjustForCheckbox={false}

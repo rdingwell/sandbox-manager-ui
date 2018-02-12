@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 
 import * as  actions from '../../store/actions/index';
 import { connect } from 'react-redux';
@@ -9,7 +9,6 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 import axios from '../../axiox';
 import RegisteredApp from "./RegisteredApp/RegisteredApp";
-import register from "../../registerServiceWorker";
 
 
 
@@ -21,7 +20,6 @@ class Apps extends Component {
     };
 
     handleAppSelect = (event, index) => {
-        alert(index);
         event.preventDefault();
         this.setState({selectedApp: this.props.apps[index]});
     };
@@ -50,7 +48,7 @@ class Apps extends Component {
             <a onClick={(event) => this.handleAppSelect(event, index)}>
                 <Card style={cardStyle} key={app.index}>
                     <CardMedia>
-                        <img style={{height: 150}} src={app.logoUri}/>
+                        <img style={{height: 150}} src={app.logoUri} alt="HSPC Logo"/>
                     </CardMedia>
                     <CardTitle><span style={{fontSize: 18}}>{app.authClient.clientName}</span></CardTitle>
                 </Card>

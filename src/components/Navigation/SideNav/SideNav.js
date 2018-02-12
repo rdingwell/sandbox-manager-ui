@@ -17,7 +17,7 @@ const sideNav = (props) => {
                 <NavigationItems/>
             </nav>
         </div>
-);
+    );
 };
 
 export default sideNav;

@@ -40,17 +40,6 @@ class DeleteSandbox extends Component {
             margin: 12,
         };
 
-        const resetStyle = {
-            width: 500,
-            margin: 20,
-            display: 'inline-block',
-            float: 'right',
-        };
-
-        const padding = {
-            padding: 20
-        };
-
         let icon = (<i className="fa fa-chevron-down" aria-hidden="true"></i>);
         let body = null;
         if(this.state.expanded) {
