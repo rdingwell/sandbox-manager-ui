@@ -14,6 +14,8 @@ pipelines:
     develop:
       - step:
           script:
+            - export TARGET_AWS_CLUSTER=hspc-test
+            - export TARGET_AWS_SERVICE=react-sandbox-manager-testservice
             - . ci-0-set-properties.sh
             - . ci-1-prepare-sources.sh
             - . ci-2-docker-image.sh
