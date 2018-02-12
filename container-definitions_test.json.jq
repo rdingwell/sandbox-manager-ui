@@ -1,6 +1,6 @@
 [
   {
-    "name": "{{$PROJECT_NAME}}",
+    "name": "react-sandbox-manager",
     "image": "nexus.hspconsortium.org:18083/hspc/react-sandbox-manager-test:0.1.0",
     "cpu": 0,
     "portMappings": [
