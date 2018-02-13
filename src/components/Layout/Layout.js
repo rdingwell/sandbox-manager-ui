@@ -44,7 +44,8 @@ class Layout extends Component{
             padding: 10,
             marginTop: 64,
             marginLeft: this.state.leftMargin,
-            backgroundColor: '#e5f0fb',
+            //backgroundColor: '#e5f0fb',
+            backgroundColor: 'rgb(247, 251, 255)',
             height: '100vh'
         };
 

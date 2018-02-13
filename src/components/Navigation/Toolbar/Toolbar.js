@@ -23,6 +23,7 @@ class Toolbar extends Component {
             width: 256,
             backgroundColor: '#0186d5',
             padding: 7,
+            height: '100%',
             boxSizing: 'border-box'
         };
 
@@ -31,7 +32,7 @@ class Toolbar extends Component {
         let sandboxSelector = "";
 
         let sandboxId = localStorage.getItem("sandboxId");
-
+        sandboxId ='yes';
         if(sandboxId){
            sideNavToggle = (<SideNavToggle click={this.props.click}/>);
            sandboxSelector = (<SandboxSelector/>);

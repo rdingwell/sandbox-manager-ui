@@ -17,7 +17,7 @@ class User extends Component {
     };
 
     shouldComponentUpdate(){
-        let user = JSON.parse(localStorage.getItem("oauthUser"));
+        let user = JSON.parse(localStorage.getItem("oauthUser")); //This isn't where the user info is found, you have to call firebase
         if (user != null){
             if(this.state.user === null || this.state.user.name !== user.name){
                 this.setState({user: user});

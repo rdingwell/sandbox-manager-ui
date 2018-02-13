@@ -10,21 +10,24 @@ class Footer extends Component {
             bottom: 0,
             left: 0,
             right: 0,
+            // paddingTop: "10px",
+            marginTop: "10px",
             marginBottom: 0,
             backgroundColor: 'rgb(232, 232, 232)',
-            zIndex: 1300
+            zIndex: 1300,
+            textAlign: "center",
+            fontSize: "12px"
+        };
 
+        const styleText = {
+            paddingTop: "5px"
         };
 
         return(
             <footer style={style}>
-                <div>
-                    <div>
-                        © 2017 by Healthcare Services Platform Consortium
-                        <div> • <a>Terms of Use &amp; Privacy Statement</a></div>
-                        <div>
-                    </div>
-                    </div>
+                <div class="footer-text">
+                        <p style={styleText}>© 2017 by Healthcare Services Platform Consortium
+                          • <a>Terms of Use &amp; Privacy Statement</a></p>
                 </div>
             </footer>
         );

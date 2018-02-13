@@ -35,7 +35,13 @@ class Start extends Component{
     };
 
     handleSignUp = () => {
-
+        //Need to spread out work to components later:
+      //These settings come from the config file, need to actually pull from file
+      let settings = {
+        "userManagementUrl": "https://account-test.hspconsortium.org",
+        "sandboxManagerUrl": "http://localhost:3000/apps"
+      }
+      window.location.href = settings.userManagementUrl + "/public/newuser/?afterAuth=" + settings.sandboxManagerUrl;
     };
 
     render() {
@@ -47,6 +53,10 @@ class Start extends Component{
         const buttonStyle = {
             marginRight: 10
         };
+
+        const paperStyle = {
+            paddingBottom: 100
+        }
 
         let checkboxes = this.state.checkboxes.map( (checkbox, index) => (
             <p key={index}><i style={iconStyle} className="fa fa-check" aria-hidden="true"></i>{checkbox}</p>
@@ -64,7 +74,7 @@ class Start extends Component{
         }
 
         return(
-            <Paper className="PaperCard" >
+            <Paper style="paperStyle" className="PaperCard" >
                 <h3>{this.state.title}</h3>
                 <div className="PaperBody">
                     <p>{this.state.description}</p>

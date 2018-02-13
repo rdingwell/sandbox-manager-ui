@@ -18,6 +18,7 @@ import AfterAuth from '../containers/AfterAuth/AfterAuth';
 import './App.css';
 import CreateSandbox from "./CreateSandbox/CreateSandbox";
 
+// document.body.style.paddingBottom = "0px"
 
 class App extends Component {
   render() {
