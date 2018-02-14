@@ -30,8 +30,8 @@ class AvailableSandboxes extends Component{
         this.props.history.push("/create-sandbox");
     };
 
-    handleRowSelect = (event, rows) => {
-        let sandbox = this.props.sandboxes.slice(rows, 1)[0];
+    handleRowSelect = (row) => {
+        let sandbox = this.props.sandboxes[row];
         localStorage.setItem('sandboxId', sandbox.sandboxId);
         this.props.onSelectSandbox(sandbox.sandboxId);
         this.props.history.push("/launch")

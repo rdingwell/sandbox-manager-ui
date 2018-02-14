@@ -19,8 +19,10 @@ const lookupPatientsFail = (state, action) => {
 };
 
 const lookupPatientsSuccess = (state, action) => {
-    updateObject(state, {patients: action.patients});
-    return updateObject(state, {lookingForPatients: false});
+    return updateObject( state, {
+        patients: action.patients,
+        lookingForPatients: false
+    } );
 };
 
 

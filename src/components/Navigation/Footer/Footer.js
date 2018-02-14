@@ -25,7 +25,7 @@ class Footer extends Component {
 
         return(
             <footer style={style}>
-                <div class="footer-text">
+                <div className="footer-text">
                         <p style={styleText}>© 2017 by Healthcare Services Platform Consortium
                           • <a>Terms of Use &amp; Privacy Statement</a></p>
                 </div>

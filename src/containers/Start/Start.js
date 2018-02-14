@@ -56,7 +56,7 @@ class Start extends Component{
 
         const paperStyle = {
             paddingBottom: 100
-        }
+        };
 
         let checkboxes = this.state.checkboxes.map( (checkbox, index) => (
             <p key={index}><i style={iconStyle} className="fa fa-check" aria-hidden="true"></i>{checkbox}</p>
@@ -74,7 +74,7 @@ class Start extends Component{
         }
 
         return(
-            <Paper style="paperStyle" className="PaperCard" >
+            <Paper style={paperStyle} className="PaperCard" >
                 <h3>{this.state.title}</h3>
                 <div className="PaperBody">
                     <p>{this.state.description}</p>
