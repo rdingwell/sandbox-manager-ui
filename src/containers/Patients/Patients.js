@@ -18,20 +18,37 @@ import {
 class Patients extends Component {
 
     componentDidMount () {
-        //this.props.onFetchPatients();
+        this.props.onFetchPatients();
     }
+
 
 
     render() {
         let patients = null;
+        let getName = (name) => {
+            let strName = name.family + ",";
+            let i = 0;
+            for(i = 0; i < name.given.length; i++){
+                strName += " " + name.given[i];
+            }
+            return strName;
+        };
+        let getAge = (birthday) => {
+            var ageDifMs = Date.now() - Date.parse(birthday);
+            var ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        };
         if ( !this.props.loading ) {
             patients = this.props.patients.map(patient => (
                 <TableRow key={patient.id}>
                     <TableRowColumn>
-                        {patient.name}
+                        {getName(patient.name[0])}
                     </TableRowColumn>
                     <TableRowColumn>
-                        {patient.description}
+                        {patient.gender}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {getAge(patient.birthDate)}
                     </TableRowColumn>
                 </TableRow>
             ));
@@ -52,8 +69,9 @@ class Patients extends Component {
                                      adjustForCheckbox={false}
                                      enableSelectAll={false}>
                             <TableRow>
-                                <TableHeaderColumn>Sandbox Name</TableHeaderColumn>
-                                <TableHeaderColumn>Description</TableHeaderColumn>
+                                <TableHeaderColumn>Name</TableHeaderColumn>
+                                <TableHeaderColumn>Gender</TableHeaderColumn>
+                                <TableHeaderColumn>Age</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody

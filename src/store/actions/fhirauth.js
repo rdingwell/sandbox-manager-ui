@@ -165,7 +165,6 @@ export const authorizeSandbox = (sandboxId) => {
 export const fetchPatients = () => {
     return (dispatch, getState) => {
         dispatch(lookupPatientsStart());
-        let state = getState();
         let count = 50;
 
 /*
@@ -193,9 +192,9 @@ export const fetchPatients = () => {
             .then(response => {
                 let resourceResults = [];
 
-                for(let key in response.data){
-                    response.data[key].resource.fullUrl = response.data.fullUrl;
-                    resourceResults.push(response.data[key]);
+                for(let key in response.data.entry){
+                    response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
+                    resourceResults.push(response.data.entry[key].resource);
                 }
                 dispatch(savePatients(resourceResults));
         }).fail(error => {
