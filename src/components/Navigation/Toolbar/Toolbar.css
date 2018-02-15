@@ -4,12 +4,16 @@
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #43b9f6;
+    background-color: #1564bf;
+    /*background-color: #0186d5;*/
+    box-shadow: rgba(0, 0, 0, 0.156863) 0px 1px 3px, rgba(0, 0, 0, 0.227451) 0px 1px 3px;
+    /*background-color: #43b9f6;*/
     align-items: center;
     box-sizing: border-box;
     z-index: 1100;
-    overflow:hidden;
+    overflow: hidden;
     color: white;
     display: inline-flex;
-    justify-content: space-between;
+    text-align: center;
+    /*justify-content: space-between;*/
 }

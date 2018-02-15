@@ -2,10 +2,12 @@ import React from 'react';
 
 import classes from './NavigationItems.css'
 import NavigationItem from './NavigationItem/NavigationItem';
+import SandboxSelector from '../Toolbar/SandboxSelector/SandboxSelector'
 
 
 const navigationItems = (props) => (
     <ul className={classes.NavigationItems}>
+        <li className="NavigationItem"> <SandboxSelector/> </li>
         <NavigationItem link={"/apps"}><i className="fa fa-th fa-lg"></i>Apps</NavigationItem>
         <NavigationItem link={"/launch"} active><i className="fa fa-list fa-lg"></i>Launch Scenarios</NavigationItem>
         <NavigationItem link={"/patients"}><i className="fa fa-bed fa-lg"></i>Patients</NavigationItem>
@@ -15,7 +17,7 @@ const navigationItems = (props) => (
         <NavigationItem link={"/user-management"}><i className="fa fa-users"></i>User Management</NavigationItem>
         <NavigationItem link={"/integration"}><i className="fa fa-gears fa-lg"></i>EHR Integration</NavigationItem>
         <li className="NavigationItem">
-                <a href="https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/64585866/HSPC+Sandbox">
+                <a href="https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/64585866/HSPC+Sandbox" target="_blank">
                         <i className="fa fa-book"></i>Documentation
                 </a>
         </li>

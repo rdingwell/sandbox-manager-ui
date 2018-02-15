@@ -36,7 +36,7 @@
     color: white;
     text-decoration: none;
     width: 100%;
-    padding: 16px 10px;
+    padding: 10px 10px;
     border-bottom: 4px solid transparent;
     box-sizing: border-box;
     display: block;
@@ -53,4 +53,10 @@
 :global(.NavigationItem i) {
     font-size: 18px;
     width: 25px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", sans-serif;
 }

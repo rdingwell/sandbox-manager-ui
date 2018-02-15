@@ -25,11 +25,16 @@ class SandboxTitle extends Component {
     render() {
         const sandboxTitleStyle = {
             textAlign: 'center',
-            paddingTop: '11px',
+            margin: '0 auto',
+            paddingTop: '0px',
+            left: '50%',
             color:'#FFF',
             fontSize: '28px',
             fontWeight: 100,
-            display: 'inline-block'
+            display: 'inline-block',
+            position: 'absolute',
+            left: '50%',
+            transform: 'translate(-50%, 0)'
         };
 
         let title = "The Healthcare Innovation Ecosystem";

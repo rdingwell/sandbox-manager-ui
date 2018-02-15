@@ -13,7 +13,7 @@ class Layout extends Component{
 
     state = {
         sideBarOpened: true,
-        leftMargin: '256px'
+        leftMargin: '200px'
     };
 
     componentWillMount () {
@@ -21,13 +21,13 @@ class Layout extends Component{
 
     componentDidMount() {
         this.setState({sideBarOpened: localStorage.getItem('sandboxId') != null,
-        leftMargin: localStorage.getItem('sandboxId') != null ? '256px' : '0'});
+        leftMargin: localStorage.getItem('sandboxId') != null ? '200px' : '0'});
     }
 
 
 
     drawerToggleClickedHandler = () => {
-        const margin = this.state.sideBarOpened ? '0' : '256px';
+        const margin = this.state.sideBarOpened ? '0' : '200px';
         this.setState((prevState) => {
             return {
                 sideBarOpened : !prevState.sideBarOpened,
@@ -46,7 +46,8 @@ class Layout extends Component{
             marginLeft: this.state.leftMargin,
             //backgroundColor: '#e5f0fb',
             backgroundColor: 'rgb(247, 251, 255)',
-            height: '100vh'
+            height: '100vh',
+          transition: 'transform 0.5s ease-out'
         };
 
 

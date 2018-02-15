@@ -16,55 +16,53 @@ import User from '../Toolbar/User/User';
 
 class Toolbar extends Component {
 
-    render() {
-        const style = {
-            display : 'inline-flex',
-            boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 5px 10px',
-            width: 256,
-            backgroundColor: '#0186d5',
-            padding: 7,
-            height: '100%',
-            boxSizing: 'border-box'
-        };
-
-
-        let sideNavToggle = null;
-        let sandboxSelector = "";
-
-        let sandboxId = localStorage.getItem("sandboxId");
-        sandboxId ='yes';
-        if(sandboxId){
-           sideNavToggle = (<SideNavToggle click={this.props.click}/>);
-           sandboxSelector = (<SandboxSelector/>);
-        }
-
-
-
-        return(
-            <header className={classes.Toolbar}>
-                <div style={style}>
-                    <Logo/>
-                    {sideNavToggle}
-                </div>
-                {sandboxSelector}
-                <SandboxTitle/>
-                <User user={this.props.user}></User>
-            </header>
-        );
+  render() {
+    const style = {
+      display : 'inline-flex',
+      //textShadow: "rgba(0,0,0,.8) 0 -1px 0",
+      //boxShadow: '0 1px 1px #273546',
+      width: 48,
+      backgroundColor: '#1564bf',
+      height: '100%',
+      boxSizing: 'border-box'
     };
+
+    let sideNavToggle = null;
+    let sandboxSelector = "";
+    let menuSelection = ""
+
+    let sandboxId = localStorage.getItem("sandboxId");
+    sandboxId ='yes';
+    if(sandboxId){
+      sideNavToggle = (<SideNavToggle click={this.props.click}/>);
+      // sandboxSelector = (<SandboxSelector style={selectorStyle}/>);
+      menuSelection = (<div style={style}> {sideNavToggle} </div>)
+    }
+
+    return(
+      <header className={classes.Toolbar}>
+        {menuSelection}
+        <Logo/>
+        {sandboxSelector}
+        <SandboxTitle/>
+        <User user={this.props.user}></User>
+      </header>
+    );
+  };
 }
 
 
 const mapStateToProps = state => {
-    return {
-        sandbox : state.sandbox.sandboxes.filter(sandbox => sandbox.sandboxId === state.sandbox.selectedSandbox)[0]
-    };
+  return {
+    sandbox : state.sandbox.sandboxes.filter(sandbox => sandbox.sandboxId === state.sandbox.selectedSandbox)[0]
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        selectSandbox: (sandboxId) => dispatch( actions.selectSandbox(sandboxId) )
-    };
+  return {
+    selectSandbox: (sandboxId) => dispatch( actions.selectSandbox(sandboxId) )
+  };
 };
 
 export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( Toolbar, axios ) )
+

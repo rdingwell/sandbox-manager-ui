@@ -39,10 +39,15 @@ class User extends Component {
     };
 
     render() {
-        const right = {
-            float: 'right',
-            margin: 10
+        const rightWrapper = {
+          position: 'absolute',
+          right: '0'
         };
+
+        const right = {
+          float: 'right',
+          margin: 10,
+        }
 
         const left={
             float: 'left',
@@ -54,7 +59,7 @@ class User extends Component {
             user = (<a onClick={() => this.handleDropDown()}>{this.state.user.name}</a>);
         }
         return(
-            <div style={right}>
+            <div style={rightWrapper}>
                 <div>
                     <a><span></span></a>
                 </div>

@@ -55,7 +55,7 @@ class Start extends Component{
         };
 
         const paperStyle = {
-            paddingBottom: 100
+            paddingBottom: 0,
         };
 
         let checkboxes = this.state.checkboxes.map( (checkbox, index) => (

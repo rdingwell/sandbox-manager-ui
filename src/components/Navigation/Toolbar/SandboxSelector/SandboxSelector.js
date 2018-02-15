@@ -5,13 +5,17 @@ import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler'
 import axios from '../../../../axiox';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
+import FlatButton from 'material-ui/FlatButton';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 
 
 
 class SandboxSelector extends Component {
     state = {
-        value: 'Sandboxes'
+        value: 'Sandboxes',
+        open: false
     };
 
 
@@ -22,19 +26,77 @@ class SandboxSelector extends Component {
         }
     };
 
+    handleClick = (event) => {
+        // This prevents ghost click.
+        event.preventDefault();
+
+            this.setState({
+              open: true,
+              anchorEl: event.currentTarget,
+            });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
+
     render () {
         const sandboxes = this.props.sandboxes.map( (sandbox) => {
             return (
-                <MenuItem key={sandbox.id} value={sandbox.sandboxId} primaryText={sandbox.name}/>
+                <MenuItem key={sandbox.id} value={sandbox.sandboxId} primaryText={sandbox.name} style={menuItemStyles}/>
             )});
 
-        return(
-            <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-                <MenuItem value="Sandboxes" primaryText="Sandboxes"/>
-                {sandboxes}
-                <MenuItem value="CreateNew" primaryText="Create New Sandbox"/>
-            </DropDownMenu>
+        const buttonStyle = {
+            fontFamily: '"Open Sans", sans-serif',
+            textAlign: 'left',
+            paddingLeft: 10,
+            color: '#ffffff',
+            width: '100%',
+            marginBottom: '10px'
+        };
 
+        const popStyle = {
+            fontFamily: '"Open Sans", sans-serif',
+            marginLeft: 10,
+        };
+
+        const chevronStyle = {
+            fontSize: 14
+        };
+
+        const menuItemStyles = {
+            fontFamily: '"Open Sans", sans-serif'
+        };
+
+
+        return(
+          <div>
+            <FlatButton
+              onClick={this.handleClick}
+              style={buttonStyle}
+              hoverColor="none"
+              rippleColor="none"
+            >
+                Sandboxes &nbsp;&nbsp; <i class="fa fa-chevron-down" style={chevronStyle}></i>
+            </FlatButton>
+            <Popover
+              open={this.state.open}
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+              targetOrigin={{horizontal: 'left', vertical: 'top'}}
+              onRequestClose={this.handleRequestClose}
+              style={popStyle}
+            >
+              <Menu>
+                <MenuItem primaryText="Sample Sandbox" style={menuItemStyles}/>
+                {sandboxes}
+                <hr/>
+                <MenuItem primaryText="+ Create Sandbox" style={menuItemStyles}/>
+              </Menu>
+            </Popover>
+          </div>
         );
     }
 }
