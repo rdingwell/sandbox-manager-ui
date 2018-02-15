@@ -42,6 +42,10 @@ class SandboxSelector extends Component {
     };
 
     render () {
+        const menuItemStyles = {
+            fontFamily: '"Open Sans", sans-serif'
+        };
+
         const sandboxes = this.props.sandboxes.map( (sandbox) => {
             return (
                 <MenuItem key={sandbox.id} value={sandbox.sandboxId} primaryText={sandbox.name} style={menuItemStyles}/>
@@ -65,9 +69,6 @@ class SandboxSelector extends Component {
             fontSize: 14
         };
 
-        const menuItemStyles = {
-            fontFamily: '"Open Sans", sans-serif'
-        };
 
 
         return(

@@ -16,6 +16,7 @@ class PatientList extends Component{
 
     handleRowSelect = (row) => {
         let patient = this.props.patients[row];
+        this.props.click(patient);
         //todo fire event up to parent to pass patient to
         //sibling component
     };
