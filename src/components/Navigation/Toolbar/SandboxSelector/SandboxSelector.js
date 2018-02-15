@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../../../axiox';
 
-import DropDownMenu from 'material-ui/DropDownMenu';
 import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
@@ -79,7 +78,7 @@ class SandboxSelector extends Component {
               hoverColor="none"
               rippleColor="none"
             >
-                Sandboxes &nbsp;&nbsp; <i class="fa fa-chevron-down" style={chevronStyle}></i>
+                Sandboxes &nbsp;&nbsp; <i className="fa fa-chevron-down" style={chevronStyle}></i>
             </FlatButton>
             <Popover
               open={this.state.open}

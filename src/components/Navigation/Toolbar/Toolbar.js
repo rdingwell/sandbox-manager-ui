@@ -8,7 +8,6 @@ import axios from '../../../axiox';
 
 import classes from './Toolbar.css';
 import SideNavToggle from '../SideNav/SideNavToggle/SideNavToggle';
-import SandboxSelector from './SandboxSelector/SandboxSelector';
 import SandboxTitle from './SandboxTitle/SandboxTitle';
 import Logo from '../../Logo/Logo';
 import User from '../Toolbar/User/User';

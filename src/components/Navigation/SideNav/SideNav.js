@@ -4,7 +4,6 @@ import classes from './SideNav.css';
 
 import NavigationItems from '../NavigationItems/NavigationItems';
 
-import SandboxSelector from '../Toolbar/SandboxSelector/SandboxSelector'
 
 const sideNav = (props) => {
     let attachedClasses = [classes.SideNav, classes.Close];

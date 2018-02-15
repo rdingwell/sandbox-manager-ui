@@ -33,7 +33,6 @@ class SandboxTitle extends Component {
             fontWeight: 100,
             display: 'inline-block',
             position: 'absolute',
-            left: '50%',
             transform: 'translate(-50%, 0)'
         };
 
