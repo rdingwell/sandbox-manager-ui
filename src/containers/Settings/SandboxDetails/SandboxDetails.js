@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 
 
-import axios from '../../../axiox';
+import axios from '../../../axios';
 
 
 class SandboxDetails extends Component {

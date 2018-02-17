@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axiox';
+import axios from '../../axios';
 import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
 
 let fhirClient = null;
@@ -83,6 +83,72 @@ export const lookupPatientsFail = (error) => {
     }
 };
 
+
+export const lookupEncounterStart = () => {
+    return {
+        type: actionTypes.LOOKUP_ENCOUNTER_START
+    }
+};
+
+export const lookupEncounterFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_ENCOUNTER_FAIL,
+        lookupEncounterError: error
+    }
+};
+
+export const saveEncounters = (encounters) => {
+    return{
+        type: actionTypes.LOOKUP_ENCOUNTER_SUCCESS,
+        encounters: encounters
+    }
+};
+
+export const lookupMedicationRequestStart = () => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_START
+    }
+};
+
+export const lookupMedicationRequestFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_FAIL,
+        lookupMedicationRequestError: error
+    }
+};
+
+export const saveMedicationRequest = (medicationRequests) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_SUCCESS,
+        medicationRequests: medicationRequests
+    }
+};
+
+export const lookupMedicationDispenseStart = () => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_START
+    }
+};
+
+export const lookupMedicationDispenseFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_FAIL,
+        lookupMedicationDispenseError: error
+    }
+};
+
+export const saveMedicationDispense = (medicationDispense) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_SUCCESS,
+        medicationDispense: medicationDispense
+    }
+};
+
+
+
+
+
+
 export const saveSandboxManagerUser = (sandboxManagerUser) => {
     return{
         type: actionTypes.SAVE_SANDBOX_USER,
@@ -161,7 +227,6 @@ export const authorizeSandbox = (sandboxId) => {
     }
 };
 
-
 export const fetchPatients = () => {
     return (dispatch, getState) => {
         dispatch(lookupPatientsStart());
@@ -205,6 +270,38 @@ export const fetchPatients = () => {
 
 
 
+
+
+/*
+export const LOOKUP_ALLERGY_INTOLERANCE_START = "LOOKUP_ALLERGY_INTOLERANCE_START";
+export const LOOKUP_ALLERGY_INTOLERANCE_SUCCESS = "LOOKUP_ALLERGY_INTOLERANCE_SUCCESS";
+export const LOOKUP_ALLERGY_INTOLERANCE_FAIL = "LOOKUP_ALLERGY_INTOLERANCE_FAIL";
+export const LOOKUP_CONDITION_START = "LOOKUP_CONDITION_START";
+export const LOOKUP_CONDITION_SUCCESS = "LOOKUP_CONDITION_SUCCESS";
+export const LOOKUP_CONDITION_FAIL = "LOOKUP_CONDITION_FAIL";
+export const LOOKUP_PROCEDURE_START = "LOOKUP_PROCEDURE_START";
+export const LOOKUP_PROCEDURE_SUCCESS = "LOOKUP_PROCEDURE_SUCCESS";
+export const LOOKUP_PROCEDURE_FAIL = "LOOKUP_PROCEDURE_FAIL";
+export const LOOKUP_PROCEDURE_REQUEST_START = "LOOKUP_PROCEDURE_REQUEST_START";
+export const LOOKUP_PROCEDURE_REQUEST_SUCCESS = "LOOKUP_PROCEDURE_REQUEST_SUCCESS";
+export const LOOKUP_PROCEDURE_REQUEST_FAIL = "LOOKUP_PROCEDURE_REQUEST_FAIL";
+export const LOOKUP_DIAGNOSTIC_REPORT_START = "LOOKUP_DIAGNOSTIC_REPORT_START";
+export const LOOKUP_DIAGNOSTIC_REPORT_SUCCESS = "LOOKUP_DIAGNOSTIC_REPORT_SUCCESS";
+export const LOOKUP_DIAGNOSTIC_REPORT_FAIL = "LOOKUP_DIAGNOSTIC_REPORT_FAIL";
+export const LOOKUP_IMMUNIZATION_START = "LOOKUP_IMMUNIZATION_START";
+export const LOOKUP_IMMUNIZATION_SUCCESS = "LOOKUP_IMMUNIZATION_SUCCESS";
+export const LOOKUP_IMMUNIZATION_FAIL = "LOOKUP_IMMUNIZATION_FAIL";
+export const LOOKUP_CARE_PLAN_START = "LOOKUP_CARE_PLAN_START";
+export const LOOKUP_CARE_PLAN_SUCCESS = "LOOKUP_CARE_PLAN_SUCCESS";
+export const LOOKUP_CARE_PLAN_FAIL = "LOOKUP_CARE_PLAN_FAIL";
+export const LOOKUP_CARE_TEAM_START = "LOOKUP_CARE_TEAM_START";
+export const LOOKUP_CARE_TEAM_SUCCESS = "LOOKUP_CARE_TEAM_SUCCESS";
+export const LOOKUP_CARE_TEAM_FAIL = "LOOKUP_CARE_TEAM_FAIL";
+export const LOOKUP_GOAL_START = "LOOKUP_GOAL_START";
+export const LOOKUP_GOAL_SUCCESS = "LOOKUP_GOAL_SUCCESS";
+export const LOOKUP_GOAL_FAIL = "LOOKUP_GOAL_FAIL";
+
+*/
 
 export const init = (url) => {
     return (dispatch, getState) => {

@@ -11,6 +11,7 @@ import userReducer from './store/reducers/user';
 import fhirReducer from './store/reducers/fhirauth';
 import appsReducer from './store/reducers/apps';
 import patientReducer from './store/reducers/patient';
+import observationReducer from './store/reducers/observation';
 import appConfig from './assets/config/sandbox-manager'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -20,15 +21,16 @@ const rootReducer = combineReducers({
     user: userReducer,
     fhir : fhirReducer,
     apps : appsReducer,
-    patient: patientReducer
+    patient: patientReducer,
+    observation : observationReducer
 });
 
-const store = createStore(rootReducer, composeEnhancers(
+const store = createStore(rootReducer, {}, composeEnhancers(
     applyMiddleware(thunk)
 ));
 
 localStorage.setItem('config', JSON.stringify(appConfig));
-
+window.Highcharts = require('highcharts');
 
 const app =  (
     <Provider store={store}>

@@ -16,7 +16,7 @@ import {
     TableRowColumn,
 } from 'material-ui/Table';
 
-import axios from '../../../axiox';
+import axios from '../../../axios';
 
 
 

@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axiox';
+import axios from '../../axios';
 import {authorizeSandbox} from "./fhirauth";
 
 

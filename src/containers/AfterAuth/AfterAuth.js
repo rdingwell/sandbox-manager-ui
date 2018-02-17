@@ -5,7 +5,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 
 
-import axios from '../../axiox';
+import axios from '../../axios';
 
 class AfterAuth extends Component {
 
