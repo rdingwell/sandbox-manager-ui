@@ -235,6 +235,12 @@ module.exports = {
         ],
       },
     ],
+    loaders: [
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
+      }
+    ]
   },
   plugins: [
     // Makes some environment variables available in index.html.

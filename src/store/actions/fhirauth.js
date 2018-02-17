@@ -1,6 +1,8 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axiox';
 import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
+import Cookie from 'react-cookies'
+
 
 let fhirClient = null;
 
@@ -97,7 +99,6 @@ export const saveSandboxApiEndpointIndex = (index) => {
     }
 };
 
-
 const queryFhirVersion = (dispatch, fhirClient, state) => {
     fhirClient.api.conformance({})
         .then(
@@ -114,6 +115,7 @@ const queryFhirVersion = (dispatch, fhirClient, state) => {
 };
 
 const authorize = (url, state, sandboxId) => {
+    Cookie.remove(localStorage.getItem('config').hspcAccountCookieName); //gets rid of existing and conflicting cookie
     let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth?path=" + window.location.pathname;
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
@@ -204,15 +206,12 @@ export const fetchPatients = () => {
 };
 
 
-
-
 export const init = (url) => {
     return (dispatch, getState) => {
         const state = getState();
         authorize(url, state);
     }
 };
-
 
 
 export const afterFhirAuth = (url) => {

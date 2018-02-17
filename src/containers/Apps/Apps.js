@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import {Card, CardMedia, CardTitle} from 'material-ui/Card';
 
-import * as  actions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
@@ -10,7 +10,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axiox';
 import RegisteredApp from "./RegisteredApp/RegisteredApp";
 
-
+import Cookie from 'react-cookies'
 
 
 class Apps extends Component {
@@ -25,6 +25,7 @@ class Apps extends Component {
     };
 
     render()  {
+
         const paperStyle ={
             width: this.state.selectedApp ? '48%' : '96%',
             float: 'left'

@@ -35,13 +35,8 @@ class Start extends Component{
     };
 
     handleSignUp = () => {
-        //Need to spread out work to components later:
-      //These settings come from the config file, need to actually pull from file
-      let settings = {
-        "userManagementUrl": "https://account-test.hspconsortium.org",
-        "sandboxManagerUrl": "http://localhost:3000/apps"
-      }
-      window.location.href = settings.userManagementUrl + "/public/newuser/?afterAuth=" + settings.sandboxManagerUrl;
+        let settings = JSON.parse(localStorage.getItem('config'));
+        window.location.href = settings.userManagementUrl + "/public/newuser/?afterAuth=" + settings.sandboxManagerUrl;
     };
 
     render() {

@@ -94,7 +94,7 @@ export const createSandboxStart = () => {
 
 export const createSandboxFail = (error) => {
     return{
-        type: actionTypes.CREAT_SANDBOX_FAIL,
+        type: actionTypes.CREATE_SANDBOX_FAIL,
         error : error
     }
 };

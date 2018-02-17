@@ -162,7 +162,7 @@ const reducer = (state = initialState, action) => {
             return fetchInvitesFail(state, action);
         case actionTypes.CREATE_SANDBOX_START:
             return createSandboxStart(state, action);
-        case actionTypes.CREAT_SANDBOX_FAIL:
+        case actionTypes.CREATE_SANDBOX_FAIL:
             return createSandboxFail(state, action);
         case actionTypes.LOOKUP_SANDBOX_BY_ID_START:
             return lookupSandboxStart(state, action);

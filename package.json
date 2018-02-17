@@ -38,6 +38,8 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react": "^16.2.0",
+    "react-cookie": "^2.1.2",
+    "react-cookies": "^0.1.0",
     "react-dev-utils": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-redux": "5.0.6",
@@ -98,5 +100,8 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.7"
   }
 }
