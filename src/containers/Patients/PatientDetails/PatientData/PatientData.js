@@ -1,33 +1,44 @@
 import React, { Component } from 'react';
 import { BarChart } from 'react-chartkick';
 
+
 class PatientData extends Component {
 
-    componentDidMount() {
-        this.props.patient;
+    state = {
+        data : [
+            ['Allergy Intolerance', 0],
+            ['Care Plan', 0],
+            ['Care Team', 0],
+            ['Condition', 0],
+            ['Diagnostic Report', 0],
+            ['Encounter', 0],
+            ['Goal', 0],
+            ['Immunization', 0],
+            ['Medication Dispense', 0],
+            ['Medication Request', 0],
+            ['Observation', 0],
+            ['Procedure', 0],
+            ['Procedure Request', 0]
+
+        ]
+    };
+
+    componentWillMount() {
+        if(!this.props.observationLoading){
+            this.setState({
+                ...this.state.data,
+                ...this.state.data[10][1] = this.props.observations.length
+            });
+        }
     }
 
-
+    componentDidMount() {
+    }
 
     render() {
-        const data = [
-            ['Allergy Intolerance', 1],
-            ['Care Plan', 1],
-            ['Care Team', 1],
-            ['Condition', 1],
-            ['Diagnostic Report', 1],
-            ['Encounter', 1],
-            ['Goal', 1],
-            ['Immunization', 1],
-            ['Medication Dispense', 1],
-            ['Medication Request', 1],
-            ['Observation', 1],
-            ['Procedure', 1],
-            ['Procedure Request', 1]
-        ];
 
         return (<div>
-            <BarChart data={data} />
+            <BarChart data={this.state.data} />
         </div>);
     }
 }

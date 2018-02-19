@@ -9,8 +9,10 @@ const initialState = {
 
 
 const lookupObservationsStart = (state) => {
-    updateObject(state, {loading: true});
-    return updateObject(state, {error: null});
+    return updateObject(state, {
+        loading: true,
+        error: null
+    });
 };
 
 const lookupObservationFail = (state, action) => {

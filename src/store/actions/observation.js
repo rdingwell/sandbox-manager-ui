@@ -25,16 +25,17 @@ export const saveObservations = (observations) => {
 export const fetchObservations = (patient) => {
     return(dispatch) => {
         dispatch(lookupObservationStart());
-        const searchParams = {type: 'Observation', count: 1, query: {subject: 'Patient/'+ patient}};
+        const searchParams = {type: 'Observation', count: 1, query: {subject: 'Patient/'+ patient.id}};
 
         window.fhirClient.api.search(searchParams)
             .then(response => {
                 const resourceResults = [];
-                debugger
-                response.data.entry.forEach(function (element) {
-                    element.resource.fullUrl = element.fullUrl;
-                    resourceResults.push(element.resource);
-                });
+                if(response.data.total > 0 && response.data.entry){
+                    response.data.entry.forEach(function (element) {
+                        element.resource.fullUrl = element.fullUrl;
+                        resourceResults.push(element.resource);
+                    });
+                }
                 dispatch(saveObservations(resourceResults));
             }).fail(error => {
             dispatch(lookupObservationFail(error));

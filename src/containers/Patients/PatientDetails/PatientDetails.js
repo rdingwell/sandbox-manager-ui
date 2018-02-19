@@ -11,12 +11,26 @@ import PatientData from "./PatientData/PatientData";
 
 
 class PatientDetails extends Component {
+    state = {
+        fetchingData: false
+    };
 
-    componentDidMount () {
+    componentWillMount() {
         this.props.onFetchObservations(this.props.patient);
     }
 
+
     render(){
+        let patientData = null;
+        if(!this.props.loadingObservations){
+            patientData = (
+                <PatientData
+                    patient={this.props.patient}
+                    observationLoading={this.props.loadingObservations}
+                    observations={this.props.observations}
+                />
+            );
+        }
 
         return (
             <Paper className="PaperCard">
@@ -28,11 +42,7 @@ class PatientDetails extends Component {
                     <LabelValuePair label={"Birth Date:"} value={this.props.patient.birthDate}/>
                 </div>
                 <div style={{clear: 'both'}}></div>
-                <PatientData
-                    patient={this.props.patient}
-                    observationLoading={this.props.loadingObservations}
-                    observations={this.observations}
-                />
+                {patientData}
             </Paper>
         );
     }
