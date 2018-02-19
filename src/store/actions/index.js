@@ -1,3 +1,5 @@
+import {fetchAllergyIntolerance} from "./allergy";
+
 export {
     deleteSandbox,
     resetSandbox,
@@ -23,3 +25,7 @@ export {
 export {
     fetchObservations
 } from './observation';
+
+export {
+    fetchAllergyIntolerance
+} from './allergy';

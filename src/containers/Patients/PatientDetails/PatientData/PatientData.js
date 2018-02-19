@@ -30,12 +30,15 @@ class PatientData extends Component {
                 ...this.state.data[10][1] = this.props.observations.length
             });
         }
+        if(!this.props.allergyIntoleranceLoading){
+            this.setState({
+                ...this.state.data,
+                ...this.state.data[0][1] = this.props.allergyIntolerance.length
+            });
+        }
     }
 
-    componentDidMount() {
-    }
-
-    render() {
+    render(){
 
         return (<div>
             <BarChart data={this.state.data} />
