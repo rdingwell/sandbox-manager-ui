@@ -12,21 +12,40 @@ class PatientData extends Component {
         let newState = this.state.data.slice();
 
         if(!this.props.allergyIntoleranceLoading){
-            let allergy = ['Allergy Intolerance', this.props.allergyCount];
-            newState.push(allergy);
+            newState.push(['Allergy Intolerance', this.props.allergyCount]);
         }
         if(!this.props.carePlanLoading){
-            let carePlan = ['Care Plan', this.props.carePlanCount];
-            newState.push(carePlan);
+            newState.push(['Care Plan', this.props.carePlanCount]);
         }
         if(!this.props.loadingCareTeam){
-            let careTeam = ['Care Team', this.props.careTeamCount];
-            newState.push(careTeam);
+            newState.push(['Care Team', this.props.careTeamCount]);
         }
         if(!this.props.loadingCondition){
-            debugger
-            let condition = ['Condition', this.props.conditionCount];
-            newState.push(condition);
+            newState.push(['Condition', this.props.conditionCount]);
+        }
+
+        if(!this.props.loadingDiagnosticReport){
+            newState.push(['Diagnostic Report', this.props.diagnosticReportCount]);
+        }
+
+        if(!this.props.loadingEncounter){
+            newState.push(['Encounter', this.props.encounterCount]);
+        }
+
+        if(!this.props.loadingGoal){
+            newState.push(['Goal', this.props.goalCount]);
+        }
+
+        if(!this.props.loadingImmunization){
+            newState.push(['Immunization', this.props.immunizationCount]);
+        }
+
+        if(!this.props.loadingMedicationDispense){
+            newState.push(['Medication Dispense', this.props.medicationDispenseCount]);
+        }
+
+        if(!this.props.loadingMedicationRequest){
+            newState.push(['Medication Request', this.props.medicationRequestCount]);
         }
 
         if(!this.props.loadingObservation){
@@ -34,8 +53,15 @@ class PatientData extends Component {
             newState.push(observation);
         }
 
-        this.setState({data: newState});
+        if(!this.props.loadingProcedure){
+            newState.push(['Procedure', this.props.procedureCount]);
+        }
 
+        if(!this.props.loadingProcedureRequest){
+            newState.push(['Procedure Request', this.props.procedureRequestCount]);
+        }
+
+        this.setState({data: newState});
     }
 
     render(){
