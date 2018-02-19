@@ -13,6 +13,7 @@ import appsReducer from './store/reducers/apps';
 import patientReducer from './store/reducers/patient';
 import observationReducer from './store/reducers/observation';
 import allergyIntoleranceReducer from './store/reducers/allergy';
+import carePlanReducer from './store/reducers/carePlan';
 import appConfig from './assets/config/sandbox-manager';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
     apps : appsReducer,
     patient: patientReducer,
     observation : observationReducer,
-    allergyIntolerance : allergyIntoleranceReducer
+    allergyIntolerance : allergyIntoleranceReducer,
+    carePlan: carePlanReducer
 });
 
 const store = createStore(rootReducer, {}, composeEnhancers(

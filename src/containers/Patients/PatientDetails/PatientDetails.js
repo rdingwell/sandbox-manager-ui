@@ -28,6 +28,8 @@ class PatientDetails extends Component {
                     observations={this.props.observations}
                     allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
                     allergyIntolerance={this.props.allergyIntolerance}
+                    carePlanLoading={this.props.loadingCarePlan}
+                    carePlan={this.props.carePlan}
                 />
             );
         }
@@ -54,14 +56,17 @@ const mapStateToProps = state => {
         observations : state.observation.observations,
         loadingObservations: state.observation.loading,
         allergyIntolerance: state.allergyIntolerance.allergyIntolerance,
-        loadingAllergyIntolerance: state.allergyIntolerance.loading
+        loadingAllergyIntolerance: state.allergyIntolerance.loading,
+        loadingCarePlan: state.carePlan.loading,
+        carePlan: state.carePlan.carePlan
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         onFetchObservations: (patient) => dispatch( actions.fetchObservations(patient) ),
-        onFetchAllergyIntolerance: (patient) => dispatch(actions.fetchAllergyIntolerance(patient))
+        onFetchAllergyIntolerance: (patient) => dispatch(actions.fetchAllergyIntolerance(patient)),
+        onFetchCarePlan: (patient) => dispatch(actions.fetchCarePlan(patient))
     };
 };
 
