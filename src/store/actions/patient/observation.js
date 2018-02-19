@@ -1,31 +1,31 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../actionTypes';
 import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
 
 
-const lookupCarePlanStart = () => {
+export const lookupObservationStart = () => {
     return {
-        type: actionTypes.LOOKUP_CARE_PLAN_START
+        type: actionTypes.LOOKUP_OBSERVATION_START
     }
 };
 
-export const lookupCarePlanFail = (error) => {
+export const lookupObservationFail = (error) => {
     return{
-        type: actionTypes.LOOKUP_CARE_PLAN_FAIL,
+        type: actionTypes.LOOKUP_OBSERVATION_FAIL,
         error: error
     }
 };
 
-export const saveCarePlan = (carePlan) => {
+export const saveObservations = (observations) => {
     return{
-        type: actionTypes.LOOKUP_CARE_PLAN_SUCCESS,
-        carePlan: carePlan
+        type: actionTypes.LOOKUP_OBSERVATION_SUCCESS,
+        observations: observations
     }
 };
 
-export const fetchCarePlan = (patient) => {
+export const fetchObservations = (patient) => {
     return(dispatch) => {
-        dispatch(lookupCarePlanStart());
-        const searchParams = {type: 'CarePlan', count: 1, query: {subject: 'Patient/'+ patient.id}};
+        dispatch(lookupObservationStart());
+        const searchParams = {type: 'Observation', count: 1, query: {subject: 'Patient/'+ patient.id}};
 
         window.fhirClient.api.search(searchParams)
             .then(response => {
@@ -36,10 +36,9 @@ export const fetchCarePlan = (patient) => {
                         resourceResults.push(element.resource);
                     });
                 }
-                dispatch(saveCarePlan(resourceResults));
+                dispatch(saveObservations(resourceResults));
             }).fail(error => {
-            dispatch(lookupCarePlanFail(error));
+            dispatch(lookupObservationFail(error));
         });
     }
 };
-
