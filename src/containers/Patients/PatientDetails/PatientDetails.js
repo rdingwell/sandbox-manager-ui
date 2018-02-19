@@ -25,14 +25,23 @@ class PatientDetails extends Component {
                     patient={this.props.patient}
                     loadingObservation={this.props.loadingObservation}
                     observation={this.props.observations}
+                    observationCount={this.props.observationCount}
+
                     allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
                     allergyIntolerance={this.props.allergyIntolerance}
+                    allergyCount={this.props.allergyCount}
+
                     carePlanLoading={this.props.loadingCarePlan}
                     carePlan={this.props.carePlan}
+                    carePlanCount={this.props.carePlanCount}
+
                     loadingCareTeam={this.props.loadingCareTeam}
                     careTeam={this.props.careTeam}
+                    careTeamCount={this.props.careTeamCount}
+
                     loadingCondition={this.props.loadingCondition}
                     condition={this.props.condition}
+                    conditionCount={this.props.conditionCount}
                 />
             );
         }
@@ -58,14 +67,23 @@ const mapStateToProps = state => {
     return {
         allergyIntolerance: state.patientStore.allergyIntolerance,
         loadingAllergyIntolerance: state.patientStore.allergyLoading,
+        allergyCount: state.patientStore.allergyCount,
+
         loadingCarePlan: state.patientStore.loadingCarePlan,
         carePlan: state.patientStore.carePlan,
+        carePlanCount: state.patientStore.carePlanCount,
+
         loadingCareTeam: state.patientStore.loadingCareTeam,
         careTeam: state.patientStore.careTeam,
+        careTeamCount: state.patientStore.careTeamCount,
+
         loadingCondition: state.patientStore.loadingCondition,
         condition: state.patientStore.condition,
+        conditionCount: state.patientStore.conditionCount,
+
         observation : state.patientStore.observation,
-        loadingObservation: state.patientStore.loadingObservation
+        loadingObservation: state.patientStore.loadingObservation,
+        observationCount: state.patientStore.observationCount
     };
 };
 

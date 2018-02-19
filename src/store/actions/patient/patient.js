@@ -75,7 +75,11 @@ export const fetch = (patient, resourceType) => {
                         resourceResults.push(element.resource);
                     });
                 }
-                dispatch(save(resourceType, resourceResults));
+                let resource = {
+                    total: response.data.total,
+                    data: resourceResults
+                };
+                dispatch(save(resourceType, resource));
             }).fail(error => {
             dispatch(save(resourceType, error));
         });

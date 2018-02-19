@@ -5,55 +5,36 @@ import { BarChart } from 'react-chartkick';
 class PatientData extends Component {
 
     state = {
-        data : [
-            ['Allergy Intolerance', 0],
-            ['Care Plan', 0],
-            ['Care Team', 0],
-            ['Condition', 0],
-            ['Diagnostic Report', 0],
-            ['Encounter', 0],
-            ['Goal', 0],
-            ['Immunization', 0],
-            ['Medication Dispense', 0],
-            ['Medication Request', 0],
-            ['Observation', 0],
-            ['Procedure', 0],
-            ['Procedure Request', 0]
-
-        ]
+        data : []
     };
 
     componentWillMount() {
+        let newState = this.state.data.slice();
+
         if(!this.props.allergyIntoleranceLoading){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[0][1] = this.props.allergyIntolerance.length
-            });
+            let allergy = ['Allergy Intolerance', this.props.allergyCount];
+            newState.push(allergy);
         }
         if(!this.props.carePlanLoading){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[1][1] = this.props.carePlan.length
-            });
+            let carePlan = ['Care Plan', this.props.carePlanCount];
+            newState.push(carePlan);
         }
         if(!this.props.loadingCareTeam){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[2][1] = this.props.careTeam.length
-            });
+            let careTeam = ['Care Team', this.props.careTeamCount];
+            newState.push(careTeam);
         }
         if(!this.props.loadingCondition){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[3][1] = this.props.condition.length
-            });
+            debugger
+            let condition = ['Condition', this.props.conditionCount];
+            newState.push(condition);
         }
-        if(!this.props.loadingObservation && this.props.observation){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[10][1] = this.props.observation.length
-            });
+
+        if(!this.props.loadingObservation){
+            let observation = ['Observation', this.props.observationCount];
+            newState.push(observation);
         }
+
+        this.setState({data: newState});
 
     }
 
