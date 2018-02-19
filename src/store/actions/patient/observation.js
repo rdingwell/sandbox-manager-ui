@@ -1,4 +1,4 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../actionTypes';
 import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
 
 

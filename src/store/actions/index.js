@@ -1,4 +1,4 @@
-import {fetchAllergyIntolerance} from "./allergy";
+import {fetchAllergyIntolerance} from "./patient/allergy";
 
 export {
     deleteSandbox,
@@ -24,12 +24,16 @@ export {
 
 export {
     fetchObservations
-} from './observation';
+} from './patient/observation';
 
 export {
     fetchAllergyIntolerance
-} from './allergy';
+} from './patient/allergy';
 
 export {
     fetchCarePlan
-} from './carePlan';
+} from './patient/carePlan';
+
+export {
+    fetchCareTeam
+} from './patient/careTeam';

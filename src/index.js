@@ -11,9 +11,10 @@ import userReducer from './store/reducers/user';
 import fhirReducer from './store/reducers/fhirauth';
 import appsReducer from './store/reducers/apps';
 import patientReducer from './store/reducers/patient';
-import observationReducer from './store/reducers/observation';
-import allergyIntoleranceReducer from './store/reducers/allergy';
-import carePlanReducer from './store/reducers/carePlan';
+import observationReducer from './store/reducers/patient/observation';
+import allergyIntoleranceReducer from './store/reducers/patient/allergy';
+import carePlanReducer from './store/reducers/patient/carePlan';
+import careTeamReducer from './store/reducers/patient/careTeam';
 import appConfig from './assets/config/sandbox-manager';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     patient: patientReducer,
     observation : observationReducer,
     allergyIntolerance : allergyIntoleranceReducer,
-    carePlan: carePlanReducer
+    carePlan: carePlanReducer,
+    careTeam: careTeamReducer
 });
 
 const store = createStore(rootReducer, {}, composeEnhancers(

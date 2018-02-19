@@ -42,6 +42,12 @@ class PatientData extends Component {
                 ...this.state.data[1][1] = this.props.carePlan.length
             });
         }
+        if(!this.props.careTeamLoading){
+            this.setState({
+                ...this.state.data,
+                ...this.state.data[2][1] = this.props.careTeam.length
+            });
+        }
     }
 
     render(){
