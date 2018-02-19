@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axiox';
+import axios from '../../axios';
 import * as FHIR from 'fhirclient/fhir-client';  //the console says this is unused, but without it, your queries will fail
 import Cookie from 'react-cookies'
 
@@ -84,6 +84,72 @@ export const lookupPatientsFail = (error) => {
         error : error
     }
 };
+
+
+export const lookupEncounterStart = () => {
+    return {
+        type: actionTypes.LOOKUP_ENCOUNTER_START
+    }
+};
+
+export const lookupEncounterFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_ENCOUNTER_FAIL,
+        lookupEncounterError: error
+    }
+};
+
+export const saveEncounters = (encounters) => {
+    return{
+        type: actionTypes.LOOKUP_ENCOUNTER_SUCCESS,
+        encounters: encounters
+    }
+};
+
+export const lookupMedicationRequestStart = () => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_START
+    }
+};
+
+export const lookupMedicationRequestFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_FAIL,
+        lookupMedicationRequestError: error
+    }
+};
+
+export const saveMedicationRequest = (medicationRequests) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_REQUEST_SUCCESS,
+        medicationRequests: medicationRequests
+    }
+};
+
+export const lookupMedicationDispenseStart = () => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_START
+    }
+};
+
+export const lookupMedicationDispenseFail = (error) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_FAIL,
+        lookupMedicationDispenseError: error
+    }
+};
+
+export const saveMedicationDispense = (medicationDispense) => {
+    return{
+        type: actionTypes.LOOKUP_MEDICATION_DISPENSE_SUCCESS,
+        medicationDispense: medicationDispense
+    }
+};
+
+
+
+
+
 
 export const saveSandboxManagerUser = (sandboxManagerUser) => {
     return{

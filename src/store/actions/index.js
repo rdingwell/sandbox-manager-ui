@@ -19,3 +19,7 @@ export {
     afterFhirAuth,
     fetchPatients
 } from './fhirauth';
+
+export {
+    fetchObservations
+} from './observation';

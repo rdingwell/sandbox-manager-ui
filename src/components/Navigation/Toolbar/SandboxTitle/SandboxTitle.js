@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import withErrorHandler from '../../../../hoc/withErrorHandler/withErrorHandler';
-import axios from '../../../../axiox';
+import axios from '../../../../axios';
 import * as  actions from '../../../../store/actions/index';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';

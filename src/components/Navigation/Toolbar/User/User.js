@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 
 
 
-import axios from '../../../../axiox';
+import axios from '../../../../axios';
 
 
 class User extends Component {

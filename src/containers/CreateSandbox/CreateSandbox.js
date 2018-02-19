@@ -9,7 +9,7 @@ import Start from "../Start/Start";
 import * as  actions from '../../store/actions/index';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import { withRouter } from 'react-router';
-import axios from '../../axiox';
+import axios from '../../axios';
 
 
 class CreateSandbox extends Component {
