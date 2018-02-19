@@ -31,7 +31,6 @@ export const fetchAllergyIntolerance = (patient) => {
             .then(response => {
                 const resourceResults = [];
                 if(response.data.total > 0 && response.data.entry){
-                    debugger
                     response.data.entry.forEach(function (element) {
                         element.resource.fullUrl = element.fullUrl;
                         resourceResults.push(element.resource);

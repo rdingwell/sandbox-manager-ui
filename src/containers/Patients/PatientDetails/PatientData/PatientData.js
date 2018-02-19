@@ -31,7 +31,6 @@ class PatientData extends Component {
             });
         }
         if(!this.props.allergyIntoleranceLoading){
-            debugger
             this.setState({
                 ...this.state.data,
                 ...this.state.data[0][1] = this.props.allergyIntolerance.length
