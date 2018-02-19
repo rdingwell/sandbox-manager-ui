@@ -5,17 +5,22 @@ const initialState = {
     allergyLoading: false,
     allergyError: null,
     allergyIntolerance: [],
+    allergyCount: 0,
     loadingCarePlan: false,
     carePlanError: null,
     carePlan: [],
+    carePlanCount: 0,
     loadingCareTeam: false,
     careTeam: [],
+    careTeamCount: 0,
     loadingCondition: false,
     condition: [],
     conditionError: null,
+    conditionCount: 0,
     loadingObservation: false,
     observation: [],
-    observationError: null
+    observationError: null,
+    observationCount: 0
 };
 
 /*
@@ -37,7 +42,8 @@ const lookupAllergyIntoleranceFail = (state, action) => {
 
 const lookupAllergyIntoleranceSuccess = (state, action) => {
     return updateObject( state, {
-        allergyIntolerance: action.data,
+        allergyIntolerance: action.data.data,
+        allergyCount: action.data.total,
         allergyLoading: false
     } );
 };
@@ -78,7 +84,8 @@ const lookupCarePlanFail = (state, action) => {
 const lookupCarePlanSave = (state, action) => {
     return updateObject(state, {
         loadingCarePlan: false,
-        carePlan: action.data
+        carePlan: action.data.data,
+        carePlanCount: action.data.total
     });
 };
 
@@ -119,7 +126,8 @@ const lookupCareTeamFail = (state, action) => {
 const lookupCareTeamSave = (state, action) => {
     return updateObject(state, {
         loadingCareTeam: false,
-        careTeam: action.data
+        careTeam: action.data.data,
+        careTeamCOunt: action.data.total
     });
 };
 
@@ -160,7 +168,8 @@ const lookupConditionFail = (state, action) => {
 const lookupConditionSave = (state, action) => {
     return updateObject(state, {
         loadingCondition: false,
-        condition: action.data
+        condition: action.data.data,
+        conditionCount: action.data.total
     });
 };
 
@@ -201,7 +210,8 @@ const lookupObservationFail = (state, action) => {
 const lookupObservationSave = (state, action) => {
     return updateObject(state, {
         loadingObservation: false,
-        observation: action.data
+        observation: action.data.data,
+        observationCount: action.data.total
     });
 };
 
