@@ -24,12 +24,6 @@ class PatientData extends Component {
     };
 
     componentWillMount() {
-        if(!this.props.observationLoading){
-            this.setState({
-                ...this.state.data,
-                ...this.state.data[10][1] = this.props.observations.length
-            });
-        }
         if(!this.props.allergyIntoleranceLoading){
             this.setState({
                 ...this.state.data,
@@ -42,12 +36,25 @@ class PatientData extends Component {
                 ...this.state.data[1][1] = this.props.carePlan.length
             });
         }
-        if(!this.props.careTeamLoading){
+        if(!this.props.loadingCareTeam){
             this.setState({
                 ...this.state.data,
                 ...this.state.data[2][1] = this.props.careTeam.length
             });
         }
+        if(!this.props.loadingCondition){
+            this.setState({
+                ...this.state.data,
+                ...this.state.data[3][1] = this.props.condition.length
+            });
+        }
+        if(!this.props.loadingObservation && this.props.observation){
+            this.setState({
+                ...this.state.data,
+                ...this.state.data[10][1] = this.props.observation.length
+            });
+        }
+
     }
 
     render(){
