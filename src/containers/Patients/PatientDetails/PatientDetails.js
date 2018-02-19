@@ -11,12 +11,10 @@ import PatientData from "./PatientData/PatientData";
 
 
 class PatientDetails extends Component {
-    state = {
-        fetchingData: false
-    };
 
     componentWillMount() {
         this.props.onFetchObservations(this.props.patient);
+        this.props.onFetchAllergyIntolerance(this.props.patient);
     }
 
 
@@ -28,6 +26,8 @@ class PatientDetails extends Component {
                     patient={this.props.patient}
                     observationLoading={this.props.loadingObservations}
                     observations={this.props.observations}
+                    allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
+                    allergyIntolerance={this.props.allergyIntolerance}
                 />
             );
         }
@@ -52,13 +52,16 @@ const mapStateToProps = state => {
 
     return {
         observations : state.observation.observations,
-        loadingObservations: state.observation.loading
+        loadingObservations: state.observation.loading,
+        allergyIntolerance: state.allergyIntolerance.allergyIntolerance,
+        loadingAllergyIntolerance: state.allergyIntolerance.loading
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchObservations: (patient) => dispatch( actions.fetchObservations(patient) )
+        onFetchObservations: (patient) => dispatch( actions.fetchObservations(patient) ),
+        onFetchAllergyIntolerance: (patient) => dispatch(actions.fetchAllergyIntolerance(patient))
     };
 };
 
