@@ -29,3 +29,7 @@ export {
 export {
     fetchAllergyIntolerance
 } from './allergy';
+
+export {
+    fetchCarePlan
+} from './carePlan';
