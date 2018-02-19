@@ -4,25 +4,25 @@ import { updateObject } from '../../utility';
 const initialState = {
     loading: false,
     error: null,
-    carePlan: []
+    careTeam: []
 };
 
 
-const lookupCarePlanStart = (state) => {
+const lookupCareTeamStart = (state) => {
     return updateObject(state, {
         loading: true,
         error: null
     });
 };
 
-const lookupCarePlanFail = (state, action) => {
+const lookupCareTeamFail = (state, action) => {
     updateObject(state, {loading: false});
     return updateObject(state, {error: action.error});
 };
 
-const lookupCarePlanSuccess = (state, action) => {
+const lookupCareTeamSuccess = (state, action) => {
     return updateObject( state, {
-        carePlan: action.carePlan,
+        careTeam: action.careTeam,
         loading: false
     } );
 };
@@ -30,12 +30,12 @@ const lookupCarePlanSuccess = (state, action) => {
 
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
-        case actionTypes.LOOKUP_CARE_PLAN_START:
-            return lookupCarePlanStart(state);
-        case actionTypes.LOOKUP_CARE_PLAN_FAIL:
-            return lookupCarePlanFail(state, action);
-        case actionTypes.LOOKUP_CARE_PLAN_SUCCESS:
-            return lookupCarePlanSuccess(state, action);
+        case actionTypes.LOOKUP_CARE_TEAM_START:
+            return lookupCareTeamStart(state);
+        case actionTypes.LOOKUP_CARE_TEAM_FAIL:
+            return lookupCareTeamFail(state, action);
+        case actionTypes.LOOKUP_CARE_TEAM_SUCCESS:
+            return lookupCareTeamSuccess(state, action);
         default: return state;
     }
 };

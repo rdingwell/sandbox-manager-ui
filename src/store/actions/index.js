@@ -33,3 +33,7 @@ export {
 export {
     fetchCarePlan
 } from './patient/carePlan';
+
+export {
+    fetchCareTeam
+} from './patient/careTeam';

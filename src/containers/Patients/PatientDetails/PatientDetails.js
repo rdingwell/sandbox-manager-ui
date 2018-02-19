@@ -15,6 +15,8 @@ class PatientDetails extends Component {
     componentWillMount() {
         this.props.onFetchObservations(this.props.patient);
         this.props.onFetchAllergyIntolerance(this.props.patient);
+        this.props.onFetchCarePlan(this.props.patient);
+        this.props.onFetchCareTeam(this.props.patient);
     }
 
 
@@ -30,6 +32,8 @@ class PatientDetails extends Component {
                     allergyIntolerance={this.props.allergyIntolerance}
                     carePlanLoading={this.props.loadingCarePlan}
                     carePlan={this.props.carePlan}
+                    loadingCareTeam={this.props.loadingCareTeam}
+                    careTeam={this.props.careTeam}
                 />
             );
         }
@@ -58,7 +62,9 @@ const mapStateToProps = state => {
         allergyIntolerance: state.allergyIntolerance.allergyIntolerance,
         loadingAllergyIntolerance: state.allergyIntolerance.loading,
         loadingCarePlan: state.carePlan.loading,
-        carePlan: state.carePlan.carePlan
+        carePlan: state.carePlan.carePlan,
+        loadingCareTeam: state.careTeam.loading,
+        careTeam: state.careTeam.careTeam
     };
 };
 
@@ -66,7 +72,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onFetchObservations: (patient) => dispatch( actions.fetchObservations(patient) ),
         onFetchAllergyIntolerance: (patient) => dispatch(actions.fetchAllergyIntolerance(patient)),
-        onFetchCarePlan: (patient) => dispatch(actions.fetchCarePlan(patient))
+        onFetchCarePlan: (patient) => dispatch(actions.fetchCarePlan(patient)),
+        onFetchCareTeam: (patient) => dispatch(actions.fetchCareTeam(patient))
     };
 };
 
