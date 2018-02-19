@@ -23,26 +23,34 @@ class PatientDetails extends Component {
             patientData = (
                 <PatientData
                     patient={this.props.patient}
-                    loadingObservation={this.props.loadingObservation}
-                    observation={this.props.observations}
-                    observationCount={this.props.observationCount}
-
                     allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
-                    allergyIntolerance={this.props.allergyIntolerance}
                     allergyCount={this.props.allergyCount}
-
                     carePlanLoading={this.props.loadingCarePlan}
-                    carePlan={this.props.carePlan}
                     carePlanCount={this.props.carePlanCount}
-
                     loadingCareTeam={this.props.loadingCareTeam}
-                    careTeam={this.props.careTeam}
                     careTeamCount={this.props.careTeamCount}
-
                     loadingCondition={this.props.loadingCondition}
-                    condition={this.props.condition}
                     conditionCount={this.props.conditionCount}
-                />
+                    loadingDiagnosticReport= {this.props.loadingDiagnosticReport}
+                    diagnosticReportCount={this.props.diagnosticReportCount}
+                    loadingEncounter={this.props.loadingEncounter}
+                    encounterCount={this.props.encounterCount}
+                    loadingGoal={this.props.loadingGoal}
+                    goalCount={this.props.goalCount}
+                    immunizationCount={this.props.immunizationCount}
+                    loadingImmunization={this.props.loadingImmunization}
+                    medicationDispenseCount={this.props.medicationDispenseCount}
+                    loadingMedicationDispense={this.props.loadingMedicationDispense}
+                    medicationRequestCount={this.props.medicationRequestCount}
+                    loadingMedicationRequest={this.props.loadingMedicationRequest}
+                    loadingObservation={this.props.loadingObservation}
+                    observationCount={this.props.observationCount}
+                    procedureCount={this.props.procedureCount}
+                    loadingProcedure={this.props.loadingProcedure}
+                    procedureRequestCount={this.props.procedureRequestCount}
+                    loadingProcedureRequest={this.props.loadingProcedureRequest}
+
+        />
             );
         }
 
@@ -65,25 +73,32 @@ class PatientDetails extends Component {
 const mapStateToProps = state => {
 
     return {
-        allergyIntolerance: state.patientStore.allergyIntolerance,
         loadingAllergyIntolerance: state.patientStore.allergyLoading,
         allergyCount: state.patientStore.allergyCount,
-
         loadingCarePlan: state.patientStore.loadingCarePlan,
-        carePlan: state.patientStore.carePlan,
         carePlanCount: state.patientStore.carePlanCount,
-
         loadingCareTeam: state.patientStore.loadingCareTeam,
-        careTeam: state.patientStore.careTeam,
         careTeamCount: state.patientStore.careTeamCount,
-
         loadingCondition: state.patientStore.loadingCondition,
-        condition: state.patientStore.condition,
         conditionCount: state.patientStore.conditionCount,
-
-        observation : state.patientStore.observation,
+        loadingDiagnosticReport: state.patientStore.loadingDiagnosticReport,
+        diagnosticReportCount: state.patientStore.diagnosticReportCount,
+        loadingEncounter: state.patientStore.loadingEncounter,
+        encounterCount: state.patientStore.encounterCount,
+        loadingGoal: state.patientStore.loadingGoal,
+        goalCount: state.patientStore.goalCount,
+        immunizationCount: state.patientStore.immunizationCount,
+        loadingImmunization: state.patientStore.loadingImmunization,
+        medicationDispenseCount: state.patientStore.medicationDispenseCount,
+        loadingMedicationDispense: state.patientStore.loadingMedicationDispense,
+        medicationRequestCount: state.patientStore.medicationRequestCount,
+        loadingMedicationRequest: state.patientStore.loadingMedicationRequest,
         loadingObservation: state.patientStore.loadingObservation,
-        observationCount: state.patientStore.observationCount
+        observationCount: state.patientStore.observationCount,
+        procedureCount: state.patientStore.procedureCount,
+        loadingProcedure: state.patientStore.loadingProcedure,
+        procedureRequestCount: state.patientStore.procedureRequestCount,
+        loadingProcedureRequest:state.patientStore.loadingProcedureRequest
     };
 };
 
