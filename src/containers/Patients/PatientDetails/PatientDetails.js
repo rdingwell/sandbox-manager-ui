@@ -11,14 +11,11 @@ import PatientData from "./PatientData/PatientData";
 
 
 class PatientDetails extends Component {
-
     componentWillMount() {
-        this.props.onFetchObservations(this.props.patient);
-        this.props.onFetchAllergyIntolerance(this.props.patient);
-        this.props.onFetchCarePlan(this.props.patient);
-        this.props.onFetchCareTeam(this.props.patient);
+        for (const resource of JSON.parse(localStorage.getItem('resources'))) {
+            this.props.onFetch(this.props.patient, resource.resourceType);
+        }
     }
-
 
     render(){
         let patientData = null;
@@ -26,14 +23,16 @@ class PatientDetails extends Component {
             patientData = (
                 <PatientData
                     patient={this.props.patient}
-                    observationLoading={this.props.loadingObservations}
-                    observations={this.props.observations}
+                    loadingObservation={this.props.loadingObservation}
+                    observation={this.props.observations}
                     allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
                     allergyIntolerance={this.props.allergyIntolerance}
                     carePlanLoading={this.props.loadingCarePlan}
                     carePlan={this.props.carePlan}
                     loadingCareTeam={this.props.loadingCareTeam}
                     careTeam={this.props.careTeam}
+                    loadingCondition={this.props.loadingCondition}
+                    condition={this.props.condition}
                 />
             );
         }
@@ -57,23 +56,22 @@ class PatientDetails extends Component {
 const mapStateToProps = state => {
 
     return {
-        observations : state.observation.observations,
-        loadingObservations: state.observation.loading,
-        allergyIntolerance: state.allergyIntolerance.allergyIntolerance,
-        loadingAllergyIntolerance: state.allergyIntolerance.loading,
-        loadingCarePlan: state.carePlan.loading,
-        carePlan: state.carePlan.carePlan,
-        loadingCareTeam: state.careTeam.loading,
-        careTeam: state.careTeam.careTeam
+        allergyIntolerance: state.patientStore.allergyIntolerance,
+        loadingAllergyIntolerance: state.patientStore.allergyLoading,
+        loadingCarePlan: state.patientStore.loadingCarePlan,
+        carePlan: state.patientStore.carePlan,
+        loadingCareTeam: state.patientStore.loadingCareTeam,
+        careTeam: state.patientStore.careTeam,
+        loadingCondition: state.patientStore.loadingCondition,
+        condition: state.patientStore.condition,
+        observation : state.patientStore.observation,
+        loadingObservation: state.patientStore.loadingObservation
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchObservations: (patient) => dispatch( actions.fetchObservations(patient) ),
-        onFetchAllergyIntolerance: (patient) => dispatch(actions.fetchAllergyIntolerance(patient)),
-        onFetchCarePlan: (patient) => dispatch(actions.fetchCarePlan(patient)),
-        onFetchCareTeam: (patient) => dispatch(actions.fetchCareTeam(patient))
+        onFetch: (patient, type) => dispatch(actions.fetch(patient, type)),
     };
 };
 

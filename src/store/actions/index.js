@@ -1,4 +1,3 @@
-import {fetchAllergyIntolerance} from "./patient/allergy";
 
 export {
     deleteSandbox,
@@ -23,17 +22,5 @@ export {
 } from './fhirauth';
 
 export {
-    fetchObservations
-} from './patient/observation';
-
-export {
-    fetchAllergyIntolerance
-} from './patient/allergy';
-
-export {
-    fetchCarePlan
-} from './patient/carePlan';
-
-export {
-    fetchCareTeam
-} from './patient/careTeam';
+    fetch
+} from './patient/patient';

@@ -11,11 +11,9 @@ import userReducer from './store/reducers/user';
 import fhirReducer from './store/reducers/fhirauth';
 import appsReducer from './store/reducers/apps';
 import patientReducer from './store/reducers/patient';
-import observationReducer from './store/reducers/patient/observation';
-import allergyIntoleranceReducer from './store/reducers/patient/allergy';
-import carePlanReducer from './store/reducers/patient/carePlan';
-import careTeamReducer from './store/reducers/patient/careTeam';
+import patientStoreReducer from './store/reducers/patient/patient';
 import appConfig from './assets/config/sandbox-manager';
+import supportedPatientResources from './assets/config/supported-patient-resources_3_0_1.json';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -25,10 +23,7 @@ const rootReducer = combineReducers({
     fhir : fhirReducer,
     apps : appsReducer,
     patient: patientReducer,
-    observation : observationReducer,
-    allergyIntolerance : allergyIntoleranceReducer,
-    carePlan: carePlanReducer,
-    careTeam: careTeamReducer
+    patientStore : patientStoreReducer
 });
 
 const store = createStore(rootReducer, {}, composeEnhancers(
@@ -36,6 +31,8 @@ const store = createStore(rootReducer, {}, composeEnhancers(
 ));
 
 localStorage.setItem('config', JSON.stringify(appConfig));
+localStorage.setItem('resources', JSON.stringify(supportedPatientResources));
+
 window.Highcharts = require('highcharts');
 
 const app =  (
