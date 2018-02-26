@@ -24,7 +24,7 @@ class Patients extends Component {
 
     getPatientListStyle = () => {
         let style = {};
-        if(this.state.patient){
+        if(!this.props.doLaunch && this.state.patient){
             style.float = 'left';
             style.width = '50%';
         }
@@ -33,7 +33,7 @@ class Patients extends Component {
     
     getPatientDetailStyle = () => {
         let style = {};
-        if(this.state.patient){
+        if(!this.props.doLaunch && this.state.patient){
             style.float = 'right';
             style.width = '50%';
         }
@@ -51,7 +51,7 @@ class Patients extends Component {
                 />);
         }
         let patientDetails = null;
-        if(this.state.patient){
+        if(!this.props.doLaunch && this.state.patient){
             patientDetails = (
                 <PatientDetails
                     patient={this.state.patient}

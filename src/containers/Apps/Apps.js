@@ -10,8 +10,6 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios';
 import RegisteredApp from "./RegisteredApp/RegisteredApp";
 
-import Cookie from 'react-cookies'
-
 
 class Apps extends Component {
 
@@ -45,8 +43,8 @@ class Apps extends Component {
         };
 
 
-        let apps = this.props.apps.map((app, index) => (
-            <a onClick={(event) => this.handleAppSelect(event, index)}>
+        const apps = this.props.apps.map((app, index) => (
+            <a key={index} onClick={(event) => this.handleAppSelect(event, index)}>
                 <Card style={cardStyle} key={app.index}>
                     <CardMedia>
                         <img style={{height: 150}} src={app.logoUri} alt="HSPC Logo"/>

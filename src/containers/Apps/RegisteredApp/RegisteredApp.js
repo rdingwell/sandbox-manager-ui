@@ -4,46 +4,27 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Dialog from 'material-ui/Dialog';
+import Patients from '../../Patients/Patients';
 
 class RegisteredApp extends Component{
     state = {
-        value: 'PublicClient'
+        value: 'PublicClient',
+        modalOpen : false
     };
 
     handleChange = (event, index, value) => {
+        debugger
         this.setState({value: value});
     };
 
     handleLaunch = () => {
-
-/*
-            var patientQuery;
-            if (sample !== undefined) {
-                app.samplePatients = sample;
-            }
-            var queryString = app.samplePatients;
-
-            // Some parsing to see if there's exactly one patient id
-            if (queryString !== null && queryString !== undefined && queryString.indexOf("_id=") > -1) {
-                var i = queryString.indexOf("_id=");
-                queryString = queryString.substr(i + "_id=".length);
-
-                var queryItems = queryString.split("&");
-                queryItems = queryItems[0];
-                queryItems = queryItems.split(",");
-                if (queryItems.length === 1) {
-                    patientQuery = queryItems[0];
-                }
-            }
-
-            if (patientQuery !== undefined) {
-                launchApp.launchFromApp(app, {fhirId: patientQuery}, defaultPersona);
-            } else {
-                openPatientPicker(app);
-            }
-*/
+        this.setState({modalOpen: true});
     };
 
+    handleClose = () => {
+        this.setState({modalOpen: false});
+    };
 
     render() {
         const registeredAppStyle = {
@@ -69,7 +50,7 @@ class RegisteredApp extends Component{
             );
         }
 
-        let buttons = (<RaisedButton style={buttonStyle} primary={true} label="Launch"/>);
+        let buttons = (<RaisedButton style={buttonStyle} onClick={this.handleLaunch} primary={true} label="Launch"/>);
         if(!this.props.app.isDefault){
             buttons = (
                 <div>
@@ -86,6 +67,18 @@ class RegisteredApp extends Component{
             <h3>Registered App Details</h3>
             <div className="PaperBody">
                 {buttons}
+                <Dialog
+                    title="Choose a Patient"
+/*
+                    actions={}
+*/
+                    modal={false}
+                    open={this.state.modalOpen}
+                    onRequestClose={this.handleClose}
+                >
+                    <Patients doLaunch={this.props.app}/>
+                </Dialog>
+
                 <form>
                     <TextField style={textFieldStyle} disabled={true} defaultValue={this.props.app.authClient.clientName} floatingLabelText="App Name"/><br />
                     <div><span style={{color: 'rgba(0, 0, 0, 0.3)'}}>Client Type</span>
