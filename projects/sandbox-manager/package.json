@@ -1,0 +1,21 @@
+{
+  "name": "sandbox-manager",
+  "version": "0.0.1",
+  "description": "Dashboard part of the wakeforset app.",
+  "main": "src/index.js",
+  "scripts": {
+    "start:local": "NODE_ENV=local webpack-dev-server",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js --env=jsdom"
+  },
+  "keywords": [],
+  "author": "Interopion",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": [
+    "> 5%",
+    "last 2 versions",
+    "ie 10"
+  ]
+}

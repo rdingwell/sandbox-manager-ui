@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Frontend</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.png" type="image/png"/>
+
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Frontend">
+
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            font-size: 3em;
+            height: 100%;
+            background: rgb(0, 149, 144);
+            color: #EEE;
+        }
+        div.text {
+            height: 100%;
+            display: flex;
+            display: -ms-flexbox;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+        }
+    </style>
+
+    <script src="/externals/fhir-client.min.js"></script>
+    <script src="/externals/jquery.min.js"></script>
+    <script>
+        // Clear session storage before launching
+        sessionStorage.clear();
+
+        function urlParam(p) {
+            var query = location.search.substr(1);
+            var data = query.split('&');
+            var result = [];
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i].split("=");
+                if (item[0] === p) {
+                    var res = item[1].replace(/\+/g, '%20');
+                    result.push(decodeURIComponent(res));
+                }
+            }
+
+            if (result.length === 0) {
+                return null;
+            }
+            return result[0];
+        }
+
+        var url = "data/xsettings.json";
+
+        $.getJSON(url).done(function(serverSettings) {
+            var iss = urlParam("iss");
+            var med = urlParam("med");
+            var result = serverSettings.smartLaunch[iss] || serverSettings.smartLaunch.default;
+
+            FHIR.oauth2.authorize(result);
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="text">
+        Loading...
+    </div>
+</body>
+
+</html>

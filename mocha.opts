@@ -1,0 +1,7 @@
+--require ts-node/register
+--require ignore-styles
+--watch-extensions ts,tsx
+./projects/frontend/src/**/__test__/*.ts
+./projects/frontend/src/**/__test__/*.tsx
+./lib/**/__test__/*.ts
+./lib/**/__test__/*.tsx

@@ -1,0 +1,23 @@
+.side-nav {
+  background-color: #1564bf;
+  width: 200px;
+  max-width: 70%;
+  height: 100%;
+  left: 0;
+  top: 64px;
+  box-sizing: border-box;
+  transition: transform 0.5s ease-out;
+  box-shadow: rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+  position: fixed;
+  z-index: 1000;
+  overflow: auto;
+  position: fixed;
+  padding-top: 10px;
+  overflow-x: hidden;
+  &.open {
+    transform: translateX(0);
+  }
+  &.close {
+    transform: translateX(-100%);
+  }
+}

@@ -1,0 +1,140 @@
+@import "../../style/main.less";
+@import "../../style/mixins.less";
+@import "../../style/variables.less";
+
+#app {
+  height: 100%;
+}
+
+.container {
+  .container();
+}
+
+.app-root {
+  .display-flex();
+  .flex-direction(column);
+
+  height: 100%;
+
+  .stage {
+    .display-flex();
+    .flex-grow(1);
+    .flex-shrink(1);
+    .flex-basis(100px);
+    .flex-item-align(stretch);
+    .flex-align(stretch);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    // Disabled because it prevents scrolling for iOS devices
+    // -webkit-overflow-scrolling: touch;
+
+    min-width: 310px;
+    margin-bottom: 0;
+    background: @color-main-background;
+
+    > div {
+      width: 100%;
+    }
+  }
+
+  // Basic flex grid -------------------------------------------------------------
+  .row {
+    .display-flex();
+    .flex-direction(row);
+    .flex-wrap(wrap);
+    margin: 0 -@grid-gap / 2;
+  }
+
+  .domains-column {
+    .display-flex();
+    .flex-direction(column);
+    .flex-wrap(wrap);
+    margin: 0 -@grid-gap / 2;
+  }
+
+  .column {
+    .display-flex();
+    .flex-direction(column);
+    .flex-shrink(1);
+    .flex-wrap(wrap);
+
+    margin: 0 @grid-gap / 2;
+
+    &.col-1 {
+      .flex-grow(1);
+      .flex-basis(10%);
+    }
+    &.col-2 {
+      .flex-grow(2);
+      .flex-basis(20%);
+    }
+    &.col-3 {
+      .flex-grow(3);
+      .flex-basis(30%);
+    }
+    &.col-4 {
+      .flex-grow(4);
+      .flex-basis(40%);
+    }
+    &.col-5 {
+      .flex-grow(5);
+      .flex-basis(50%);
+    }
+    &.col-6 {
+      .flex-grow(6);
+      .flex-basis(60%);
+    }
+    &.col-7 {
+      .flex-grow(7);
+      .flex-basis(70%);
+    }
+    &.col-8 {
+      .flex-grow(8);
+      .flex-basis(80%);
+    }
+    &.col-9 {
+      .flex-grow(9);
+      .flex-basis(90%);
+    }
+    &.col-10 {
+      .flex-grow(10);
+      .flex-basis(100%);
+    }
+
+    @media screen and (max-width: @min-size-cutoff) {
+      &.col-1,
+      &.col-2,
+      &.col-3,
+      &.col-4,
+      &.col-5,
+      &.col-6,
+      &.col-7,
+      &.col-8,
+      &.col-9,
+      &.col-10 {
+        .flex-grow(1);
+        .flex-basis(100%) !important;
+      }
+    }
+  }
+
+  .printable {
+    display: none;
+  }
+
+  @media print {
+    @page {
+      margin: 0.3in;
+    }
+
+    .no-print, .no-print * {
+      display: none !important;
+    }
+
+    .printable {
+      display: block !important;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+}

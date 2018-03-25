@@ -1,0 +1,62 @@
+.container() {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: @gap * 6;
+    padding-right: @gap * 6;
+    width: 100%;
+
+    @media screen and (max-width: @break-width) {
+        // Adding flex grow fixes an issue with IE where the container
+        // doesn't stretch to a 100% when changing zoom levels
+        .flex-grow(1);
+        max-width: 100%;
+        padding-left: @gap;
+        padding-right: @gap;
+    }
+}
+
+.display-flex() {
+    display: flex;
+    display: -ms-flexbox;
+}
+
+.display-inline-flex() {
+    display: inline-flex;
+    display: -ms-inline-flexbox;
+}
+
+.flex-grow(@val) {
+    flex-grow: @val;
+    -ms-flex-positive: @val;
+}
+
+.flex-shrink(@val) {
+    flex-shrink: @val;
+    -ms-flex-negative: @val;
+}
+
+.flex-direction(@val) {
+    flex-direction: @val;
+    -ms-flex-direction: @val;
+}
+
+.flex-align(@val) {
+    align-self: @val;
+    -ms-flex-align: @val;
+}
+
+.flex-item-align(@val) {
+    align-items: @val;
+    -ms-flex-item-align: @val;
+}
+
+.flex-basis(@val) {
+    flex-basis: @val;
+    -ms-flex-preferred-size: @val;
+}
+
+.flex-wrap(@val) {
+    flex-wrap: @val;
+    -ms-flex-wrap: @val;
+}
