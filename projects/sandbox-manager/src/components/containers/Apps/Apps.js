@@ -61,9 +61,9 @@ class Apps extends Component {
 
         return (
             <div>
-                <Paper style={paperStyle} className="PaperCard">
+                <Paper style={paperStyle} className="paper-card">
                     <h3>Registered Sandbox Apps</h3>
-                    <div className="PaperBody">
+                    <div className="paper-body">
                         {apps}
                     </div>
                     <div style={{clear: 'both'}}></div>

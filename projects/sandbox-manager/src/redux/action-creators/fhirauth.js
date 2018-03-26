@@ -1,5 +1,5 @@
 import * as actionTypes from './types';
-import Cookie from 'react-cookies';
+import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 
 let fhirClient = null;
 
@@ -16,7 +16,7 @@ const getQueryParams = (url) => {
 
         urlParams = {};
         while (match = search.exec(query))
-            urlParams[ decode(match[ 1 ]) ] = decode(match[ 2 ]);
+            urlParams[decode(match[1])] = decode(match[2]);
         return urlParams;
     }
 };
@@ -84,7 +84,6 @@ const queryFhirVersion = (dispatch, fhirClient, state) => {
     fhirClient.api.conformance({})
         .then(
             response => {
-                console.log(response);
                 dispatch(setFhirVersion(response.data.fhirVersion));
                 state.sandbox.sandboxApiEndpointIndexes.forEach((sandboxEndpoint) => {
                     if (response.data.fhirVersion === sandboxEndpoint.fhirVersion) {
@@ -96,10 +95,8 @@ const queryFhirVersion = (dispatch, fhirClient, state) => {
 };
 
 const authorize = (url, state, sandboxId) => {
-    Cookie.remove(localStorage.getItem('config').hspcAccountCookieName); //gets rid of existing and conflicting cookie
     let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth?path=" + window.location.pathname;
     let thisUrl = thisUri.replace(/\/+$/, "/");
-
 
     let client = {
         "client_id": "sand_man",
@@ -107,7 +104,7 @@ const authorize = (url, state, sandboxId) => {
         "scope": state.fhirauth.scope
     };
 
-    let config = JSON.parse(localStorage.getItem('config'));
+    let config = state.config.xsettings.data.sandboxManager;
 
     let serviceUrl = config.defaultServiceUrl;
     if (sandboxId !== undefined && sandboxId !== "") {
@@ -144,7 +141,7 @@ export const authorizeSandbox = (sandboxId) => {
 
 
 export const fetchPatients = () => {
-    return (dispatch, getState) => {
+    return dispatch => {
         dispatch(lookupPatientsStart());
         let count = 50;
 
@@ -156,8 +153,8 @@ export const fetchPatients = () => {
                 let resourceResults = [];
 
                 for (let key in response.data.entry) {
-                    response.data.entry[ key ].resource.fullUrl = response.data.entry[ key ].fullUrl;
-                    resourceResults.push(response.data.entry[ key ].resource);
+                    response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
+                    resourceResults.push(response.data.entry[key].resource);
                 }
                 dispatch(savePatients(resourceResults));
             }).fail(error => {
@@ -175,12 +172,12 @@ export const init = () => {
 
 export const afterFhirAuth = (url) => {
     return (dispatch, getState) => {
-        let configuration = JSON.parse(localStorage.getItem('config'));
         const state = getState();
         let params = getQueryParams(url);
         if (params && params.code) {
             dispatch(clearToken());
             window.FHIR.oauth2.ready(params, function (newSmart) {
+                let configuration = state.config.xsettings.data.sandboxManager;
                 dispatch(hspcAuthorized());
                 dispatch(setFhirClient(newSmart));
                 fhirClient = newSmart;
@@ -191,13 +188,20 @@ export const afterFhirAuth = (url) => {
                         Authorization: 'BEARER ' + fhirClient.server.auth.token
                     }
                 };
-                axios.post(configuration.oauthUserInfoUrl, null, config)
-                    .then(response => {
-                        dispatch(setOauthUserInfo(response.data.sub, response.data.preferred_username, response.data.name));
 
-                        axios.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(response.data.sub), config)
-                            .then(userResponse => {
-                                dispatch(saveSandboxManagerUser(userResponse.data));
+                fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
+                    .then(response => {
+                        response.json()
+                            .then(data => {
+                                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+
+                                fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
+                                    .then(resp => {
+                                        resp.json()
+                                            .then(data => {
+                                                dispatch(saveSandboxManagerUser(data));
+                                            });
+                                    });
                             });
                     });
             });
