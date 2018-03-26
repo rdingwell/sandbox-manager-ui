@@ -1,5 +1,12 @@
 {
-    "rules": {
-        "import/no-extraneous-dependencies": 0
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     }
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": 0
+  }
 }

@@ -12,6 +12,8 @@ export default {
             "Create practitioners, patients, and clinical data",
             "Verify that your app is HSPC compliant"
         ],
-        "note": "*An HSPC Platform is a standardized way to interact with a medical system such as an EHR, Hospital, Clinic, HIE, PHR, Lab, Insurer, etc."
+        "note": "*An HSPC Platform is a standardized way to interact with a medical system such as an EHR, Hospital, Clinic, HIE, PHR, Lab, Insurer, etc.",
+        "signInLabel": "Sign in",
+        "signUpLabel": "Sign Up"
     }
 }

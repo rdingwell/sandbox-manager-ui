@@ -10,12 +10,10 @@ import configStore from "./redux/";
 
 import registerServiceWorker from "../../../lib/utils/registerServiceWorker";
 
-import appConfig from './assets/config/sandbox-manager.json';
 import supportedPatientResources from './assets/config/supported-patient-resources_3_0_1.json';
 
 import "./style/main.less";
 
-localStorage.setItem('config', JSON.stringify(appConfig));
 localStorage.setItem('resources', JSON.stringify(supportedPatientResources));
 
 window.Highcharts = require('highcharts');

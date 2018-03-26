@@ -152,11 +152,6 @@ const config = {
         errorDetails: true
     },
 
-    externals: {
-        // jquery: "jQuery",
-        // moment: "moment"
-    },
-
     devServer: {
         disableHostCheck: true,
         historyApiFallback: true,

@@ -166,14 +166,12 @@ export const fetchPatients = () => {
     };
 };
 
-
 export const init = () => {
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state);
     }
 };
-
 
 export const afterFhirAuth = (url) => {
     return (dispatch, getState) => {

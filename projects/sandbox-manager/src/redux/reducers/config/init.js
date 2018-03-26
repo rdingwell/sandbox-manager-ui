@@ -1,7 +1,7 @@
 export default {
     xsettings: {
         status: "",
-        data: {},
-        language: "en"
-    }
+        data: {}
+    },
+    language: "en"
 };
