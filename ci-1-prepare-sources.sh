@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/local/bin/jq
+# Install jq and qwscli
+RUN apt-get update && apt-get install -y jq python-pip && pip install --upgrade pip && pip install awscli
 
 set -e
 
