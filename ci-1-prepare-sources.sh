@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/local/bin/jq
+
 set -e
 
 echo "starting prepare_build.sh..."
