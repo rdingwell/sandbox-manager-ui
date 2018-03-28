@@ -63,7 +63,8 @@ const config = {
                 })
             },
             {
-                test: /\.js?$/,
+                test: /\.jsx?$/,
+                include: [SRC_DIR, LIB_DIR],
                 exclude: [/node_modules/, /externals/, /__storage__/],
                 use: "babel-loader"
             }
