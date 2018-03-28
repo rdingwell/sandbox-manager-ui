@@ -10,10 +10,6 @@ import strings from '../../../../externals/strings/start';
 import './styles.less';
 
 class Start extends Component {
-    componentDidMount() {
-        window.fhirClient && this.props.history.push('/dashboard');
-    }
-
     render () {
         let language = this.props.language;
 

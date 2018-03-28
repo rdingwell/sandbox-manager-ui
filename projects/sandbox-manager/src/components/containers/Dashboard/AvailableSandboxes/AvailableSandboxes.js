@@ -12,7 +12,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 class AvailableSandboxes extends Component {
 
     componentDidMount () {
-        this.props.onFetchSandboxes();
+        window.fhirClient && this.props.onFetchSandboxes();
     }
 
     handleCreate = () => {
