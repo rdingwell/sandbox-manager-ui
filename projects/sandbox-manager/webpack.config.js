@@ -4,6 +4,7 @@ const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const pkg = require("./package.json");
 
@@ -62,8 +63,7 @@ const config = {
                 })
             },
             {
-                test: /\.jsx?$/,
-                include: [SRC_DIR, LIB_DIR],
+                test: /\.js?$/,
                 exclude: [/node_modules/, /externals/, /__storage__/],
                 use: "babel-loader"
             }
@@ -167,8 +167,9 @@ const config = {
 
 // Production ------------------------------------------------------------------
 if (ENV === "production") {
-    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true
+    config.plugins.push(new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: { ecma: 8 }
     }));
 }
 

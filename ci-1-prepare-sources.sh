@@ -24,4 +24,7 @@ then
 end
 fi
 
+npm install
+npm run sandbox-manager:build:dev
+
 echo "finished prepare_build.sh"

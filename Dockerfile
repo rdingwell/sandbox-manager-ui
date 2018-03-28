@@ -1,8 +1,5 @@
-FROM node:alpine
+# Builds a Docker to deliver dist/
+FROM sameersbn/nginx:1.10.3
 
-COPY . .
-ARG ACTIVE_ENV
-ENV ACTIVE_ENV=$ACTIVE_ENV
-#RUN if [ "$ACTIVE_ENV" = "prod" ]; then rm /src/.well-known/smart/manifest.json; mv /src/.well-known/smart/manifest.prod.json /src/.well-known/smart/manifest.json; elif [ "$ACTIVE_ENV" = "test" ]; then rm /src/.well-known/smart/manifest.json; mv /src/.well-known/smart/manifest.test.json /src/.well-known/smart/manifest.json; fi
-RUN npm install
-CMD [ "npm", "run", "sandbox-manager:build:production" ]
+COPY ./docker/includes/nginx/config /etc/nginx
+COPY ./projects/sandbox-manager/build/www /usr/share/nginx/html/
