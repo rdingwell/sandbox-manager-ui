@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Paper from 'material-ui/Paper';
@@ -21,7 +21,7 @@ class CreateSandbox extends Component {
         applyDefaultDataSet: true,
         description: '',
         createDisabled: true,
-        apiEndpointIndex: 6
+        apiEndpointIndex: "6"
     };
 
 
@@ -30,9 +30,9 @@ class CreateSandbox extends Component {
         let createRequest = {
             createdBy: this.props.user,
             name: this.state.name.length === 0 ? this.state.sandboxId : this.state.name,
-            sandboxId:this.state.sandboxId,
-            description:this.state.description,
-            dataSet:this.applyDefaultDataSet ? "DEFAULT" : "NONE",
+            sandboxId: this.state.sandboxId,
+            description: this.state.description,
+            dataSet: this.state.applyDefaultDataSet ? "DEFAULT" : "NONE",
             apiEndpointIndex: this.state.apiEndpointIndex,
             allowOpenAccess: this.state.allowOpen,
             users: [this.props.user]
@@ -40,7 +40,7 @@ class CreateSandbox extends Component {
         return this.props.createSandbox(createRequest);
     };
 
-    allowOpenChangeHandler = () =>{
+    allowOpenChangeHandler = () => {
         this.setState((oldState) => {
             return {
                 allowOpen: !oldState.checked,
@@ -48,7 +48,7 @@ class CreateSandbox extends Component {
         });
     };
 
-    applyDefaultChangeHandler = () =>{
+    applyDefaultChangeHandler = () => {
         this.setState((oldState) => {
             return {
                 applyDefaultDataSet: !oldState.checked,
@@ -62,15 +62,15 @@ class CreateSandbox extends Component {
     };
 
     sandboxIdChangedHandler = (event) => {
-        this.setState({sandboxId : event.target.value, createDisabled: event.target.value === 0})
+        this.setState({ sandboxId: event.target.value, createDisabled: event.target.value === 0 })
     };
 
     sandboxNameChangedHandler = (event) => {
-        this.setState({name: event.target.value});
+        this.setState({ name: event.target.value });
     };
 
 
-    render() {
+    render () {
         const checkbox = {
             marginBottom: 16
         };
@@ -80,40 +80,41 @@ class CreateSandbox extends Component {
         };
 
 
-        return(
+        return (
             <div>
-                <Paper className="PaperCard" style={{width: '30%', float:'left'}}>
+                <Paper className="PaperCard" style={{ width: '30%', float: 'left' }}>
                     <h3>
                         Create Sandbox
                     </h3>
                     <div className="PaperBody">
                         <form>
-                            <TextField floatingLabelText="Sandbox Id" defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler}/><br/>
+                            <TextField floatingLabelText="Sandbox Id" defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler} /><br />
                             <div>Your sandbox will be available at http://localhost:3000/sandbox-id</div>
-                            <TextField floatingLabelText="Sandbox Name"  onChange={this.sandboxNameChangedHandler}/> <br/>
+                            <TextField floatingLabelText="Sandbox Name" onChange={this.sandboxNameChangedHandler} /> <br />
                             <div>e.g., NewCo Sandbox</div>
-                            <TextField floatingLabelText="Sandbox Version" value={"FHIR STU 3 (v3.0.1)"} disabled={true}/><br/>
+                            <TextField floatingLabelText="Sandbox Version" value={"FHIR STU 3 (v3.0.1)"} disabled={true} /><br />
                             <div>Choose a version of the FHIR Standard</div>
                             <Checkbox
                                 label="Allow Open FHIR Endpoint"
                                 style={checkbox}
-                                onCheck={this.allowOpenChangeHandler.bind(this)}/>
+                                onCheck={this.allowOpenChangeHandler.bind(this)} />
                             <Checkbox
                                 label="Apply Default Data Set"
                                 style={checkbox} defaultChecked={true}
                                 onCheck={this.applyDefaultChangeHandler.bind(this)} />
                             <div>If not selected, the sandbox will be empty</div>
-                            <TextField floatingLabelText="Description"/><br/>
+                            <TextField floatingLabelText="Description" /><br />
                             <div>e.g., This sandbox is the QA environment for NewCo.</div>
-                            <RaisedButton label="Create" disabled={this.state.createDisabled} style={buttonStyle} primary={true}  onClick={(event) => this.handleCreateSandbox(event)}/>
-                            <RaisedButton label="Cancel" style={buttonStyle} default={true} type="submit" onClick={(event) => this.handleCancel(event)}/>
+                            <RaisedButton label="Create" disabled={this.state.createDisabled} style={buttonStyle} primary={true}
+                                          onClick={(event) => this.handleCreateSandbox(event)} />
+                            <RaisedButton label="Cancel" style={buttonStyle} default={true} type="submit" onClick={(event) => this.handleCancel(event)} />
                         </form>
                     </div>
                 </Paper>
-                <div style={{float:'right', width:'60%'}}>
+                <div style={{ float: 'right', width: '60%' }}>
                     <Start skipLogin={true}></Start>
                 </div>
-                <div style={{clear: 'both'}}></div>
+                <div style={{ clear: 'both' }}></div>
             </div>
         );
     };
@@ -129,9 +130,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createSandbox: (sandboxDetails) => dispatch( actions.createSandbox(sandboxDetails) )
+        createSandbox: (sandboxDetails) => dispatch(actions.createSandbox(sandboxDetails))
     };
 };
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler( CreateSandbox)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(CreateSandbox)));

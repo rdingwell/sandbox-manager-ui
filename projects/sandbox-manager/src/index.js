@@ -4,7 +4,7 @@ import "whatwg-fetch";
 import * as React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-
+import { PersistGate } from 'redux-persist/integration/react';
 import Router from "./router/";
 import configStore from "./redux/";
 
@@ -18,9 +18,12 @@ localStorage.setItem('resources', JSON.stringify(supportedPatientResources));
 
 window.Highcharts = require('highcharts');
 
-let store = configStore({ persist: false, whiteList: [], debounce: 500, logger: false && process.env.NODE_ENV !== "production" });
+configStore()
+    .then(store => {
+        let provider = <Provider store={store}>
+            {Router}
+        </Provider>;
 
-let provider = <Provider store={store}>{Router}</Provider>;
-
-render(provider, document.getElementById("app"));
-registerServiceWorker();
+        render(provider, document.getElementById("app"));
+        registerServiceWorker();
+    });

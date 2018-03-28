@@ -61,6 +61,9 @@ export default function (state = initialState, action) {
         case actionTypes.SAVE_ENDPOINT_INDEX:
             state.sandboxApiEndpointIndex = action.index;
             break;
+        case "persist/REHYDRATE":
+            state = action.payload ? action.payload.sandbox : state;
+            break;
     }
 
     return state;

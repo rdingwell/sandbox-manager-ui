@@ -6,7 +6,7 @@ const smartSandbox = 'https://sandbox.smarthealthit.org';
 
 const smart = () => (
 
-    <Paper className="PaperCard">
+    <div className="PaperCard">
         <h3>SMART</h3>
         <div className="PaperBody">
             <p>Where can I learn about the SMART sandbox?</p>
@@ -20,7 +20,7 @@ const smart = () => (
                 <span className="Answer"><a href={smartGalery}>{smartGalery}</a></span>
             </p>
         </div>
-    </Paper>
+    </div>
 );
 
 export default smart;

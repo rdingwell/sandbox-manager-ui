@@ -43,6 +43,9 @@ export default ( state = initialState, action ) => {
             state.patients = action.patients;
             state.lookingForPatients = false;
             break;
+        case "persist/REHYDRATE":
+            state = action.payload ? action.payload.patient : state;
+            break;
     }
 
     return state;

@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
+import { fhir_SetSmart } from "./fhir";
 
 let fhirClient = null;
 
@@ -21,66 +22,66 @@ const getQueryParams = (url) => {
     }
 };
 
-export const clearToken = () => {
+export function clearToken () {
     return {
         type: actionTypes.FHIR_CLEAR_TOKEN
     }
-};
+}
 
-export const fhirInit = () => {
+export function fhirInit () {
     return {
         type: actionTypes.FHIR_INIT
     }
-};
+}
 
-export const setFhirClient = (fhirClient) => {
+export function setFhirClient (fhirClient) {
     return {
         type: actionTypes.FHIR_CLIENT,
         fhirClient: fhirClient
     }
-};
+}
 
-export const hspcAuthorized = () => {
+export function hspcAuthorized () {
     return {
         type: actionTypes.FHIR_HSPC_AUTHORIZED
     }
-};
+}
 
-export const setFhirVersion = (fhirVersion) => {
+export function setFhirVersion (fhirVersion) {
     return {
         type: actionTypes.FHIR_VERSION,
         fhirVersion: fhirVersion
     }
-};
+}
 
-export const savePatients = (patients) => {
+export function savePatients (patients) {
     return {
         type: actionTypes.LOOKUP_PATIENTS_SUCCESS,
         patients: patients
     };
-};
+}
 
-export const lookupPatientsStart = () => {
+export function lookupPatientsStart () {
     return {
         type: actionTypes.LOOKUP_PATIENTS_START
     }
-};
+}
 
-export const lookupPatientsFail = (error) => {
+export function lookupPatientsFail (error) {
     return {
         type: actionTypes.LOOKUP_PATIENTS_FAIL,
         error: error
     }
-};
+}
 
-export const saveSandboxApiEndpointIndex = (index) => {
+export function saveSandboxApiEndpointIndex (index) {
     return {
         type: actionTypes.SAVE_ENDPOINT_INDEX,
         index: index
     }
-};
+}
 
-const queryFhirVersion = (dispatch, fhirClient, state) => {
+function queryFhirVersion (dispatch, fhirClient, state) {
     fhirClient.api.conformance({})
         .then(
             response => {
@@ -92,9 +93,9 @@ const queryFhirVersion = (dispatch, fhirClient, state) => {
                 });
             }
         );
-};
+}
 
-const authorize = (url, state, sandboxId) => {
+function authorize (url, state, sandboxId) {
     let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth?path=" + window.location.pathname;
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
@@ -130,17 +131,17 @@ const authorize = (url, state, sandboxId) => {
     }, function (err) {
         //error
     });
-};
+}
 
-export const authorizeSandbox = (sandboxId) => {
+export function authorizeSandbox (sandboxId) {
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state, sandboxId);
     }
-};
+}
 
 
-export const fetchPatients = () => {
+export function fetchPatients () {
     return dispatch => {
         dispatch(lookupPatientsStart());
         let count = 50;
@@ -161,71 +162,76 @@ export const fetchPatients = () => {
             dispatch(lookupPatientsFail(error));
         });
     };
-};
+}
 
-export const init = () => {
+export function init () {
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state);
     }
-};
+}
 
-export const afterFhirAuth = (url) => {
-    return (dispatch, getState) => {
-        const state = getState();
+export function afterFhirAuth (url) {
+    return dispatch => {
         let params = getQueryParams(url);
         if (params && params.code) {
             dispatch(clearToken());
             window.FHIR.oauth2.ready(params, function (newSmart) {
-                let configuration = state.config.xsettings.data.sandboxManager;
-                dispatch(hspcAuthorized());
-                dispatch(setFhirClient(newSmart));
-                fhirClient = newSmart;
-                window.fhirClient = newSmart;
-                queryFhirVersion(dispatch, fhirClient, state);
-                const config = {
-                    headers: {
-                        Authorization: 'BEARER ' + fhirClient.server.auth.token
-                    }
-                };
+                dispatch(fhirauth_setSmart(newSmart));
+            });
+        }
+    }
+}
 
-                fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
-                    .then(response => {
-                        response.json()
-                            .then(data => {
-                                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+export function fhirauth_setSmart (smart) {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(hspcAuthorized());
+        dispatch(setFhirClient(smart));
+        fhirClient = smart;
+        window.fhirClient = smart;
+        queryFhirVersion(dispatch, fhirClient, state);
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + fhirClient.server.auth.token
+            }
+        };
 
-                                fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
-                                    .then(resp => {
-                                        resp.json()
-                                            .then(data => {
-                                                dispatch(saveSandboxManagerUser(data));
-                                            });
+        fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
+            .then(response => {
+                response.json()
+                    .then(data => {
+                        dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+
+                        fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
+                            .then(resp => {
+                                resp.json()
+                                    .then(data => {
+                                        dispatch(saveSandboxManagerUser(data));
                                     });
                             });
                     });
             });
-        }
     }
-};
+}
 
-
-export const fhirLogin = () => {
+export function fhirLogin () {
     return {
         type: actionTypes.FHIR_LOGIN
     };
-};
+}
 
-export const fhirLoginSuccess = () => {
+export function fhirLoginSuccess () {
     return {
         type: actionTypes.FHIR_LOGIN_SUCCESS
     };
-};
+}
 
-export const fhirLoginFail = () => {
+export function fhirLoginFail () {
     return {
         type: actionTypes.FHIR_LOGIN_FAIL
-    };
-};
+    }
+}
 
 

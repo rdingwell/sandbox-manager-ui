@@ -21,6 +21,9 @@ export default (state = initialState, action) => {
         case actionTypes.SET_FHIR_SERVER_URL:
             state = setServerUrl(state, action);
             break;
+        case "persist/REHYDRATE":
+            state = action.payload ? action.payload.fhirauth : state;
+            break;
     }
 
     return state;

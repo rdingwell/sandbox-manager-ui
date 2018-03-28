@@ -5,7 +5,7 @@ import Paper from 'material-ui/Paper';
 const matrixLocation = 'http://docs.smarthealthit.org/fhir-support/';
 
 const capabilitiesMatrix = () => (
-    <Paper className="PaperCard">
+    <div>
         <h3>Capabilities Matrix</h3>
         <div className="PaperBody">
             <p>SMART on FHIR EHR Capabilities Matrix</p>
@@ -13,8 +13,7 @@ const capabilitiesMatrix = () => (
                 <span className="Answer"><a href={matrixLocation}>{matrixLocation}</a></span>
             </p>
         </div>
-    </Paper>
-
+    </div>
 );
 
 export default capabilitiesMatrix;

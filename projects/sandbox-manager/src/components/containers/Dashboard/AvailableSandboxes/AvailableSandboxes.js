@@ -11,7 +11,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 
 class AvailableSandboxes extends Component {
 
-    componentWillMount () {
+    componentDidMount () {
         this.props.onFetchSandboxes();
     }
 
@@ -23,7 +23,7 @@ class AvailableSandboxes extends Component {
         let sandbox = this.props.sandboxes[ row ];
         localStorage.setItem('sandboxId', sandbox.sandboxId);
         this.props.onSelectSandbox(sandbox.sandboxId);
-        this.props.history.push("/launch")
+        this.props.history.push("/launch");
     };
 
     render () {
