@@ -71,7 +71,7 @@ const config = {
                     options: {
                         presets: [
                             "react-es2015",
-                            ["es2015", {modules: false}],
+                            "es2015",
                             "es2016",
                             "stage-0",
                             "stage-1",
