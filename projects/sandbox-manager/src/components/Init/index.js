@@ -28,7 +28,7 @@ export default class InitLoader extends React.Component {
         );
 
         let smart = this.props.fhir.smart.data.server ? FHIR.client(this.props.fhir.smart.data.server) : null;
-        smart && this.props.fhirauth_setSmart(smart);
+        smart && this.props.fhirauth_setSmart(smart, this.props.history);
 
         // Initialize the app
         this.init();

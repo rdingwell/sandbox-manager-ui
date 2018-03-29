@@ -5,11 +5,6 @@ import EHRProviders from "./EHRProviders/EHRProviders";
 
 
 class EHRIntegration extends Component {
-
-
-
-
-
     render() {
         return(
                 <div>

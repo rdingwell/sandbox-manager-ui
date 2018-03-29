@@ -10,12 +10,13 @@ import users from "./reducers/users";
 import apps from "./reducers/apps";
 import fhirauth from "./reducers/fhirauth";
 import patient from "./reducers/patient";
+import app from "./reducers/app";
 
 const persistConfig = {
     key: 'root',
     storage
 };
-const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, patient });
+const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, patient, app });
 
 export default function () {
     return new Promise(resolve => {

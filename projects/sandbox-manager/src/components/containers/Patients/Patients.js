@@ -42,17 +42,12 @@ class Patients extends Component {
         let patientList = null;
         if(!this.props.loading){
             patientList = (
-                <PatientList
-                    patients={this.props.patients}
-                    click={this.selectPersonHandler}
-                />);
+                <PatientList patients={this.props.patients} click={this.selectPersonHandler} />);
         }
         let patientDetails = null;
         if(!this.props.doLaunch && this.state.patient){
             patientDetails = (
-                <PatientDetails
-                    patient={this.state.patient}
-                />);
+                <PatientDetails patient={this.state.patient} />);
         }
         return(
             <div>
@@ -68,7 +63,6 @@ class Patients extends Component {
 }
 
 const mapStateToProps = state => {
-
     return {
         patients : state.patient.patients,
         loading: state.patient.lookingForPatients

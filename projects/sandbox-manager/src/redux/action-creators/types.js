@@ -70,3 +70,6 @@ export const FHIR_CLEAR_TOKEN = "FHIR_CLEAR_TOKEN";
 export const FHIR_CLIENT = "FHIR_CLIENT";
 export const FHIR_HSPC_AUTHORIZED = "FHIR_HSPC_AUTHORIZED";
 export const FHIR_VERSION = "FHIR_VERSION";
+
+// app
+export const SET_APP_SCREEN = "SET_APP_SCREEN";

@@ -176,14 +176,18 @@ export function afterFhirAuth (url) {
         let params = getQueryParams(url);
         if (params && params.code) {
             dispatch(clearToken());
-            window.FHIR.oauth2.ready(params, function (newSmart) {
-                dispatch(fhirauth_setSmart(newSmart));
-            });
+            try {
+                window.FHIR.oauth2.ready(params, function (newSmart) {
+                    dispatch(fhirauth_setSmart(newSmart));
+                });
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 }
 
-export function fhirauth_setSmart (smart) {
+export function fhirauth_setSmart (smart, redirect = null) {
     return (dispatch, getState) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -209,6 +213,7 @@ export function fhirauth_setSmart (smart) {
                                 resp.json()
                                     .then(data => {
                                         dispatch(saveSandboxManagerUser(data));
+                                        redirect && redirect.push(`/${state.app.screen}`);
                                     });
                             });
                     });
