@@ -11,7 +11,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
 
 
-class CreateSandbox extends Component {
+class Index extends Component {
 
     state = {
         sandboxId: '',
@@ -37,7 +37,8 @@ class CreateSandbox extends Component {
             allowOpenAccess: this.state.allowOpen,
             users: [this.props.user]
         };
-        return this.props.createSandbox(createRequest);
+        this.props.createSandbox(createRequest);
+        this.props.onCancel && this.props.onCancel();
     };
 
     allowOpenChangeHandler = () => {
@@ -56,9 +57,10 @@ class CreateSandbox extends Component {
         });
     };
 
-    handleCancel = (event) => {
-        event.preventDefault();
-        this.props.history.push("/dashboard");
+    handleCancel = () => {
+        // event.preventDefault();
+        // this.props.history.push("/dashboard");
+        this.props.onCancel && this.props.onCancel();
     };
 
     sandboxIdChangedHandler = (event) => {
@@ -81,12 +83,12 @@ class CreateSandbox extends Component {
 
 
         return (
-            <div>
-                <Paper className="PaperCard" style={{ width: '30%', float: 'left' }}>
+            <div className="testis">
+                <Paper className="paper-card">
                     <h3>
                         Create Sandbox
                     </h3>
-                    <div className="PaperBody">
+                    <div className="paper-body">
                         <form>
                             <TextField floatingLabelText="Sandbox Id" defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler} /><br />
                             <div>Your sandbox will be available at http://localhost:3000/sandbox-id</div>
@@ -111,9 +113,6 @@ class CreateSandbox extends Component {
                         </form>
                     </div>
                 </Paper>
-                <div style={{ float: 'right', width: '60%' }}>
-                    <Start skipLogin={true}></Start>
-                </div>
                 <div style={{ clear: 'both' }}></div>
             </div>
         );
@@ -135,4 +134,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(CreateSandbox)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));

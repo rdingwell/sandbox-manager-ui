@@ -12,7 +12,7 @@ import UserManagement from '../components/containers/UserManagement/UserManageme
 import Dashboard from '../components/containers/Dashboard/Dashboard';
 import Start from '../components/containers/Start';
 import AfterAuth from '../components/containers/AfterAuth/AfterAuth';
-import CreateSandbox from "../components/containers/CreateSandbox/CreateSandbox";
+import CreateSandbox from "../components/containers/CreateSandbox";
 
 export default <Router>
     <App>

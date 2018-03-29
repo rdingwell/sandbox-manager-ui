@@ -1,7 +1,5 @@
 import fhirInitState from "../../redux/reducers/fhir/init";
-
 import * as React from "react";
-import * as PropTypes from "prop-types";
 
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
@@ -50,26 +48,4 @@ export default class InitLoader extends React.Component {
             // (4) Load external settings
             .then(() => this.props.config_LoadXsettings());
     }
-}
-
-InitLoader.propTypes = {
-    config: PropTypes.object.isRequired,
-    fhir: PropTypes.object.isRequired,
-    ui: PropTypes.object.isRequired,
-
-    config_LoadXsettings: PropTypes.func.isRequired,
-    config_Reset: PropTypes.func.isRequired,
-    customizeTheme: PropTypes.func.isRequired,
-    delay: PropTypes.func.isRequired,
-    fhir_Reset: PropTypes.func.isRequired,
-    fhir_SetContext: PropTypes.func.isRequired,
-    fhir_SetMeta: PropTypes.func.isRequired,
-    fhir_SetParsedPatientDemographics: PropTypes.func.isRequired,
-    fhir_SetSampleData: PropTypes.func.isRequired,
-    fhir_SetSmart: PropTypes.func.isRequired,
-    getFHIRMetadata: PropTypes.func.isRequired,
-    getPatientDemographics: PropTypes.func.isRequired,
-    ui_SetInitialized: PropTypes.func.isRequired,
-    ui_SetRetina: PropTypes.func.isRequired,
-    ui_SetTheme: PropTypes.func.isRequired
 }

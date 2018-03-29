@@ -5,32 +5,13 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
 class AfterAuth extends Component {
 
-    componentDidMount () {
-        let int = 0;
-        let call = () => {
-            int++;
-            console.log(`Tried ${int} times!`);
-            if (this.props.config) {
-                let url = this.props.location;
-                this.props.afterAuth(url);
-                console.log(this.props.user);
-                if (this.props.user.sbmUserId) {
-                    this.props.history.push("/dashboard");
-                } else {
-                    setTimeout(call, 1000);
-                }
-            } else {
-                setTimeout(call, 1000);
-            }
-        };
-
-        call();
+    componentDidMount() {
+        let url = this.props.location;
+        this.props.afterFhirAuth(url);
     }
 
     componentDidUpdate () {
-        if (this.props.user.sbmUserId) {
-            this.props.history.push("/dashboard");
-        }
+        this.props.user.sbmUserId && this.props.history.push("/dashboard");
     }
 
     render () {
@@ -49,7 +30,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        afterAuth: (url) => dispatch(actions.afterFhirAuth(url))
+        afterFhirAuth: (url) => dispatch(actions.afterFhirAuth(url))
     };
 };
 

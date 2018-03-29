@@ -1,6 +1,5 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
-import { fhir_SetSmart } from "./fhir";
 
 let fhirClient = null;
 
