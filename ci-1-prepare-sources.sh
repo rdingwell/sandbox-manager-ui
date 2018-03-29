@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Install jq and qwscli
-RUN apt-get update && apt-get install -y jq python-pip && pip install --upgrade pip && pip install awscli
+#RUN apt-get update && apt-get install -y jq python-pip && pip install --upgrade pip && pip install awscli
 
 set -e
 
@@ -27,7 +27,9 @@ echo "starting prepare_build.sh..."
 #end
 #fi
 
+echo "::: Running NPM INSTALL"
 npm install
+echo "::: STARTING THE BUILD"
 npm run sandbox-manager:build:dev
 
 echo "finished prepare_build.sh"
