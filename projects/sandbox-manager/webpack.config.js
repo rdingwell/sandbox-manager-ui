@@ -63,10 +63,23 @@ const config = {
                 })
             },
             {
-                test: /\.jsx?$/,
+                test: /\.(js|jsx)?$/,
                 include: [SRC_DIR, LIB_DIR],
                 exclude: [/node_modules/, /externals/, /__storage__/],
-                use: "babel-loader"
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: [
+                            "react-es2015",
+                            ["es2015", {modules: false}],
+                            "es2016",
+                            "stage-0",
+                            "stage-1",
+                            "stage-2",
+                            "stage-3"
+                        ]
+                    }
+                }
             }
         ]
     },
