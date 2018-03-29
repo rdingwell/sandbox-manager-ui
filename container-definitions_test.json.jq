@@ -5,7 +5,7 @@
     "cpu": 0,
     "portMappings": [
       {
-        "containerPort": 80,
+        "containerPort": 3000,
         "hostPort": 0,
         "protocol": "tcp"
       }
