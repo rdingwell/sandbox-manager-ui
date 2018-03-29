@@ -18,9 +18,7 @@ localStorage.setItem('resources', JSON.stringify(supportedPatientResources));
 window.Highcharts = require('highcharts');
 
 configStore()
-    .then(store => {
-        render(<Provider store={store}>
-            {Router}
-        </Provider>, document.getElementById("app"));
+    .then(_store => {
+        render(Router, document.getElementById("app"));
         registerServiceWorker();
     });
