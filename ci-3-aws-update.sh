@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+apt-get update
+apt-get install -y unzip python-pip libpython-dev
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+./awscli-bundle/install -b ~/bin/aws
+
 set -e
 
 echo "starting ci-3-aws-update.sh..."

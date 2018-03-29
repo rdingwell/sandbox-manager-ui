@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-# Install jq and qwscli
-apt-get update
-apt-get install -y jq python-pip
-pip install --upgrade pip
-pip install awscli
-
 set -e
 
 echo "starting prepare_build.sh..."
