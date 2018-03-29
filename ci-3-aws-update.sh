@@ -9,7 +9,6 @@ unzip awscli-bundle.zip
 set -e
 
 echo "starting ci-3-aws-update.sh..."
-cd projects/sandbox-manager
 export TASK_VERSION=$(/root/bin/aws ecs register-task-definition --family $1 --container-definitions $(cat container-definitions_test.json | jq -c '.')  | jq --raw-output '.taskDefinition.revision')
 echo "TASK_VERSION: $TASK_VERSION"
 
