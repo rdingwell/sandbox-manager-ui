@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Install jq
+curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/local/bin/jq
+
 echo "capture build definitions..."
 
 # push the build image
