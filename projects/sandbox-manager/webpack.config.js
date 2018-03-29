@@ -35,7 +35,7 @@ const config = {
             "redux-thunk",
             "whatwg-fetch"
         ],
-        bundle: SRC_DIR + "/index.js"
+        bundle: SRC_DIR + "/index.jsx"
     },
 
     output: {
