@@ -9,7 +9,8 @@ unzip awscli-bundle.zip
 set -e
 
 echo "starting ci-3-aws-update.sh..."
-export TASK_VERSION=$(aws ecs register-task-definition --family $1 --container-definitions $(cat container-definitions_test.json | jq -c '.')  | jq --raw-output '.taskDefinition.revision')
+cd projects/sandbox-manager
+export TASK_VERSION=$(/root/bin/aws ecs register-task-definition --family $1 --container-definitions $(cat container-definitions_test.json | jq -c '.')  | jq --raw-output '.taskDefinition.revision')
 echo "TASK_VERSION: $TASK_VERSION"
 
 echo "BITBUCKET_BRANCH: $BITBUCKET_BRANCH"
@@ -19,7 +20,7 @@ then
     [[ -z "$TARGET_AWS_SERVICE" ]] && { echo "Error: TARGET_AWS_SERVICE is not provided"; exit 1; } || echo "TARGET_AWS_SERVICE: $TARGET_AWS_SERVICE"
 
     echo "updating aws esc service..."
-    aws ecs update-service --cluster $TARGET_AWS_CLUSTER --service $TARGET_AWS_SERVICE --task-definition $PROJECT_NAME:$TASK_VERSION
+    /root/bin/aws ecs update-service --cluster $TARGET_AWS_CLUSTER --service $TARGET_AWS_SERVICE --task-definition $PROJECT_NAME:$TASK_VERSION
 else
     echo "skipping deployment"
 fi
