@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Install jq and qwscli
-#RUN apt-get update && apt-get install -y jq python-pip && pip install --upgrade pip && pip install awscli
+RUN apt-get update && apt-get install -y jq python-pip && pip install --upgrade pip && pip install awscli
 
 set -e
 
