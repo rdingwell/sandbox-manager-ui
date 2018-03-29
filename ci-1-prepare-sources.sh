@@ -29,6 +29,7 @@ echo "starting prepare_build.sh..."
 
 echo "::: Running NPM INSTALL"
 npm install
+cat ./.babelrc
 echo "::: STARTING THE BUILD"
 npm run sandbox-manager:build:dev
 
