@@ -19,10 +19,8 @@ window.Highcharts = require('highcharts');
 
 configStore()
     .then(store => {
-        let provider = <Provider store={store}>
+        render(<Provider store={store}>
             {Router}
-        </Provider>;
-
-        render(provider, document.getElementById("app"));
+        </Provider>, document.getElementById("app"));
         registerServiceWorker();
     });
