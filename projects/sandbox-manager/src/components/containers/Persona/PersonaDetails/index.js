@@ -5,9 +5,9 @@ import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import Paper from 'material-ui/Paper';
 import LabelValuePair from '../../../UI/LabelValuePair/LabelValuePair';
 import NameLabelValuePair from '../../../UI/LabelValuePair/NameLabelValuePair';
-import PatientData from "./PatientData/PatientData";
+import PersonaData from "./PersonaData";
 
-class PatientDetails extends Component {
+class Index extends Component {
     componentWillMount() {
         for (const resource of JSON.parse(localStorage.getItem('resources'))) {
             this.props.onFetch(this.props.patient, resource.resourceType);
@@ -18,7 +18,7 @@ class PatientDetails extends Component {
         let patientData = null;
         if(!this.props.loadingObservations){
             patientData = (
-                <PatientData
+                <PersonaData
                     patient={this.props.patient}
                     allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
                     allergyCount={this.props.allergyCount}
@@ -106,4 +106,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( PatientDetails ) );
+export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( Index ) );

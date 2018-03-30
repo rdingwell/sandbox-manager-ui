@@ -9,14 +9,14 @@ import sandbox from "./reducers/sandbox";
 import users from "./reducers/users";
 import apps from "./reducers/apps";
 import fhirauth from "./reducers/fhirauth";
-import patient from "./reducers/patient";
+import persona from "./reducers/persona";
 import app from "./reducers/app";
 
 const persistConfig = {
     key: 'root',
     storage
 };
-const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, patient, app });
+const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, persona, app });
 
 export default function () {
     return new Promise(resolve => {

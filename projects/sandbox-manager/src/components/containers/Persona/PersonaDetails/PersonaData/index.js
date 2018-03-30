@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BarChart } from 'react-chartkick';
 
 
-class PatientData extends Component {
+class Index extends Component {
 
     state = {
         data : []
@@ -72,4 +72,4 @@ class PatientData extends Component {
     }
 }
 
-export default PatientData;
+export default Index;

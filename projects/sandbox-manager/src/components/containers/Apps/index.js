@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
 import RegisteredApp from "./RegisteredApp/RegisteredApp";
-import Patients from '../Patients';
+import Personas from '../Persona';
 
 import './styles.less';
 
@@ -52,7 +52,7 @@ class Apps extends Component {
             </Dialog>
             : this.state.appToLaunch
                 ? <Dialog paperClassName="app-dialog" modal={false} open={!!this.state.appToLaunch} onRequestClose={() => this.handleAppLaunch()}>
-                    <Patients doLaunch={this.state.appToLaunch} />
+                    <Personas type="Patient" doLaunch={this.state.appToLaunch} />
                 </Dialog>
                 : null;
 

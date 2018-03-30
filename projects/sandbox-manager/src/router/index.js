@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import App from "../components/App/";
 import Apps from '../components/containers/Apps';
-import Patients from '../components/containers/Patients';
-import Practitioners from '../components/containers/Practitioners/Practitioners';
+import Persona from '../components/containers/Persona';
 import LaunchScenario from '../components/containers/LaunchScenario/LaunchScenario';
 import Settings from '../components/containers/Settings/Settings';
 import EHRIntegration from '../components/containers/EHRIntegration/EHRIntegration';
@@ -19,10 +18,10 @@ export default <Router>
         <Switch>
             <Route path='/apps' component={Apps} />
             <Route path='/launch' component={LaunchScenario} />
-            <Route path='/patients' component={Patients} />
-            <Route path='/practitioners' component={Practitioners} />
-            <Route path='/personas' component={Practitioners} />
-            <Route path='/data-manager' component={Practitioners} />
+            <Route path='/patients' component={Persona} />
+            <Route path='/practitioners' component={Persona} />
+            <Route path='/personas' component={Persona} />
+            <Route path='/data-manager' component={Persona} />
             <Route path='/user-management' component={UserManagement} />
             <Route path='/integration' component={EHRIntegration} />
             <Route path='/settings' component={Settings} />

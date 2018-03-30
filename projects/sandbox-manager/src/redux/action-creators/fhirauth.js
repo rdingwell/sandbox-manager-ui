@@ -53,26 +53,6 @@ export function setFhirVersion (fhirVersion) {
     }
 }
 
-export function savePatients (patients) {
-    return {
-        type: actionTypes.LOOKUP_PATIENTS_SUCCESS,
-        patients: patients
-    };
-}
-
-export function lookupPatientsStart () {
-    return {
-        type: actionTypes.LOOKUP_PATIENTS_START
-    }
-}
-
-export function lookupPatientsFail (error) {
-    return {
-        type: actionTypes.LOOKUP_PATIENTS_FAIL,
-        error: error
-    }
-}
-
 export function saveSandboxApiEndpointIndex (index) {
     return {
         type: actionTypes.SAVE_ENDPOINT_INDEX,
@@ -137,30 +117,6 @@ export function authorizeSandbox (sandboxId) {
         const state = getState();
         authorize(window.location, state, sandboxId);
     }
-}
-
-
-export function fetchPatients () {
-    return dispatch => {
-        dispatch(lookupPatientsStart());
-        let count = 50;
-
-        let searchParams = { type: "Patient", count: count };
-        searchParams.query = {};
-
-        window.fhirClient.api.search(searchParams)
-            .then(response => {
-                let resourceResults = [];
-
-                for (let key in response.data.entry) {
-                    response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
-                    resourceResults.push(response.data.entry[key].resource);
-                }
-                dispatch(savePatients(resourceResults));
-            }).fail(error => {
-            dispatch(lookupPatientsFail(error));
-        });
-    };
 }
 
 export function init () {
