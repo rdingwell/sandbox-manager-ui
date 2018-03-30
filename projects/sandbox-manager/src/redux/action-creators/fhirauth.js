@@ -188,7 +188,7 @@ export function afterFhirAuth (url) {
 
 export function fhirauth_setSmart (smart, redirect = null) {
     return (dispatch, getState) => {
-        const state = getState();
+        let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(hspcAuthorized());
         dispatch(setFhirClient(smart));
@@ -212,6 +212,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                                 resp.json()
                                     .then(data => {
                                         dispatch(saveSandboxManagerUser(data));
+                                        let state = getState();
                                         redirect && redirect.push(`/${state.app.screen}`);
                                     });
                             });

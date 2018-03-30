@@ -1,9 +1,9 @@
 import * as React from "react";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import App from "../components/App/";
-import Apps from '../components/containers/Apps/Apps';
-import Patients from '../components/containers/Patients/Patients';
+import Apps from '../components/containers/Apps';
+import Patients from '../components/containers/Patients';
 import Practitioners from '../components/containers/Practitioners/Practitioners';
 import LaunchScenario from '../components/containers/LaunchScenario/LaunchScenario';
 import Settings from '../components/containers/Settings/Settings';

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 
 
@@ -12,7 +12,7 @@ import {
 } from 'material-ui/Table';
 
 
-class PatientList extends Component{
+class PatientList extends Component {
 
     handleRowSelect = (row) => {
         let patient = this.props.patients[row];
@@ -22,11 +22,11 @@ class PatientList extends Component{
     };
 
 
-    render(){
+    render () {
         let getName = (name) => {
             let strName = name.family + ",";
             let i;
-            for(i = 0; i < name.given.length; i++){
+            for (i = 0; i < name.given.length; i++) {
                 strName += " " + name.given[i];
             }
             return strName;
@@ -37,7 +37,7 @@ class PatientList extends Component{
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         };
         let patients = this.props.patients.map(patient => (
-            <TableRow key={patient.id}>
+            <TableRow key={patient.id} hoverable>
                 <TableRowColumn>
                     {getName(patient.name[0])}
                 </TableRowColumn>
@@ -50,28 +50,19 @@ class PatientList extends Component{
             </TableRow>
         ));
 
-        return(
-            <Paper className="PaperCard">
+        return (
+            <Paper className="paper-card">
                 <h3>Patients</h3>
-                <div className="PaperBody">
-                    <Table
-                        selectable={false}
-                        height="300px"
-                        fixedHeader={true}
-                        width="100%"
-                        onCellClick={this.handleRowSelect}>
-                        <TableHeader displaySelectAll={false}
-                                     adjustForCheckbox={false}
-                                     enableSelectAll={false}>
+                <div className="paper-body">
+                    <Table selectable={false} fixedHeader width="100%" onCellClick={this.handleRowSelect}>
+                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                             <TableRow>
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Gender</TableHeaderColumn>
                                 <TableHeaderColumn>Age</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
-                        <TableBody
-                            displayRowCheckbox={false}
-                            stripedRows={true}>
+                        <TableBody displayRowCheckbox={false} stripedRows showRowHover>
                             {patients}
                         </TableBody>
                     </Table>

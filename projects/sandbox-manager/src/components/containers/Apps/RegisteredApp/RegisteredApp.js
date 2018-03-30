@@ -1,34 +1,27 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Dialog from 'material-ui/Dialog';
-import Patients from '../../Patients/Patients';
+import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField } from 'material-ui';
 
-class RegisteredApp extends Component{
+class RegisteredApp extends Component {
     state = {
         value: 'PublicClient',
-        modalOpen : false
+        modalOpen: false
     };
 
     handleChange = (event, index, value) => {
-        debugger
-        this.setState({value: value});
+        this.setState({ value: value });
     };
 
     handleLaunch = () => {
-        this.setState({modalOpen: true});
+        this.setState({ modalOpen: true });
     };
 
     handleClose = () => {
-        this.setState({modalOpen: false});
+        this.setState({ modalOpen: false });
     };
 
-    render() {
+    render () {
         const registeredAppStyle = {
-            width: '45%',
+            width: '100%',
             float: 'right'
         };
 
@@ -42,58 +35,36 @@ class RegisteredApp extends Component{
 
         let clientId = null;
 
-        if(this.props.app){
-            clientId = (
-                <div>
-                    <TextField disabled={true} defaultValue={this.props.app.authClient.clientId} floatingLabelText="Client Id"/><br />
-                </div>
-            );
+        if (this.props.app) {
+            clientId = <div>
+                <TextField disabled={true} defaultValue={this.props.app.authClient.clientId} floatingLabelText="Client Id" /><br />
+            </div>;
         }
 
-        let buttons = (<RaisedButton style={buttonStyle} onClick={this.handleLaunch} primary={true} label="Launch"/>);
-        if(!this.props.app.isDefault){
-            buttons = (
-                <div>
-                    <RaisedButton style={buttonStyle} primary={true} onClick={this.handleLaunch} label="Launch"/>
-                    <RaisedButton style={buttonStyle} primary={true} label="Save"/>
-                    <RaisedButton style={buttonStyle} primary={true} label="Delete"/>
-                </div>
-            );
-        }
+        let buttons = <div>
+            <RaisedButton style={buttonStyle} primary={true} label="Save" />
+            <RaisedButton style={buttonStyle} secondary={true} label="Delete" />
+        </div>;
 
-        return(
-
-        <Paper style={registeredAppStyle} className="PaperCard">
+        return <Paper style={registeredAppStyle} className="paper-card">
             <h3>Registered App Details</h3>
-            <div className="PaperBody">
+            <div className="paper-body">
                 {buttons}
-                <Dialog
-                    title="Choose a Patient"
-/*
-                    actions={}
-*/
-                    modal={false}
-                    open={this.state.modalOpen}
-                    onRequestClose={this.handleClose}
-                >
-                    <Patients doLaunch={this.props.app}/>
-                </Dialog>
-
                 <form>
-                    <TextField style={textFieldStyle} disabled={true} defaultValue={this.props.app.authClient.clientName} floatingLabelText="App Name"/><br />
-                    <div><span style={{color: 'rgba(0, 0, 0, 0.3)'}}>Client Type</span>
+                    <TextField style={textFieldStyle} disabled={true} defaultValue={this.props.app.authClient.clientName} floatingLabelText="App Name" /><br />
+                    <div>
+                        <span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>Client Type</span>
                         <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-                            <MenuItem value="PublicClient" primaryText="Public Client"/>
-                            <MenuItem value="ConfidentialClient" primaryText="Confidential Client"/>
+                            <MenuItem value="PublicClient" primaryText="Public Client" />
+                            <MenuItem value="ConfidentialClient" primaryText="Confidential Client" />
                         </DropDownMenu>
                     </div>
-                    <TextField style={textFieldStyle} disabled={true} defaultValue="" floatingLabelText="Client Uri"/><br />
+                    <TextField style={textFieldStyle} disabled={true} defaultValue="" floatingLabelText="Client Uri" /><br />
                     {clientId}
-                    <TextField style={textFieldStyle} disabled={true} defaultValue={this.props.app.launchUri} floatingLabelText="App Launch URI"/>
+                    <TextField style={textFieldStyle} disabled={true} defaultValue={this.props.app.launchUri} floatingLabelText="App Launch URI" />
                 </form>
             </div>
-          </Paper>
-        );
+        </Paper>;
     }
 
 }
