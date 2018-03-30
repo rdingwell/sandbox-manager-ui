@@ -49,7 +49,7 @@ class AvailableSandboxes extends Component {
 
         }
 
-        return <Paper className="paper-card">
+        return <Paper className="sandboxes-wrapper paper-card">
             <h3>My Sandboxes
                 <RaisedButton className="create-sandbox-button" label='Create New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
             </h3>

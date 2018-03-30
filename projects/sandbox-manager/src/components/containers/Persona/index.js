@@ -28,6 +28,7 @@ class Persona extends Component {
     componentWillUpdate (nextProps) {
         let type = this.getType(nextProps);
         type !== this.state.type && this.setState({ type });
+        type !== this.state.type && this.props.fetchPersonas(type);
     }
 
     selectPersonHandler = (persona) => {
@@ -73,8 +74,7 @@ class Persona extends Component {
     render () {
         let personaList = null;
         if (!this.props.loading) {
-            personaList = (
-                <PersonaList key={this.state.type} type={this.state.type} personas={this.props.personas} click={this.selectPersonHandler} />);
+            personaList = <PersonaList key={this.state.type} type={this.state.type} personas={this.props.personas} click={this.selectPersonHandler} />;
         }
         let personaDetails = null;
         if (!this.props.doLaunch && this.state.selectedPersona) {

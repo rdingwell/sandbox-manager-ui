@@ -13,3 +13,21 @@
   text-align: center;
   margin-top: 10px;
 }
+
+.sandboxes-wrapper {
+  height: 100%;
+  overflow: hidden;
+  .paper-body {
+    height: ~'calc(100% - 68px)';
+    width: ~'calc(100% - 40px)';
+    padding-bottom: 0;
+    overflow: hidden;
+    & > div {
+      height: 100% !important;
+      overflow: hidden !important;
+      & > div:nth-child(2) {
+        height: ~'calc(100% - 62px)' !important;
+      }
+    }
+  }
+}
