@@ -74,7 +74,7 @@ function queryFhirVersion (dispatch, fhirClient, state) {
         );
 }
 
-function authorize (url, state, sandboxId) {
+export function authorize (url, state, sandboxId) {
     let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth";
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
@@ -110,13 +110,6 @@ function authorize (url, state, sandboxId) {
     }, function (err) {
         //error
     });
-}
-
-export function authorizeSandbox (sandboxId) {
-    return (dispatch, getState) => {
-        const state = getState();
-        authorize(window.location, state, sandboxId);
-    }
 }
 
 export function init () {

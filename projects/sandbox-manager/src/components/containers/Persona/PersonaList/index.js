@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Paper } from 'material-ui';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { Paper, RaisedButton } from 'material-ui';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table';
 
 import './styles.less';
 
@@ -12,12 +12,12 @@ export default class PersonaList extends Component {
         practitioner: "Practitioner"
     };
 
-    // handleRowSelect = (row) => {
-    //     let persona = this.props.personas[row];
-    //     this.props.click(persona);
-    //     //todo fire event up to parent to pass patient to
-    //     //sibling component
-    // };
+    handleRowSelect = (row) => {
+        let persona = this.props.personas[row];
+        this.props.click(persona);
+        //todo fire event up to parent to pass patient to
+        //sibling component
+    };
 
 
     render () {
@@ -35,10 +35,11 @@ export default class PersonaList extends Component {
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         };
         let isPatient = this.props.type === PersonaList.TYPES.patient;
-        let personas = this.props.personas.map(persona => (
+        let isPractitioner = this.props.type === PersonaList.TYPES.practitioner;
+        let personas = this.props.personas && this.props.personas.map(persona => (
             <TableRow key={persona.id} hoverable className='persona-list-row'>
                 <TableRowColumn>
-                    {getName(persona.name[0])}
+                    {persona.fhirName || getName(persona.name[0])}
                 </TableRowColumn>
                 {isPatient && <TableRowColumn>
                     {persona.gender}
@@ -46,27 +47,61 @@ export default class PersonaList extends Component {
                 {isPatient && <TableRowColumn>
                     {getAge(persona.birthDate) || ""}
                 </TableRowColumn>}
+                {!isPatient && !isPractitioner && <TableRowColumn>
+                    {persona.fhirId}
+                </TableRowColumn>}
+                {!isPatient && !isPractitioner && <TableRowColumn>
+                    {persona.resourceUrl}
+                </TableRowColumn>}
             </TableRow>
         ));
 
-        return (
-            <Paper className="paper-card">
-                <h3>{isPatient ? "Patients" : "Practitioners"}</h3>
-                <div className="paper-body">
-                    <Table selectable={false} fixedHeader width="100%" onCellClick={this.handleRowSelect}>
-                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                            <TableRow>
-                                <TableHeaderColumn>Name</TableHeaderColumn>
-                                {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
-                                {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody displayRowCheckbox={false} stripedRows showRowHover>
-                            {personas}
-                        </TableBody>
-                    </Table>
-                </div>
-            </Paper>
-        );
+        return <Paper className="paper-card persona-list">
+            <h3 style={{ width: "auto" }}>{isPatient ? "Patients" : isPractitioner ? "Practitioners" : "Personas"}</h3>
+            <div className="actions">
+                {this.props.actions}
+            </div>
+            <div className="paper-body">
+                {!this.props.personas && <div className="personas-loader-wrapper"><i className="fa fa-spinner fa-pulse fa-3x fa-fw" /></div>}
+                {this.props.personas && <Table selectable={false} fixedHeader width="100%" onCellClick={this.handleRowSelect} wrapperClassName="sample">
+                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                        <TableRow>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
+                            {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
+                            {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
+                            {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
+                            {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody displayRowCheckbox={false} stripedRows showRowHover>
+                        {personas}
+                    </TableBody>
+                    {this.props.pagination && this.getPagination()}
+                </Table>}
+            </div>
+        </Paper>;
+    }
+
+    getPagination () {
+        let self = this.props.pagination.link.find(i => i.relation === 'self');
+        let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
+        let start = currentSkip + 1;
+        let end = start + this.props.personas.length - 1;
+
+        return this.props.pagination && <TableFooter adjustForCheckbox={false}>
+            <TableRow>
+                <TableRowColumn colSpan="3" className="persona-list-pagination-wrapper">
+                    <div>
+                        {start > 1 && <RaisedButton label="Prev" secondary onClick={() => this.props.prev && this.props.prev()} />}
+                    </div>
+                    <div>
+                        <span>Showing {start} to {end} of {this.props.pagination.total}</span>
+                    </div>
+                    <div>
+                        {end < this.props.pagination.total && <RaisedButton label="Next" secondary onClick={() => this.props.next && this.props.next()} />}
+                    </div>
+                </TableRowColumn>
+            </TableRow>
+        </TableFooter>
     }
 }

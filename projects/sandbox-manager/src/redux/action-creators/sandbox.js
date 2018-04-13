@@ -1,4 +1,5 @@
 import * as actionTypes from './types';
+import { authorize } from './fhirauth';
 
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
@@ -144,22 +145,30 @@ const setDefaultUrl = (sandboxId) => {
 export const selectSandbox = (sandboxId) => {
     return (dispatch, getState) => {
         let state = getState();
-        let config = JSON.parse(localStorage.getItem('config'));
-        let queryParams = "?userId=" + encodeURIComponent(state.user.oauthUser.sbmUserId);
+        let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
 
-        //log in to the sandbox
-        axios.post(config.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, null, getConfig(state))
-            .then(res => {
-            })
-            .catch(err => {
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+            }
+        };
+        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
+            .then(() => {
+                dispatch(authorizeSandbox(sandboxId));
+                dispatch(setDefaultUrl(sandboxId));
+                dispatch(selectSandboxById(sandboxId));
             });
-        dispatch(authorizeSandbox(sandboxId));
-        dispatch(setDefaultUrl(sandboxId));
-        dispatch(selectSandboxById(sandboxId));
     };
 
 };
 
+export function authorizeSandbox (sandboxId) {
+    return (dispatch, getState) => {
+        const state = getState();
+        authorize(window.location, state, sandboxId);
+    }
+};
 
 export const createSandbox = (sandboxDetails) => {
     return (dispatch, getState) => {

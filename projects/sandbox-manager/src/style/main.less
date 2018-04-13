@@ -1,5 +1,7 @@
 @import "./variables.less";
 @import "./mixins.less";
+@import "./font-awesome/icons";
+@import "./font-awesome/variables";
 
 html {
   height: 100%;
@@ -14,14 +16,30 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-:global(.paper-card h3) {
-  width: 100%;
-  background-color: rgb(232, 232, 232);
-  color: #4a525d;
-  padding: 20px;
-  margin-top: 0;
-  margin-bottom: 0;
-  box-sizing: border-box;
+:global(.paper-card) {
+  position: relative;
+  & > h3 {
+    width: 100%;
+    background-color: rgb(232, 232, 232);
+    color: #4a525d;
+    padding: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+    box-sizing: border-box;
+  }
+  .actions {
+    display: inline;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 13px;
+    & > *:not(:first-child) {
+      margin-left: 1rem;
+    }
+    .actions-label {
+      display: inline;
+    }
+  }
 }
 
 :global(.paper-body) {

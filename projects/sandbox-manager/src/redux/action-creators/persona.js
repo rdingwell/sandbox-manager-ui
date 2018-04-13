@@ -1,8 +1,22 @@
 import * as actionTypes from "./types";
+import { parseNames } from "../../../../../lib/utils/fhir";
 
-export function lookupPersonasStart () {
+export function lookupPersonasStart (type) {
     return {
-        type: actionTypes.LOOKUP_PERSONAS_START
+        type: actionTypes.LOOKUP_PERSONAS_START,
+        payload: { type }
+    }
+}
+
+export function creatingPersonaStart () {
+    return {
+        type: actionTypes.CREATE_PERSONA_START
+    }
+}
+
+export function creatingPersonaEnd () {
+    return {
+        type: actionTypes.CREATE_PERSONA_END
     }
 }
 
@@ -13,34 +27,130 @@ export function lookupPersonasFail (error) {
     }
 }
 
-export function savePatients (type, personas) {
+export function setPersonas (type, personas, pagination) {
     return {
         type: actionTypes.LOOKUP_PERSONAS_SUCCESS,
-        payload: { type, personas }
+        payload: { type, personas, pagination }
     };
 }
 
-export function fetchPersonas (type = "Patient") {
+export function getPersonasPage (type = "Patient", pagination, direction) {
     return dispatch => {
         if (window.fhirClient) {
-            dispatch(lookupPersonasStart());
-            let count = 50;
+            dispatch(lookupPersonasStart(type));
+            let next = pagination.link.find(i => i.relation === direction);
+            let url = next.url;
+            fetch(url, {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(res => {
+                    res.json().then(personas => {
+                        if (personas.entry) {
+                            let resourceResults = [];
 
-            let searchParams = { type, count: count };
-            searchParams.query = {};
+                            for (let key in personas.entry) {
+                                personas.entry[key].resource.fullUrl = personas.entry[key].fullUrl;
+                                resourceResults.push(personas.entry[key].resource);
+                            }
+                            let paginationData = {
+                                total: personas.total,
+                                link: personas.link
+                            };
 
-            window.fhirClient.api.search(searchParams)
-                .then(response => {
-                    let resourceResults = [];
+                            dispatch(setPersonas(type, resourceResults, paginationData));
+                        } else {
+                            dispatch(setPersonas(type, personas));
+                        }
+                    })
+                })
+        }
+    }
+}
 
-                    for (let key in response.data.entry) {
-                        response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
-                        resourceResults.push(response.data.entry[key].resource);
+export function fetchPersonas (type = "Patient") {
+    return (dispatch, getState) => {
+        if (window.fhirClient) {
+            dispatch(lookupPersonasStart(type));
+            let count = 10;
+
+            let state = getState();
+            if (type === 'userPersona') {
+                let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
+                fetch(`${url}/userPersona?sandboxId=${state.sandbox.selectedSandbox}`, {
+                    headers: {
+                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
                     }
-                    dispatch(savePatients(type, resourceResults));
-                }).fail(error => {
-                dispatch(lookupPersonasFail(error));
-            });
+                })
+                    .then(res => {
+                        res.json().then(personas => {
+                            dispatch(setPersonas(type, personas));
+                        })
+                    })
+            } else {
+                let searchParams = { type, count: count };
+                searchParams.query = {};
+
+                window.fhirClient.api.search(searchParams)
+                    .then(response => {
+                        let resourceResults = [];
+
+                        for (let key in response.data.entry) {
+                            response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
+                            resourceResults.push(response.data.entry[key].resource);
+                        }
+                        let paginationData = {
+                            total: response.data.total,
+                            link: response.data.link
+                        };
+
+                        dispatch(setPersonas(type, resourceResults, paginationData));
+                    }).fail(error => {
+                    dispatch(lookupPersonasFail(error));
+                });
+            }
         }
     };
+}
+
+export function createPersona (type, persona) {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        if (window.fhirClient) {
+            dispatch(creatingPersonaStart());
+            let names = parseNames(persona);
+            let payload = {
+                fhirId: persona.id,
+                fhirName: names[0].val,
+                personaUserId: persona.userId,
+                personaName: names[0].val,
+                resource: type,
+                resourceUrl: `${type}/${persona.id}`,
+                password: persona.password,
+                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox),
+                createdBy: state.users.oauthUser
+            };
+
+            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
+            fetch(`${url}/userPersona?sandboxId=${state.sandbox.selectedSandbox}`, {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+                .then(e => {
+                    e.json().then(i => console.log(i));
+                    dispatch(creatingPersonaEnd());
+                });
+        }
+    }
 }
