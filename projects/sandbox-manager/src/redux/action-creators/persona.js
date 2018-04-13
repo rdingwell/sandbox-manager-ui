@@ -34,6 +34,22 @@ export function setPersonas (type, personas, pagination) {
     };
 }
 
+export function deletePersona (persona) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/userPersona/" + persona.id;
+        fetch(url, {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'DELETE'
+        })
+            .then(() => dispatch(fetchPersonas('Persona')));
+    }
+}
+
 export function getPersonasPage (type = "Patient", pagination, direction) {
     return dispatch => {
         if (window.fhirClient) {
@@ -75,10 +91,10 @@ export function fetchPersonas (type = "Patient") {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
-            let count = 10;
+            let count = 20;
 
             let state = getState();
-            if (type === 'userPersona') {
+            if (type === 'Persona') {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
                 fetch(`${url}/userPersona?sandboxId=${state.sandbox.selectedSandbox}`, {
                     headers: {

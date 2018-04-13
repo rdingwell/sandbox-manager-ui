@@ -6,3 +6,4 @@ export * from "./sandbox";
 export * from "./users";
 export * from "./app";
 export * from "./persona";
+export * from "./patient";

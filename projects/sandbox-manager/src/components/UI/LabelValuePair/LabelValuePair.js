@@ -2,12 +2,12 @@ import React from 'react';
 
 const labelStyle = {
     width: '30%',
-    float: 'left'
+    display: 'inline-block'
 };
 
 const valueStyle = {
     width: '60%',
-    float: 'right'
+    display: 'inline-block'
 };
 
 

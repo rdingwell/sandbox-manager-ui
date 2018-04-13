@@ -42,8 +42,8 @@ class Persona extends Component {
             key: this.state.type,
             type: this.state.type,
             personas: this.props.currentPersonas,
-            click: this.selectPersonHandler,
             pagination: this.props.currentPagination,
+            click: viewPersona => this.setState({ viewPersona }),
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };
@@ -63,20 +63,36 @@ class Persona extends Component {
         let personaList = <PersonaList {...props} />;
         let personaDetails = null;
         if (!this.props.doLaunch && this.state.selectedPersona) {
-            personaDetails = <PersonaDetails persona={this.state.selectedPersona} />;
+            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} />;
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
         return <div className="patients-wrapper">
             <div>
-                {creationType && this.getDialog(creationType)}
+                {creationType && this.getSelectionDialog(creationType)}
+                {this.getDetailsWindow()}
                 {personaList}
                 {personaDetails}
             </div>
         </div>;
     }
 
-    getDialog (creationType) {
+    getDetailsWindow () {
+        let actions = [
+            <FlatButton key={2} label='Close' secondary onClick={this.closeDialog.bind(this)} />
+        ];
+        this.state.type === PersonaList.TYPES.persona &&
+        actions.unshift(<RaisedButton key={1} label="DELETE" secondary onClick={() => {
+            this.props.deletePersona(this.state.viewPersona);
+            this.closeDialog();
+        }} />);
+
+        return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog.bind(this)} contentClassName='persona-info-dialog' actions={actions}>
+            {!this.state.selectedForCreation && <PersonaDetails type={this.state.type} persona={this.state.viewPersona} />}
+        </Dialog>
+    }
+
+    getSelectionDialog (creationType) {
         let actions = [
             <FlatButton key={1} label='Save' primary onClick={this.createPersona.bind(this)} />,
             <FlatButton key={2} label='Cancel' secondary onClick={this.closeDialog.bind(this)} />
@@ -90,17 +106,14 @@ class Persona extends Component {
                          pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}
                          prev={() => this.props.getPrevPersonasPage(creationType, pagination)} />}
             {this.state.selectedForCreation && <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={this.props.selectedSandbox} onChange={this.updateInputs.bind(this)} />
+                <PersonaInputs persona={this.state.selectedForCreation} sandbox={this.props.selectedSandbox}
+                               onChange={(username, password) => this.setState({ username, password })} />
             </div>}
         </Dialog>
     }
 
-    updateInputs (username, password) {
-        this.setState({ username, password })
-    }
-
     closeDialog () {
-        this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined });
+        this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined });
     }
 
     createPersona () {
@@ -148,6 +161,7 @@ function mapStateToProps (state, ownProps) {
 const mapDispatchToProps = dispatch => {
     return {
         fetchPersonas: (type) => dispatch(actions.fetchPersonas(type)),
+        deletePersona: (persona) => dispatch(actions.deletePersona(persona)),
         getNextPersonasPage: (type, pagination) => dispatch(actions.getPersonasPage(type, pagination, "next")),
         getPrevPersonasPage: (type, pagination) => dispatch(actions.getPersonasPage(type, pagination, "previous")),
         app_setScreen: (screen) => dispatch(actions.app_setScreen(screen)),

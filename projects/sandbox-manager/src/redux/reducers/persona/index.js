@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
             state.loadingError = null;
             action.payload.type === "Patient" && (state.patients = undefined);
             action.payload.type === "Practitioner" && (state.practitioners = undefined);
-            action.payload.type === "userPersona" && (state.personas = undefined);
+            action.payload.type === "Persona" && (state.personas = undefined);
             break;
         case actionTypes.LOOKUP_PERSONAS_FAIL:
             state.loading = false;
@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
                     state.practitioners = action.payload.personas;
                     state.practitionersPagination = action.payload.pagination;
                     break;
-                case "userPersona":
+                case "Persona":
                     state.personas = action.payload.personas;
                     state.personasPagination = action.payload.pagination;
                     break;

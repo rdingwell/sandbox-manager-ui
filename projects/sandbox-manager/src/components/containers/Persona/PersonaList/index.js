@@ -8,7 +8,7 @@ export default class PersonaList extends Component {
 
     static TYPES = {
         patient: "Patient",
-        persona: "userPersona",
+        persona: "Persona",
         practitioner: "Practitioner"
     };
 
@@ -48,7 +48,7 @@ export default class PersonaList extends Component {
                     {getAge(persona.birthDate) || ""}
                 </TableRowColumn>}
                 {!isPatient && !isPractitioner && <TableRowColumn>
-                    {persona.fhirId}
+                    {persona.personaUserId}
                 </TableRowColumn>}
                 {!isPatient && !isPractitioner && <TableRowColumn>
                     {persona.resourceUrl}

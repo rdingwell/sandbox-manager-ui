@@ -2,66 +2,62 @@ import React, { Component } from 'react';
 import * as  actions from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import Paper from 'material-ui/Paper';
+import { Paper, Subheader } from 'material-ui';
 import LabelValuePair from '../../../UI/LabelValuePair/LabelValuePair';
 import NameLabelValuePair from '../../../UI/LabelValuePair/NameLabelValuePair';
 import PersonaData from "./PersonaData";
+import PersonaList from "../PersonaList";
+
+import './styles.less';
 
 class Index extends Component {
-    componentWillMount() {
-        for (const resource of JSON.parse(localStorage.getItem('resources'))) {
-            this.props.onFetch(this.props.patient, resource.resourceType);
-        }
+    componentDidMount () {
+        this.props.fetchPatientDetails(this.props.persona);
     }
 
-    render(){
-        let patientData = null;
-        if(!this.props.loadingObservations){
-            patientData = (
-                <PersonaData
-                    patient={this.props.patient}
-                    allergyIntoleranceLoading={this.props.loadingAllergyIntolerance}
-                    allergyCount={this.props.allergyCount}
-                    carePlanLoading={this.props.loadingCarePlan}
-                    carePlanCount={this.props.carePlanCount}
-                    loadingCareTeam={this.props.loadingCareTeam}
-                    careTeamCount={this.props.careTeamCount}
-                    loadingCondition={this.props.loadingCondition}
-                    conditionCount={this.props.conditionCount}
-                    loadingDiagnosticReport= {this.props.loadingDiagnosticReport}
-                    diagnosticReportCount={this.props.diagnosticReportCount}
-                    loadingEncounter={this.props.loadingEncounter}
-                    encounterCount={this.props.encounterCount}
-                    loadingGoal={this.props.loadingGoal}
-                    goalCount={this.props.goalCount}
-                    immunizationCount={this.props.immunizationCount}
-                    loadingImmunization={this.props.loadingImmunization}
-                    medicationDispenseCount={this.props.medicationDispenseCount}
-                    loadingMedicationDispense={this.props.loadingMedicationDispense}
-                    medicationRequestCount={this.props.medicationRequestCount}
-                    loadingMedicationRequest={this.props.loadingMedicationRequest}
-                    loadingObservation={this.props.loadingObservation}
-                    observationCount={this.props.observationCount}
-                    procedureCount={this.props.procedureCount}
-                    loadingProcedure={this.props.loadingProcedure}
-                    procedureRequestCount={this.props.procedureRequestCount}
-                    loadingProcedureRequest={this.props.loadingProcedureRequest}
-
-        />
-            );
-        }
-
+    render () {
         return (
-            <Paper className="PaperCard">
-                <h3>Patient Details</h3>
-                <div className="PaperBody">
-                    <NameLabelValuePair label={"Name:"} value={this.props.patient.name[0]}/>
-                    <LabelValuePair label={"FHIR ID:"} value={this.props.patient.id}/>
-                    <LabelValuePair label={"Gender:"} value={this.props.patient.gender}/>
-                    <LabelValuePair label={"Birth Date:"} value={this.props.patient.birthDate}/>
+            <Paper className="paper-card">
+                <h3>{this.props.type} Details</h3>
+                <div className="paper-body persona-details-wrapper">
+                    {this.props.type !== PersonaList.TYPES.persona && <Paper className="paper-card" zDepth={1}>
+                        <Subheader>{this.props.type}</Subheader>
+                        <div className="paper-body">
+                            <NameLabelValuePair label={"Name:"} value={this.props.persona.name[0]} />
+                            <LabelValuePair label={"FHIR ID:"} value={this.props.persona.id} />
+                            <LabelValuePair label={"Gender:"} value={this.props.persona.gender} />
+                            <LabelValuePair label={"Birth Date:"} value={this.props.persona.birthDate} />
+                        </div>
+                    </Paper>}
+                    {this.props.type === PersonaList.TYPES.persona && <Paper className="paper-card" zDepth={1}>
+                        <Subheader>{this.props.type}</Subheader>
+                        <div className="paper-body">
+                            <LabelValuePair label={"Display name:"} value={this.props.persona.fhirName} />
+                            <LabelValuePair label={"User Id:"} value={this.props.persona.personaUserId} />
+                            <LabelValuePair label={"Password (not secured):"} value={this.props.persona.password} />
+                            <LabelValuePair label={"FHIR Resource Type:"} value={this.props.persona.resource} />
+                        </div>
+                    </Paper>}
+                    {this.props.type === PersonaList.TYPES.patient && <Paper className="paper-card" zDepth={1}>
+                        <Subheader>Data summary</Subheader>
+                        <PersonaData
+                            patient={this.props.persona}
+                            allergyCount={this.props.allergyCount}
+                            carePlanCount={this.props.carePlanCount}
+                            careTeamCount={this.props.careTeamCount}
+                            conditionCount={this.props.conditionCount}
+                            diagnosticReportCount={this.props.diagnosticReportCount}
+                            encounterCount={this.props.encounterCount}
+                            goalCount={this.props.goalCount}
+                            immunizationCount={this.props.immunizationCount}
+                            medicationDispenseCount={this.props.medicationDispenseCount}
+                            medicationRequestCount={this.props.medicationRequestCount}
+                            observationCount={this.props.observationCount}
+                            procedureCount={this.props.procedureCount}
+                            procedureRequestCount={this.props.procedureRequestCount}
+                        />
+                    </Paper>}
                 </div>
-                <div style={{clear: 'both'}}></div>
-                {patientData}
             </Paper>
         );
     }
@@ -70,40 +66,26 @@ class Index extends Component {
 const mapStateToProps = state => {
 
     return {
-        loadingAllergyIntolerance: state.patientStore.allergyLoading,
-        allergyCount: state.patientStore.allergyCount,
-        loadingCarePlan: state.patientStore.loadingCarePlan,
-        carePlanCount: state.patientStore.carePlanCount,
-        loadingCareTeam: state.patientStore.loadingCareTeam,
-        careTeamCount: state.patientStore.careTeamCount,
-        loadingCondition: state.patientStore.loadingCondition,
-        conditionCount: state.patientStore.conditionCount,
-        loadingDiagnosticReport: state.patientStore.loadingDiagnosticReport,
-        diagnosticReportCount: state.patientStore.diagnosticReportCount,
-        loadingEncounter: state.patientStore.loadingEncounter,
-        encounterCount: state.patientStore.encounterCount,
-        loadingGoal: state.patientStore.loadingGoal,
-        goalCount: state.patientStore.goalCount,
-        immunizationCount: state.patientStore.immunizationCount,
-        loadingImmunization: state.patientStore.loadingImmunization,
-        medicationDispenseCount: state.patientStore.medicationDispenseCount,
-        loadingMedicationDispense: state.patientStore.loadingMedicationDispense,
-        medicationRequestCount: state.patientStore.medicationRequestCount,
-        loadingMedicationRequest: state.patientStore.loadingMedicationRequest,
-        loadingObservation: state.patientStore.loadingObservation,
-        observationCount: state.patientStore.observationCount,
-        procedureCount: state.patientStore.procedureCount,
-        loadingProcedure: state.patientStore.loadingProcedure,
-        procedureRequestCount: state.patientStore.procedureRequestCount,
-        loadingProcedureRequest:state.patientStore.loadingProcedureRequest
+        observationCount: state.patient.details.Observation,
+        encounterCount: state.patient.details.Encounter,
+        medicationRequestCount: state.patient.details.MedicationRequest,
+        medicationDispenseCount: state.patient.details.MedicationDispense,
+        allergyCount: state.patient.details.AllergyIntolerance,
+        conditionCount: state.patient.details.Condition,
+        procedureCount: state.patient.details.Procedure,
+        diagnosticReportCount: state.patient.details.DiagnosticReport,
+        immunizationCount: state.patient.details.Immunization,
+        carePlanCount: state.patient.details.CarePlan,
+        careTeamCount: state.patient.details.CareTeam,
+        goalCount: state.patient.details.Goal
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetch: (patient, type) => dispatch(actions.fetch(patient, type)),
+        fetchPatientDetails: patient => dispatch(actions.fetchPatientDetails(patient))
     };
 };
 
 
-export default connect( mapStateToProps, mapDispatchToProps )( withErrorHandler( Index ) );
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index));
