@@ -3,11 +3,12 @@ import { Card, CardMedia, CardTitle, Dialog, Paper, CardActions, FlatButton, Rai
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 
-import * as  actions from '../../../redux/action-creators';
+import {app_setScreen, doLaunch} from '../../../redux/action-creators';
 import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
-import RegisteredApp from "./RegisteredApp/RegisteredApp";
+import Index from "./RegisteredApp";
 import Personas from '../Persona';
 
 import './styles.less';
@@ -48,11 +49,11 @@ class Apps extends Component {
         let dialog = this.state.selectedApp
             ? <Dialog paperClassName="app-dialog" modal={false} open={!!this.state.selectedApp} onRequestClose={this.handleAppSelect}
                       actions={[<FlatButton key={1} onClick={this.handleAppSelect} label="Cancel" />]}>
-                <RegisteredApp app={this.state.selectedApp} />
+                <Index app={this.state.selectedApp} />
             </Dialog>
             : this.state.appToLaunch
                 ? <Dialog paperClassName="app-dialog" modal={false} open={!!this.state.appToLaunch} onRequestClose={() => this.handleAppLaunch()}>
-                    <Personas type="Patient" doLaunch={this.state.appToLaunch} />
+                    <Personas type="Patient" doLaunch={persona => this.props.doLaunch(this.state.appToLaunch, persona)} />
                 </Dialog>
                 : null;
 
@@ -76,10 +77,7 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-    return {
-        onSaveSandbox: (sandboxDetails) => dispatch(actions.updateSandbox(sandboxDetails)),
-        app_setScreen: (screen) => dispatch(actions.app_setScreen(screen))
-    };
+    return bindActionCreators({doLaunch, app_setScreen}, dispatch);
 };
 
 

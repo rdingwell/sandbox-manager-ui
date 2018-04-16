@@ -5,9 +5,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
 class LaunchScenario extends Component {
     componentDidMount() {
-        let url = this.props.location;
-        this.props.afterAuth(url);
-        this.props.history.push("/launch");
+        this.props.app_setScreen('launch');
     }
 
     render() {
@@ -27,7 +25,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        afterAuth: (url) => dispatch( actions.afterFhirAuth(url) )
+        app_setScreen: (screen) => dispatch( actions.app_setScreen(screen) )
     };
 };
 

@@ -5,31 +5,33 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 export default class InitLoader extends React.Component {
     componentDidMount () {
-        window.FHIR.oauth2.ready(
-            (smart) => {
-                Promise.resolve()
-                    .then(() => {
-                        this.props.fhir_Reset();
-                        this.props.fhir_SetSmart({ status: "ready", data: smart });
-                    })
-                    .then(() => process.env.NODE_ENV !== "production");
-            },
-            () => {
-                Promise.resolve()
-                    .then(() => {
-                        this.props.fhir_Reset();
-                        this.props.fhir_SetSmart({ status: "error", data: fhirInitState.smart.data });
-                        this.props.fhir_SetSampleData();
-                    })
-                    .then(() => process.env.NODE_ENV !== "production");
-            }
-        );
+        if (this.props.location.pathname !== "/launchApp") {
+            window.FHIR.oauth2.ready(
+                (smart) => {
+                    Promise.resolve()
+                        .then(() => {
+                            this.props.fhir_Reset();
+                            this.props.fhir_SetSmart({ status: "ready", data: smart });
+                        })
+                        .then(() => process.env.NODE_ENV !== "production");
+                },
+                () => {
+                    Promise.resolve()
+                        .then(() => {
+                            this.props.fhir_Reset();
+                            this.props.fhir_SetSmart({ status: "error", data: fhirInitState.smart.data });
+                            this.props.fhir_SetSampleData();
+                        })
+                        .then(() => process.env.NODE_ENV !== "production");
+                }
+            );
 
-        let smart = this.props.fhir.smart.data.server ? FHIR.client(this.props.fhir.smart.data.server) : null;
-        smart && this.props.fhirauth_setSmart(smart, this.props.history);
+            let smart = this.props.fhir.smart.data.server ? FHIR.client(this.props.fhir.smart.data.server) : null;
+            smart && this.props.fhirauth_setSmart(smart, this.props.history);
 
-        // Initialize the app
-        this.init();
+            // Initialize the app
+            this.init();
+        }
     }
 
     render () {

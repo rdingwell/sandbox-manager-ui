@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Dialog } from 'material-ui';
-import AvailableSandboxes from './AvailableSandboxes/AvailableSandboxes';
+import AvailableSandboxes from './AvailableSandboxes';
 import SandboxInvites from "./SandboxInvites/SandboxInvites";
 import CreateSandbox from '../CreateSandbox';
 import withErrorHandler from "../../../../../../lib/hoc/withErrorHandler";

@@ -37,13 +37,19 @@ class Persona extends Component {
         (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && this.props.fetchPersonas(type);
     }
 
+    selectPersonHandler = (persona) => {
+        this.props.doLaunch && this.props.doLaunch(persona);
+        this.props.doLaunch && this.closeDialog();
+        !this.props.doLaunch && this.setState({ viewPersona: persona });
+    };
+
     render () {
         let props = {
             key: this.state.type,
             type: this.state.type,
             personas: this.props.currentPersonas,
             pagination: this.props.currentPagination,
-            click: viewPersona => this.setState({ viewPersona }),
+            click: this.selectPersonHandler,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };

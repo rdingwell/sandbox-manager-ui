@@ -75,7 +75,7 @@ function queryFhirVersion (dispatch, fhirClient, state) {
 }
 
 export function authorize (url, state, sandboxId) {
-    let thisUri = sandboxId ? window.location.origin + "/launch" : window.location.origin + "/after-auth";
+    let thisUri = sandboxId ? window.location.origin + "/apps" : window.location.origin + "/after-auth";
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
     let client = {

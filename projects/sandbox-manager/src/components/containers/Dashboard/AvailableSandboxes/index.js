@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import './styles.less';
 
-class AvailableSandboxes extends Component {
+class Index extends Component {
 
     componentDidMount () {
         this.fetchSandboxes();
@@ -15,22 +15,6 @@ class AvailableSandboxes extends Component {
 
     componentDidUpdate (prevProps) {
         !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient && this.props.onFetchSandboxes();
-    }
-
-    handleCreate = () => {
-        // this.props.history.push("/create-sandbox");
-        this.props.onToggleModal && this.props.onToggleModal();
-    };
-
-    handleRowSelect = (row) => {
-        let sandbox = this.props.sandboxes[row];
-        localStorage.setItem('sandboxId', sandbox.sandboxId);
-        this.props.onSelectSandbox(sandbox.sandboxId);
-        this.props.history.push("/launch");
-    };
-
-    fetchSandboxes () {
-        window.fhirClient && this.props.onFetchSandboxes();
     }
 
     render () {
@@ -69,6 +53,21 @@ class AvailableSandboxes extends Component {
             </div>
         </Paper>;
     }
+
+    handleCreate = () => {
+        // this.props.history.push("/create-sandbox");
+        this.props.onToggleModal && this.props.onToggleModal();
+    };
+
+    handleRowSelect = (row) => {
+        let sandbox = this.props.sandboxes[row];
+        localStorage.setItem('sandboxId', sandbox.sandboxId);
+        this.props.onSelectSandbox(sandbox.sandboxId);
+    };
+
+    fetchSandboxes () {
+        window.fhirClient && this.props.onFetchSandboxes();
+    }
 }
 
 const mapStateToProps = state => {
@@ -86,4 +85,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(AvailableSandboxes)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));

@@ -1,6 +1,8 @@
 import * as actionTypes from './types';
 import { authorize } from './fhirauth';
 
+const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
     return {
@@ -124,6 +126,13 @@ export const lookupSandboxByIdSuccess = (sandboxes) => {
     }
 };
 
+export const setDefaultSandboxUser = (user) => {
+    return {
+        type: actionTypes.SET_DEFAULT_SANDBOX_USER,
+        payload: { user }
+    }
+};
+
 
 const getConfig = (_state) => {
     return {
@@ -158,17 +167,39 @@ export const selectSandbox = (sandboxId) => {
                 dispatch(authorizeSandbox(sandboxId));
                 dispatch(setDefaultUrl(sandboxId));
                 dispatch(selectSandboxById(sandboxId));
+                dispatch(getDefaultUserForSandbox(sandboxId))
             });
     };
 
 };
+
+export function getDefaultUserForSandbox (sandboxId) {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+            },
+            contentType: "application/json",
+        };
+
+        fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
+            .then(userResponse => userResponse.json()
+                .then(user => {
+                    dispatch(setDefaultSandboxUser(user));
+                }))
+            .catch(e => console.log(e));
+    }
+}
 
 export function authorizeSandbox (sandboxId) {
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state, sandboxId);
     }
-};
+}
 
 export const createSandbox = (sandboxDetails) => {
     return (dispatch, getState) => {
@@ -273,5 +304,90 @@ export const fetchSandboxInvites = () => {
     };
 };
 
+export function doLaunch (app, persona, user) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        user = user ? user : state.sandbox.defaultUser;
 
+        let key = random(32);
+        window.localStorage[key] = "requested-launch";
 
+        let params = {};
+        if (persona) {
+            params = { patient: persona.id };
+        }
+
+        params["need_patient_banner"] = false;
+        let appWindow = window.open('/launchApp?' + key, '_blank');
+        let config = getConfig(state);
+        config.body = JSON.stringify({ username: user.personaUserId, password: user.password });
+        config.method = "POST";
+        config.headers["Content-Type"] = "application/json";
+        let launchDetails = {
+            userPersona: Object.assign({}, user),
+            patientContext: persona.id
+        };
+
+        try {
+            registerAppContext(app, params, launchDetails, key);
+            fetch(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", config)
+                .then(function (response) {
+                    response.json()
+                        .then(data => {
+                            const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+                            const date = new Date();
+                            date.setTime(date.getTime() + (3 * 60 * 1000));
+                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.toString()}; domain=${url}; path=/`;
+                            document.cookie = cookie;
+                        });
+                });
+        } catch (e) {
+            console.log(e);
+            appWindow.close();
+        }
+    }
+}
+
+function random (length) {
+    let result = '';
+    for (let i = length; i > 0; --i) {
+        result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];
+    }
+    return result;
+}
+
+function registerAppContext (app, params, launchDetails, key) {
+    let appToLaunch = Object.assign({}, app);
+    delete appToLaunch.clientJSON;
+    delete appToLaunch.createdBy;
+    delete appToLaunch.sandbox;
+    callRegisterContext(appToLaunch, params, window.fhirClient.server.serviceUrl, launchDetails, key);
+}
+
+function callRegisterContext (appToLaunch, params, issuer, launchDetails, key) {
+    let config = {
+        method: 'POST',
+        headers: {
+            Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            client_id: appToLaunch.authClient.clientId,
+            parameters: params
+        })
+    };
+
+    fetch(issuer + '/_services/smart/Launch', config)
+        .then(response => {
+            response.json()
+                .then(context =>
+                    window.localStorage[key] = JSON.stringify({
+                        app: appToLaunch,
+                        iss: issuer,
+                        launchDetails: launchDetails,
+                        context
+                    }))
+        })
+}

@@ -104,10 +104,6 @@ const config = {
         new CopyWebpackPlugin(
             [
                 {
-                    from: SRC_DIR + "/launch.html",
-                    to: DIST_DIR
-                },
-                {
                     from: SRC_DIR + "/assets/data/xsettings." + ENV + ".json",
                     to: DIST_DIR + "/data/xsettings.json"
                 },

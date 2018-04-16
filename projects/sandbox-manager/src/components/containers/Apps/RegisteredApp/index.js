@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField } from 'material-ui';
 
-class RegisteredApp extends Component {
+class Index extends Component {
     state = {
         value: 'PublicClient',
         modalOpen: false
@@ -69,4 +69,4 @@ class RegisteredApp extends Component {
 
 }
 
-export default RegisteredApp;
+export default Index;
