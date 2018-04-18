@@ -21,7 +21,7 @@ class Index extends Component {
         let sandboxes = null;
         if (!this.props.loading) {
             sandboxes = this.props.sandboxes.map(sandbox => (
-                <TableRow key={sandbox.id}>
+                <TableRow key={sandbox.id} hoverable>
                     <TableRowColumn>
                         {sandbox.name}
                     </TableRowColumn>
@@ -45,7 +45,7 @@ class Index extends Component {
                             <TableHeaderColumn>Description</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody displayRowCheckbox={false} stripedRows={true}>
+                    <TableBody displayRowCheckbox={false} stripedRows showRowHover>
                         {sandboxes}
                     </TableBody>
                 </Table>}

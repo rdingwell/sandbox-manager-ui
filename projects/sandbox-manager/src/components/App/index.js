@@ -27,7 +27,7 @@ class App extends React.Component {
 
     render () {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
-            <Layout>
+            <Layout path={this.props.history.location.pathname}>
                 <div className='app-root' ref={this.refStage()}>
                     <Init {...this.props} />
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>

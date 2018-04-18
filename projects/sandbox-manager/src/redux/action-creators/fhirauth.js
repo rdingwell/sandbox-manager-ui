@@ -187,5 +187,3 @@ export function fhirLoginFail () {
         type: actionTypes.FHIR_LOGIN_FAIL
     }
 }
-
-

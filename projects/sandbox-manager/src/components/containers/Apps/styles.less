@@ -26,8 +26,25 @@
 }
 
 .app-dialog {
+  .paper-body {
+    height: 85%;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+  .paper-card {
+    height: 100%;
+  }
+  .app-dialog-actions-wrapper {
+    & > * {
+      margin-left: 1rem;
+    }
+  }
+  .toggle-wrapper {
+    margin-top: 1.5rem;
+    max-width: 50%;
+  }
   & > div:first-child {
-    height: 88vh;
+    height: 65vh;
   }
   & > div:nth-child(1) {
     padding: 0 !important;
