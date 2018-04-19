@@ -56,8 +56,12 @@ export default class PersonaList extends Component {
             </TableRow>
         ));
 
+        let title = this.props.title
+            ? this.props.title
+            : isPatient ? "Patients" : isPractitioner ? "Practitioners" : "Personas";
+
         return <Paper className="paper-card persona-list">
-            <h3 style={{ width: "auto" }}>{isPatient ? "Patients" : isPractitioner ? "Practitioners" : "Personas"}</h3>
+            <h3 style={{ width: "auto" }}>{title}</h3>
             <div className="actions">
                 {this.props.actions}
             </div>

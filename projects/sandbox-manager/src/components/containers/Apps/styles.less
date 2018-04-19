@@ -4,11 +4,26 @@
     float: left;
   }
 
+  .paper-body {
+    max-height: 75vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .app-card {
-    width: 250px;
-    float: left;
+    width: 44%;
+    max-width: 320px;
+    display: inline-block;
     margin: 20px;
-    min-height: 255px;
+    min-height: 300px;
+    &.small {
+      min-height: 200px;
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.03, 1.03);
+        box-shadow: rgba(0, 0, 0, 0.28) 0 1px 60px, rgba(0, 0, 0, 0.28) 0 8px 34px !important;
+      }
+    }
   }
 
   .registered-app {
@@ -27,6 +42,7 @@
 
 .app-dialog {
   .paper-body {
+    width: 100%;
     height: 85%;
     overflow: auto;
     box-sizing: border-box;

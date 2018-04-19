@@ -1,0 +1,89 @@
+.launch-scenarios-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .launch-scenario-list-row {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .loader-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    vertical-align: middle;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.launch-scenario-dialog {
+  .apps-screen-wrapper {
+    .paper-body {
+      max-height: 60vh;
+    }
+  }
+  & > div > div {
+    padding: 0 !important;
+  }
+}
+
+.launch-scenario-dialog-action {
+  margin: .5rem 1rem .5rem 0;
+}
+
+.paper-body.launch-scenario-modal {
+  padding: 20px;
+  .details-pair {
+    margin: 0.5rem 0;
+    &.smaller-label {
+      & > label {
+        width: 30%;
+      }
+      & > span {
+        width: 70%;
+      }
+    }
+    & > label {
+      display: inline-block;
+      width: 50%;
+      vertical-align: top;
+      font-weight: bold;
+      color: gray;
+    }
+    & > span {
+      width: 50%;
+      display: inline-block;
+      word-wrap: break-word;
+      font-weight: bold;
+      &.center {
+        text-align: center;
+      }
+      & > i.fa {
+        margin-right: .4rem;
+      }
+      img {
+        height: 240px;
+      }
+    }
+  }
+  .launch-scenario-dialog-detail {
+    width: 48%;
+    margin-top: 1rem;
+    display: inline-block;
+    &.margin {
+      margin-left: 4%;
+    }
+    &.full {
+      width: 100%;
+    }
+    h3 {
+      margin: 0.5rem;
+    }
+    & > div > div {
+      padding: 0 0.5rem 0.5rem 0.5rem;
+    }
+  }
+}

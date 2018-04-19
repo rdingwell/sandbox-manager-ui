@@ -32,15 +32,15 @@ class Apps extends Component {
 
     render () {
         const apps = this.props.apps.map((app, index) => (
-            <Card className="app-card" key={index}>
+            <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia>
-                    <img style={{ height: 150 }} src={app.logoUri || "https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png"} alt="HSPC Logo" />
+                    <img style={{ height: 200 }} src={app.logoUri || "https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png"} alt="HSPC Logo" />
                 </CardMedia>
                 <CardTitle><span style={{ fontSize: 18 }}>{app.authClient.clientName}</span></CardTitle>
-                <CardActions className="card-actions-wrapper">
+                {!this.props.noActions && <CardActions className="card-actions-wrapper">
                     <RaisedButton labelPosition="before" secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
                     <RaisedButton labelPosition="before" primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
-                </CardActions>
+                </CardActions>}
             </Card>
         ));
 
@@ -56,10 +56,10 @@ class Apps extends Component {
         return <div className="apps-screen-wrapper">
             {dialog}
             <Paper className="paper-card">
-                <h3>Registered Sandbox Apps</h3>
-                <div className="actions">
+                <h3>{this.props.title ? this.props.title : 'Registered Sandbox Apps'}</h3>
+                {!this.props.noActions && <div className="actions">
                     <RaisedButton primary label="Register Sandbox" onClick={() => this.setState({ registerDialogVisible: true })} />
-                </div>
+                </div>}
                 <div className="paper-body">
                     {!this.props.appDeleting && !this.props.appCreating && apps}
                     {this.props.appDeleting || this.props.appCreating && <div className="loader-wrapper"><CircularProgress size={80} thickness={5} /></div>}

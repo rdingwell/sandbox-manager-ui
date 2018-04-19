@@ -64,6 +64,18 @@ export default function (state = initialState, action) {
         case actionTypes.SET_DEFAULT_SANDBOX_USER:
             state.defaultUser = action.payload.user;
             break;
+        case actionTypes.SET_LAUNCH_SCENARIOS_LOADING:
+            state.launchScenariosLoading = action.payload.loading;
+            break;
+        case actionTypes.SET_LAUNCH_SCENARIOS:
+            state.launchScenarios = action.payload.scenarios;
+            break;
+        case actionTypes.SET_LAUNCH_SCENARIOS_CREATING:
+            state.launchScenarioCreating = action.payload.creating;
+            break;
+        case actionTypes.SET_LAUNCH_SCENARIOS_DELETING:
+            state.launchScenarioDeleting = action.payload.deleting;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             break;

@@ -39,6 +39,34 @@ export const resetSandbox = (sandboxId) => {
     }
 };
 
+export function setLaunchScenariosLoading (loading) {
+    return {
+        type: actionTypes.SET_LAUNCH_SCENARIOS_LOADING,
+        payload: { loading }
+    }
+}
+
+export function setScenarioCreating (creating) {
+    return {
+        type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
+        payload: { creating }
+    }
+}
+
+export function setScenarioDeleting (deleting) {
+    return {
+        type: actionTypes.SET_LAUNCH_SCENARIOS_DELETING,
+        payload: { deleting }
+    }
+}
+
+export function setLaunchScenarios (scenarios) {
+    return {
+        type: actionTypes.SET_LAUNCH_SCENARIOS,
+        payload: { scenarios }
+    }
+}
+
 export const updateSandbox = (sandboxDetails) => {
     return {
         type: actionTypes.UPDATE_SANDBOX,
@@ -133,24 +161,6 @@ export const setDefaultSandboxUser = (user) => {
     }
 };
 
-
-const getConfig = (_state) => {
-    return {
-        headers: {
-            Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-        }
-    };
-};
-
-const setDefaultUrl = (sandboxId) => {
-    return {
-        type: actionTypes.SET_FHIR_SERVER_URL,
-        sandboxId: sandboxId
-    }
-};
-
 export const selectSandbox = (sandboxId) => {
     return (dispatch, getState) => {
         let state = getState();
@@ -172,6 +182,58 @@ export const selectSandbox = (sandboxId) => {
     };
 
 };
+
+export function deleteScenario (scenario) {
+    return (dispatch, getState) => {
+        dispatch(setScenarioDeleting(true));
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'DELETE'
+        };
+        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, config)
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                dispatch(setScenarioDeleting(false));
+            });
+    }
+}
+
+export function createScenario (data) {
+    return (dispatch, getState) => {
+        dispatch(setScenarioCreating(true));
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({ method: "POST" }, config))
+            .then(result => {
+                result.json()
+                    .then(r => {
+                        console.log(r);
+                    });
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                dispatch(setScenarioCreating(false));
+            });
+    }
+}
 
 export function getDefaultUserForSandbox (sandboxId) {
     return (dispatch, getState) => {
@@ -219,7 +281,6 @@ export const createSandbox = (sandboxDetails) => {
             });
     };
 };
-
 
 export const fetchSandboxById = (sandboxId) => {
     return (dispatch, getState) => {
@@ -304,7 +365,29 @@ export const fetchSandboxInvites = () => {
     };
 };
 
-export function doLaunch (app, persona, user) {
+export function loadLaunchScenarios () {
+    return (dispatch, getState) => {
+        dispatch(setLaunchScenariosLoading(true));
+        let state = getState();
+        let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + state.sandbox.selectedSandbox;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+            }
+        };
+        fetch(url, config)
+            .then(result => {
+                result.json()
+                    .then(scenarios => {
+                        dispatch(setLaunchScenarios(scenarios));
+                    })
+            })
+            .catch(e => console.log(e))
+            .then(() => dispatch(setLaunchScenariosLoading(false)));
+    }
+}
+
+export function doLaunch (app, persona = {}, user) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -314,8 +397,8 @@ export function doLaunch (app, persona, user) {
         window.localStorage[key] = "requested-launch";
 
         let params = {};
-        if (persona) {
-            params = { patient: persona.id };
+        if (persona.fhirId || persona.id) {
+            params = { patient: persona.fhirId || persona.id };
         }
 
         params["need_patient_banner"] = false;
@@ -348,6 +431,23 @@ export function doLaunch (app, persona, user) {
         }
     }
 }
+
+const getConfig = (_state) => {
+    return {
+        headers: {
+            Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        }
+    };
+};
+
+const setDefaultUrl = (sandboxId) => {
+    return {
+        type: actionTypes.SET_FHIR_SERVER_URL,
+        sandboxId: sandboxId
+    }
+};
 
 function random (length) {
     let result = '';
