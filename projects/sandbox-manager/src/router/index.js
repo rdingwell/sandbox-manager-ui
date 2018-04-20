@@ -8,7 +8,7 @@ import LaunchScenarios from '../components/containers/LaunchScenarios';
 import LaunchApp from '../components/containers/LaunchApp';
 import Settings from '../components/containers/Settings/Settings';
 import EHRIntegration from '../components/containers/EHRIntegration/EHRIntegration';
-import UserManagement from '../components/containers/UserManagement/UserManagement';
+import UserManagement from '../components/containers/UserManagement';
 import Dashboard from '../components/containers/Dashboard';
 import Start from '../components/containers/Start';
 import AfterAuth from '../components/containers/AfterAuth';

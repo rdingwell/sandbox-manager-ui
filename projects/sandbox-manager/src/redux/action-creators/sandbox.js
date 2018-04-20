@@ -18,13 +18,6 @@ export const removeUser = (userId) => {
     }
 };
 
-export const inviteNewUser = (email) => {
-    return {
-        type: actionTypes.INVITE_NEW_USER,
-        email: email
-    }
-};
-
 export const deleteSandbox = (sandboxId) => {
     return {
         type: actionTypes.DELETE_SANDBOX,
@@ -235,6 +228,36 @@ export function createScenario (data) {
     }
 }
 
+export const inviteNewUser = (email) => {
+    return (_d, getState) => {
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                invitedBy: {
+                    sbmUserId: state.users.oauthUser.sbmUserId
+                },
+                invitee: {
+                    email
+                },
+                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox)
+            })
+        };
+        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
+            .then(() => {
+
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+};
+
 export function getDefaultUserForSandbox (sandboxId) {
     return (dispatch, getState) => {
         let state = getState();
@@ -311,9 +334,6 @@ export const fetchSandboxById = (sandboxId) => {
 export const fetchSandboxes = () => {
     return (dispatch, getState) => {
         const state = getState();
-        // if(!state.fhir.fhirClient){
-        //     return;
-        // }
         dispatch(fetchSandboxesStart());
         let configuration = state.config.xsettings.data.sandboxManager;
         const queryParams = '?userId=' + state.users.oauthUser.sbmUserId;
@@ -341,23 +361,23 @@ export const fetchSandboxes = () => {
 export const fetchSandboxInvites = () => {
     return (dispatch, getState) => {
         const state = getState();
-        if (!state.fhir.fhirClient) {
-            return;
-        }
+        let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(fetchSandboxInvitesStart());
-        let configuration = JSON.parse(localStorage.getItem('config'));
 
-        const queryParams = '?sbmUserId=' + state.user.oauthUser.sbmUserId + '&status=PENDING';
+        const queryParams = '?sandboxId=' + state.sandbox.selectedSandbox + '&status=PENDING';
 
-        axios.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig(state))
-            .then(res => {
-                const invitations = [];
-                for (let key in res.data) {
-                    invitations.push({
-                        ...res.data[key], id: key
+        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig())
+            .then(result => {
+                result.json()
+                    .then(res => {
+                        const invitations = [];
+                        for (let key in res) {
+                            invitations.push({
+                                ...res[key], id: key
+                            });
+                        }
+                        dispatch(fetchSandboxInvitesSuccess(invitations));
                     });
-                }
-                dispatch(fetchSandboxInvitesSuccess(invitations));
             })
             .catch(err => {
                 dispatch(fetchSandboxInvitesFail(err));
