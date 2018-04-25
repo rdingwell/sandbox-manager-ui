@@ -1,29 +1,54 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import Checkbox from 'material-ui/Checkbox';
-import Start from "../Start";
+import { Checkbox, RaisedButton, Paper, TextField } from 'material-ui';
 import * as  actions from '../../../redux/action-creators';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
-
+import './styles.less';
 
 class Index extends Component {
+    constructor (props) {
+        super(props);
 
-    state = {
-        sandboxId: '',
-        name: '',
-        version: '',
-        allowOpen: false,
-        applyDefaultDataSet: true,
-        description: '',
-        createDisabled: true,
-        apiEndpointIndex: "6"
-    };
+        this.state = {
+            sandboxId: '',
+            name: '',
+            version: '',
+            allowOpen: false,
+            applyDefaultDataSet: true,
+            description: '',
+            createDisabled: true,
+            apiEndpointIndex: '6'
+        };
+    }
 
+    render () {
+        return <div className='create-sandbox-wrapper'>
+            <Paper className='paper-card'>
+                <h3>
+                    Create Sandbox
+                </h3>
+                <div className='paper-body'>
+                    <form>
+                        <TextField floatingLabelText='Sandbox Id' defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler} /><br />
+                        <div>Your sandbox will be available at http://localhost:3000/sandbox-id</div>
+                        <TextField floatingLabelText='Sandbox Name' onChange={this.sandboxNameChangedHandler} /> <br />
+                        <div>e.g., NewCo Sandbox</div>
+                        <TextField floatingLabelText='Sandbox Version' value={'FHIR STU 3 (v3.0.1)'} disabled /><br />
+                        <div>Choose a version of the FHIR Standard</div>
+                        <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler} />
+                        <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler} />
+                        <div>If not selected, the sandbox will be empty</div>
+                        <TextField floatingLabelText='Description' /><br />
+                        <div>e.g., This sandbox is the QA environment for NewCo.</div>
+                        <RaisedButton label='Create' disabled={this.state.createDisabled} className='button' primary onClick={this.handleCreateSandbox} />
+                        <RaisedButton label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)} />
+                    </form>
+                </div>
+            </Paper>
+            <div style={{ clear: 'both' }} />
+        </div>
+    }
 
     handleCreateSandbox = (event) => {
         event.preventDefault();
@@ -32,7 +57,7 @@ class Index extends Component {
             name: this.state.name.length === 0 ? this.state.sandboxId : this.state.name,
             sandboxId: this.state.sandboxId,
             description: this.state.description,
-            dataSet: this.state.applyDefaultDataSet ? "DEFAULT" : "NONE",
+            dataSet: this.state.applyDefaultDataSet ? 'DEFAULT' : 'NONE',
             apiEndpointIndex: this.state.apiEndpointIndex,
             allowOpenAccess: this.state.allowOpen,
             users: [this.props.user]
@@ -58,8 +83,6 @@ class Index extends Component {
     };
 
     handleCancel = () => {
-        // event.preventDefault();
-        // this.props.history.push("/dashboard");
         this.props.onCancel && this.props.onCancel();
     };
 
@@ -69,53 +92,6 @@ class Index extends Component {
 
     sandboxNameChangedHandler = (event) => {
         this.setState({ name: event.target.value });
-    };
-
-
-    render () {
-        const checkbox = {
-            marginBottom: 16
-        };
-
-        const buttonStyle = {
-            margin: 10
-        };
-
-
-        return (
-            <div className="testis">
-                <Paper className="paper-card">
-                    <h3>
-                        Create Sandbox
-                    </h3>
-                    <div className="paper-body">
-                        <form>
-                            <TextField floatingLabelText="Sandbox Id" defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler} /><br />
-                            <div>Your sandbox will be available at http://localhost:3000/sandbox-id</div>
-                            <TextField floatingLabelText="Sandbox Name" onChange={this.sandboxNameChangedHandler} /> <br />
-                            <div>e.g., NewCo Sandbox</div>
-                            <TextField floatingLabelText="Sandbox Version" value={"FHIR STU 3 (v3.0.1)"} disabled={true} /><br />
-                            <div>Choose a version of the FHIR Standard</div>
-                            <Checkbox
-                                label="Allow Open FHIR Endpoint"
-                                style={checkbox}
-                                onCheck={this.allowOpenChangeHandler.bind(this)} />
-                            <Checkbox
-                                label="Apply Default Data Set"
-                                style={checkbox} defaultChecked={true}
-                                onCheck={this.applyDefaultChangeHandler.bind(this)} />
-                            <div>If not selected, the sandbox will be empty</div>
-                            <TextField floatingLabelText="Description" /><br />
-                            <div>e.g., This sandbox is the QA environment for NewCo.</div>
-                            <RaisedButton label="Create" disabled={this.state.createDisabled} style={buttonStyle} primary={true}
-                                          onClick={(event) => this.handleCreateSandbox(event)} />
-                            <RaisedButton label="Cancel" style={buttonStyle} default={true} type="submit" onClick={(event) => this.handleCancel(event)} />
-                        </form>
-                    </div>
-                </Paper>
-                <div style={{ clear: 'both' }}></div>
-            </div>
-        );
     };
 
 }

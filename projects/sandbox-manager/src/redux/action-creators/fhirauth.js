@@ -108,7 +108,7 @@ export function authorize (url, state, sandboxId) {
         server: serviceUrl,
         from: url.pathname ? url.pathname : '/'
     }, function (err) {
-        //error
+        console.log(err);
     });
 }
 

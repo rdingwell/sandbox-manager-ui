@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
-import AppDialog from "./AppDialog";
+import AppDialog from './AppDialog';
 import Personas from '../Persona';
 
 import './styles.less';
@@ -34,12 +34,12 @@ class Apps extends Component {
         const apps = this.props.apps.map((app, index) => (
             <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia>
-                    <img style={{ height: 200 }} src={app.logoUri || "https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png"} alt="HSPC Logo" />
+                    <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                 </CardMedia>
                 <CardTitle><span style={{ fontSize: 18 }}>{app.authClient.clientName}</span></CardTitle>
-                {!this.props.noActions && <CardActions className="card-actions-wrapper">
-                    <RaisedButton labelPosition="before" secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
-                    <RaisedButton labelPosition="before" primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
+                {!this.props.noActions && <CardActions className='card-actions-wrapper'>
+                    <RaisedButton labelPosition='before' secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
+                    <RaisedButton labelPosition='before' primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
                 </CardActions>}
             </Card>
         ));
@@ -48,21 +48,21 @@ class Apps extends Component {
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
                          app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible} onClose={this.closeAll} />
             : this.state.appToLaunch
-                ? <Dialog paperClassName="app-dialog" modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
-                    <Personas type="Patient" doLaunch={this.doLaunch} />
+                ? <Dialog paperClassName='app-dialog' modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
+                    <Personas type='Patient' doLaunch={this.doLaunch} />
                 </Dialog>
                 : null;
 
-        return <div className="apps-screen-wrapper">
+        return <div className='apps-screen-wrapper'>
             {dialog}
-            <Paper className="paper-card">
+            <Paper className='paper-card'>
                 <h3>{this.props.title ? this.props.title : 'Registered Sandbox Apps'}</h3>
-                {!this.props.noActions && <div className="actions">
-                    <RaisedButton primary label="Register Sandbox" onClick={() => this.setState({ registerDialogVisible: true })} />
+                {!this.props.noActions && <div className='actions'>
+                    <RaisedButton primary label='Register App' onClick={() => this.setState({ registerDialogVisible: true })} />
                 </div>}
-                <div className="paper-body">
+                <div className='paper-body'>
                     {!this.props.appDeleting && !this.props.appCreating && apps}
-                    {this.props.appDeleting || this.props.appCreating && <div className="loader-wrapper"><CircularProgress size={80} thickness={5} /></div>}
+                    {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
                 </div>
             </Paper>
         </div>

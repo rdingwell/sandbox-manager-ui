@@ -5,10 +5,10 @@ import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
 import { CircularProgress, Paper, RaisedButton, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, Dialog, Card, TextField } from 'material-ui';
-import PersonaList from "../Persona/PersonaList";
+import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
 
-import './style.less';
+import './styles.less';
 
 class Index extends Component {
 
@@ -32,14 +32,14 @@ class Index extends Component {
     }
 
     render () {
-        return <div className="launch-scenarios-wrapper">
-            <Paper className="paper-card">
+        return <div className='launch-scenarios-wrapper'>
+            <Paper className='paper-card'>
                 <h3>Launch Scenarios</h3>
-                <div className="actions">
-                    <RaisedButton primary label="Build Launch Scenario" onClick={this.toggleModal} />
+                <div className='actions'>
+                    <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
                 </div>
-                <div className="paper-body">
-                    {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className="loader-wrapper">
+                <div className='paper-body'>
+                    {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5} />
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios.length > 0 && this.getScenarios()}
@@ -64,9 +64,9 @@ class Index extends Component {
         let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
 
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            {this.state.selectedScenario && <Paper className="paper-card">
+            {this.state.selectedScenario && <Paper className='paper-card'>
                 <h3>{title}</h3>
-                <div className="paper-body launch-scenario-modal">
+                <div className='paper-body launch-scenario-modal'>
                     {content}
                 </div>
             </Paper>}
@@ -88,7 +88,7 @@ class Index extends Component {
             patient: {
                 fhirId: this.state.selectedPatient.id,
                 name: getPatientName(this.state.selectedPatient),
-                resource: "Patient"
+                resource: 'Patient'
             },
             sandbox: this.props.sandbox,
             userPersona: this.state.selectedPersona,
@@ -126,17 +126,17 @@ class Index extends Component {
 
             let props = {
                 title, type, click, personas, pagination, actions,
-                next: () => this.props.getPersonasPage(type, pagination, "next"),
-                prev: () => this.props.getPersonasPage(type, pagination, "previous")
+                next: () => this.props.getPersonasPage(type, pagination, 'next'),
+                prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };
 
             return <PersonaList {...props} />;
         } else if (!this.state.selectedApp) {
             return <Apps title='Select app' noActions onCardClick={selectedApp => this.setState({ selectedApp })} />
         } else {
-            return <Paper className="paper-card">
+            return <Paper className='paper-card'>
                 <h3>Save Launch Scenario</h3>
-                <div className="paper-body">
+                <div className='paper-body'>
                     <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })} />
                     <TextField floatingLabelText='Persona' fullWidth disabled value={this.state.selectedPersona.personaName} />
                     <TextField floatingLabelText='Patient' fullWidth disabled value={this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'} />
@@ -149,7 +149,7 @@ class Index extends Component {
     getDetailsContent = () => {
         let patient = this.state.selectedScenario.patient;
         let label = this.state.selectedScenario.userPersona !== null && this.state.selectedScenario.userPersona.resource === 'Practitioner'
-            ? `Launch App as a Practitioner with ${patient.fhirId !== "0" ? '' : 'NO'} Patient Context`
+            ? `Launch App as a Practitioner with ${patient.fhirId !== '0' ? '' : 'NO'} Patient Context`
             : 'Launch an App As a Patient';
 
         return [
@@ -224,7 +224,7 @@ class Index extends Component {
     };
 
     getScenarios = () => {
-        return <Table selectable={false} fixedHeader width="100%" onCellClick={this.handleRowSelect} wrapperClassName="sample">
+        return <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                 <TableRow>
                     <TableHeaderColumn>Description</TableHeaderColumn>
@@ -256,7 +256,7 @@ class Index extends Component {
     };
 }
 
-function mapStateToProps (state) {
+const mapStateToProps = state => {
     return {
         user: state.users.oauthUser,
         creating: state.sandbox.launchScenarioCreating,
@@ -269,11 +269,17 @@ function mapStateToProps (state) {
         patients: state.persona.patients,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox)
     }
-}
+};
 
-function mapDispatchToProps (dispatch) {
-    return bindActionCreators({ app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch }, dispatch);
-}
+const mapDispatchToProps = dispatch => bindActionCreators({
+    app_setScreen,
+    loadLaunchScenarios,
+    fetchPersonas,
+    getPersonasPage,
+    createScenario,
+    deleteScenario,
+    doLaunch
+}, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index))

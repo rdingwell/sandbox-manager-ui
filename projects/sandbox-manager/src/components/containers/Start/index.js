@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-
-import * as  actions from '../../../redux/action-creators';
+import { Paper, RaisedButton } from 'material-ui';
+import { init } from '../../../redux/action-creators';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import strings from '../../../../externals/strings/start';
@@ -14,18 +13,18 @@ class Start extends Component {
         let language = this.props.language;
 
         let checkboxes = strings[language].checkboxes.map((checkbox, index) => (
-            <p key={index}><i className="fa fa-check" aria-hidden="true"> </i>{checkbox}</p>
+            <p key={index}><i className='fa fa-check' aria-hidden='true'> </i>{checkbox}</p>
         ));
         let buttons = !this.props.skipLogin
             ? <div>
-                <RaisedButton label={strings[language].signInLabel} className="paper-button" primary={true} onClick={this.handleSignIn.bind(this)} />
-                <RaisedButton label={strings[language].signUpLabel} className="paper-button" primary={true} onClick={this.handleSignUp.bind(this)} />
+                <RaisedButton label={strings[language].signInLabel} className='paper-button' primary={true} onClick={this.handleSignIn.bind(this)} />
+                <RaisedButton label={strings[language].signUpLabel} className='paper-button' primary={true} onClick={this.handleSignUp.bind(this)} />
             </div>
             : null;
 
-        return <Paper className="paper-card">
+        return <Paper className='paper-card'>
             <h3>{strings[language].title}</h3>
-            <div className="paper-body">
+            <div className='paper-body'>
                 <p>{strings[language].description}</p>
                 {checkboxes}
                 <p>{strings[language].note}</p>
@@ -39,7 +38,7 @@ class Start extends Component {
     };
 
     handleSignUp () {
-        window.location.href = this.props.settings.sandboxManager.userManagementUrl + "/public/newuser/?afterAuth=" + this.props.settings.sandboxManager.sandboxManagerUrl;
+        window.location.href = this.props.settings.sandboxManager.userManagementUrl + '/public/newuser/?afterAuth=' + this.props.settings.sandboxManager.sandboxManagerUrl;
     };
 }
 
@@ -51,10 +50,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onAuthInit: () => dispatch(actions.init())
-    };
-};
+const mapDispatchToProps = dispatch => bindActionCreators({ onAuthInit: init }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Start));

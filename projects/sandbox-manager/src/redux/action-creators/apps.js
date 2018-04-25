@@ -92,28 +92,30 @@ export function deleteApp (app) {
 
 export function loadSandboxApps () {
     return (dispatch, getState) => {
-        let state = getState();
-        dispatch(setSandboxAppsLoading(true));
+        if (window.fhirClient) {
+            let state = getState();
+            dispatch(setSandboxAppsLoading(true));
 
-        let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app?sandboxId=" + state.sandbox.selectedSandbox;
-        fetch(url, {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                response.json()
-                    .then(apps => {
-                        dispatch(setSandboxApps(apps));
-                    })
+            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app?sandboxId=" + state.sandbox.selectedSandbox;
+            fetch(url, {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
             })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(setSandboxAppsLoading(false));
-            })
+                .then(response => {
+                    response.json()
+                        .then(apps => {
+                            dispatch(setSandboxApps(apps));
+                        })
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+                .then(() => {
+                    dispatch(setSandboxAppsLoading(false));
+                })
+        }
     }
 }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import * as  actions from '../../../redux/action-creators';
+import { afterFhirAuth } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import { bindActionCreators } from 'redux';
 
 class AfterAuth extends Component {
 
@@ -11,13 +12,11 @@ class AfterAuth extends Component {
     }
 
     componentDidUpdate () {
-        this.props.user.sbmUserId && this.props.history.push("/dashboard");
+        this.props.user.sbmUserId && this.props.history.push('/dashboard');
     }
 
     render () {
-        return (
-            <div />
-        )
+        return <div />
     }
 }
 
@@ -29,9 +28,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        afterFhirAuth: (url) => dispatch(actions.afterFhirAuth(url))
-    };
+    return bindActionCreators({ afterFhirAuth }, dispatch);
 };
 
 

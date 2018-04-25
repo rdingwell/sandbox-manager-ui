@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import * as  actions from '../../../redux/action-creators';
+import { getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import PersonaList from "./PersonaList";
-import PersonaDetails from "./PersonaDetails";
-import PersonaInputs from "./PersonaInputs";
-import { RaisedButton, Dialog, FlatButton } from "material-ui";
+import PersonaList from './PersonaList';
+import PersonaDetails from './PersonaDetails';
+import PersonaInputs from './PersonaInputs';
+import { RaisedButton, Dialog, FlatButton } from 'material-ui';
 
 import './styles.less';
 
@@ -37,12 +38,6 @@ class Persona extends Component {
         (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && this.props.fetchPersonas(type);
     }
 
-    selectPersonHandler = (persona) => {
-        this.props.doLaunch && this.props.doLaunch(persona);
-        this.props.doLaunch && this.closeDialog();
-        !this.props.doLaunch && this.setState({ viewPersona: persona });
-    };
-
     render () {
         let props = {
             key: this.state.type,
@@ -55,12 +50,12 @@ class Persona extends Component {
         };
 
         this.state.type === PersonaList.TYPES.persona && (props.actions = [<h4 key={0} className='actions-label'>Create persona for: </h4>,
-            <RaisedButton key={1} labelPosition="before" primary icon={<i className="fa fa-user-md fa-2x fa-inverse" />}
+            <RaisedButton key={1} labelPosition='before' primary icon={<i className='fa fa-user-md fa-2x fa-inverse' />}
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.practitioner);
                               this.setState({ selectPractitioner: true })
                           }} />,
-            <RaisedButton key={2} labelPosition="before" primary icon={<i className="fa fa-user fa-2x fa-inverse" />}
+            <RaisedButton key={2} labelPosition='before' primary icon={<i className='fa fa-user fa-2x fa-inverse' />}
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.patient);
                               this.setState({ selectPatient: true })
@@ -73,7 +68,7 @@ class Persona extends Component {
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
-        return <div className="patients-wrapper">
+        return <div className='patients-wrapper'>
             <div>
                 {creationType && this.getSelectionDialog(creationType)}
                 {this.getDetailsWindow()}
@@ -83,30 +78,30 @@ class Persona extends Component {
         </div>;
     }
 
-    getDetailsWindow () {
+    getDetailsWindow = () => {
         let actions = [
-            <FlatButton key={2} label='Close' secondary onClick={this.closeDialog.bind(this)} />
+            <FlatButton key={2} label='Close' secondary onClick={this.closeDialog} />
         ];
         this.state.type === PersonaList.TYPES.persona &&
-        actions.unshift(<RaisedButton key={1} label="DELETE" secondary onClick={() => {
+        actions.unshift(<RaisedButton key={1} label='DELETE' secondary onClick={() => {
             this.props.deletePersona(this.state.viewPersona);
             this.closeDialog();
         }} />);
 
-        return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog.bind(this)} contentClassName='persona-info-dialog' actions={actions}>
+        return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
             {!this.state.selectedForCreation && <PersonaDetails type={this.state.type} persona={this.state.viewPersona} />}
         </Dialog>
-    }
+    };
 
-    getSelectionDialog (creationType) {
+    getSelectionDialog = (creationType) => {
         let actions = [
-            <FlatButton key={1} label='Save' primary onClick={this.createPersona.bind(this)} />,
-            <FlatButton key={2} label='Cancel' secondary onClick={this.closeDialog.bind(this)} />
+            <FlatButton key={1} label='Save' primary onClick={this.createPersona} />,
+            <FlatButton key={2} label='Cancel' secondary onClick={this.closeDialog} />
         ];
         let personas = creationType === PersonaList.TYPES.practitioner ? this.props.practitioners : this.props.patients;
         let pagination = creationType === PersonaList.TYPES.practitioner ? this.props.practitionersPagination : this.props.patientsPagination;
 
-        return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog.bind(this)} contentClassName='persona-info-dialog' actions={actions}>
+        return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
             {!this.state.selectedForCreation &&
             <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({ selectedForCreation })}
                          pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}
@@ -116,13 +111,13 @@ class Persona extends Component {
                                onChange={(username, password) => this.setState({ username, password })} />
             </div>}
         </Dialog>
-    }
+    };
 
-    closeDialog () {
+    closeDialog = () => {
         this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined });
-    }
+    };
 
-    createPersona () {
+    createPersona = () => {
         let persona = Object.assign({}, this.state.selectedForCreation);
         let type = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : PersonaList.TYPES.patient;
         persona.userId = this.state.username;
@@ -131,12 +126,18 @@ class Persona extends Component {
         this.props.createPersona(type, persona);
         this.closeDialog();
     };
+
+    selectPersonHandler = (persona) => {
+        this.props.doLaunch && this.props.doLaunch(persona);
+        this.props.doLaunch && this.closeDialog();
+        !this.props.doLaunch && this.setState({ viewPersona: persona });
+    };
 }
 
 function getType (props) {
-    return (props.location && props.location.pathname === "/patients") || (props.type === "Patient")
+    return (props.location && props.location.pathname === '/patients') || (props.type === 'Patient')
         ? PersonaList.TYPES.patient
-        : (props.location && props.location.pathname === "/practitioners") || (props.type === "Practitioner")
+        : (props.location && props.location.pathname === '/practitioners') || (props.type === 'Practitioner')
             ? PersonaList.TYPES.practitioner
             : PersonaList.TYPES.persona;
 }
@@ -164,16 +165,11 @@ function mapStateToProps (state, ownProps) {
     };
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchPersonas: (type) => dispatch(actions.fetchPersonas(type)),
-        deletePersona: (persona) => dispatch(actions.deletePersona(persona)),
-        getNextPersonasPage: (type, pagination) => dispatch(actions.getPersonasPage(type, pagination, "next")),
-        getPrevPersonasPage: (type, pagination) => dispatch(actions.getPersonasPage(type, pagination, "previous")),
-        app_setScreen: (screen) => dispatch(actions.app_setScreen(screen)),
-        createPersona: (type, persona) => dispatch(actions.createPersona(type, persona))
-    };
-};
+const mapDispatchToProps = dispatch => bindActionCreators({
+    fetchPersonas, deletePersona, app_setScreen, createPersona,
+    getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
+    getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
+}, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona));

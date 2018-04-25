@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
+import { Paper, Dialog, RaisedButton, Toggle } from 'material-ui';
 
-import { fetchSandboxInvites, removeUser } from '../../../../redux/action-creators';
+import { fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../../redux/action-creators';
 
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
@@ -39,7 +37,7 @@ class Users extends Component {
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                        {this.state.sandbox && this.getRows()}
+                        {this.props.sandbox && this.getRows()}
                     </TableBody>
                 </Table>
             </div>
@@ -47,39 +45,56 @@ class Users extends Component {
     }
 
     getRows = () => {
-        let role = this.props.sandbox.userRoles.filter(role => role.role === 'ADMIN');
+        let users = {};
+        this.props.sandbox.userRoles.map(r => {
+            users[r.user.id] = users[r.user.id] || {
+                name: r.user.name,
+                email: r.user.email,
+                sbmUserId: r.user.sbmUserId,
+                roles: []
+            };
+            users[r.user.id].roles.push(r.role);
+        });
 
+        let keys = Object.keys(users);
         let canDelete = false;
-
-        if (role.length > 1) {
+        if (keys.length > 1) {
             canDelete = true;
         }
 
-        return role.map(row => (
-            <TableRow key={row.user.id}>
+        return keys.map(key => {
+            let user = users[key];
+            let isAdmin = user.roles.indexOf('ADMIN') >= 0;
+
+            return <TableRow key={key}>
                 <TableRowColumn>
-                    {row.user.name}
+                    {user.name}
                 </TableRowColumn>
                 <TableRowColumn>
-                    {row.user.email}
+                    {user.email}
                 </TableRowColumn>
                 <TableRowColumn>
-                    Administrator
+                    <Toggle label='Administrator' labelPosition='right' toggled={isAdmin}
+                            onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)} />
                 </TableRowColumn>
-                {this.deleteButton(row.user.id, row.user.email, canDelete)}
+                {this.deleteButton(user.id, user.email, canDelete)}
             </TableRow>
-        ));
+        });
+    };
+
+    toggleAdmin = (userId, toggle) => {
+        this.props.toggleUserAdminRights(userId, !toggle);
     };
 
     deleteButton = (userId, email, canDelete) => {
         const actions = [
-            <RaisedButton label="Cancel" primary onClick={this.handleClose} />,
-            <RaisedButton label="Remove" primary keyboardFocused onClick={this.deleteSandboxUserHandler} />,
+            <RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler} />,
+            <RaisedButton label="Cancel" primary onClick={this.handleClose} />
         ];
         if (canDelete) {
             return (
                 <TableRowColumn>
-                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId)} />
+                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId)} secondary />
                     <Dialog title="Remove User from Sandbox" actions={actions} modal={false} open={this.state.open} onRequestClose={this.handleClose}>
                         Are you sure you want to remove {email}?
                     </Dialog>
@@ -111,7 +126,7 @@ const mapStateToProps = state => {
 };
 
 function mapDispatchToProps (dispatch) {
-    return bindActionCreators({ fetchSandboxInvites, removeUser }, dispatch);
+    return bindActionCreators({ fetchSandboxInvites, removeUser, toggleUserAdminRights }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Users));

@@ -176,6 +176,24 @@ export const selectSandbox = (sandboxId) => {
 
 };
 
+export function toggleUserAdminRights (userId, toggle) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let queryParams = "?editUserRole=" + encodeURIComponent(userId) + "&role=ADMIN&add=" + (toggle ? 'true' : 'false');
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+            }
+        };
+        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + state.sandbox.selectedSandbox + queryParams, Object.assign({ method: "PUT" }, config))
+            .then(r => {
+                r.json().then(a => console.log(a))
+            });
+    };
+}
+
 export function deleteScenario (scenario) {
     return (dispatch, getState) => {
         dispatch(setScenarioDeleting(true));
@@ -229,7 +247,7 @@ export function createScenario (data) {
 }
 
 export const inviteNewUser = (email) => {
-    return (_d, getState) => {
+    return (dispatch, getState) => {
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -250,7 +268,28 @@ export const inviteNewUser = (email) => {
         };
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
             .then(() => {
+                dispatch(fetchSandboxInvites());
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+};
 
+export const removeInvitation = (id) => {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            }
+        };
+        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({ method: "PUT" }, config))
+            .then(() => {
+                dispatch(fetchSandboxInvites());
             })
             .catch(e => {
                 console.log(e);
@@ -373,7 +412,7 @@ export const fetchSandboxInvites = () => {
                         const invitations = [];
                         for (let key in res) {
                             invitations.push({
-                                ...res[key], id: key
+                                ...res[key]
                             });
                         }
                         dispatch(fetchSandboxInvitesSuccess(invitations));

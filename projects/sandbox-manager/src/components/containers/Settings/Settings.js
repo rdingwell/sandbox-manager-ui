@@ -9,7 +9,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 class Settings extends Component {
 
     componentWillMount () {
-        this.props.selectSandbox("sandbox1");
+        // this.props.selectSandbox("sandbox1");
     }
 
 

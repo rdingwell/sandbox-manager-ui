@@ -7,25 +7,17 @@ import './styles.less';
 export default class PersonaList extends Component {
 
     static TYPES = {
-        patient: "Patient",
-        persona: "Persona",
-        practitioner: "Practitioner"
+        patient: 'Patient',
+        persona: 'Persona',
+        practitioner: 'Practitioner'
     };
-
-    handleRowSelect = (row) => {
-        let persona = this.props.personas[row];
-        this.props.click(persona);
-        //todo fire event up to parent to pass patient to
-        //sibling component
-    };
-
 
     render () {
         let getName = (name) => {
-            let strName = name.family + ",";
+            let strName = name.family + ',';
             let i;
             for (i = 0; i < name.given.length; i++) {
-                strName += " " + name.given[i];
+                strName += ' ' + name.given[i];
             }
             return strName;
         };
@@ -45,7 +37,7 @@ export default class PersonaList extends Component {
                     {persona.gender}
                 </TableRowColumn>}
                 {isPatient && <TableRowColumn>
-                    {getAge(persona.birthDate) || ""}
+                    {getAge(persona.birthDate) || ''}
                 </TableRowColumn>}
                 {!isPatient && !isPractitioner && <TableRowColumn>
                     {persona.personaUserId}
@@ -58,16 +50,16 @@ export default class PersonaList extends Component {
 
         let title = this.props.title
             ? this.props.title
-            : isPatient ? "Patients" : isPractitioner ? "Practitioners" : "Personas";
+            : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
 
-        return <Paper className="paper-card persona-list">
-            <h3 style={{ width: "auto" }}>{title}</h3>
-            <div className="actions">
+        return <Paper className='paper-card persona-list'>
+            <h3 style={{ width: 'auto' }}>{title}</h3>
+            <div className='actions'>
                 {this.props.actions}
             </div>
-            <div className="paper-body">
-                {!this.props.personas && <div className="personas-loader-wrapper"><i className="fa fa-spinner fa-pulse fa-3x fa-fw" /></div>}
-                {this.props.personas && <Table selectable={false} fixedHeader width="100%" onCellClick={this.handleRowSelect} wrapperClassName="sample">
+            <div className='paper-body'>
+                {!this.props.personas && <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>}
+                {this.props.personas && <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn>Name</TableHeaderColumn>
@@ -86,7 +78,7 @@ export default class PersonaList extends Component {
         </Paper>;
     }
 
-    getPagination () {
+    getPagination = () => {
         let self = this.props.pagination.link.find(i => i.relation === 'self');
         let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
         let start = currentSkip + 1;
@@ -94,18 +86,25 @@ export default class PersonaList extends Component {
 
         return this.props.pagination && <TableFooter adjustForCheckbox={false}>
             <TableRow>
-                <TableRowColumn colSpan="3" className="persona-list-pagination-wrapper">
+                <TableRowColumn colSpan='3' className='persona-list-pagination-wrapper'>
                     <div>
-                        {start > 1 && <RaisedButton label="Prev" secondary onClick={() => this.props.prev && this.props.prev()} />}
+                        {start > 1 && <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} />}
                     </div>
                     <div>
                         <span>Showing {start} to {end} of {this.props.pagination.total}</span>
                     </div>
                     <div>
-                        {end < this.props.pagination.total && <RaisedButton label="Next" secondary onClick={() => this.props.next && this.props.next()} />}
+                        {end < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
                     </div>
                 </TableRowColumn>
             </TableRow>
         </TableFooter>
     }
+
+    handleRowSelect = (row) => {
+        let persona = this.props.personas[row];
+        this.props.click(persona);
+        //todo fire event up to parent to pass patient to
+        //sibling component
+    };
 }

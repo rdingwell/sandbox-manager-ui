@@ -1,28 +1,26 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { withRouter } from "react-router";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import * as glib from "../../../../../lib/utils/";
-import * as lib from "../../lib/";
-import * as actionCreators from "../../redux/action-creators";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
+import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import * as glib from '../../../../../lib/utils/';
+import * as lib from '../../lib/';
+import * as actionCreators from '../../redux/action-creators';
 
-import * as React from "react";
-import * as PropTypes from "prop-types";
-
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import Layout from '../../../../../lib/components/Layout';
 
-import Init from "../Init/";
+import Init from '../Init/';
 
-import "./style.less";
+import './style.less';
 
 class App extends React.Component {
     componentDidMount () {
-        window.addEventListener("resize", this.onResize);
+        window.addEventListener('resize', this.onResize);
     }
 
     componentWillUnmount () {
-        window.removeEventListener("resize", this.onResize);
+        window.removeEventListener('resize', this.onResize);
     }
 
     render () {
