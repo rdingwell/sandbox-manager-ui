@@ -1,0 +1,38 @@
+{
+  "app": {
+    "isDefault": true,
+    "authClient": {
+      "clientName": "Bilirubin Chart",
+      "clientId": "bilirubin_chart",
+      "redirectUri": "https://bilirubin-risk-chart-test.hspconsortium.org/index.html"
+    },
+    "appUri": "https://bilirubin-risk-chart-test.hspconsortium.org/",
+    "launchUri": "https://bilirubin-risk-chart-test.hspconsortium.org/launch.html",
+    "logoUri": "https://content.hspconsortium.org/images/bilirubin/logo/bilirubin.png"
+  },
+  "iss": "http://localhost:8075/fiver/data",
+  "launchDetails": {
+    "userPersona": {
+      "id": 1,
+      "createdTimestamp": 1515185745000,
+      "visibility": "PUBLIC",
+      "personaUserId": "b@fiver",
+      "personaName": "Brian Q. Gracia",
+      "password": "b",
+      "fhirId": "SMART-1213208",
+      "fhirName": "Brian Q. Gracia",
+      "resource": "Patient",
+      "resourceUrl": "Patient/SMART-1213208"
+    },
+    "patientContext": "SMART-981968"
+  },
+  "context": {
+    "launch_id": "ZtMJLe",
+    "created_at": "Thu Jan 11 12:56:56 MST 2018",
+    "created_by": "hspc_platform",
+    "parameters": {
+      "patient": "SMART-981968"
+    },
+    "username": "none"
+  }
+}
