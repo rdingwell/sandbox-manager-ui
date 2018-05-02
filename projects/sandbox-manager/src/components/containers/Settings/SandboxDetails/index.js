@@ -1,0 +1,82 @@
+import React, { Component } from 'react';
+import { Checkbox, RaisedButton, Paper, TextField } from 'material-ui';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { updateSandbox } from '../../../../redux/action-creators';
+import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+
+import './styles.less';
+
+class SandboxDetails extends Component {
+
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            name: this.props.sandboxName,
+            description: this.props.sandboxDescription,
+            allowOpen: this.props.sandboxAllowOpenAccess
+        };
+    }
+
+    render () {
+        return <Paper className='sandbox-details-wrapper' zDepth={1}>
+            <h4>Sandbox Details</h4>
+            <form onSubmit={this.updateSandboxHandler}>
+                <TextField disabled fullWidth defaultValue={this.props.sandboxName} floatingLabelText='Sandbox ID' />
+                <TextField disabled fullWidth defaultValue={`${window.location.origin}/${this.props.sandboxName}`} floatingLabelText='Sandbox URL' />
+                <TextField disabled fullWidth defaultValue={this.props.serviceUrl} floatingLabelText='Secure FHIR Server URL' />
+                <TextField disabled fullWidth defaultValue={this.props.sandboxVersion.name} floatingLabelText='Sandbox FHIR Version' />
+                <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}
+                          onCheck={this.handleOpenFhirCheckboxChange} />
+                <TextField value={this.state.name} floatingLabelText='Sandbox Name'
+                           onChange={this.handleSandboxNameChange} />
+                <TextField value={this.state.description} floatingLabelText='Sandbox Description'
+                           onChange={(event) => this.handleSandboxDescriptionChange(event)} />
+                <RaisedButton label='Save' className='details-button' type='submit' />
+            </form>
+        </Paper>;
+    }
+
+    updateSandboxHandler = (event) => {
+        event.preventDefault();
+
+        const details = {
+            name: this.state.name.value,
+            description: this.state.description,
+            allowOpenAccess: this.state.allowOpen
+        };
+
+        this.props.updateSandbox(details);
+    };
+
+    handleSandboxNameChange = (event) => {
+        this.setState({ name: event.target.value });
+    };
+
+    handleSandboxDescriptionChange = (event) => {
+        this.setState({ description: event.target.value });
+    };
+
+    handleOpenFhirCheckboxChange = (event) => {
+        this.setState({ allowOpen: event.target.value === 'on' })
+    };
+}
+
+const mapStateToProps = state => {
+    let sandbox = state.sandbox.sandboxes.filter(sandbox => sandbox.sandboxId === state.sandbox.selectedSandbox)[0];
+    let sandboxName = sandbox ? sandbox.sandboxId : '';
+    let sandboxDescription = sandbox ? sandbox.description : '';
+    let sandboxAllowOpenAccess = sandbox ? !!sandbox.allowOpenAccess : false;
+    let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
+        ? state.sandbox.sandboxApiEndpointIndexes.find(i => i.index === state.sandbox.sandboxApiEndpointIndex)
+        : { name: 'unknown' };
+
+    return {
+        sandboxName, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion,
+        serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl
+    };
+};
+const mapDispatchToProps = dispatch => bindActionCreators({ updateSandbox }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(SandboxDetails))

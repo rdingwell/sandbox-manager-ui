@@ -6,7 +6,7 @@ import Apps from '../components/containers/Apps';
 import Persona from '../components/containers/Persona';
 import LaunchScenarios from '../components/containers/LaunchScenarios';
 import LaunchApp from '../components/containers/LaunchApp';
-import Settings from '../components/containers/Settings/Settings';
+import Settings from '../components/containers/Settings';
 import EHRIntegration from '../components/containers/EHRIntegration';
 import UserManagement from '../components/containers/UserManagement';
 import Dashboard from '../components/containers/Dashboard';

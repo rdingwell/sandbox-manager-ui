@@ -170,7 +170,7 @@ export const selectSandbox = (sandboxId) => {
                 dispatch(authorizeSandbox(sandboxId));
                 dispatch(setDefaultUrl(sandboxId));
                 dispatch(selectSandboxById(sandboxId));
-                dispatch(getDefaultUserForSandbox(sandboxId))
+                dispatch(getDefaultUserForSandbox(sandboxId));
             });
     };
 

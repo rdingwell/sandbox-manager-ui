@@ -1,43 +1,25 @@
 import * as types from "../../action-creators/types";
 import initialState from "./init";
-import sampleData from "./sample-data";
 
 export default function (state = initialState, action) {
+    state = Object.assign({}, state);
+
     switch (action.type) {
-        case types.FHIR_RESET:
-            return Object.assign({}, initialState);
-
-        case types.FHIR_SET_CONTEXT: {
-            const newState = Object.assign({}, state);
-            newState.context = action.payload;
-            return newState;
-        }
-
-        case types.FHIR_SET_META: {
-            const newState = Object.assign({}, state);
-            newState.meta = { status: "ready", ...action.payload };
-            return newState;
-        }
-
-        case types.FHIR_SET_PARSED_PATIENT_DEMOGRAPHICS: {
-            const newState = Object.assign({}, state);
-            newState.parsed.patientDemographics = {
+        case types.FHIR_SET_CONTEXT:
+            state.context = action.payload;
+            break;
+        case types.FHIR_SET_META:
+            state.meta = { status: "ready", ...action.payload };
+            break;
+        case types.FHIR_SET_PARSED_PATIENT_DEMOGRAPHICS:
+            state.parsed.patientDemographics = {
                 status: "ready",
                 data: action.payload,
             };
-            return newState;
-        }
-
-        case types.FHIR_SET_SAMPLE_DATA:
-            return Object.assign({}, state, { ...sampleData[0] });
-
-
-        case types.FHIR_SET_SMART: {
-            const newState = Object.assign({}, state);
-            newState.smart = action.payload;
-            return newState;
-        }
-
+            break;
+        case types.FHIR_SET_SMART:
+            state.smart = action.payload;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             break;

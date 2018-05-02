@@ -31,12 +31,12 @@ export function fhir_SetSampleData () {
 
 export function fhir_SetSmart (payload) {
     return dispatch => {
-        if (payload.status === "ready") {
+        if (payload.status === 'ready') {
             window.fhirClient = FHIR.client({
                 serviceUrl: payload.data.server.serviceUrl, // Overwrite response.iss with internal Fhir Api data store
-                credentials: "include",
+                credentials: 'include',
                 auth: {
-                    type: "bearer",
+                    type: 'bearer',
                     token: payload.data.tokenResponse.access_token
                 }
             });
