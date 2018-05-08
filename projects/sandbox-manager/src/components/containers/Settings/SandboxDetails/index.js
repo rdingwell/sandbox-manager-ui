@@ -23,12 +23,13 @@ class SandboxDetails extends Component {
         return <Paper className='sandbox-details-wrapper' zDepth={1}>
             <h4>Sandbox Details</h4>
             <form onSubmit={this.updateSandboxHandler}>
-                <TextField disabled fullWidth defaultValue={this.props.sandboxName} floatingLabelText='Sandbox ID' />
+                <TextField disabled fullWidth defaultValue={this.props.sandboxId} floatingLabelText='Sandbox ID' />
                 <TextField disabled fullWidth defaultValue={`${window.location.origin}/${this.props.sandboxName}`} floatingLabelText='Sandbox URL' />
                 <TextField disabled fullWidth defaultValue={this.props.serviceUrl} floatingLabelText='Secure FHIR Server URL' />
                 <TextField disabled fullWidth defaultValue={this.props.sandboxVersion.name} floatingLabelText='Sandbox FHIR Version' />
                 <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}
                           onCheck={this.handleOpenFhirCheckboxChange} />
+                {this.state.allowOpen && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL' />}
                 <TextField value={this.state.name} floatingLabelText='Sandbox Name'
                            onChange={this.handleSandboxNameChange} />
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description'
@@ -42,7 +43,7 @@ class SandboxDetails extends Component {
         event.preventDefault();
 
         const details = {
-            name: this.state.name.value,
+            name: this.state.name,
             description: this.state.description,
             allowOpenAccess: this.state.allowOpen
         };
@@ -50,22 +51,23 @@ class SandboxDetails extends Component {
         this.props.updateSandbox(details);
     };
 
-    handleSandboxNameChange = (event) => {
-        this.setState({ name: event.target.value });
+    handleSandboxNameChange = (_e, name) => {
+        this.setState({ name });
     };
 
     handleSandboxDescriptionChange = (event) => {
         this.setState({ description: event.target.value });
     };
 
-    handleOpenFhirCheckboxChange = (event) => {
-        this.setState({ allowOpen: event.target.value === 'on' })
+    handleOpenFhirCheckboxChange = (_e, allowOpen) => {
+        this.setState({ allowOpen })
     };
 }
 
 const mapStateToProps = state => {
-    let sandbox = state.sandbox.sandboxes.filter(sandbox => sandbox.sandboxId === state.sandbox.selectedSandbox)[0];
-    let sandboxName = sandbox ? sandbox.sandboxId : '';
+    let sandbox = state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox);
+    let sandboxName = sandbox ? sandbox.name : '';
+    let sandboxId = sandbox ? sandbox.sandboxId : '';
     let sandboxDescription = sandbox ? sandbox.description : '';
     let sandboxAllowOpenAccess = sandbox ? !!sandbox.allowOpenAccess : false;
     let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
@@ -73,7 +75,7 @@ const mapStateToProps = state => {
         : { name: 'unknown' };
 
     return {
-        sandboxName, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion,
+        sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion,
         serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl
     };
 };

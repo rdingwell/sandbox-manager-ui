@@ -76,6 +76,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_LAUNCH_SCENARIOS_DELETING:
             state.launchScenarioDeleting = action.payload.deleting;
             break;
+        case actionTypes.SET_RESETTING_CURRENT_SANDBOX:
+            state.resetting = action.payload.resetting;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             break;

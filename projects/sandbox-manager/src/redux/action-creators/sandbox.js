@@ -18,20 +18,6 @@ export const removeUser = (userId) => {
     }
 };
 
-export const deleteSandbox = (sandboxId) => {
-    return {
-        type: actionTypes.DELETE_SANDBOX,
-        sandboxId: sandboxId
-    };
-};
-
-export const resetSandbox = (sandboxId) => {
-    return {
-        type: actionTypes.RESET_SANDBOX,
-        sandboxId: sandboxId
-    }
-};
-
 export function setLaunchScenariosLoading (loading) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_LOADING,
@@ -59,13 +45,6 @@ export function setLaunchScenarios (scenarios) {
         payload: { scenarios }
     }
 }
-
-export const updateSandbox = (sandboxDetails) => {
-    return {
-        type: actionTypes.UPDATE_SANDBOX,
-        sandboxDetails: sandboxDetails
-    }
-};
 
 export const fetchSandboxesStart = () => {
     return {
@@ -152,6 +131,105 @@ export const setDefaultSandboxUser = (user) => {
         type: actionTypes.SET_DEFAULT_SANDBOX_USER,
         payload: { user }
     }
+};
+
+export const setResettingCurrentSandbox = (resetting) => {
+    return {
+        type: actionTypes.SET_RESETTING_CURRENT_SANDBOX,
+        payload: { resetting }
+    }
+};
+
+export const deleteCurrentSandbox = (history) => {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        let sandboxId = state.sandbox.selectedSandbox;
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'DELETE'
+        };
+        fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${sandboxId}`, config)
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                // history && history.push('/dashboard');
+                // dispatch(setResettingCurrentSandbox(false));
+                dispatch(selectSandbox());
+            });
+    }
+};
+
+export const resetCurrentSandbox = (applyDefaultDataSet) => {
+    return (dispatch, getState) => {
+        dispatch(setResettingCurrentSandbox(true));
+        let state = getState();
+
+        let sandboxId = state.sandbox.selectedSandbox;
+        let configuration = state.config.xsettings.data.sandboxManager;
+        let dataSet = (applyDefaultDataSet ? 'DEFAULT' : 'NONE');
+        let data = { sandboxId, dataSet };
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        fetch(`${configuration.sandboxManagerApiUrl}/fhirdata/reset?sandboxId=${sandboxId}&dataSet=${dataSet}`, config)
+            .then(result => {
+                //
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                dispatch(setResettingCurrentSandbox(false));
+            });
+    }
+};
+
+export const updateSandbox = (sandboxDetails) => {
+    const UPDATE_EVENT = {
+        type: actionTypes.UPDATE_SANDBOX,
+        sandboxDetails: sandboxDetails
+    };
+
+    return (dispatch, getState) => {
+        // dispatch(setScenarioCreating(true));
+        let state = getState();
+
+        let selectedSandbox = state.sandbox.selectedSandbox;
+        let configuration = state.config.xsettings.data.sandboxManager;
+        let data = state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox);
+        data = Object.assign(data, sandboxDetails);
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(data)
+        };
+        fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${selectedSandbox}`, config)
+            .then(result => {
+                result.json().then(() => {
+                    dispatch(UPDATE_EVENT);
+                });
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                // dispatch(setScenarioCreating(false));
+            });
+    };
 };
 
 export const selectSandbox = (sandboxId) => {

@@ -46,6 +46,9 @@
     height: 85%;
     overflow: auto;
     box-sizing: border-box;
+    &.auto {
+      height: auto;
+    }
   }
   .paper-card {
     height: 100%;
@@ -59,7 +62,7 @@
     margin-top: 1.5rem;
     max-width: 50%;
   }
-  & > div:first-child {
+  &:not(.auto) > div:first-child {
     height: 65vh;
   }
   & > div:nth-child(1) {

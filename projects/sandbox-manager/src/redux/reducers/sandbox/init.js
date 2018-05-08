@@ -6,6 +6,7 @@ export default {
     launchScenarios : [],
     invitesLoading: false,
     creatingSandbox: false,
+    resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,
     launchScenariosLoading: false,
