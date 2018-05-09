@@ -40,12 +40,10 @@ export default function (state = initialState, action) {
         case actionTypes.FETCH_SANDBOX_INVITES_FAIL:
             state.invitesLoading = false;
             break;
-        case actionTypes.CREATE_SANDBOX_START:
-            state.createSandboxError = '';
-            state.creatingSandbox = true;
+        case actionTypes.CREATING_SANDBOX:
+            state.creatingSandbox = action.payload.creating;
             break;
         case actionTypes.CREATE_SANDBOX_FAIL:
-            state.creatingSandbox = false;
             state.createSandboxError = action.error;
             break;
         case actionTypes.LOOKUP_SANDBOX_BY_ID_START:

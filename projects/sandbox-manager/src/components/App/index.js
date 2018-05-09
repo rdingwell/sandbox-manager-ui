@@ -25,7 +25,7 @@ class App extends React.Component {
 
     render () {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
-            <Layout path={this.props.history.location.pathname}>
+            <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox}>
                 <div className='app-root' ref={this.refStage()}>
                     <Init {...this.props} />
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>

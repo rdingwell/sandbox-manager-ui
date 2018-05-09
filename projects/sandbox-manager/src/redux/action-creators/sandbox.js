@@ -86,9 +86,10 @@ export const fetchSandboxInvitesFail = (error) => {
     }
 };
 
-export const createSandboxStart = () => {
+export const setCreatingSandbox = (creating) => {
     return {
-        type: actionTypes.CREATE_SANDBOX_START
+        type: actionTypes.CREATING_SANDBOX,
+        payload: { creating }
     }
 };
 
@@ -407,45 +408,22 @@ export const createSandbox = (sandboxDetails) => {
     return (dispatch, getState) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
-        dispatch(createSandboxStart());
+        dispatch(setCreatingSandbox(true));
         let config = getConfig(state);
         config.body = JSON.stringify(sandboxDetails);
         config.method = "POST";
         config.headers["Content-Type"] = "application/json";
         fetch(configuration.sandboxManagerApiUrl + '/sandbox', config)
-            .then(res => {
-                dispatch(createSandboxSuccess(res.data));
+            .then(() => {
+                dispatch(fetchSandboxes());
             })
             .catch(err => {
                 dispatch(createSandboxFail(err));
-            });
-    };
-};
-
-export const fetchSandboxById = (sandboxId) => {
-    return (dispatch, getState) => {
-        const state = getState();
-        if (!state.fhir.fhirClient) {
-            return;
-        }
-        let configuration = JSON.parse(localStorage.getItem('config'));
-        dispatch(lookupSandboxByIdStart());
-        const queryParams = '?lookupId=' + sandboxId;
-        axios.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
-            .then(res => {
-                const sandboxes = [];
-                for (let key in res.data) {
-                    sandboxes.push({
-                        ...res.data[key], id: key
-                    });
-                }
-                dispatch(lookupSandboxByIdSuccess(sandboxes));
             })
-            .catch(err => {
-                dispatch(lookupSandboxByIdFail(err));
+            .then(() => {
+                dispatch(setCreatingSandbox(false));
             });
     };
-
 };
 
 export const fetchSandboxes = () => {

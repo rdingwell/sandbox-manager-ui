@@ -24,7 +24,8 @@ class SandboxReset extends Component {
         ];
 
         return <Paper className='reset-wrapper' zDepth={1}>
-            <Dialog paperClassName='app-dialog auto reset-sandbox-dialog' modal={false} open={this.state.showResetModal} onRequestClose={this.toggleModal} actions={actions}>
+            {this.state.showResetModal && <Dialog paperClassName='app-dialog auto reset-sandbox-dialog' modal={false}
+                                                  open={this.state.showResetModal} onRequestClose={this.toggleModal} actions={actions}>
                 <Paper className='paper-card reset-dialog'>
                     <h3>Reset Sandbox</h3>
                     <div className='paper-body auto'>
@@ -35,7 +36,7 @@ class SandboxReset extends Component {
                                    onChange={(_e, enableReset) => this.setState({ enableReset })} />
                     </div>
                 </Paper>
-            </Dialog>
+            </Dialog>}
             <h4>Sandbox Reset</h4>
             <div className='reset-wrapper'>
                 <p>Resetting the sandbox will delete:</p>

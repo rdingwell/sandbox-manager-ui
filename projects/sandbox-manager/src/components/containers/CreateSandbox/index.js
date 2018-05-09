@@ -39,7 +39,7 @@ class Index extends Component {
                         <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler} />
                         <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler} />
                         <div>If not selected, the sandbox will be empty</div>
-                        <TextField floatingLabelText='Description' /><br />
+                        <TextField floatingLabelText='Description' onChange={this.sandboxDescriptionChange} /><br />
                         <div>e.g., This sandbox is the QA environment for NewCo.</div>
                         <RaisedButton label='Create' disabled={this.state.createDisabled} className='button' primary onClick={this.handleCreateSandbox} />
                         <RaisedButton label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)} />
@@ -49,6 +49,10 @@ class Index extends Component {
             <div style={{ clear: 'both' }} />
         </div>
     }
+
+    sandboxDescriptionChange = (_e, description) => {
+        this.setState({ description });
+    };
 
     handleCreateSandbox = (event) => {
         event.preventDefault();
