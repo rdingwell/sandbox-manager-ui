@@ -17,8 +17,7 @@
     "coverage": "npm run sandbox-manager:coverage",
     "sandbox-manager:install": "cd projects/sandbox-manager && npm install && cd ../..",
     "sandbox-manager:build:local": "cd projects/sandbox-manager && NODE_ENV=local webpack",
-    "sandbox-manager:build:dev": "cd projects/sandbox-manager && NODE_ENV=development webpack",
-    "sandbox-manager:build:uat": "cd projects/sandbox-manager && NODE_ENV=uat webpack",
+    "sandbox-manager:build:test": "cd projects/sandbox-manager && NODE_ENV=test webpack",
     "sandbox-manager:build:production": "cd projects/sandbox-manager && NODE_ENV=production webpack",
     "sm": "npm run sandbox-manager:start:local",
     "sandbox-manager:start:local": "cd projects/sandbox-manager && npm run start:local",
@@ -30,8 +29,7 @@
     "sandbox-manager:clean:tests_reports": "rm -rf projects/sandbox-manager/test_reports",
     "ehr-simulator:install": "cd projects/ehr-simulator && npm install && cd ../..",
     "ehr-simulator:build:local": "cd projects/ehr-simulator && NODE_ENV=local webpack",
-    "ehr-simulator:build:dev": "cd projects/ehr-simulator && NODE_ENV=development webpack",
-    "ehr-simulator:build:uat": "cd projects/ehr-simulator && NODE_ENV=uat webpack",
+    "ehr-simulator:build:test": "cd projects/ehr-simulator && NODE_ENV=test webpack",
     "ehr-simulator:build:production": "cd projects/ehr-simulator && NODE_ENV=production webpack",
     "es": "npm run ehr-simulator:start:local",
     "ehr-simulator:start:local": "cd projects/ehr-simulator && npm run start:local",
@@ -176,5 +174,9 @@
     "> 5%",
     "last 2 versions",
     "ie 11"
-  ]
+  ],
+  "config": {
+    "port": "8080",
+    "memory": "100"
+  }
 }

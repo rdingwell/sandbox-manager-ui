@@ -10,7 +10,7 @@ import Apps from '../Apps';
 
 import './styles.less';
 
-class Index extends Component {
+class LaunchScenarios extends Component {
 
     constructor (props) {
         super(props);
@@ -42,7 +42,7 @@ class Index extends Component {
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5} />
                     </div>}
-                    {!this.props.scenariosLoading && this.props.scenarios.length > 0 && this.getScenarios()}
+                    {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                 </div>
             </Paper>
             {this.getModal()}
@@ -282,4 +282,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(LaunchScenarios))
