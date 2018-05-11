@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+apt-get update
+apt-get install -y unzip python-pip libpython-dev
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+./awscli-bundle/install -b ~/bin/aws
+cd projects/dashboard
+export PATH=~/bin:$PATH
+
 curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/local/bin/jq
-
-apt-get update && apt-get install -y python-pip && pip install --upgrade pip && pip install awscli
-
-curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest && chmod +x /usr/local/bin/ecs-cli
 
 export PROJECT_NAME="sandbox-manager-prototype"
 
