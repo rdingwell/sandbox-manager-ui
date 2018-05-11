@@ -5,7 +5,6 @@ apt-get install -y unzip python-pip libpython-dev
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 ./awscli-bundle/install -b ~/bin/aws
-cd projects/dashboard
 export PATH=~/bin:$PATH
 
 curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/local/bin/jq
