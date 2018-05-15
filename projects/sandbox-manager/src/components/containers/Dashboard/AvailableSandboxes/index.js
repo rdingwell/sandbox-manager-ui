@@ -50,7 +50,6 @@ class Index extends Component {
                         {sandboxes}
                     </TableBody>
                 </Table>}
-                {this.props.creatingSandbox && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
             </div>
         </Paper>;
     }
