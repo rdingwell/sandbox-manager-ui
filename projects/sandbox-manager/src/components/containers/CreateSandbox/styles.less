@@ -1,4 +1,14 @@
 .create-sandbox-wrapper {
+  height: 100%;
+  overflow: hidden;
+  .paper-card {
+    height: 100%;
+    overflow: hidden;
+    .paper-body {
+      height: ~'calc(100% - 82px)';
+      overflow: auto;
+    }
+  }
   .checkbox {
     margin-bottom: 16px;
   }
