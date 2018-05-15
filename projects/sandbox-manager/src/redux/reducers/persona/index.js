@@ -39,6 +39,9 @@ export default (state = initialState, action) => {
                     break;
             }
             break;
+        case actionTypes.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.persona : state;
             break;

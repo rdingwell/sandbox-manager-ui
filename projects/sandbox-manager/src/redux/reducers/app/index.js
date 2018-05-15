@@ -8,6 +8,9 @@ export default (state = initialState, action) => {
         case types.SET_APP_SCREEN:
             state.screen = action.payload;
             break;
+        case types.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.app : state;
             break;

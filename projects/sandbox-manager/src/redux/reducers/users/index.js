@@ -22,6 +22,9 @@ export default (state = initialState, action) => {
         case actionTypes.SAVE_SANDBOX_USER:
             state.user = action.user;
             break;
+        case actionTypes.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.users : state;
             break;

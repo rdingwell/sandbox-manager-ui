@@ -18,6 +18,10 @@ export default function (state = initialState, action) {
         case types.UI_SET_THEME:
             return Object.assign({}, state, { theme: action.payload });
 
+        case types.APP_RESET_STATE:
+            state = initialState;
+            break;
+
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.ui : state;
             break;

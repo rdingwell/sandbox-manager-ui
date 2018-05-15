@@ -8,6 +8,9 @@ export default function (state = initialState, action) {
         case types.CONFIG_SET_XSETTINGS:
             state.xsettings = action.payload;
             break;
+        case types.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.config : state;
             break;

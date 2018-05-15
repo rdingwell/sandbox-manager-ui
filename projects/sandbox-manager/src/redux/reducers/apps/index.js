@@ -18,6 +18,9 @@ export default (state = initialState, action) => {
             let apps = action.payload.apps || [];
             state.apps = apps;
             break;
+        case types.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.apps : state;
             break;

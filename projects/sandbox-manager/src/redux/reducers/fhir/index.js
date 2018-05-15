@@ -20,6 +20,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_SMART:
             state.smart = action.payload;
             break;
+        case types.APP_RESET_STATE:
+            state = initialState;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             break;
