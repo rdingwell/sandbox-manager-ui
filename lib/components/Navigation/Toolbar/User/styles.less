@@ -14,6 +14,40 @@
   }
 }
 
+.links-menu {
+  width: 168px !important;
+  display: block !important;
+  overflow: hidden;
+  .links-menu-item {
+    line-height: 25px !important;
+    min-width: 140px !important;
+    min-height: inherit !important;
+    font-size: 0.8rem !important;
+    padding-top: 3px !important;
+    &.static {
+      color: #585858 !important;
+    }
+    &.image {
+      min-width: 80px;
+      .label {
+        text-align: center;
+      }
+      span {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+        text-align: center;
+        img {
+          width: 100%;
+          &.small {
+            width: 25%;
+          }
+        }
+      }
+    }
+  }
+}
+
 .user-menu-item {
   line-height: 25px !important;
   min-width: 140px !important;
