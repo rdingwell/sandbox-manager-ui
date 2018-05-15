@@ -17,8 +17,8 @@ class Start extends Component {
         ));
         let buttons = !this.props.skipLogin
             ? <div>
-                <RaisedButton label={strings[language].signInLabel} className='paper-button' primary={true} onClick={this.handleSignIn.bind(this)} />
-                <RaisedButton label={strings[language].signUpLabel} className='paper-button' primary={true} onClick={this.handleSignUp.bind(this)} />
+                <RaisedButton label={strings[language].signInLabel} className='paper-button' primary={true} onClick={this.handleSignIn} />
+                <RaisedButton label={strings[language].signUpLabel} className='paper-button' primary={true} onClick={this.handleSignUp} />
             </div>
             : null;
 
@@ -33,11 +33,11 @@ class Start extends Component {
         </Paper>;
     };
 
-    handleSignIn () {
+    handleSignIn = () => {
         this.props.onAuthInit();
     };
 
-    handleSignUp () {
+    handleSignUp = () => {
         window.location.href = this.props.settings.sandboxManager.userManagementUrl + '/public/newuser/?afterAuth=' + this.props.settings.sandboxManager.sandboxManagerUrl;
     };
 }
