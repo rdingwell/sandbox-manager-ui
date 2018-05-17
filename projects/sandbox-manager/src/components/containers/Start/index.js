@@ -22,15 +22,17 @@ class Start extends Component {
             </div>
             : null;
 
-        return <Paper className='paper-card'>
-            <h3>{strings[language].title}</h3>
-            <div className='paper-body'>
-                <p>{strings[language].description}</p>
-                {checkboxes}
-                <p>{strings[language].note}</p>
-                {buttons}
-            </div>
-        </Paper>;
+        return <div className='start-page-wrapper'>
+            <Paper className='paper-card'>
+                <h3>{strings[language].title}</h3>
+                <div className='paper-body'>
+                    <p>{strings[language].description}</p>
+                    {checkboxes}
+                    <p>{strings[language].note}</p>
+                    {buttons}
+                </div>
+            </Paper>
+        </div>;
     };
 
     handleSignIn = () => {

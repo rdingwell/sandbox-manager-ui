@@ -9,6 +9,7 @@ import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
 
 import './styles.less';
+import DohMessage from "../../../../../../lib/components/DohMessage";
 
 class LaunchScenarios extends Component {
 
@@ -43,6 +44,8 @@ class LaunchScenarios extends Component {
                         <CircularProgress size={80} thickness={5} />
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
+                    {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
+                    <DohMessage message='We would like to show you some scenarios here, but there are non registered. Please register some.'/>}
                 </div>
             </Paper>
             {this.getModal()}

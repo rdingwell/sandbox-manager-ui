@@ -1,0 +1,23 @@
+.doh-apps-wrapper {
+  text-align: center;
+  font-family: "Simpsons", sans-serif;
+  position: relative;
+  & > * {
+    position: relative;
+    left: -150px;
+  }
+  & > div {
+    position: absolute;
+    left: ~'calc(50% - 80px)';
+    width: 250px;
+    top: 17rem;
+    font-size: 1.5rem;
+    &.doh {
+      font-size: 4rem;
+      color: darkred;
+      position: absolute;
+      top: 1rem;
+      left: ~'calc(50% - 100px)';
+    }
+  }
+}

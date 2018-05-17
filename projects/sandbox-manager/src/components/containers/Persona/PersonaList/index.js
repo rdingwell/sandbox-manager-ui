@@ -3,6 +3,7 @@ import { Paper, RaisedButton } from 'material-ui';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table';
 
 import './styles.less';
+import DohMessage from "../../../../../../../lib/components/DohMessage";
 
 export default class PersonaList extends Component {
 
@@ -59,7 +60,8 @@ export default class PersonaList extends Component {
             </div>
             <div className='paper-body'>
                 {!this.props.personas && <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>}
-                {this.props.personas && <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
+                {personas && personas.length > 0
+                ? <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn>Name</TableHeaderColumn>
@@ -73,7 +75,8 @@ export default class PersonaList extends Component {
                         {personas}
                     </TableBody>
                     {this.props.pagination && this.getPagination()}
-                </Table>}
+                </Table>
+                : <DohMessage message={`We would really like to show you some ${title}, but there are none to show. Please create a few.`}/>}
             </div>
         </Paper>;
     }

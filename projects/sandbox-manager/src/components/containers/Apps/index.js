@@ -10,6 +10,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 
 import AppDialog from './AppDialog';
 import Personas from '../Persona';
+import DohMessage from "../../../../../../lib/components/DohMessage";
 
 import './styles.less';
 
@@ -62,6 +63,8 @@ class Apps extends Component {
                 </div>}
                 <div className='paper-body'>
                     {!this.props.appDeleting && !this.props.appCreating && apps}
+                    {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 &&
+                    <DohMessage message='We would like to show you some apps here, but there are non registered. Please register some.'/>}
                     {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
                 </div>
             </Paper>
