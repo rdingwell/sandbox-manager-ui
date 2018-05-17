@@ -32,18 +32,20 @@ class Apps extends Component {
     }
 
     render () {
-        const apps = this.props.apps.map((app, index) => (
-            <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
-                <CardMedia>
-                    <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
-                </CardMedia>
-                <CardTitle><span style={{ fontSize: 18 }}>{app.authClient.clientName}</span></CardTitle>
-                {!this.props.noActions && <CardActions className='card-actions-wrapper'>
-                    <RaisedButton labelPosition='before' secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
-                    <RaisedButton labelPosition='before' primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
-                </CardActions>}
-            </Card>
-        ));
+        const apps = this.props.apps
+            ? this.props.apps.map((app, index) => (
+                <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
+                    <CardMedia>
+                        <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
+                    </CardMedia>
+                    <CardTitle><span style={{ fontSize: 18 }}>{app.authClient.clientName}</span></CardTitle>
+                    {!this.props.noActions && <CardActions className='card-actions-wrapper'>
+                        <RaisedButton labelPosition='before' secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
+                        <RaisedButton labelPosition='before' primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
+                    </CardActions>}
+                </Card>
+            ))
+            : [];
 
         let dialog = this.state.selectedApp || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
@@ -63,8 +65,8 @@ class Apps extends Component {
                 </div>}
                 <div className='paper-body'>
                     {!this.props.appDeleting && !this.props.appCreating && apps}
-                    {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 &&
-                    <DohMessage message='We would like to show you some apps here, but there are non registered. Please register some.'/>}
+                    {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
+                    <DohMessage message='We would like to show you some apps here, but there are non registered. Please register some.' />}
                     {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
                 </div>
             </Paper>
@@ -107,6 +109,7 @@ class Apps extends Component {
 const mapStateToProps = state => {
     return {
         apps: state.apps.apps,
+        appLoading: state.apps.loading,
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting
     };

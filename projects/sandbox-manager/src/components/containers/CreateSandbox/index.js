@@ -35,10 +35,12 @@ class Index extends Component {
                         <TextField floatingLabelText='Sandbox Name' onChange={this.sandboxNameChangedHandler} /> <br />
                         <div>e.g., NewCo Sandbox</div>
                         <TextField floatingLabelText='Sandbox Version' value={'FHIR STU 3 (v3.0.1)'} disabled /><br />
-                        <div>Choose a version of the FHIR Standard</div>
-                        <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler} />
-                        <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler} />
-                        <div>If not selected, the sandbox will be empty</div>
+                        <div className='subscript'>Choose a version of the FHIR Standard</div><br />
+                        <div className='checkboxes'>
+                            <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler} />
+                            <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler} />
+                            <div className='subscript'>If not selected, the sandbox will be empty</div>
+                        </div>
                         <TextField floatingLabelText='Description' onChange={this.sandboxDescriptionChange} /><br />
                         <div>e.g., This sandbox is the QA environment for NewCo.</div>
                         <RaisedButton label='Create' disabled={this.state.createDisabled} className='button' primary onClick={this.handleCreateSandbox} />

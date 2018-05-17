@@ -1,12 +1,21 @@
 .create-sandbox-wrapper {
   height: 100%;
   overflow: hidden;
+  .subscript {
+    font-size: 0.8rem;
+    color: darkgray;
+  }
   .paper-card {
     height: 100%;
     overflow: hidden;
     .paper-body {
       height: ~'calc(100% - 82px)';
       overflow: auto;
+      .checkboxes {
+        & > * {
+          margin: 0;
+        }
+      }
     }
   }
   .checkbox {
