@@ -51,8 +51,8 @@ class AppDialog extends Component {
                         <TextField floatingLabelText='App Name' fullWidth value={this.state.app.clientName}
                                    onChange={(_e, newVal) => this.onChange('clientName', newVal)} /><br />
                         <div>
-                            <span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>Client Type</span>
-                            <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}>
+                            <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
+                            <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)} style={{top: '16px'}}>
                                 <MenuItem value='NONE' primaryText='Public Client' />
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client' />
                             </DropDownMenu>
