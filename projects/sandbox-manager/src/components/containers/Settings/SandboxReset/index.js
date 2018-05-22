@@ -41,20 +41,20 @@ class SandboxReset extends Component {
             <div className='reset-wrapper'>
                 <p>Resetting the sandbox will delete:</p>
                 <ul>
-                    <li>all FHIR data</li>
-                    <li>launch scenarios</li>
-                    <li>personas</li>
+                    <li>All FHIR data</li>
+                    <li>Launch scenarios</li>
+                    <li>Personas</li>
                 </ul>
                 <p>This is NOT reversible!</p>
                 <p>Unaffected:</p>
                 <ul>
-                    <li>registered apps</li>
-                    <li>sandbox members</li>
+                    <li>Registered apps</li>
+                    <li>Sandbox members</li>
                 </ul>
                 <Checkbox checked={this.state.applyDefaultDataSet} label='Apply Default Data Set' onCheck={(_e, applyDefaultDataSet) => this.setState({ applyDefaultDataSet })} />
                 <p>If not selected, the sandbox will be empty</p>
                 {this.props.sandbox &&
-                <Checkbox checked={this.state.reset} label={'Are you sure you want to reset sandbox ' + this.props.sandbox.name}
+                <Checkbox checked={this.state.reset} label={'Are you sure you want to reset sandbox ' + this.props.sandbox.name + '?'}
                           onCheck={(_e, reset) => this.setState({ reset })} />}
 
                 <RaisedButton disabled={!this.state.reset} label='Reset' className='button' onClick={this.toggleModal} />

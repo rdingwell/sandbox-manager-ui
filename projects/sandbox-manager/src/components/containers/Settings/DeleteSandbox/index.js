@@ -41,13 +41,13 @@ class SandboxReset extends Component {
             <div className='delete-wrapper'>
                 <p>Deleting the sandbox will delete:</p>
                 <ul>
-                    <li>all FHIR data</li>
-                    <li>launch scenarios</li>
-                    <li>registered apps</li>
-                    <li>remove access for all sandbox members</li>
+                    <li>All FHIR data</li>
+                    <li>Launch scenarios</li>
+                    <li>Registered apps</li>
+                    <li>Remove access for all sandbox members</li>
                 </ul>
                 <p>This is NOT reversible!</p>
-                {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name} onCheck={(_e, del) => this.setState({ del })} />}
+                {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name + '?'} onCheck={(_e, del) => this.setState({ del })} />}
                 <RaisedButton disabled={!this.state.del} label="Delete" className='button' onClick={this.toggleModal} />
             </div>
         </Paper>;

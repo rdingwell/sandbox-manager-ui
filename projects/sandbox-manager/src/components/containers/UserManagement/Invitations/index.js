@@ -76,7 +76,7 @@ class Invitations extends Component {
 
         return (
             <Paper className="paper-card">
-                <h3>Invitations<RaisedButton onClick={this.toggleModal} label="Invite" style={{ float: "right" }} /></h3>
+                <h3>Invitations<RaisedButton onClick={this.toggleModal} label="Invite" style={{ float: "right", transform: 'translate(0, -20%)' }} /></h3>
                 <Dialog title="Invite New User" actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
                         actionsContainerClassName='invite-actions-wrapper'>
                     <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)}
