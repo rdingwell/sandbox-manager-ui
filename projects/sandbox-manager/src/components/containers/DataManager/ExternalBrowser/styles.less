@@ -1,0 +1,34 @@
+.external-browser-wrapper {
+  padding: 0 2rem;
+  .external-query-wrapper, .external-endpoint-wrapper {
+    display: inline-block;
+    width: ~'calc(50% - 2rem)';
+    vertical-align: top;
+  }
+  .external-endpoint-wrapper {
+    & > *:nth-child(2) {
+      height: 72px !important;
+      vertical-align: top;
+      margin-left: 2rem;
+      max-width: 60%;
+    }
+  }
+  .result-wrapper {
+    width: 100%;
+    display: inline-block;
+    height: ~'calc(100vh - 236px)';
+    box-sizing: border-box;
+    & > div {
+      padding: 0.5rem 1.5rem;
+      height: 95%;
+      & > h2 {
+        margin: 0;
+        padding: 0;
+        color: darkgray;
+      }
+    }
+  }
+  & > div:nth-child(2) {
+    margin-right: 2rem;
+  }
+}

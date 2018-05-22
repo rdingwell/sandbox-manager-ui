@@ -13,6 +13,7 @@ import Dashboard from '../components/containers/Dashboard';
 import Start from '../components/containers/Start';
 import AfterAuth from '../components/containers/AfterAuth';
 import CreateSandbox from '../components/containers/CreateSandbox';
+import DataManager from '../components/containers/DataManager';
 
 export default <Router>
     <App>
@@ -23,7 +24,7 @@ export default <Router>
             <Route path='/patients' component={Persona} />
             <Route path='/practitioners' component={Persona} />
             <Route path='/personas' component={Persona} />
-            <Route path='/data-manager' component={Persona} />
+            <Route path='/data-manager' component={DataManager} />
             <Route path='/user-management' component={UserManagement} />
             <Route path='/integration' component={EHRIntegration} />
             <Route path='/settings' component={Settings} />

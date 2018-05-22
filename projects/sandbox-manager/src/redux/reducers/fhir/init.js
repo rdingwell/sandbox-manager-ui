@@ -1,5 +1,6 @@
 export default {
     context: [],
+    customSearchResults: null,
     parsed: {
         needPatientBanner: true,
         patientDemographics: {

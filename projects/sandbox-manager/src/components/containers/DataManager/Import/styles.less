@@ -1,0 +1,27 @@
+.import-wrapper {
+  padding: 2rem;
+  .result-wrapper {
+    width: ~'calc(50% - 1rem)';
+    display: inline-block;
+    height: ~'calc(100vh - 190px)';
+    box-sizing: border-box;
+    overflow: hidden;
+    & > div {
+      padding: 0.5rem 1.5rem;
+      height: 95%;
+      & > h2 {
+        margin: 0;
+        padding: 0;
+        color: darkgray;
+      }
+      & > h4 {
+        color: darkgray;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+    }
+  }
+  & > div:nth-child(1) {
+    margin-right: 2rem;
+  }
+}

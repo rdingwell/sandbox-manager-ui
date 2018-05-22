@@ -72,6 +72,10 @@
     "all": false
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.5",
+    "@fortawesome/fontawesome-free-regular": "^5.0.9",
+    "@fortawesome/fontawesome-free-solid": "^5.0.9",
+    "@fortawesome/react-fontawesome": "0.0.17",
     "autoprefixer": "7.2.5",
     "awesome-typescript-loader": "^3.4.1",
     "axios": "0.17.1",
@@ -146,6 +150,7 @@
     "react-dom": "16.2.0",
     "react-highcharts": "16.0.2",
     "react-icons": "^2.2.7",
+    "react-json-view": "^1.16.6",
     "react-redux": "5.0.6",
     "react-router": "4.2.0",
     "react-router-dom": "4.2.2",
@@ -164,11 +169,7 @@
     "webpack": "3.10.0",
     "webpack-dev-server": "2.10.1",
     "webpack-manifest-plugin": "1.3.2",
-    "whatwg-fetch": "2.0.3",
-    "@fortawesome/fontawesome": "^1.1.5",
-    "@fortawesome/fontawesome-free-regular": "^5.0.9",
-    "@fortawesome/fontawesome-free-solid": "^5.0.9",
-    "@fortawesome/react-fontawesome": "0.0.17"
+    "whatwg-fetch": "2.0.3"
   },
   "browserslist": [
     "> 5%",
