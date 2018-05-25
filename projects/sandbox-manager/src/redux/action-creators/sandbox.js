@@ -269,8 +269,8 @@ export function toggleUserAdminRights (userId, toggle) {
             body: JSON.stringify({})
         };
         fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + state.sandbox.selectedSandbox + queryParams, Object.assign({ method: "PUT" }, config))
-            .then(r => {
-                r.json().then(a => console.log(a))
+            .then(() => {
+                dispatch(fetchSandboxes());
             });
     };
 }
