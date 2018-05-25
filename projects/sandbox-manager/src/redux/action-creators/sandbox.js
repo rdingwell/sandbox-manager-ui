@@ -263,8 +263,10 @@ export function toggleUserAdminRights (userId, toggle) {
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
-            }
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
         };
         fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + state.sandbox.selectedSandbox + queryParams, Object.assign({ method: "PUT" }, config))
             .then(r => {
@@ -310,6 +312,36 @@ export function createScenario (data) {
             body: JSON.stringify(data)
         };
         fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({ method: "POST" }, config))
+            .then(result => {
+                result.json()
+                    .then(r => {
+                        console.log(r);
+                    });
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                dispatch(setScenarioCreating(false));
+            });
+    }
+}
+
+export function updateLaunchScenario (scenario, description) {
+    return (dispatch, getState) => {
+        dispatch(setScenarioCreating(true));
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        scenario.description = description;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scenario)
+        };
+        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, Object.assign({ method: "PUT" }, config))
             .then(result => {
                 result.json()
                     .then(r => {
@@ -487,7 +519,9 @@ export function loadLaunchScenarios () {
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + state.sandbox.selectedSandbox;
         const config = {
             headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
             }
         };
         fetch(url, config)

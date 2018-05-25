@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { TextField, IconButton, List, ListItem, Dialog, Paper } from 'material-ui';
+import { TextField, FloatingActionButton, List, ListItem, Dialog, Paper } from 'material-ui';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import { parseEntry } from '../../../../../../../lib/utils';
 import ReactJson from 'react-json-view';
 import './styles.less';
@@ -12,7 +13,8 @@ export default class QueryBrowser extends Component {
 
         this.state = {
             showDialog: false,
-            selectedEntry: undefined
+            selectedEntry: undefined,
+            query: ''
         };
     }
 
@@ -40,11 +42,15 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    <TextField id='query' fullWidth floatingLabelText='FHIR Query' ref='query' />
+                    <TextField ref='query' id='query' value={this.state.query} fullWidth floatingLabelText='FHIR Query' onChange={(_, query) => this.setState({query})} />
                 </div>
-                <IconButton onClick={() => this.props.search(this.refs.query.input.value)}>
+                {this.state.query.length > 0 &&
+                <FloatingActionButton onClick={this.clearQuery} className='clear-query-button' mini secondary>
+                    <CloseIcon />
+                </FloatingActionButton>}
+                <FloatingActionButton onClick={() => this.props.search(this.state.query)} mini>
                     <SearchIcon />
-                </IconButton>
+                </FloatingActionButton>
             </div>
             {this.props.results && this.props.results.entry &&
             <div className='result-wrapper'>
@@ -71,7 +77,7 @@ export default class QueryBrowser extends Component {
                     </div>
                 </div>
             </div>}
-            {this.props.results && this.props.results.entry &&
+            {this.props.results &&
             <div className='result-wrapper'>
                 <div>
                     <h2>Result JSON Bundle</h2>
@@ -83,6 +89,11 @@ export default class QueryBrowser extends Component {
         </div>;
     }
 
+    clearQuery = () => {
+        this.setState({query: ''});
+        this.props.clearResults(null);
+    };
+
     toggle = () => {
         let showDialog = !this.state.showDialog;
         let props = { showDialog };
@@ -91,6 +102,6 @@ export default class QueryBrowser extends Component {
     };
 
     submitMaybe = (event) => {
-        [10, 13].indexOf(event.charCode) >= 0 && this.props.search(this.refs.query.input.value);
-    }
+        [10, 13].indexOf(event.charCode) >= 0 && this.props.search(this.state.query);
+    };
 }

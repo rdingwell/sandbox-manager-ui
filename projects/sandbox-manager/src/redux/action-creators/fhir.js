@@ -54,7 +54,7 @@ export function fhir_SetSmart (payload) {
     }
 }
 
-export function customSearch (query) {
+export function customSearch (query, endpoint) {
     return dispatch => {
         const config = {
             headers: {
@@ -66,7 +66,8 @@ export function customSearch (query) {
 
         dispatch(fhir_setCustomSearchResults(null));
 
-        fetch(`${window.fhirClient.server.serviceUrl}/${query}`, config)
+        endpoint = endpoint ? endpoint : window.fhirClient.server.serviceUrl;
+        fetch(`${endpoint}/${query}`, config)
             .then(e => e.json().then(results => {
                 dispatch(fhir_setCustomSearchResults(results));
             }))

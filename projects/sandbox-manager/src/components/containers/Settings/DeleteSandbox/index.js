@@ -48,7 +48,7 @@ class SandboxReset extends Component {
                 </ul>
                 <p>This is NOT reversible!</p>
                 {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name} onCheck={(_e, del) => this.setState({ del })} />}
-                <RaisedButton disabled={!this.state.del} label="Delete" className='button' onClick={this.toggleModal} />
+                <RaisedButton primary disabled={!this.state.del} label="Delete" className='button' onClick={this.toggleModal} />
             </div>
         </Paper>;
     }

@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch } from '../../../redux/action-creators';
+import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, Paper, RaisedButton, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, Dialog, Card, TextField } from 'material-ui';
+import {
+    CircularProgress, Paper, RaisedButton, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, Dialog, Card, TextField,
+    FlatButton
+} from 'material-ui';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
 
@@ -18,6 +22,7 @@ class LaunchScenarios extends Component {
 
         this.state = {
             showModal: false,
+            descriptionEditing: false,
             selectedScenario: undefined,
             description: ''
         }
@@ -45,7 +50,7 @@ class LaunchScenarios extends Component {
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
-                    <DohMessage message='We would like to show you some scenarios here, but there are non registered. Please register some.'/>}
+                    <DohMessage message='We would like to show you some scenarios here, but there are non registered. Please register some.' />}
                 </div>
             </Paper>
             {this.getModal()}
@@ -161,7 +166,12 @@ class LaunchScenarios extends Component {
             </div>,
             <div key={1} className='details-pair smaller-label'>
                 <label>Description:</label>
-                <span>{this.state.selectedScenario.description}</span>
+                <span>
+                    {this.state.descriptionEditing
+                        ? <TextField defaultValue={this.state.selectedScenario.description} id='description' onBlur={this.updateScenario} />
+                        : this.state.selectedScenario.description}
+                    <FlatButton className='description-edit-button' primary icon={<EditIcon />} onClick={this.toggleDescriptionEdit} />
+                </span>
             </div>,
             <div key={2} className='details-pair smaller-label'>
                 <label>Launch Embedded: </label>
@@ -222,8 +232,18 @@ class LaunchScenarios extends Component {
         let showModal = !this.state.showModal;
         let selectedScenario = showModal ? this.state.selectedScenario : undefined;
         showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
+        showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
         showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
         this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
+    };
+
+    toggleDescriptionEdit = () => {
+        this.setState({ descriptionEditing: !this.state.descriptionEditing });
+    };
+
+    updateScenario = (e) => {
+        e.target.value !== this.state.selectedScenario.description && this.props.updateLaunchScenario(this.state.selectedScenario, e.target.value);
+        this.toggleDescriptionEdit();
     };
 
     getScenarios = () => {
@@ -274,15 +294,9 @@ const mapStateToProps = state => {
     }
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-    app_setScreen,
-    loadLaunchScenarios,
-    fetchPersonas,
-    getPersonasPage,
-    createScenario,
-    deleteScenario,
-    doLaunch
-}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(
+    { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario },
+    dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(LaunchScenarios))

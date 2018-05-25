@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import { app_setScreen, customSearch } from '../../../redux/action-creators';
+import { app_setScreen, customSearch, fhir_setCustomSearchResults } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -19,10 +19,10 @@ class DataManager extends Component {
         return <div className='data-manager-wrapper'>
             <Tabs className='data-tabs' contentContainerClassName='data-tabs-container'>
                 <Tab label="Query browser" className='query-browser-tab'>
-                    <QueryBrowser search={this.search} results={this.props.results} />
+                    <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} />
                 </Tab>
                 <Tab label="External FHIR Data">
-                    <ExternalBrowser />
+                    <ExternalBrowser search={this.search} results={this.props.results} />
                 </Tab>
                 <Tab label="Import">
                     <Import />
@@ -48,6 +48,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager));

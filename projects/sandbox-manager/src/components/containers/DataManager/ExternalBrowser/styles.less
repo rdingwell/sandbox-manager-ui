@@ -1,14 +1,28 @@
 .external-browser-wrapper {
   padding: 0 2rem;
+  background-color: white;
+  height: 100%;
   .external-query-wrapper, .external-endpoint-wrapper {
     display: inline-block;
-    width: ~'calc(50% - 2rem)';
-    vertical-align: top;
+    margin: 0 2rem;
+    width: ~'calc(50% - 8rem)';
+  }
+  .external-query-wrapper {
+    position: relative;
+    .clear-query-button.hidden {
+      opacity: 0;
+    }
+    & > *:not(:first-child) {
+      position: absolute;
+      right: -100px;
+      top: 25%;
+      & > div:first-of-type {
+        margin-right: 1rem;
+      }
+    }
   }
   .external-endpoint-wrapper {
     & > *:nth-child(2) {
-      height: 72px !important;
-      vertical-align: top;
       margin-left: 2rem;
       max-width: 60%;
     }
@@ -21,11 +35,6 @@
     & > div {
       padding: 0.5rem 1.5rem;
       height: 95%;
-      & > h2 {
-        margin: 0;
-        padding: 0;
-        color: darkgray;
-      }
     }
   }
   & > div:nth-child(2) {

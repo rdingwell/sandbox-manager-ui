@@ -8,6 +8,9 @@ export default (state = initialState, action) => {
         case types.SET_SANDBOX_APPS_LOADING:
             state.loading = action.payload.loading;
             break;
+        case types.SET_SANDBOX_APP_LOADING:
+            state.loadingApp = action.payload.loading;
+            break;
         case types.SET_SANDBOX_APPS_CREATING:
             state.creating = action.payload.creating;
             break;
@@ -20,6 +23,11 @@ export default (state = initialState, action) => {
             break;
         case types.APP_RESET_STATE:
             state = initialState;
+            break;
+        case types.SET_APP:
+            let newApps = state.apps.filter(i => i.id !== action.payload.app.id);
+            newApps.push(action.payload.app);
+            state.apps = newApps;
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.apps : state;

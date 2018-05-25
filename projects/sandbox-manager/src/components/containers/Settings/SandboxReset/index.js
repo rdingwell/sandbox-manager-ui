@@ -57,7 +57,7 @@ class SandboxReset extends Component {
                 <Checkbox checked={this.state.reset} label={'Are you sure you want to reset sandbox ' + this.props.sandbox.name}
                           onCheck={(_e, reset) => this.setState({ reset })} />}
 
-                <RaisedButton disabled={!this.state.reset} label='Reset' className='button' onClick={this.toggleModal} />
+                <RaisedButton primary disabled={!this.state.reset} label='Reset' className='button' onClick={this.toggleModal} />
             </div>
         </Paper>;
     }

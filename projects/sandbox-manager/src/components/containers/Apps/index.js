@@ -3,7 +3,7 @@ import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardAction
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 
-import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp } from '../../../redux/action-creators';
+import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp, loadApp } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
@@ -16,11 +16,16 @@ import './styles.less';
 
 class Apps extends Component {
 
-    state = {
-        selectedApp: undefined,
-        appToLaunch: undefined,
-        registerDialogVisible: false
-    };
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            selectedApp: undefined,
+            appToLaunch: undefined,
+            registerDialogVisible: false,
+            appIsLoading: false
+        };
+    }
 
     componentDidMount () {
         this.props.app_setScreen('apps');
@@ -29,6 +34,7 @@ class Apps extends Component {
 
     componentWillReceiveProps (nextProps) {
         ((this.props.appCreating && !nextProps.appCreating) || (this.props.appDeleting && !nextProps.appDeleting)) && this.props.loadSandboxApps();
+        this.props.appLoading && !nextProps.appLoading && this.setState({ appIsLoading: false, selectedApp: nextProps.apps.find(i => i.id === this.state.selectedApp.id) });
     }
 
     render () {
@@ -47,7 +53,7 @@ class Apps extends Component {
             ))
             : [];
 
-        let dialog = this.state.selectedApp || this.state.registerDialogVisible
+        let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
                          app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible} onClose={this.closeAll} />
             : this.state.appToLaunch
@@ -80,7 +86,7 @@ class Apps extends Component {
     };
 
     appSubmit = (app) => {
-        this.state.selectedApp ? this.props.updateApp(app) : this.props.createApp(app);
+        this.state.selectedApp ? this.props.updateApp(app, this.state.selectedApp) : this.props.createApp(app);
         this.closeAll();
     };
 
@@ -98,7 +104,8 @@ class Apps extends Component {
     };
 
     handleAppSelect = (index) => {
-        this.setState({ selectedApp: this.props.apps[index], registerDialogVisible: false });
+        this.props.loadApp(this.props.apps[index]);
+        this.setState({ selectedApp: this.props.apps[index], registerDialogVisible: false, appIsLoading: true });
     };
 
     handleAppLaunch = (index) => {
@@ -109,7 +116,7 @@ class Apps extends Component {
 const mapStateToProps = state => {
     return {
         apps: state.apps.apps,
-        appLoading: state.apps.loading,
+        appLoading: state.apps.loadingApp,
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting
     };
@@ -117,7 +124,7 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp }, dispatch);
+    return bindActionCreators({ doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp }, dispatch);
 };
 
 

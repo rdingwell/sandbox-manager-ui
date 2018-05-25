@@ -102,12 +102,10 @@ export default class PersonaList extends Component {
                 </TableRowColumn>
             </TableRow>
         </TableFooter>
-    }
+    };
 
     handleRowSelect = (row) => {
         let persona = this.props.personas[row];
         this.props.click(persona);
-        //todo fire event up to parent to pass patient to
-        //sibling component
     };
 }

@@ -34,7 +34,7 @@ class SandboxDetails extends Component {
                            onChange={this.handleSandboxNameChange} />
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description'
                            onChange={(event) => this.handleSandboxDescriptionChange(event)} />
-                <RaisedButton label='Save' className='details-button' type='submit' />
+                <RaisedButton primary label='Save' className='details-button' type='submit' />
             </form>
         </Paper>;
     }

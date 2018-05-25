@@ -5,21 +5,39 @@ class AppDialog extends Component {
     constructor (props) {
         super(props);
 
+        let clientJSON = props.app && props.app.clientJSON && JSON.parse(props.app.clientJSON);
+        let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
+        let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
+
         let app = {
             clientName: props.app ? props.app.authClient.clientName : '',
             launchUri: props.app ? props.app.launchUri : '',
+            samplePatients: props.app && props.app.samplePatients ? props.app.samplePatients : '',
+            redirectUris: redirectUris ? redirectUris : '',
+            scope: scope ? scope : '',
             logoUri: props.app && props.app.logoUri || '',
             briefDescription: props.app && props.app.briefDescription || '',
-            tokenEndpointAuthMethod: props.app && props.app.clientJSON && props.app.clientJSON.tokenEndpointAuthMethod || 'NONE',
+            tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
             patientScoped: true
         };
-
-        console.log(props.app);
 
         this.state = {
             value: 'PublicClient',
             modalOpen: false,
             app
+        }
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if ((this.props.app && !this.props.app.clientJSON && nextProps.app.clientJSON) ||
+            (this.props.app && this.props.app.clientJSON && this.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
+            let clientJSON = nextProps.app && nextProps.app.clientJSON && JSON.parse(nextProps.app.clientJSON);
+            let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
+            let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
+
+            let app = Object.assign({}, this.state.app, { scope, redirectUris });
+
+            this.setState({ app });
         }
     }
 
@@ -52,7 +70,8 @@ class AppDialog extends Component {
                                    onChange={(_e, newVal) => this.onChange('clientName', newVal)} /><br />
                         <div>
                             <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
-                            <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)} style={{top: '16px'}}>
+                            <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
+                                          style={{ top: '16px' }}>
                                 <MenuItem value='NONE' primaryText='Public Client' />
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client' />
                             </DropDownMenu>
@@ -62,12 +81,20 @@ class AppDialog extends Component {
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} />
                         <TextField floatingLabelText='App Launch URI' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)} />
                         <br />
-                        <TextField fullWidth floatingLabelText='App Redirect URIs' />
-                        <span>Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.</span>
-                        <TextField fullWidth floatingLabelText='Scopes' />
-                        <span>Space separated list of scopes eg. 'launch patient/\*.* openid profile'</span>
-                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' />
-                        <span>This is a FHIR query to limit the Patient Picker on launch.</span>
+                        <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs'
+                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} />
+                        <span>
+                            Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
+                        </span>
+                        {this.props.app &&
+                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} />}
+                        {this.props.app &&
+                        <span>Space separated list of scopes eg. 'launch patient/\*.* openid profile'</span>}
+                        {this.props.app &&
+                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
+                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)} />}
+                        {this.props.app &&
+                        <span>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
                             <Toggle label='Allow offline access' defaultToggled={false} />
                             <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)} />
