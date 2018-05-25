@@ -31,7 +31,8 @@ class Index extends Component {
                 <div className='paper-body'>
                     <form>
                         <TextField floatingLabelText='Sandbox Id' defaultValue={this.state.name} onChange={this.sandboxIdChangedHandler} /><br />
-                        <div>Your sandbox will be available at http://localhost:3000/sandbox-id</div>
+                        <div>Letters and numbers only. Must be less than 20 characters.</div><br />
+                        <div>Your sandbox will be available at http://localhost:3000/sandboxId</div>
                         <TextField floatingLabelText='Sandbox Name' onChange={this.sandboxNameChangedHandler} /> <br />
                         <div>e.g., NewCo Sandbox</div>
                         <TextField floatingLabelText='Sandbox Version' value={'FHIR STU 3 (v3.0.1)'} disabled /><br />

@@ -100,9 +100,10 @@ class AppDialog extends Component {
                             <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)} />
                         </div>}
                         < br />
+                        < br />
                         <RaisedButton label='Image' onClick={() => this.refs.image.click()} />
                         <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput} />
-                        <img style={{ width: '450px' }} src={this.state.app.logoUri} />
+                        <img style={{ width: '450px', display: 'block', marginTop: '10px' }} src={this.state.app.logoUri} />
                     </form>
                 </div>
             </Paper>
