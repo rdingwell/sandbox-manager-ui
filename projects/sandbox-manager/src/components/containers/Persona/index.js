@@ -45,6 +45,7 @@ class Persona extends Component {
             personas: this.props.currentPersonas,
             pagination: this.props.currentPagination,
             click: this.selectPersonHandler,
+            search: this.props.fetchPersonas,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };

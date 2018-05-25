@@ -87,7 +87,7 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
     }
 }
 
-export function fetchPersonas (type = "Patient") {
+export function fetchPersonas (type = "Patient", searchCrit = {}) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
@@ -110,7 +110,7 @@ export function fetchPersonas (type = "Patient") {
                     })
             } else {
                 let searchParams = { type, count: count };
-                searchParams.query = {};
+                searchParams.query = searchCrit;
 
                 window.fhirClient.api.search(searchParams)
                     .then(response => {

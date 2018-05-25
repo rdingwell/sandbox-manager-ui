@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton } from 'material-ui';
+import { Paper, RaisedButton, TextField } from 'material-ui';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table';
 
 import './styles.less';
@@ -12,6 +12,16 @@ export default class PersonaList extends Component {
         persona: 'Persona',
         practitioner: 'Practitioner'
     };
+
+    constructor (props) {
+        super(props);
+
+        this.timeout = null;
+
+        this.state = {
+            searchCrit: ''
+        };
+    }
 
     render () {
         let getName = (name) => {
@@ -60,26 +70,39 @@ export default class PersonaList extends Component {
             </div>
             <div className='paper-body'>
                 {!this.props.personas && <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>}
+                {isPractitioner || isPatient
+                    ? <div className='search'>
+                        <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
+                    </div>
+                    : <div className='hidden'> </div>}
                 {personas && personas.length > 0
-                ? <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
-                            {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
-                            {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
-                            {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false} stripedRows showRowHover>
-                        {personas}
-                    </TableBody>
-                    {this.props.pagination && this.getPagination()}
-                </Table>
-                : <DohMessage message={`We would really like to show you some ${title}, but there are none to show. Please create a few.`}/>}
+                    ? <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
+                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                            <TableRow>
+                                <TableHeaderColumn>Name</TableHeaderColumn>
+                                {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
+                                {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
+                                {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
+                                {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody displayRowCheckbox={false} stripedRows showRowHover>
+                            {personas}
+                        </TableBody>
+                        {this.props.pagination && this.getPagination()}
+                    </Table>
+                    : <DohMessage message={`We would really like to show you some ${title}, but there are none to show.`} />}
             </div>
         </Paper>;
     }
+
+    critChanged = (_e, searchCrit) => {
+        this.setState({ searchCrit });
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            this.props.search(this.props.type, { name: this.state.searchCrit });
+        }, 1500);
+    };
 
     getPagination = () => {
         let self = this.props.pagination.link.find(i => i.relation === 'self');
