@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle } from 'material-ui';
+import './styles.less';
 
 class AppDialog extends Component {
     constructor (props) {
@@ -51,7 +52,6 @@ class AppDialog extends Component {
         }
 
         let actions = [
-            <RaisedButton key={1} onClick={this.props.onClose} label='Cancel' />,
             <RaisedButton primary label='Save' onClick={this.save} />
         ];
 
@@ -66,7 +66,7 @@ class AppDialog extends Component {
                 <h3>Registered App Details</h3>
                 <div className='paper-body'>
                     <form>
-                        <TextField floatingLabelText='App Name' fullWidth value={this.state.app.clientName}
+                        <TextField floatingLabelText='App Name' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart'
                                    onChange={(_e, newVal) => this.onChange('clientName', newVal)} /><br />
                         <div>
                             <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
@@ -79,31 +79,37 @@ class AppDialog extends Component {
                         {clientId}
                         <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} />
-                        <TextField floatingLabelText='App Launch URI' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)} />
+                        <TextField floatingLabelText='App Launch URI' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
+                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html' />
                         <br />
                         <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs'
-                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} />
-                        <span>
+                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html' />
+                        <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
                         {this.props.app &&
-                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} />}
+                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)}
+                                   hintText='eg: launch patient/*.* openid profile' />}
                         {this.props.app &&
-                        <span>Space separated list of scopes eg. 'launch patient/\*.* openid profile'</span>}
+                        <span className='subscript'>Space separated list of scopes.</span>}
                         {this.props.app &&
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)} />}
                         {this.props.app &&
-                        <span>This is a FHIR query to limit the Patient Picker on launch.</span>}
+                        <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
                             <Toggle label='Allow offline access' defaultToggled={false} />
                             <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)} />
                         </div>}
                         < br />
-                        < br />
-                        <RaisedButton label='Image' onClick={() => this.refs.image.click()} />
-                        <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput} />
-                        <img style={{ width: '450px', display: 'block', marginTop: '10px' }} src={this.state.app.logoUri} />
+                        <div className='image-button-wrapper'>
+                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} />
+                            <div><span className='subscript'>(Display size 210px W X 150px H)</span></div>
+                        </div>
+                        <div className='image-wrapper'>
+                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput} />
+                            <img src={this.state.app.logoUri} />
+                        </div>
                     </form>
                 </div>
             </Paper>

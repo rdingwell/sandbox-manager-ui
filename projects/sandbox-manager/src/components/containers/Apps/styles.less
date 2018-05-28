@@ -11,11 +11,21 @@
   }
 
   .app-card {
-    width: 44%;
-    max-width: 320px;
-    display: inline-block;
+    width: 200px;
     margin: 20px;
-    min-height: 300px;
+    display: inline-block;
+    background-color: whitesmoke !important;
+    padding: 3px;
+    position: relative;
+    .card-title {
+      margin: 15px 5px 0 5px;
+      display: inline-block;
+    }
+    img {
+      width: 210px !important;
+      height: 150px !important;
+      background-color: white;
+    }
     &.small {
       min-height: 200px;
       &:hover {
@@ -31,6 +41,12 @@
   }
 
   .card-actions-wrapper {
+    padding: 8px;
+    position: absolute !important;
+    width: 100%;
+    top: 120px;
+    left: 0;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     & > * {

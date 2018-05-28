@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardActions, RaisedButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardActions, RaisedButton, FloatingActionButton } from 'material-ui';
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 
@@ -44,10 +44,12 @@ class Apps extends Component {
                     <CardMedia>
                         <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                     </CardMedia>
-                    <CardTitle><span style={{ fontSize: 18 }}>{app.authClient.clientName}</span></CardTitle>
+                    <CardTitle>
+                        <span className='card-title'>{app.authClient.clientName}</span>
+                    </CardTitle>
                     {!this.props.noActions && <CardActions className='card-actions-wrapper'>
-                        <RaisedButton labelPosition='before' secondary={true} icon={<SettingsIcon />} onClick={() => this.handleAppSelect(index)} />
-                        <RaisedButton labelPosition='before' primary={true} icon={<PlayArrowIcon />} onClick={() => this.handleAppLaunch(index)} />
+                        <FloatingActionButton mini secondary onClick={() => this.handleAppSelect(index)}><SettingsIcon /></FloatingActionButton>
+                        <FloatingActionButton mini onClick={() => this.handleAppLaunch(index)}><PlayArrowIcon /></FloatingActionButton>
                     </CardActions>}
                 </Card>
             ))
