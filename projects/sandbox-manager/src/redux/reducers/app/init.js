@@ -1,3 +1,5 @@
 export default {
-    screen: "dashboard"
+    screen: "dashboard",
+    termsLoading: false,
+    terms: undefined
 }

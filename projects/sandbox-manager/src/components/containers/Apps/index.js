@@ -72,7 +72,7 @@ class Apps extends Component {
                 <div className='paper-body'>
                     {!this.props.appDeleting && !this.props.appCreating && apps}
                     {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
-                    <DohMessage message='We would like to show you some apps here, but there are non registered. Please register some.' />}
+                    <DohMessage message='There are no apps in this sandbox platform yet.' />}
                     {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
                 </div>
             </Paper>

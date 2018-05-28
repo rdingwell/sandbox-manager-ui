@@ -86,6 +86,8 @@ export const FHIR_VERSION = "FHIR_VERSION";
 export const SET_APP_SCREEN = "SET_APP_SCREEN";
 export const APP_RESET_STATE = "APP_RESET_STATE";
 export const SET_APP = "SET_APP";
+export const SET_TERMS_LOADING = "SET_TERMS_LOADING";
+export const SET_TERMS = "SET_TERMS";
 
 // apps
 export const SET_SANDBOX_APPS = "SET_SANDBOX_APPS";

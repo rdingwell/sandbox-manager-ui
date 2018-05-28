@@ -50,7 +50,7 @@ class LaunchScenarios extends Component {
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
-                    <DohMessage message='We would like to show you some scenarios here, but there are non registered. Please register some.' />}
+                    <DohMessage message='There are no launch scenarios in this sandbox platform yet.' />}
                 </div>
             </Paper>
             {this.getModal()}

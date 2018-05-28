@@ -11,6 +11,12 @@ export default (state = initialState, action) => {
         case types.APP_RESET_STATE:
             state = initialState;
             break;
+        case types.SET_TERMS_LOADING:
+            state.termsLoading = action.payload.loading;
+            break;
+        case types.SET_TERMS:
+            state.terms = action.payload.terms;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.app : state;
             break;

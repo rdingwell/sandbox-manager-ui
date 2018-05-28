@@ -91,7 +91,7 @@ export default class PersonaList extends Component {
                         </TableBody>
                         {this.props.pagination && this.getPagination()}
                     </Table>
-                    : <DohMessage message={`We would really like to show you some ${title}, but there are none to show.`} />}
+                    : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
             </div>
         </Paper>;
     }
