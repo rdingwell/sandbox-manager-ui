@@ -16,8 +16,6 @@ class Index extends Component {
     }
 
     render () {
-        console.log(this.props);
-        console.log(this.state.data);
         return <div>
             <BarChart key={Math.random()} data={this.state.data} />
         </div>

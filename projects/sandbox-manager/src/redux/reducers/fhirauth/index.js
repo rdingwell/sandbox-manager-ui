@@ -3,7 +3,6 @@ import initialState from "./init";
 
 export default (state = initialState, action) => {
     state = Object.assign({}, state);
-
     switch (action.type) {
         case actionTypes.FHIR_LOGIN:
             state.error = null;
@@ -33,11 +32,13 @@ export default (state = initialState, action) => {
 };
 
 const setServerUrl = (state, action) => {
-    const fhirClient = { ...state.fhirClient };
-    const server = { ...fhirClient.server };
-    server.serviceUrl = "http://localhost:8076/" + action.sandboxId + "/data";
-    fhirClient.server = server;
-
-    state.fhirClient = fhirClient;
+    // debugger;
+    // const fhirClient = { ...state.fhirClient };
+    // const server = { ...fhirClient.server };
+    //
+    // server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
+    // fhirClient.server = server;
+    //
+    // state.fhirClient = fhirClient;
     return state;
 };

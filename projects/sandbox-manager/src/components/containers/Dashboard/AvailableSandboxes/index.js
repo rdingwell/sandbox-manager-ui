@@ -61,7 +61,7 @@ class Index extends Component {
     handleRowSelect = (row) => {
         let sandbox = this.props.sandboxes[row];
         localStorage.setItem('sandboxId', sandbox.sandboxId);
-        this.props.selectSandbox(sandbox.sandboxId);
+        this.props.selectSandbox(sandbox);
     };
 
     fetchSandboxes () {

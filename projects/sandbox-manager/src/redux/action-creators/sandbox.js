@@ -1,5 +1,5 @@
 import * as actionTypes from './types';
-import { authorize } from './fhirauth';
+import { authorize, saveSandboxApiEndpointIndex } from './fhirauth';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -233,9 +233,10 @@ export const updateSandbox = (sandboxDetails) => {
     };
 };
 
-export const selectSandbox = (sandboxId) => {
+export const selectSandbox = (sandbox) => {
     return (dispatch, getState) => {
         let state = getState();
+
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
 
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -244,13 +245,16 @@ export const selectSandbox = (sandboxId) => {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token
             }
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
-            .then(() => {
-                dispatch(authorizeSandbox(sandboxId));
-                dispatch(setDefaultUrl(sandboxId));
-                dispatch(selectSandboxById(sandboxId));
-                dispatch(getDefaultUserForSandbox(sandboxId));
-            });
+        if(sandbox !== undefined) {
+            let sandboxId = sandbox.sandboxId;
+            fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
+                .then(() => {
+                    dispatch(authorizeSandbox(sandbox));
+                    dispatch(setDefaultUrl(sandboxId));
+                    dispatch(selectSandboxById(sandboxId));
+                    dispatch(getDefaultUserForSandbox(sandboxId));
+                });
+        }
     };
 
 };
@@ -429,10 +433,15 @@ export function getDefaultUserForSandbox (sandboxId) {
     }
 }
 
-export function authorizeSandbox (sandboxId) {
+export function authorizeSandbox (sandbox) {
     return (dispatch, getState) => {
-        const state = getState();
-        authorize(window.location, state, sandboxId);
+        if(sandbox !== undefined) {
+            dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
+            const state = getState();
+
+            // state['sandbox']['sandboxApiEndpointIndex'] = sandbox.apiEndpointIndex;
+            authorize(window.location, state, sandbox.sandboxId);
+        }
     }
 }
 

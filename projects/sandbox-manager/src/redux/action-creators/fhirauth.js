@@ -85,7 +85,6 @@ export function authorize (url, state, sandboxId) {
     };
 
     let config = state.config.xsettings.data.sandboxManager;
-
     let serviceUrl = config.defaultServiceUrl;
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
@@ -99,9 +98,10 @@ export function authorize (url, state, sandboxId) {
             serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
         } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
             serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "7") {
+            serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
         }
     }
-
 
     window.FHIR.oauth2.authorize({
         client: client,
@@ -186,4 +186,28 @@ export function fhirLoginFail () {
     return {
         type: actionTypes.FHIR_LOGIN_FAIL
     }
+}
+
+export function setServerUrl () {
+    const fhirClient = { ...state.fhirClient };
+    const server = { ...fhirClient.server };
+    const sandboxId = action.sandboxId;
+    const fhirVersion = state.fhirVersion;
+    if (sandboxId !== undefined && sandboxId !== "") {
+        server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
+        if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
+            server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
+            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
+            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.3.0") {
+            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+        }
+    }
+    server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
+    fhirClient.server = server;
+
+    state.fhirClient = fhirClient;
+    return state;
 }
