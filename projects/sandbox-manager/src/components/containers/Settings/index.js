@@ -8,6 +8,8 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { bindActionCreators } from "redux";
 import { CircularProgress } from 'material-ui';
 
+import './styles.less';
+
 class Settings extends Component {
 
     componentWillMount () {
@@ -16,7 +18,7 @@ class Settings extends Component {
 
 
     render () {
-        return <div>
+        return <div className='settings-wrapper'>
             {!this.props.resetting && <SandboxDetails sandbox={this.props.sandbox} />}
             {!this.props.resetting && <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} />}
             {!this.props.resetting && <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} />}

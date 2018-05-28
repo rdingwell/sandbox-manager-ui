@@ -447,7 +447,7 @@ export const createSandbox = (sandboxDetails) => {
         config.headers["Content-Type"] = "application/json";
         fetch(configuration.sandboxManagerApiUrl + '/sandbox', config)
             .then(() => {
-                dispatch(fetchSandboxes());
+                dispatch(fetchSandboxes(sandboxDetails.sandboxId));
             })
             .catch(err => {
                 dispatch(createSandboxFail(err));
@@ -458,7 +458,7 @@ export const createSandbox = (sandboxDetails) => {
     };
 };
 
-export const fetchSandboxes = () => {
+export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
         dispatch(fetchSandboxesStart());
@@ -476,6 +476,7 @@ export const fetchSandboxes = () => {
                             });
                         }
                         dispatch(fetchSandboxesSuccess(sandboxes));
+                        dispatch(selectSandbox(toSelect));
                     })
             })
             .catch(err => {

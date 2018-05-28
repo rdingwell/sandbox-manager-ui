@@ -100,7 +100,7 @@ class Index extends Component {
     };
 
     sandboxNameChangedHandler = (event) => {
-        this.setState({ name: event.target.value, sandboxId: event.target.value });
+        this.setState({ name: event.target.value, sandboxId: event.target.value, createDisabled: event.target.value === 0 });
     };
 
 }

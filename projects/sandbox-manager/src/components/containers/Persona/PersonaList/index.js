@@ -69,29 +69,38 @@ export default class PersonaList extends Component {
                 {this.props.actions}
             </div>
             <div className='paper-body'>
-                {!this.props.personas && <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>}
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
                     </div>
-                    : <div className='hidden'> </div>}
-                {personas && personas.length > 0
-                    ? <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
-                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                            <TableRow>
-                                <TableHeaderColumn>Name</TableHeaderColumn>
-                                {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
-                                {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
-                                {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
-                                {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody displayRowCheckbox={false} stripedRows showRowHover>
-                            {personas}
-                        </TableBody>
-                        {this.props.pagination && this.getPagination()}
-                    </Table>
-                    : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
+                    : <div className='hidden'></div>}
+                <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
+                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                        <TableRow>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
+                            {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
+                            {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
+                            {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
+                            {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody displayRowCheckbox={false} stripedRows showRowHover>
+                        {personas && personas.length > 0
+                            ? personas
+                            : this.props.loading
+                                ? <TableRow>
+                                    <TableRowColumn colSpan={4} style={{backgroundColor: 'transparent !important'}}>
+                                        <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
+                                    </TableRowColumn>
+                                </TableRow>
+                                : <TableRow>
+                                    <TableRowColumn colSpan={4} style={{backgroundColor: 'transparent !important'}}>
+                                        <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />
+                                    </TableRowColumn>
+                                </TableRow>}
+                    </TableBody>
+                    {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
+                </Table>
             </div>
         </Paper>;
     }
@@ -120,7 +129,7 @@ export default class PersonaList extends Component {
                         <span>Showing {start} to {end} of {this.props.pagination.total}</span>
                     </div>
                     <div>
-                        {end < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
+                        {end + 1 < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
                     </div>
                 </TableRowColumn>
             </TableRow>

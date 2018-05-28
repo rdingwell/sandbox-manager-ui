@@ -52,10 +52,16 @@ body {
 }
 
 :global(.Answer) {
-  background-color: rgb(232, 232, 232);
+  background-color: #e8e8e8;
   color: #4a525d;
   padding: 10px;
-  margin: 10px;
+  margin: 0 !important;
+  width: 100%;
+  display: inline-block;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
 }
 
 :global(.navigation-item) {

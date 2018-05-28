@@ -111,6 +111,7 @@ export function fetchPersonas (type = "Patient", searchCrit = {}) {
             } else {
                 let searchParams = { type, count: count };
                 searchParams.query = searchCrit;
+                searchParams.query['$sort'] = [['family', 'asc']];
 
                 window.fhirClient.api.search(searchParams)
                     .then(response => {

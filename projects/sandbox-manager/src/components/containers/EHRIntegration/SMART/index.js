@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { Paper } from 'material-ui';
 
 const smartGalery = 'https://apps.smarthealthit.org/';
 const smartSandbox = 'https://sandbox.smarthealthit.org';
 
 export default class Smart extends Component {
     render () {
-        return <div className='paper-card'>
+        return <Paper className='paper-card'>
             <h3>SMART</h3>
             <div className='paper-body'>
                 <p>Where can I learn about the SMART sandbox?</p>
@@ -19,6 +20,6 @@ export default class Smart extends Component {
                     <span className='Answer'><a href={smartGalery}>{smartGalery}</a></span>
                 </p>
             </div>
-        </div>
+        </Paper>
     }
 }

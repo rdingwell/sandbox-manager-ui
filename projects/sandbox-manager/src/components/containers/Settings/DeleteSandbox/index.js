@@ -38,7 +38,7 @@ class SandboxReset extends Component {
                 </Paper>
             </Dialog>}
             <h4>Sandbox Delete</h4>
-            <div className='delete-wrapper'>
+            <div className='delete-content'>
                 <p>Deleting the sandbox will delete:</p>
                 <ul>
                     <li>All FHIR data</li>

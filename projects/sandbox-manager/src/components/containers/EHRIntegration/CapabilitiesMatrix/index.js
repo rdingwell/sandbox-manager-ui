@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+import { Paper } from 'material-ui';
+import { app_setScreen } from '../../../../redux/action-creators';
+import { connect } from 'react-redux';
+import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import { bindActionCreators } from 'redux';
 
 const matrixLocation = 'http://docs.smarthealthit.org/fhir-support/';
 
-export default class CapabilitiesMatrix extends Component {
+class CapabilitiesMatrix extends Component {
+    componentDidMount () {
+        this.props.app_setScreen('integration');
+    }
+
     render () {
-        return <div>
+        return <Paper className='paper-card'>
             <h3>Capabilities Matrix</h3>
             <div className='paper-body'>
                 <p>SMART on FHIR EHR Capabilities Matrix</p>
@@ -12,6 +21,10 @@ export default class CapabilitiesMatrix extends Component {
                     <span className='Answer'><a href={matrixLocation}>{matrixLocation}</a></span>
                 </p>
             </div>
-        </div>
+        </Paper>
     }
 }
+
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen }, dispatch);
+
+export default connect(undefined, mapDispatchToProps)(withErrorHandler(CapabilitiesMatrix));
