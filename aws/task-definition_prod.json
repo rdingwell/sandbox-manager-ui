@@ -16,7 +16,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/sandbox-manager-prototype-test",
+          "awslogs-group": "/ecs/sandbox-manager-prototype-prod",
           "awslogs-region": "us-west-2",
           "awslogs-stream-prefix": "ecs"
         }
