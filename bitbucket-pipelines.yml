@@ -51,7 +51,7 @@ pipelines:
           caches:
             - node
           script:
-            - export TARGET_ENV=production
+            - export TARGET_ENV=prod
             - export CREDENTIALS=${ENC_PW_PROD}
             - cd ci
             - . ci-0-set-properties.sh
