@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton } from 'material-ui';
+import { CircularProgress, Paper, RaisedButton } from 'material-ui';
 import { init } from '../../../redux/action-creators';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -21,8 +21,7 @@ class Start extends Component {
                 <RaisedButton label={strings[language].signUpLabel} className='paper-button' primary={true} onClick={this.handleSignUp} />
             </div>
             : null;
-
-        return <div className='start-page-wrapper'>
+        let content = <div className='start-page-wrapper'>
             <Paper className='paper-card'>
                 <h3>{strings[language].title}</h3>
                 <div className='paper-body'>
@@ -33,6 +32,13 @@ class Start extends Component {
                 </div>
             </Paper>
         </div>;
+
+        return this.props.rehydrateDone && !this.props.hasSession
+            ? content
+            : <div className='loader-wrapper'>
+                <CircularProgress size={80} thickness={5} />
+                <h1>Loading session</h1>
+            </div>;
     };
 
     handleSignIn = () => {
@@ -48,7 +54,9 @@ const mapStateToProps = state => {
     return {
         selectedSandbox: state.sandbox.selectedSandbox,
         settings: state.config.xsettings.data,
-        language: state.config.language
+        language: state.config.language,
+        rehydrateDone: state.app.rehydrateDone,
+        hasSession: !!state.fhir.smart.data.server
     };
 };
 
