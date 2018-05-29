@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { TextField, Checkbox, RaisedButton, Paper, Dialog } from 'material-ui';
+import { TextField, Checkbox, RaisedButton, Paper, Dialog, IconButton } from 'material-ui';
 
 import './styles.less';
 
@@ -26,6 +26,9 @@ class SandboxReset extends Component {
             {this.state.showDeleteModal && <Dialog paperClassName='app-dialog auto delete-sandbox-dialog' modal={false}
                                                    open={this.state.showDeleteModal} onRequestClose={this.toggleModal} actions={actions}>
                 <Paper className='paper-card delete-dialog'>
+                    <IconButton className="close-button" onClick={this.toggleModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
                     <h3>Delete Sandbox</h3>
                     <div className='paper-body auto'>
                         <p>

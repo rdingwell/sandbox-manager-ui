@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem } from 'material-ui';
+import { Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton } from 'material-ui';
 import * as  actions from '../../../redux/action-creators';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
@@ -25,6 +25,9 @@ class Index extends Component {
     render () {
         return <div className='create-sandbox-wrapper'>
             <Paper className='paper-card'>
+                <IconButton className="close-button" onClick={this.handleCancel}>
+                    <i className="material-icons">close</i>
+                </IconButton>
                 <h3>
                     Create Sandbox
                 </h3>
