@@ -59,7 +59,7 @@ pipelines:
             - . ci-2-build-project.sh
             - . ci-3-docker-image.sh
           artifacts:
-            - aws/task-definition_test.json
+            - aws/task-definition_prod.json
       - step:
           name: update the aws task definition
           caches:
