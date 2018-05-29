@@ -1,9 +1,9 @@
 {
-  "family": "sandbox-manager-prototype-test",
+  "family": "sandbox-manager-prototype-prod",
   "containerDefinitions": [
     {
-      "name": "sandbox-manager-prototype-test",
-      "image": "hspconsortium/sandbox-manager-prototype:0.0.1",
+      "name": "sandbox-manager-prototype-prod",
+      "image": "hspconsortium/sandbox-manager-prototype:{{PROJECT_VERSION}}",
       "cpu": 0,
       "portMappings": [
         {
@@ -33,7 +33,7 @@
         },
         {
           "name": "TARGET_ENV",
-          "value": ""
+          "value": "prod"
         }
       ]
     }
