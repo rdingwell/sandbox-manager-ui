@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { withRouter } from 'react-router';
 import { TextField, Checkbox, RaisedButton, Paper, Dialog } from 'material-ui';
 
 import './styles.less';
@@ -64,4 +64,4 @@ class SandboxReset extends Component {
 }
 
 
-export default SandboxReset;
+export default withRouter(SandboxReset);

@@ -154,14 +154,16 @@ export const deleteCurrentSandbox = (history) => {
             },
             method: 'DELETE'
         };
+        dispatch(setResettingCurrentSandbox(true));
+
         fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${sandboxId}`, config)
+            .then(() => {
+                history && history.push('/dashboard');
+                dispatch(setResettingCurrentSandbox(false));
+                dispatch(selectSandboxById());
+            })
             .catch(e => {
                 console.log(e);
-            })
-            .then(() => {
-                // history && history.push('/dashboard');
-                // dispatch(setResettingCurrentSandbox(false));
-                dispatch(selectSandbox());
             });
     }
 };

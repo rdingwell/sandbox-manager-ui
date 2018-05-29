@@ -39,7 +39,7 @@ class Index extends Component {
                 <RaisedButton className='create-sandbox-button' label='Create New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
             </h3>
             <div className='paper-body'>
-                {!this.props.creatingSandbox && <Table selectable={false} wrapperStyle={{ width: '100%' }} fixedHeader onCellClick={this.handleRowSelect}>
+                <Table selectable={false} wrapperStyle={{ width: '100%' }} fixedHeader onCellClick={this.handleRowSelect}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn>Sandbox Name</TableHeaderColumn>
@@ -49,7 +49,7 @@ class Index extends Component {
                     <TableBody displayRowCheckbox={false} stripedRows showRowHover>
                         {sandboxes}
                     </TableBody>
-                </Table>}
+                </Table>
             </div>
         </Paper>;
     }

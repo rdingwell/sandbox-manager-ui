@@ -12,17 +12,7 @@ export default class InitLoader extends React.Component {
                         .then(() => {
                             this.props.fhir_Reset();
                             this.props.fhir_SetSmart({ status: "ready", data: smart });
-                        })
-                        .then(() => process.env.NODE_ENV !== "production");
-                },
-                () => {
-                    Promise.resolve()
-                        .then(() => {
-                            this.props.fhir_Reset();
-                            this.props.fhir_SetSmart({ status: "error", data: fhirInitState.smart.data });
-                            // this.props.fhir_SetSampleData();
-                        })
-                        .then(() => process.env.NODE_ENV !== "production");
+                        });
                 }
             );
 
