@@ -1,0 +1,82 @@
+.query-browser-wrapper {
+  padding: 0 2rem;
+  background-color: white;
+  height: 100%;
+  .fhir-query-wrapper {
+    min-width: 300px;
+    max-width: 45vw;
+    .input-wrapper {
+      width: 85%;
+    }
+    & > * {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+  }
+  & > div:nth-child(2) {
+    margin-right: 2rem;
+  }
+}
+.result-wrapper {
+  width: ~'calc(50% - 1rem)';
+  display: inline-block;
+  height: ~'calc(100vh - 236px)';
+  box-sizing: border-box;
+  overflow: hidden;
+  .query-result-wrapper {
+    .result-item {
+      & > *:first-child {
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 1rem;
+        width: 7rem;
+      }
+    }
+  }
+  .title {
+    display: inline-block;
+    margin-right: 2rem;
+  }
+  .query-size {
+    & > * {
+      margin-right: 1rem;
+      color: darkgray;
+      .number {
+        color: #000;
+      }
+    }
+  }
+  & > div {
+    padding: 0.5rem 1.5rem;
+    height: 100%;
+    & > div {
+      height: 91%;
+      overflow: auto;
+      border: 1px solid darkgray;
+      border-radius: 5px;
+    }
+    & > h2 {
+      margin: 0;
+      padding: 0;
+      color: darkgray;
+    }
+  }
+}
+.paper-body {
+  .result-wrapper {
+    width: 100% !important;
+    & > div {
+      & > div {
+        height: 94%;
+      }
+    }
+  }
+}
+.query-result-dialog {
+  margin: 0;
+  padding: 0;
+  & > * {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

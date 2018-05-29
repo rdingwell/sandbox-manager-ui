@@ -1,0 +1,33 @@
+.persona-inputs-wrapper {
+  .paper-body {
+    padding-top: 20px;
+  }
+  .persona-info-row {
+    height: 35px;
+    &.high {
+      height: 55px;
+      & > *:first-child {
+        line-height: 55px;
+      }
+      & > *:nth-child(2) {
+        line-height: 55px;
+      }
+    }
+    & > *:first-child {
+      display: inline-block;
+      width: 25%;
+      line-height: 35px;
+      float: left;
+    }
+    & > *:nth-child(2) {
+      display: inline-block !important;
+      width: 75% !important;
+      line-height: 35px;
+      & .additional-info {
+        font-size: 0.8rem;
+        position: relative;
+        top: -2rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.external-browser-wrapper {
+  padding: 0 2rem;
+  background-color: white;
+  height: 100%;
+  .external-query-wrapper, .external-endpoint-wrapper {
+    display: inline-block;
+    margin: 0 2rem;
+    width: ~'calc(50% - 8rem)';
+  }
+  .external-query-wrapper {
+    position: relative;
+    .clear-query-button.hidden {
+      opacity: 0;
+    }
+    & > *:not(:first-child) {
+      position: absolute;
+      right: -100px;
+      top: 25%;
+      & > div:first-of-type {
+        margin-right: 1rem;
+      }
+    }
+  }
+  .external-endpoint-wrapper {
+    & > *:nth-child(2) {
+      margin-left: 2rem;
+      max-width: 60%;
+    }
+  }
+  .result-wrapper {
+    width: 100%;
+    display: inline-block;
+    height: ~'calc(100vh - 236px)';
+    box-sizing: border-box;
+    & > div {
+      padding: 0.5rem 1.5rem;
+      height: 95%;
+    }
+  }
+  & > div:nth-child(2) {
+    margin-right: 2rem;
+  }
+}

@@ -1,0 +1,29 @@
+.doh-apps-wrapper {
+  text-align: center;
+  position: relative;
+  max-height: 300px;
+  min-height: 300px;
+  height: 300px;
+  margin: 2rem;
+  img {
+    height: 100%;
+  }
+  & > * {
+    position: relative;
+    left: -150px;
+  }
+  & > div {
+    position: absolute;
+    left: ~'calc(50% - 70px)';
+    width: 250px;
+    top: 5%;
+    font-size: 1.5rem;
+    &.doh {
+      font-size: 4rem;
+      color: darkred;
+      position: absolute;
+      top: 1rem;
+      left: ~'calc(50% - 70px)';
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target" : "ES5",
+        "module" : "commonjs",
+        "jsx"    : "react",
+        "forceConsistentCasingInFileNames": false,
+        "prefer-readonly": false,
+        "noUnusedParameters": false,
+        "noUnusedLocals": false,
+        "noImplicitThis": false,
+        "noFallthroughCasesInSwitch": false,
+        "pretty" : false,
+        "allowJs": false,
+        "rootDirs": [
+            "./projects",
+            "./lib"
+        ],
+        "lib": [
+            "dom",
+            "es5",
+            "es2015.promise",
+            "es2015.core"
+        ]
+    }
+}

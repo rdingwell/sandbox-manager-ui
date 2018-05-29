@@ -1,0 +1,46 @@
+.patients-wrapper {
+  height: 100%;
+  overflow: hidden;
+  & > div {
+    height: 100%;
+    overflow: hidden;
+    .paper-card {
+      height: 100%;
+      overflow: hidden;
+      .paper-body {
+        height: ~'calc(100% - 82px)';
+        overflow: hidden;
+        & > div {
+          &:first-of-type:not(.hidden) {
+            height: 6% !important;
+            overflow: hidden !important;
+          }
+          &:nth-of-type(2) {
+            height: 94% !important;
+            overflow: hidden !important;
+            & > div:nth-child(2) {
+              height: ~'calc(100% - 120px)' !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.persona-info-dialog {
+  & > div > div {
+    padding: 0 !important;
+  }
+}
+
+.paper-card.persona-list {
+  min-height: 65vh;
+  .paper-body {
+    & > div:not(.search) {
+      & > div:nth-child(2) {
+        height: 45vh !important;
+      }
+    }
+  }
+}

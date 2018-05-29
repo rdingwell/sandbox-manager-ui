@@ -1,0 +1,41 @@
+{
+  "family": "sandbox-manager-prototype-test",
+  "containerDefinitions": [
+    {
+      "name": "sandbox-manager-prototype-test",
+      "image": "hspconsortium/sandbox-manager-prototype:0.0.1",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 0,
+          "protocol": "tcp"
+        }
+      ],
+      "memoryReservation": 100,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sandbox-manager-prototype-test",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true,
+      "environment": [
+        {
+          "name": "JASYPT_ENCRYPTOR_PASSWORD",
+          "value": ""
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": ""
+        },
+        {
+          "name": "TARGET_ENV",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

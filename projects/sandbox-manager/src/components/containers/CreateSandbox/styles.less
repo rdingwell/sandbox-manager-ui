@@ -1,0 +1,27 @@
+.create-sandbox-wrapper {
+  height: 100%;
+  overflow: hidden;
+  .paper-card {
+    height: 100%;
+    overflow: hidden;
+    .paper-body {
+      height: ~'calc(100% - 82px)';
+      overflow: auto;
+      .checkboxes {
+        & > * {
+          margin: 0;
+        }
+      }
+    }
+  }
+  .checkbox {
+    margin-bottom: 16px;
+  }
+  .button {
+    margin: 16px 12px 0px 0px;
+  }
+  .fhirVersion div div {
+    padding-left: 0 !important;
+    margin: -1px 24px -1px 0 !important;
+  }
+}
