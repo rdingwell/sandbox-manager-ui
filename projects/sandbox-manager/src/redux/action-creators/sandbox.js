@@ -245,7 +245,7 @@ export const selectSandbox = (sandbox) => {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token
             }
         };
-        if(sandbox !== undefined) {
+        if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
             fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
                 .then(() => {
@@ -435,7 +435,7 @@ export function getDefaultUserForSandbox (sandboxId) {
 
 export function authorizeSandbox (sandbox) {
     return (dispatch, getState) => {
-        if(sandbox !== undefined) {
+        if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
             const state = getState();
 
@@ -485,7 +485,7 @@ export const fetchSandboxes = (toSelect) => {
                             });
                         }
                         dispatch(fetchSandboxesSuccess(sandboxes));
-                        dispatch(selectSandbox(toSelect));
+                        dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect)));
                     })
             })
             .catch(err => {
