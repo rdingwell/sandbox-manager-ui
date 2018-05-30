@@ -1,6 +1,6 @@
 .footer-wrapper {
   height: 60px;
-  bottom: 0;
+  top: ~'calc(100% - 60px)';
   left: 0;
   right: 0;
   margin: 0;
@@ -8,9 +8,8 @@
   z-index: 1300;
   text-align: center;
   font-size: 12px;
-  position: relative;
-  top: -16px;
-  line-height: 50px;
+  position: absolute;
+  line-height: 40px;
   .footer-text {
     & > p {
       padding-top: 5px;

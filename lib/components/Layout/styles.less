@@ -1,15 +1,18 @@
 .layout-main {
   margin: 0;
   background-color: rgb(247, 251, 255);
-  height: ~'calc(100vh - 114px)';
   display: inline-block;
   transition: all .5s ease-out;
   vertical-align: top;
   width: 100%;
+  height: ~'calc(100% - 124px)';
   box-sizing: border-box;
   position: absolute;
   left: 0;
   min-height: 654px;
+  &.padding {
+    padding-top: 64px;
+  }
   &.open {
     padding-left: 200px;
   }
