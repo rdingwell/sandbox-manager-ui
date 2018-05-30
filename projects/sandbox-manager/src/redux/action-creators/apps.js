@@ -41,7 +41,7 @@ export function createApp (app) {
 
         let newApp = {
             launchUri: app.launchUri,
-            logo: app.logoUri, // TODO add file here
+            // logo: app.logoUri,
             redirectUris: app.redirectUris.split(','),
             authClient: {
                 clientName: app.clientName
@@ -65,12 +65,19 @@ export function createApp (app) {
 
         fetch(url, Object.assign({ method: "POST", body: JSON.stringify(newApp) }, config))
             .then(e => {
-                e.json().then(a => console.log(a));
+                e.json()
+                    .then(createdApp => {
+                        let formData = new FormData();
+                        formData.append("file", app.logoFile);
+                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
+                        fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
+                            .then(() => dispatch(appCreating(false)));
+                    });
             })
-            .catch(e => console.log(e))
-            .then(() => {
+            .catch(e => {
+                console.log(e);
                 dispatch(appCreating(false));
-            })
+            });
     }
 }
 

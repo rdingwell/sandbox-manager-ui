@@ -1,12 +1,17 @@
 .layout-main {
-  margin-top: 64px;
-  margin-left: 0;
+  margin: 0;
   background-color: rgb(247, 251, 255);
   height: ~'calc(100vh - 114px)';
-  transition: all 0.5s ease-out;
+  display: inline-block;
+  transition: all .5s ease-out;
+  vertical-align: top;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  min-height: 654px;
   &.open {
-    margin-left: 200px;
-    transition: all 0.5s ease-out;
+    padding-left: 200px;
   }
 }
 

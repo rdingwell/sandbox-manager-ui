@@ -140,6 +140,7 @@ class AppDialog extends Component {
             reader.onload = (e) => {
                 let app = Object.assign({}, this.state.app);
                 app.logoUri = e.target.result;
+                app.logoFile = input.files[0];
                 this.setState({ app })
             };
 
