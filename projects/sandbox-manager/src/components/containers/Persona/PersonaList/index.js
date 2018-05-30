@@ -21,7 +21,7 @@ export default class PersonaList extends Component {
         this.state = {
             searchCrit: ''
         };
-    }
+            }
 
     render () {
         let getName = (name) => {
@@ -29,7 +29,7 @@ export default class PersonaList extends Component {
             let i;
             for (i = 0; i < name.given.length; i++) {
                 strName += ' ' + name.given[i];
-            }
+        }
             return strName;
         };
         let getAge = (birthday) => {
@@ -103,7 +103,7 @@ export default class PersonaList extends Component {
                 </Table>
             </div>
         </Paper>;
-    }
+        }
 
     critChanged = (_e, searchCrit) => {
         this.setState({ searchCrit });

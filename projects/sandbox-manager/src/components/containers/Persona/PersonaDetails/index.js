@@ -3,7 +3,7 @@ import { fetchPatientDetails } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import { Paper, Subheader } from 'material-ui';
+import { Paper, Subheader, IconButton } from 'material-ui';
 import LabelValuePair from '../../../UI/LabelValuePair/LabelValuePair';
 import NameLabelValuePair from '../../../UI/LabelValuePair/NameLabelValuePair';
 import PersonaData from './PersonaData';
@@ -59,6 +59,11 @@ class Index extends Component {
                 </Paper>}
             </div>
         </Paper>
+    }
+
+    handleClose = () => {
+        debugger
+        this.props.onClose();
     }
 }
 

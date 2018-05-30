@@ -6,7 +6,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import PersonaList from './PersonaList';
 import PersonaDetails from './PersonaDetails';
 import PersonaInputs from './PersonaInputs';
-import { RaisedButton, Dialog, FlatButton } from 'material-ui';
+import { RaisedButton, Dialog, FlatButton, IconButton } from 'material-ui';
 
 import './styles.less';
 
@@ -91,6 +91,9 @@ class Persona extends Component {
         }} />);
 
         return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
+            <IconButton className="close-button" onClick={this.closeDialog}>
+                <i className="material-icons">close</i>
+            </IconButton>
             {!this.state.selectedForCreation && <PersonaDetails type={this.state.type} persona={this.state.viewPersona} />}
         </Dialog>
     };
@@ -104,6 +107,9 @@ class Persona extends Component {
         let pagination = creationType === PersonaList.TYPES.practitioner ? this.props.practitionersPagination : this.props.patientsPagination;
 
         return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
+            <IconButton className="close-button" onClick={this.closeDialog}>
+                <i className="material-icons">close</i>
+            </IconButton>
             {!this.state.selectedForCreation &&
             <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({ selectedForCreation })}
                          pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}

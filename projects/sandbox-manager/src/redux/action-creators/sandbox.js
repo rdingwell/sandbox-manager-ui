@@ -453,6 +453,7 @@ export const createSandbox = (sandboxDetails) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(setCreatingSandbox(true));
         let config = getConfig(state);
+
         config.body = JSON.stringify(sandboxDetails);
         config.method = "POST";
         config.headers["Content-Type"] = "application/json";

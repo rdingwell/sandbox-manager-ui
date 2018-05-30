@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle } from 'material-ui';
+import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton } from 'material-ui';
 import './styles.less';
 
 class AppDialog extends Component {
@@ -63,6 +63,9 @@ class AppDialog extends Component {
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
             <Paper className='paper-card'>
+                <IconButton className="close-button" onClick={this.handleClose}>
+                    <i className="material-icons">close</i>
+                </IconButton>
                 <h3>Registered App Details</h3>
                 <div className='paper-body'>
                     <form>
@@ -122,6 +125,7 @@ class AppDialog extends Component {
 
     handleClose = () => {
         this.setState({ modalOpen: false });
+        this.props.onClose();
     };
 
     delete = () => {
@@ -136,6 +140,7 @@ class AppDialog extends Component {
             reader.onload = (e) => {
                 let app = Object.assign({}, this.state.app);
                 app.logoUri = e.target.result;
+                app.logoFile = input.files[0];
                 this.setState({ app })
             };
 

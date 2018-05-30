@@ -6,7 +6,7 @@ import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
 import {
     CircularProgress, Paper, RaisedButton, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, Dialog, Card, TextField,
-    FlatButton
+    FlatButton, IconButton
 } from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
@@ -72,6 +72,9 @@ class LaunchScenarios extends Component {
         let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
 
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
+            <IconButton className="close-button" onClick={this.toggleModal}>
+                <i className="material-icons">close</i>
+            </IconButton>
             {this.state.selectedScenario && <Paper className='paper-card'>
                 <h3>{title}</h3>
                 <div className='paper-body launch-scenario-modal'>
