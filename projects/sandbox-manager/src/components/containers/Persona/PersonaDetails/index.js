@@ -23,7 +23,7 @@ class Index extends Component {
                 {this.props.type !== PersonaList.TYPES.persona && <Paper className='paper-card' zDepth={1}>
                     <Subheader>{this.props.type}</Subheader>
                     <div className='paper-body'>
-                        <NameLabelValuePair label={'Name:'} value={this.props.persona.name[0]} />
+                        <NameLabelValuePair label={'Name:'} value={this.props.persona.name[0] || this.props.persona.name} />
                         <LabelValuePair label={'FHIR ID:'} value={this.props.persona.id} />
                         <LabelValuePair label={'Gender:'} value={this.props.persona.gender} />
                         <LabelValuePair label={'Birth Date:'} value={this.props.persona.birthDate} />
