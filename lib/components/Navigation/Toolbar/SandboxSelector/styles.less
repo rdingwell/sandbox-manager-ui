@@ -6,14 +6,34 @@
     margin-left: 10px;
   }
   .down-button {
+    background-color: rgba(0, 0, 0, 0.2) !important;
     font-family: "Open Sans", sans-serif !important;
     text-align: left !important;
-    padding-left: 10px !important;
     color: #ffffff !important;
     width: 100% !important;
-    font-size: 1.4rem !important;
+    font-size: 14px !important;
+    margin-left: 20px !important;
+    display: inline-block !important;
+    height: 30px !important;
+    line-height: 32px !important;
+    span {
+      display: inline-block;
+      max-width: 100px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      float: left;
+    }
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    & > div {
+      padding-left: 20px !important;
+    }
     .fa {
-      font-size: 18px;
+      font-size: 14px;
+      padding-left: 10px;
+      box-sizing: border-box;
+      display: inline-block;
     }
   }
 }

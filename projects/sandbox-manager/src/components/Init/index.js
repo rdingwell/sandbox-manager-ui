@@ -1,4 +1,3 @@
-import fhirInitState from "../../redux/reducers/fhir/init";
 import * as React from "react";
 
 import getMuiTheme from "material-ui/styles/getMuiTheme";

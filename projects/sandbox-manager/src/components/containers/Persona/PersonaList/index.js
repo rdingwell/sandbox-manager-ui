@@ -25,7 +25,7 @@ export default class PersonaList extends Component {
 
     render () {
         let getName = (name) => {
-            let strName = name.family + ',';
+            let strName = (name.family || name.family[0]) + ',';
             let i;
             for (i = 0; i < name.given.length; i++) {
                 strName += ' ' + name.given[i];
@@ -42,7 +42,7 @@ export default class PersonaList extends Component {
         let personas = this.props.personas && this.props.personas.map(persona => (
             <TableRow key={persona.id} hoverable className='persona-list-row'>
                 <TableRowColumn>
-                    {persona.fhirName || getName(persona.name[0])}
+                    {persona.fhirName || getName(persona.name[0] || persona.name)}
                 </TableRowColumn>
                 {isPatient && <TableRowColumn>
                     {persona.gender}

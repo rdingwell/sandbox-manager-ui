@@ -70,11 +70,14 @@ class LaunchScenarios extends Component {
         let title = this.state.selectedScenario ? 'Launch Scenario Details' : '';
         let actions = this.state.selectedScenario ? this.getDetailsActions() : this.getBuildActions();
         let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
-
+        let modalTitle = "";
+        if(content.props) {
+            modalTitle = content.props.title
+        }
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            <IconButton className="close-button" onClick={this.toggleModal}>
+            {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
-            </IconButton>
+            </IconButton>}
             {this.state.selectedScenario && <Paper className='paper-card'>
                 <h3>{title}</h3>
                 <div className='paper-body launch-scenario-modal'>

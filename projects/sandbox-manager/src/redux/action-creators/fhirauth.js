@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
+import { signOut } from "./app";
 
 let fhirClient = null;
 
@@ -125,9 +126,14 @@ export function afterFhirAuth (url) {
         if (params && params.code) {
             dispatch(clearToken());
             try {
-                window.FHIR.oauth2.ready(params, function (newSmart) {
-                    dispatch(fhirauth_setSmart(newSmart));
-                });
+                // For some reason if we make the call too quickly the server responds that the
+                // token is invalid... we need to slow down the call a bit to prevent random
+                // 400 errors
+                setTimeout(() => {
+                    window.FHIR.oauth2.ready(params, function (newSmart) {
+                        dispatch(fhirauth_setSmart(newSmart));
+                    });
+                }, 1000);
             } catch (e) {
                 console.log(e);
             }
@@ -152,20 +158,27 @@ export function fhirauth_setSmart (smart, redirect = null) {
 
         fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
             .then(response => {
-                response.json()
-                    .then(data => {
-                        dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+                if (response.status === 401) {
+                    sessionStorage.clear();
+                    localStorage.clear();
 
-                        fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
-                            .then(resp => {
-                                resp.json()
-                                    .then(data => {
-                                        dispatch(saveSandboxManagerUser(data));
-                                        let state = getState();
-                                        redirect && redirect.push(`/${state.app.screen}`);
-                                    });
-                            });
-                    });
+                    dispatch(init());
+                } else {
+                    response.json()
+                        .then(data => {
+                            dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+
+                            fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
+                                .then(resp => {
+                                    resp.json()
+                                        .then(data => {
+                                            dispatch(saveSandboxManagerUser(data));
+                                            let state = getState();
+                                            redirect && redirect.push(`/${state.app.screen}`);
+                                        });
+                                });
+                        });
+                }
             });
     }
 }
