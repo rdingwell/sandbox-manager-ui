@@ -22,7 +22,7 @@ export default {
         {index: "4", name: "FHIR STU 3 (v3.0.1)", fhirVersion: "3.0.1", fhirTag: "3_0_1", altName: "FHIR v3.0.1", canCreate: false, supportsDataSets: true},
         {index: "5", name: "FHIR DSTU 2 (v1.0.2)", fhirVersion: "1.0.2", fhirTag: "1_0_2", altName: "FHIR v1.0.2", canCreate: true, supportsDataSets: true},
         {index: "6", name: "FHIR STU 3 (v3.0.1)", fhirVersion: "3.0.1", fhirTag: "3_0_1", altName: "FHIR v3.0.1", canCreate: true, supportsDataSets: true},
-        {index: "7", name: "FHIR R4 (v3.2.0)", fhirVersion: "3.3.0", fhirTag: "3_2_0", altName: "FHIR v3.2.0", canCreate: false, supportsDataSets: true}
+        {index: "7", name: "FHIR R4 (v3.3.0)", fhirVersion: "3.3.0", fhirTag: "3_3_0", altName: "FHIR v3.3.0", canCreate: false, supportsDataSets: true}
     ],
     sandboxApiEndpointIndex: null
 }

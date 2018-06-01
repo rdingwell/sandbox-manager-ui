@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardActions, RaisedButton, FloatingActionButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardActions, RaisedButton, FloatingActionButton, IconButton } from 'material-ui';
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 
@@ -67,6 +67,9 @@ class Apps extends Component {
         return <div className='apps-screen-wrapper'>
             {dialog}
             <Paper className='paper-card'>
+                {this.props.title === "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
+                    <i className="material-icons">close</i>
+                </IconButton>}
                 <h3>{this.props.title ? this.props.title : 'Registered Sandbox Apps'}</h3>
                 {!this.props.noActions && <div className='actions'>
                     <RaisedButton primary label='Register App' onClick={() => this.setState({ registerDialogVisible: true })} />
