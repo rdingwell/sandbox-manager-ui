@@ -1,20 +1,15 @@
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 export function customizeTheme(theme) {
-    const newTheme = Object.assign({}, theme);
+    const newTheme = Object.assign({tableRow: {}}, theme);
 
-    newTheme.palette.primary1Color = "#009590";
+    newTheme.palette.primary1Color = "#005778";
     newTheme.palette.canvasColor = "#fff";
     newTheme.palette.accent1Color = "rgb(210, 76, 126)";
+    newTheme.tableRow.hoverColor = 'rgba(0, 0, 0, 0.15)';
+    newTheme.tableRow.stripeColor = 'whitesmoke';
 
-    const recalculatedTheme = getMuiTheme({
-        borderRadius: newTheme.borderRadius,
-        fontFamily:   newTheme.fontFamily,
-        spacing:      newTheme.spacing,
-        palette:      newTheme.palette,
-    });
-
-    return recalculatedTheme;
+    return getMuiTheme(newTheme);
 }
 
 export function getPatientAnswer(index) {

@@ -36,7 +36,7 @@ class Index extends Component {
 
         return <Paper className='sandboxes-wrapper paper-card'>
             <h3>My Sandboxes
-                <RaisedButton className='create-sandbox-button' label='Create New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
+                <RaisedButton primary className='create-sandbox-button' label='Create New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
             </h3>
             <div className='paper-body'>
                 <Table selectable={false} wrapperStyle={{ width: '100%' }} fixedHeader onCellClick={this.handleRowSelect}>

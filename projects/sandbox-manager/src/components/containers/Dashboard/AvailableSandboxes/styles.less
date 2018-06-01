@@ -2,10 +2,6 @@
   float: right;
   margin-bottom: 15px;
   transform: translate(0, -18%);
-  background-color: #0186d5 !important;
-  & > button {
-    background-color: #0186d5 !important;
-  }
 }
 
 .loader-wrapper {
@@ -16,22 +12,13 @@
 }
 
 .sandboxes-wrapper {
-  height: 100%;
-  overflow: hidden;
-  .paper-body {
-    height: ~'calc(100% - 68px)';
-    width: ~'calc(100% - 40px)';
-    padding-bottom: 0;
-    overflow: hidden;
-    tr:hover {
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  tr {
+    &:hover {
       cursor: pointer;
-    }
-    & > div {
-      height: 100% !important;
-      overflow: hidden !important;
-      & > div:nth-child(2) {
-        height: ~'calc(100% - 62px)' !important;
-      }
     }
   }
 }
