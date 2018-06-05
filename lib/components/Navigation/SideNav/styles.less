@@ -8,18 +8,37 @@
   transition: all 0.5s ease-out;
   box-shadow: rgba(0, 0, 0, 0.227451) 0 3px 10px;
   z-index: 1000;
-  overflow: auto;
   padding-top: 10px;
-  overflow-x: hidden;
+  overflow: hidden;
   display: inline-block;
-  height: ~'calc(100vh - 114px)';
+  height: ~'calc(100% - 125px)';
   position: relative;
   min-height: 654px;
   padding-left: 24px;
-  &.open {
-    transform: translateX(0);
-  }
   &.close {
-    transform: translateX(-200px);
+    width: 68px;
+    .navigation-item {
+      width: 40px;
+      overflow: hidden;
+      span {
+        display: none;
+      }
+    }
+  }
+  nav {
+    height: 100%;
+    .toggle {
+      height: 60px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      min-width: 70px;
+      left: 0;
+      hr {
+        position: relative;
+        width: 200%;
+        left: -25px;
+      }
+    }
   }
 }

@@ -48,7 +48,7 @@ class Apps extends Component {
                     <CardMedia className='media-wrapper'>
                         <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                     </CardMedia>
-                    <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.6)'}}>
+                    <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                         <h3 className='app-name'>{app.authClient.clientName}</h3>
                         <div className='app-description'>{app.briefDescription}</div>
                     </CardTitle>
