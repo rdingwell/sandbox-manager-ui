@@ -6,9 +6,20 @@
   align-items: left;
   width: 100%;
   a {
+    display: inline-block;
+    width: 100%;
     padding: 10px 0 !important;
+    white-space: nowrap;
     &.active {
       color: #005778;
+    }
+    span {
+      display: inline-block;
+      width: 84%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: middle;
     }
   }
 }

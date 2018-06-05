@@ -10,20 +10,58 @@
   }
 
   .app-card {
-    width: 200px;
-    margin: 20px;
+    width: 30%;
+    height: 255px;
+    margin: 20px 1%;
     display: inline-block;
-    background-color: whitesmoke !important;
-    padding: 3px;
     position: relative;
-    .card-title {
-      margin: 15px 5px 0 5px;
-      display: inline-block;
+    overflow: hidden;
+    & > div {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100%;
+      height: 100%;
     }
-    img {
-      width: 210px !important;
-      height: 150px !important;
-      background-color: white;
+    .media-wrapper {
+      height: 200px;
+      overflow: hidden;
+      &.register {
+        border-bottom: 2px solid whitesmoke;
+        & > div {
+          height: 100%;
+          width: 100%;
+          & > div {
+            height: 100%;
+            width: 100%;
+            & > button {
+              height: 100% !important;
+              width: 100%;
+              & > div {
+                & > svg {
+                  margin: 0 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .card-title {
+      position: absolute !important;
+      padding-top: 5px !important;
+      color: whitesmoke;
+      width: 100%;
+      height: 45%;
+      bottom: 0;
+      box-sizing: border-box;
+      .app-name {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      .app-description {
+        font-size: 12px;
+      }
     }
     &.small {
       min-height: 200px;
@@ -43,13 +81,16 @@
     padding: 8px;
     position: absolute !important;
     width: 100%;
-    top: 120px;
     left: 0;
+    bottom: 0;
     box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     & > * {
       margin-right: 0 !important;
+    }
+    button {
+      color: whitesmoke !important;
     }
   }
 }

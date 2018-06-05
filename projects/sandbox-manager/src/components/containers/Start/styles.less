@@ -1,14 +1,12 @@
 .start-page-wrapper {
-  width: 100%;
+  width: 768px;
   height: 100%;
   overflow: hidden;
-  padding: 2rem 5rem 0 5rem;
-  box-sizing: border-box;
-  .paper-card {
-    .paper-body {
-      .paper-button, .fa.fa-check {
-        margin-right: 10px;
-      }
-    }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & > *:nth-child(2) {
+    margin: 25px 0;
   }
 }
