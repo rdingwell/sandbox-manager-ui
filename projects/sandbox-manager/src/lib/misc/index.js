@@ -3,7 +3,8 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 export function customizeTheme(theme) {
     const newTheme = Object.assign({tableRow: {}}, theme);
 
-    newTheme.palette.primary1Color = "#005778";
+    newTheme.palette.primary1Color = "#1b9f7d";
+    newTheme.palette.primary3Color = "#005778";
     newTheme.palette.canvasColor = "#fff";
     newTheme.palette.accent1Color = "rgb(210, 76, 126)";
     newTheme.tableRow.hoverColor = 'rgba(0, 0, 0, 0.15)';
