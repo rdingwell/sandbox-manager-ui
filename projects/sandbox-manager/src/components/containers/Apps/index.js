@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, Paper, CardActions, RaisedButton, FloatingActionButton, IconButton } from 'material-ui';
-import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import AddIcon from "material-ui/svg-icons/content/add";
+import LaunchIcon from "material-ui/svg-icons/action/launch";
 
 import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp, loadApp } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
@@ -13,6 +14,7 @@ import Personas from '../Persona';
 import DohMessage from "../../../../../../lib/components/DohMessage";
 
 import './styles.less';
+import muiThemeable from "material-ui/styles/muiThemeable";
 
 class Apps extends Component {
 
@@ -38,22 +40,38 @@ class Apps extends Component {
     }
 
     render () {
-        const apps = this.props.apps
+        let textColor = this.props.muiTheme.palette.primary3Color;
+
+        let apps = this.props.apps
             ? this.props.apps.map((app, index) => (
                 <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
-                    <CardMedia>
+                    <CardMedia className='media-wrapper'>
                         <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                     </CardMedia>
-                    <CardTitle>
-                        <span className='card-title'>{app.authClient.clientName}</span>
+                    <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.6)'}}>
+                        <h3 className='app-name'>{app.authClient.clientName}</h3>
+                        <div className='app-description'>{app.briefDescription}</div>
                     </CardTitle>
                     {!this.props.noActions && <CardActions className='card-actions-wrapper'>
-                        <FloatingActionButton mini secondary onClick={() => this.handleAppSelect(index)}><SettingsIcon /></FloatingActionButton>
-                        <FloatingActionButton mini onClick={() => this.handleAppLaunch(index)}><PlayArrowIcon /></FloatingActionButton>
+                        <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={() => this.handleAppLaunch(index)}
+                                    icon={<LaunchIcon style={{width: '24px', height: '24px'}} />} label='Launch' />
+                        <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={() => this.handleAppSelect(index)}
+                                    icon={<SettingsIcon style={{width: '24px', height: '24px'}} />} label='Settings' />
                     </CardActions>}
                 </Card>
             ))
             : [];
+        apps.unshift(<Card className='app-card' key='create'>
+            <CardMedia className='media-wrapper register'>
+                <div>
+                    <FlatButton style={{color: textColor}} label='Register App' labelStyle={{display: 'block'}} onClick={() => this.setState({ registerDialogVisible: true })}
+                                icon={<AddIcon style={{color: textColor, width: '40px', height: '40px'}} />} />
+                </div>
+            </CardMedia>
+            <CardTitle>
+                <span>Explore a demo app</span>
+            </CardTitle>
+        </Card>);
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
@@ -66,21 +84,15 @@ class Apps extends Component {
 
         return <div className='apps-screen-wrapper'>
             {dialog}
-            <Paper className='paper-card'>
-                {this.props.title === "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
-                    <i className="material-icons">close</i>
-                </IconButton>}
-                <h3>{this.props.title ? this.props.title : 'Registered Sandbox Apps'}</h3>
-                {!this.props.noActions && <div className='actions'>
-                    <RaisedButton primary label='Register App' onClick={() => this.setState({ registerDialogVisible: true })} />
-                </div>}
-                <div className='paper-body'>
-                    {!this.props.appDeleting && !this.props.appCreating && apps}
-                    {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
-                    <DohMessage message='There are no apps in this sandbox platform yet.' />}
-                    {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
-                </div>
-            </Paper>
+            <div className='screen-title'>
+                <h1>{this.props.title ? this.props.title : 'Registered Apps'}</h1>
+            </div>
+            <div>
+                {!this.props.appDeleting && !this.props.appCreating && apps}
+                {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
+                <DohMessage message='There are no apps in this sandbox platform yet.' />}
+                {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
+            </div>
         </div>
     }
 
@@ -133,4 +145,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Apps))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Apps)))
