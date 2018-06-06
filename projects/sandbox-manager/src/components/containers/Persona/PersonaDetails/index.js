@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { fetchPatientDetails } from '../../../../redux/action-creators';
+import { fetchPatientDetails, doLaunch } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import { Paper, Subheader, IconButton } from 'material-ui';
+import { Paper, Subheader, RaisedButton } from 'material-ui';
 import LabelValuePair from '../../../UI/LabelValuePair/LabelValuePair';
 import NameLabelValuePair from '../../../UI/LabelValuePair/NameLabelValuePair';
 import PersonaData from './PersonaData';
@@ -23,6 +23,7 @@ class Index extends Component {
                 {this.props.type !== PersonaList.TYPES.persona && <Paper className='paper-card' zDepth={1}>
                     <Subheader>{this.props.type}</Subheader>
                     <div className='paper-body'>
+                        <RaisedButton className='dm-launch-button' primary label='Open in DM' onClick={this.launch} />
                         <NameLabelValuePair label={'Name:'} value={this.props.persona.name[0] || this.props.persona.name} />
                         <LabelValuePair label={'FHIR ID:'} value={this.props.persona.id} />
                         <LabelValuePair label={'Gender:'} value={this.props.persona.gender} />
@@ -61,10 +62,23 @@ class Index extends Component {
         </Paper>
     }
 
+    launch = () => {
+        this.props.doLaunch({
+            "authClient": {
+                "clientName": "Patient Data Manager",
+                "clientId": "patient_data_manager",
+                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
+            },
+            "appUri": "https://patient-data-manager.hspconsortium.org/",
+            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
+            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
+            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+        }, this.props.persona);
+    };
+
     handleClose = () => {
-        debugger
         this.props.onClose();
-    }
+    };
 }
 
 const mapStateToProps = state => {
@@ -85,7 +99,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchPatientDetails }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchPatientDetails, doLaunch }, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index));
