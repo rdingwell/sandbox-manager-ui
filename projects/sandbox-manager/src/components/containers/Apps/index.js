@@ -44,19 +44,20 @@ class Apps extends Component {
 
         let apps = this.props.apps
             ? this.props.apps.map((app, index) => (
-                <Card className={`app-card ${this.props.noActions ? 'small' : ''}`} key={index} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
+                <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+                      onClick={() => this.appCardClick(app)}>
                     <CardMedia className='media-wrapper'>
                         <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                     </CardMedia>
-                    <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
+                    <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                         <h3 className='app-name'>{app.authClient.clientName}</h3>
                         <div className='app-description'>{app.briefDescription}</div>
                     </CardTitle>
                     {!this.props.noActions && <CardActions className='card-actions-wrapper'>
-                        <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={() => this.handleAppLaunch(index)}
-                                    icon={<LaunchIcon style={{width: '24px', height: '24px'}} />} label='Launch' />
-                        <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={() => this.handleAppSelect(index)}
-                                    icon={<SettingsIcon style={{width: '24px', height: '24px'}} />} label='Settings' />
+                        <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={() => this.handleAppLaunch(index)}
+                                    icon={<LaunchIcon style={{ width: '24px', height: '24px' }} />} label='Launch' />
+                        <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={() => this.handleAppSelect(index)}
+                                    icon={<SettingsIcon style={{ width: '24px', height: '24px' }} />} label='Settings' />
                     </CardActions>}
                 </Card>
             ))
@@ -64,8 +65,8 @@ class Apps extends Component {
         apps.unshift(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
-                    <FlatButton style={{color: textColor}} label='Register App' labelStyle={{display: 'block'}} onClick={() => this.setState({ registerDialogVisible: true })}
-                                icon={<AddIcon style={{color: textColor, width: '40px', height: '40px'}} />} />
+                    <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
+                                icon={<AddIcon style={{ color: textColor, width: '40px', height: '40px' }} />} />
                 </div>
             </CardMedia>
             <CardTitle>
@@ -95,6 +96,16 @@ class Apps extends Component {
             </div>
         </div>
     }
+
+    appCardClick = (app) => {
+        if (this.props.onCardClick) {
+            this.props.onCardClick(app);
+        } else {
+            let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
+            console.log(toggledApp);
+            this.setState({ toggledApp });
+        }
+    };
 
     delete = () => {
         this.props.deleteApp(this.state.selectedApp);

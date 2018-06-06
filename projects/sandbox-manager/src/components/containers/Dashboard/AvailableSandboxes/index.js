@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton, CircularProgress, List, ListItem, Avatar } from 'material-ui';
+import { Paper, RaisedButton, List, ListItem, Avatar, IconButton } from 'material-ui';
 import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
 import './styles.less';
-import { ActionLock, ActionLockOpen } from "material-ui/svg-icons/index";
+import { ActionVisibilityOff, ActionVisibility } from "material-ui/svg-icons/index";
 
 class Index extends Component {
 
@@ -22,9 +22,12 @@ class Index extends Component {
         let sandboxes = null;
         if (!this.props.loading) {
             sandboxes = this.props.sandboxes.map((sandbox, index) => {
-                let avatarClasses = 'sandbox-avatar' + (index % 2 === 0 ? ' three' : '');
-                let leftAvatar = <Avatar className={avatarClasses}>DSTU2</Avatar>;
-                let rightIcon = index % 2 === 0 ? <ActionLock /> : <ActionLockOpen />;
+                let isThree = ['1', '2', '5'].indexOf(sandbox.apiEndpointIndex) === -1;
+                let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
+                let leftAvatar = <Avatar className={avatarClasses}>{!isThree ? 'DSTU2' : 'STU3'}</Avatar>;
+                let rightIcon = sandbox.allowOpenAccess
+                    ? <IconButton tooltip='Open endpoint'><ActionVisibility /></IconButton>
+                    : <IconButton tooltip='Authorization required'><ActionVisibilityOff /></IconButton>;
                 return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
                                  leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} />
             });

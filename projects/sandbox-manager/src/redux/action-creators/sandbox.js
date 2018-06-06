@@ -427,10 +427,14 @@ export function getDefaultUserForSandbox (sandboxId) {
         };
 
         fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
-            .then(userResponse => userResponse.json()
-                .then(user => {
-                    dispatch(setDefaultSandboxUser(user));
-                }))
+            .then(userResponse => {
+                console.log(userResponse);
+                userResponse.json()
+                    .then(user => {
+                        console.log(user);
+                        dispatch(setDefaultSandboxUser(user));
+                    })
+            })
             .catch(e => console.log(e));
     }
 }

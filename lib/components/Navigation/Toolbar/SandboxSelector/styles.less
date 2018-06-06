@@ -1,4 +1,10 @@
 .sandbox-menu-wrapper {
+  position: relative;
+  padding-left: 20px;
+  .anchor {
+    position: absolute;
+    left: 20px;
+  }
   .sandbox-menu-item {
     font-family: "Open Sans", sans-serif;
   }
@@ -12,22 +18,20 @@
     color: #ffffff !important;
     width: 100% !important;
     font-size: 14px !important;
-    margin-left: 20px !important;
     display: inline-block !important;
     height: 30px !important;
     line-height: 32px !important;
+    padding: 0 15px !important;
     span {
       display: inline-block;
-      max-width: 100px;
+      max-width: 200px;
       text-overflow: ellipsis;
       overflow: hidden;
       float: left;
+      white-space: nowrap;
     }
     &:hover {
       background-color: rgba(255, 255, 255, 0.15) !important;
-    }
-    & > div {
-      padding-left: 20px !important;
     }
     .fa {
       font-size: 14px;
