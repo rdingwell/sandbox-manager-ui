@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
 import './styles.less';
-import { ActionVisibilityOff, ActionVisibility } from "material-ui/svg-icons/index";
+import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
 
 class Index extends Component {
 
@@ -26,8 +26,8 @@ class Index extends Component {
                 let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
                 let leftAvatar = <Avatar className={avatarClasses}>{!isThree ? 'DSTU2' : 'STU3'}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
-                    ? <IconButton tooltip='Open endpoint'><ActionVisibility /></IconButton>
-                    : <IconButton tooltip='Authorization required'><ActionVisibilityOff /></IconButton>;
+                    ? <IconButton tooltip='Open endpoint'><SocialPublic /></IconButton>
+                    : <IconButton tooltip='Authorization required'><ActionLock /></IconButton>;
                 return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
                                  leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} />
             });
