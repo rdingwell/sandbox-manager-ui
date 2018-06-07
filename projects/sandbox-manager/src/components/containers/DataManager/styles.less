@@ -1,9 +1,16 @@
-.data-tabs {
-  height: 100%;
-  .data-tabs-container {
-    height: ~'calc(100% - 50px)';
-    & > * {
-      height: 100%;
+.data-manager-wrapper {
+  margin: 0 !important;
+  max-width: 100% !important;
+  .data-tabs {
+    height: 100%;
+    & > div:not(:nth-child(3)) {
+      width: 35% !important;
+    }
+    .data-tabs-container {
+      height: ~'calc(100% - 50px)';
+      & > * {
+        height: 100%;
+      }
     }
   }
 }

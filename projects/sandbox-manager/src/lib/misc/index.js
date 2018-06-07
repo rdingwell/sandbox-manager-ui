@@ -1,14 +1,17 @@
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 export function customizeTheme(theme) {
-    const newTheme = Object.assign({tableRow: {}}, theme);
+    const newTheme = Object.assign({tableRow: {}, tabs: {}}, theme);
 
     newTheme.palette.primary1Color = "#1b9f7d";
     newTheme.palette.primary3Color = "#005778";
     newTheme.palette.canvasColor = "#fff";
-    newTheme.palette.accent1Color = "rgb(210, 76, 126)";
+    newTheme.palette.accent1Color = "#005778";
     newTheme.tableRow.hoverColor = 'rgba(0, 0, 0, 0.15)';
     newTheme.tableRow.stripeColor = 'whitesmoke';
+    newTheme.tabs.backgroundColor = 'white';
+    newTheme.tabs.textColor = 'gray';
+    newTheme.tabs.selectedTextColor = '#005778';
 
     return getMuiTheme(newTheme);
 }
