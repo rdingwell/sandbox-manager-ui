@@ -1,0 +1,35 @@
+.notification-wrapper {
+  position: absolute;
+  right: 72px;
+  .right {
+    float: right;
+    margin: 10px;
+    color: whitesmoke;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .left {
+    float: left;
+    margin: 10px;
+  }
+}
+
+.notification-menu {
+  .notification-menu-item {
+    line-height: 25px !important;
+    min-width: 140px !important;
+    min-height: inherit !important;
+    font-size: 0.8rem !important;
+    &.static {
+      color: #585858 !important;
+    }
+    &.active {
+      color: #1676d2 !important;
+    }
+    & .fa {
+      margin-right: .5rem;
+      width: 20px;
+    }
+  }
+}

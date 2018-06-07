@@ -1,43 +1,19 @@
 .side-nav {
-  background-color: #fafafa;
-  width: 200px;
-  max-width: 70%;
-  left: 0;
-  top: 0;
-  box-sizing: border-box;
-  transition: all 0.5s ease-out;
-  box-shadow: rgba(0, 0, 0, 0.227451) 0 3px 10px;
-  z-index: 1000;
-  padding-top: 10px;
-  overflow: hidden;
-  display: inline-block;
-  height: ~'calc(100% - 125px)';
-  position: relative;
-  min-height: 654px;
-  padding-left: 24px;
-  &.close {
-    width: 68px;
-    .navigation-item {
-      width: 40px;
-      overflow: hidden;
-      span {
-        display: none;
-      }
-    }
-  }
-  nav {
-    height: 100%;
-    .toggle {
-      height: 60px;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      min-width: 70px;
-      left: 0;
-      hr {
-        position: relative;
-        width: 200%;
-        left: -25px;
+  & > div {
+    min-height: 654px;
+    padding-left: 24px;
+    margin-top: 64px;
+    padding-top: 24px;
+    height: ~'calc(100% - 64px)' !important;
+    z-index: 1 !important;
+    &.close {
+      width: 68px;
+      .navigation-item {
+        width: 40px;
+        overflow: hidden;
+        span {
+          display: none;
+        }
       }
     }
   }
