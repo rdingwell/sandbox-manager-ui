@@ -11,11 +11,55 @@
 
 .persona-list-pagination-wrapper {
   text-align: center !important;
+  margin-bottom: 10px;
   & > * {
     &:not(:first-child) {
       margin-left: 1rem;
     }
     display: inline-block;
     min-width: 88px;
+  }
+}
+
+.persona-list {
+  display: inline-block;
+  width: 50%;
+  overflow: hidden;
+  .persona-list-item {
+    .persona-info {
+      margin-top: 10px;
+      .label {
+        display: inline-block;
+        width: 130px;
+      }
+      & > * {
+        display: block;
+      }
+    }
+    & > div > div > * {
+      vertical-align: middle;
+    }
+  }
+  .gender-wrapper {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    div {
+      span {
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+  }
+  .name-wrapper {
+    display: inline-block;
+    width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fa {
+    font-size: 2rem;
+    font-weight: 600;
   }
 }

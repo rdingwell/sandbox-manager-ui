@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton, TextField } from 'material-ui';
+import { Badge, List, ListItem, Paper, RaisedButton, TextField } from 'material-ui';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table';
 
 import './styles.less';
@@ -21,7 +21,7 @@ export default class PersonaList extends Component {
         this.state = {
             searchCrit: ''
         };
-            }
+    }
 
     render () {
         let getName = (name) => {
@@ -29,7 +29,7 @@ export default class PersonaList extends Component {
             let i;
             for (i = 0; i < name.given.length; i++) {
                 strName += ' ' + name.given[i];
-        }
+            }
             return strName;
         };
         let getAge = (birthday) => {
@@ -39,71 +39,56 @@ export default class PersonaList extends Component {
         };
         let isPatient = this.props.type === PersonaList.TYPES.patient;
         let isPractitioner = this.props.type === PersonaList.TYPES.practitioner;
-        let personas = this.props.personas && this.props.personas.map(persona => (
-            <TableRow key={persona.id} hoverable className='persona-list-row'>
-                <TableRowColumn>
-                    {persona.fhirName || getName(persona.name[0] || persona.name)}
-                </TableRowColumn>
-                {isPatient && <TableRowColumn>
-                    {persona.gender}
-                </TableRowColumn>}
-                {isPatient && <TableRowColumn>
-                    {getAge(persona.birthDate) || ''}
-                </TableRowColumn>}
-                {!isPatient && !isPractitioner && <TableRowColumn>
-                    {persona.personaUserId}
-                </TableRowColumn>}
-                {!isPatient && !isPractitioner && <TableRowColumn>
-                    {persona.resourceUrl}
-                </TableRowColumn>}
-            </TableRow>
+        let personas = this.props.personas && this.props.personas.map((persona, i) => (
+            <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
+                {isPatient && <span className='gender-wrapper'>
+                    <Badge primary={persona.gender === 'male'} secondary={persona.gender !== 'male'} badgeContent={persona.gender === 'male'
+                        ? <i className="fa fa-mars" />
+                        : <i className="fa fa-venus" />} />
+                </span>}
+                <span className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</span>
+                {isPatient && <span><span className='label'>Age:</span> {getAge(persona.birthDate) || ''}</span>}
+                {!isPatient && !isPractitioner && <div className='persona-info'>
+                    <span><span className='label'>User Id:</span> {persona.personaUserId}</span>
+                    <span><span className='label'>ResourceUrl:</span> {persona.resourceUrl}</span>
+                </div>}
+            </ListItem>
         ));
 
         let title = this.props.title
             ? this.props.title
             : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
 
-        return <Paper className='paper-card persona-list'>
-            <h3 style={{ width: 'auto' }}>{title}</h3>
+        return <div>
             <div className='actions'>
                 {this.props.actions}
             </div>
-            <div className='paper-body'>
+            <div className='screen-title'>
+                <h1>{title}</h1>
+            </div>
+            <div>
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
                     </div>
                     : <div className='hidden'></div>}
-                <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            {isPatient && <TableHeaderColumn>Gender</TableHeaderColumn>}
-                            {isPatient && <TableHeaderColumn>Age</TableHeaderColumn>}
-                            {!isPatient && !isPractitioner && <TableHeaderColumn>User id</TableHeaderColumn>}
-                            {!isPatient && !isPractitioner && <TableHeaderColumn>FHIR Resource</TableHeaderColumn>}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false} stripedRows showRowHover>
-                        {personas && personas.length > 0
-                            ? personas
-                            : this.props.loading
-                                ? <TableRow>
-                                    <TableRowColumn colSpan={4} style={{backgroundColor: 'transparent !important'}}>
-                                        <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
-                                    </TableRowColumn>
-                                </TableRow>
-                                : <TableRow>
-                                    <TableRowColumn colSpan={4} style={{backgroundColor: 'transparent !important'}}>
-                                        <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />
-                                    </TableRowColumn>
-                                </TableRow>}
-                    </TableBody>
-                    {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
-                </Table>
+
+                {personas && personas.length > 0
+                    ? <div>
+                        <List className='persona-list'>{personas.filter((p, i) => i % 2 === 0)}</List>
+                        <List className='persona-list'>{personas.filter((p, i) => i % 2 === 1)}</List>
+                    </div>
+                    : this.props.loading
+                        ? <List>
+                            <ListItem disabled>
+                                <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
+                            </ListItem>
+                        </List>
+                        : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
+                {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
             </div>
-        </Paper>;
-        }
+        </div>
+    }
 
     critChanged = (_e, searchCrit) => {
         this.setState({ searchCrit });
@@ -119,21 +104,17 @@ export default class PersonaList extends Component {
         let start = currentSkip + 1;
         let end = start + this.props.personas.length - 1;
 
-        return this.props.pagination && <TableFooter adjustForCheckbox={false}>
-            <TableRow>
-                <TableRowColumn colSpan='3' className='persona-list-pagination-wrapper'>
-                    <div>
-                        {start > 1 && <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} />}
-                    </div>
-                    <div>
-                        <span>Showing {start} to {end} of {this.props.pagination.total}</span>
-                    </div>
-                    <div>
-                        {end + 1 < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
-                    </div>
-                </TableRowColumn>
-            </TableRow>
-        </TableFooter>
+        return this.props.pagination && <div className='persona-list-pagination-wrapper'>
+            <div>
+                {start > 1 && <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} />}
+            </div>
+            <div>
+                <span>Showing {start} to {end} of {this.props.pagination.total}</span>
+            </div>
+            <div>
+                {end + 1 < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
+            </div>
+        </div>
     };
 
     handleRowSelect = (row) => {

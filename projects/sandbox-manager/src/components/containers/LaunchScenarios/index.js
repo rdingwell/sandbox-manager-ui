@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import {
-    CircularProgress, Paper, RaisedButton, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, Dialog, Card, TextField,
-    FlatButton, IconButton
-} from 'material-ui';
+import { CircularProgress, Paper, RaisedButton, Card, TextField, FlatButton, List, ListItem, IconButton } from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
+import LaunchIcon from "material-ui/svg-icons/action/launch";
+import DeleteIcon from "material-ui/svg-icons/action/delete";
 
 import './styles.less';
 import DohMessage from "../../../../../../lib/components/DohMessage";
+import muiThemeable from "material-ui/styles/muiThemeable";
 
 class LaunchScenarios extends Component {
 
@@ -39,12 +39,12 @@ class LaunchScenarios extends Component {
 
     render () {
         return <div className='launch-scenarios-wrapper'>
-            <Paper className='paper-card'>
-                <h3>Launch Scenarios</h3>
+            <div className='screen-title'>
+                <h1>Launch Scenarios</h1>
                 <div className='actions'>
                     <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
                 </div>
-                <div className='paper-body'>
+                <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5} />
                     </div>}
@@ -52,40 +52,17 @@ class LaunchScenarios extends Component {
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
                     <DohMessage message='There are no launch scenarios in this sandbox platform yet.' />}
                 </div>
-            </Paper>
-            {this.getModal()}
+            </div>
         </div>
     }
 
-    launchScenario = () => {
-        this.state.selectedScenario && this.props.doLaunch(this.state.selectedScenario.app, this.state.selectedScenario.patient, this.state.selectedScenario.userPersona);
-        !this.state.selectedScenario && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+    launchScenario = (sc) => {
+        this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
+        !sc && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
     };
 
     handleRowSelect = (row) => {
         this.setState({ selectedScenario: this.props.scenarios[row] }, this.toggleModal);
-    };
-
-    getModal = () => {
-        let title = this.state.selectedScenario ? 'Launch Scenario Details' : '';
-        let actions = this.state.selectedScenario ? this.getDetailsActions() : this.getBuildActions();
-        let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
-        let modalTitle = "";
-        if(content.props) {
-            modalTitle = content.props.title
-        }
-        return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
-                <i className="material-icons">close</i>
-            </IconButton>}
-            {this.state.selectedScenario && <Paper className='paper-card'>
-                <h3>{title}</h3>
-                <div className='paper-body launch-scenario-modal'>
-                    {content}
-                </div>
-            </Paper>}
-            {!this.state.selectedScenario && content}
-        </Dialog>
     };
 
     getBuildActions = () => {
@@ -113,15 +90,8 @@ class LaunchScenarios extends Component {
         this.toggleModal();
     };
 
-    getDetailsActions = () => {
-        return [
-            <RaisedButton key={1} label='Launch' primary className='launch-scenario-dialog-action' onClick={this.launchScenario} />,
-            <RaisedButton key={2} label='Delete' secondary className='launch-scenario-dialog-action' onClick={this.deleteScenario} />
-        ];
-    };
-
-    deleteScenario = () => {
-        this.props.deleteScenario(this.state.selectedScenario);
+    deleteScenario = (sc) => {
+        this.props.deleteScenario(sc || this.state.selectedScenario);
         this.toggleModal();
     };
 
@@ -148,21 +118,23 @@ class LaunchScenarios extends Component {
         } else if (!this.state.selectedApp) {
             return <Apps title='Select app' noActions onCardClick={selectedApp => this.setState({ selectedApp })} />
         } else {
-            return <Paper className='paper-card'>
-                <h3>Save Launch Scenario</h3>
-                <div className='paper-body'>
+            return <div>
+                <div className='screen-title'>
+                    <h1>Save Launch Scenario</h1>
+                </div>
+                <div>
                     <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })} />
                     <TextField floatingLabelText='Persona' fullWidth disabled value={this.state.selectedPersona.personaName} />
                     <TextField floatingLabelText='Patient' fullWidth disabled value={this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'} />
                     <TextField floatingLabelText='App' fullWidth disabled value={this.state.selectedApp.authClient.clientName} />
                 </div>
-            </Paper>
+            </div>
         }
     };
 
-    getDetailsContent = () => {
-        let patient = this.state.selectedScenario.patient;
-        let label = this.state.selectedScenario.userPersona !== null && this.state.selectedScenario.userPersona.resource === 'Practitioner'
+    getDetailsContent = (selectedScenario) => {
+        let patient = selectedScenario.patient;
+        let label = selectedScenario.userPersona !== null && selectedScenario.userPersona.resource === 'Practitioner'
             ? `Launch App as a Practitioner with ${patient.fhirId !== '0' ? '' : 'NO'} Patient Context`
             : 'Launch an App As a Patient';
 
@@ -174,8 +146,8 @@ class LaunchScenarios extends Component {
                 <label>Description:</label>
                 <span>
                     {this.state.descriptionEditing
-                        ? <TextField defaultValue={this.state.selectedScenario.description} id='description' onBlur={this.updateScenario} />
-                        : this.state.selectedScenario.description}
+                        ? <TextField defaultValue={selectedScenario.description} id='description' onBlur={this.updateScenario} />
+                        : selectedScenario.description}
                     <FlatButton className='description-edit-button' primary icon={<EditIcon />} onClick={this.toggleDescriptionEdit} />
                 </span>
             </div>,
@@ -187,17 +159,17 @@ class LaunchScenarios extends Component {
                 <div>
                     <div className='details-pair'>
                         <label>Launch As:</label>
-                        <span>{this.state.selectedScenario.userPersona.fhirName}</span>
+                        <span>{selectedScenario.userPersona.fhirName}</span>
                     </div>
                     <div className='details-pair'>
                         <label>User Id:</label>
-                        <span>{this.state.selectedScenario.userPersona.personaUserId}</span>
+                        <span>{selectedScenario.userPersona.personaUserId}</span>
                     </div>
                     <div className='details-pair'>
                         <label>FHIR Resource Type:</label>
                         <span>
-                            <i className={`fa ${this.state.selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`} />
-                            {this.state.selectedScenario.userPersona.resource}
+                            <i className={`fa ${selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`} />
+                            {selectedScenario.userPersona.resource}
                         </span>
                     </div>
                 </div>
@@ -207,7 +179,7 @@ class LaunchScenarios extends Component {
                 <div>
                     <div className='details-pair'>
                         <label>Patient:</label>
-                        <span>{this.state.selectedScenario.patient.name}</span>
+                        <span>{selectedScenario.patient.name}</span>
                     </div>
                     <div className='details-pair'>
                         <label>Encounter:</label>
@@ -223,10 +195,10 @@ class LaunchScenarios extends Component {
                 <h3>App</h3>
                 <div>
                     <div className='details-pair smaller-label'>
-                        <label>{this.state.selectedScenario.app.authClient.clientName}</label>
+                        <label>{selectedScenario.app.authClient.clientName}</label>
                         <span className='center'>
-                            <img src={this.state.selectedScenario.app.logoUri
-                                ? this.state.selectedScenario.app.logoUri
+                            <img src={selectedScenario.app.logoUri
+                                ? selectedScenario.app.logoUri
                                 : 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} />
                         </span>
                     </div>
@@ -253,35 +225,35 @@ class LaunchScenarios extends Component {
     };
 
     getScenarios = () => {
-        return <Table selectable={false} fixedHeader width='100%' onCellClick={this.handleRowSelect} wrapperClassName='sample'>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                <TableRow>
-                    <TableHeaderColumn>Description</TableHeaderColumn>
-                    <TableHeaderColumn>User Persona</TableHeaderColumn>
-                    <TableHeaderColumn>Patient Context</TableHeaderColumn>
-                    <TableHeaderColumn>App</TableHeaderColumn>
-                </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false} stripedRows showRowHover>
-                {this.props.scenarios.map((sc, index) =>
-                    <TableRow key={index} hoverable className='launch-scenario-list-row'>
-                        <TableRowColumn>
-                            {sc.description}
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            {sc.userPersona && sc.userPersona.personaName}
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            {sc.patient && sc.patient.name}
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            {sc.app.authClient.clientName}
-                        </TableRowColumn>
-                    </TableRow>
-                )}
-            </TableBody>
+        return <List className='scenarios-list'>
+            {this.props.scenarios.map((sc, index) => {
+                    let details = <ListItem key={1} disabled className='expanded-content'>
+                        {this.getDetailsContent(sc)}
+                    </ListItem>;
+
+                    return <ListItem key={index} className='launch-scenario-list-row' primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />}
+                                     leftIcon={<div className='actions-wrapper'>
+                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                             e.preventDefault();
+                                             e.stopPropagation();
+                                             this.launchScenario(sc);
+                                         }} tooltip='Launch'>
+                                             <LaunchIcon style={{ width: '24px', height: '24px' }} />
+                                         </IconButton>
+                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                             e.preventDefault();
+                                             e.stopPropagation();
+                                             this.deleteScenario(sc);
+                                         }} tooltip='Delete'>
+                                             <DeleteIcon style={{ width: '24px', height: '24px' }} />
+                                         </IconButton>
+                                     </div>}>
+                        {sc.description}
+                    </ListItem>
+                }
+            )}
             {this.props.pagination && this.getPagination()}
-        </Table>
+        </List>
     };
 }
 
@@ -305,4 +277,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     dispatch);
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(LaunchScenarios))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(LaunchScenarios)))
