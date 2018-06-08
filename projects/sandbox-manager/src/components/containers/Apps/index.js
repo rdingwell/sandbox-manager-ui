@@ -69,14 +69,14 @@ class Apps extends Component {
                                 icon={<AddIcon style={{ color: textColor, width: '40px', height: '40px' }} />} />
                 </div>
             </CardMedia>
-            <CardTitle>
-                <span>Explore a demo app</span>
+            <CardTitle className='explore-app-button-wrapper'>
+                <FlatButton fullWidth style={{ color: textColor }} label='Explore a demo app' onClick={this.handleAppSelect} />
             </CardTitle>
         </Card>);
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
-                         app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible} onClose={this.closeAll} />
+                         app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible} onClose={this.closeAll} doLaunch={this.doLaunch} />
             : this.state.appToLaunch
                 ? <Dialog paperClassName='app-dialog' modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
                     <Personas type='Patient' doLaunch={this.doLaunch} />
@@ -102,7 +102,6 @@ class Apps extends Component {
             this.props.onCardClick(app);
         } else {
             let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
-            console.log(toggledApp);
             this.setState({ toggledApp });
         }
     };
@@ -122,8 +121,8 @@ class Apps extends Component {
         this.closeAll();
     };
 
-    doLaunch = (persona) => {
-        this.props.doLaunch(this.state.appToLaunch, persona);
+    doLaunch = () => {
+        this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp);
         this.closeAll();
     };
 
@@ -132,8 +131,23 @@ class Apps extends Component {
     };
 
     handleAppSelect = (index) => {
-        this.props.loadApp(this.props.apps[index]);
-        this.setState({ selectedApp: this.props.apps[index], registerDialogVisible: false, appIsLoading: true });
+        let app = this.props.apps[index]
+            ? this.props.apps[index]
+            : {
+                "isDefault": true,
+                "authClient": {
+                    "clientName": "Bilirubin Chart",
+                    "clientId": "bilirubin_chart",
+                    "redirectUri": "https://bilirubin-risk-chart-test.hspconsortium.org/index.html"
+                },
+                "appUri": "https://bilirubin-risk-chart-test.hspconsortium.org/",
+                "launchUri": "https://bilirubin-risk-chart-test.hspconsortium.org/launch.html",
+                "logoUri": "https://content.hspconsortium.org/images/bilirubin/logo/bilirubin.png",
+                "samplePatients": "Patient?_id=BILIBABY,SMART-1288992",
+                "briefDescription": "The HSPC Bilirubin Risk Chart is a sample app that demonstrates many of the features of the SMART on FHIR app launch specification and HL7 FHIR standard."
+            };
+        this.props.apps[index] && this.props.loadApp(app);
+        this.setState({ selectedApp: app, registerDialogVisible: false, appIsLoading: !!this.props.apps[index] });
     };
 
     handleAppLaunch = (index) => {

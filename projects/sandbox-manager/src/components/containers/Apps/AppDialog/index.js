@@ -56,7 +56,7 @@ class AppDialog extends Component {
         ];
 
         this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete} />);
-        this.props.app && actions.push(<RaisedButton label='Launch' />);
+        this.props.app && actions.push(<RaisedButton label='Launch' onClick={this.props.doLaunch} />);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
 

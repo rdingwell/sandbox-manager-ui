@@ -30,6 +30,12 @@ export default function (state = initialState, action) {
         case actionTypes.REMOVE_SANDBOX_USER:
             state = removeUser(state, action);
             break;
+        case actionTypes.SET_INVITES_LOADING:
+            state.userInvitesLoading = action.payload.loading;
+            break;
+        case actionTypes.SET_INVITES:
+            state.userInvites = action.payload.invites;
+            break;
         case actionTypes.FETCH_SANDBOX_INVITES_START:
             state.invitesLoading = true;
             break;
