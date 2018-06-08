@@ -1,9 +1,16 @@
 .notification-wrapper {
   position: absolute;
-  right: 72px;
+  right: 64px;
+  top: -5px;
+  &.no-badge {
+    top: 0;
+    .right {
+      margin: 10px;
+      padding: 8px;
+    }
+  }
   .right {
     float: right;
-    margin: 10px;
     color: whitesmoke;
     &:hover {
       cursor: pointer;
