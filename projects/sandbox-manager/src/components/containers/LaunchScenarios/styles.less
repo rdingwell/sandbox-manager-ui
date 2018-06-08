@@ -1,10 +1,26 @@
 .launch-scenarios-wrapper {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  height: ~'calc(100% - 64px)';
+  position: relative;
+  .actions {
+    position: absolute;
+    right: 0;
+    top: 10px;
+  }
   .launch-scenario-list-row {
-    &:hover {
-      cursor: pointer;
+    .actions-wrapper {
+      left: auto !important;
+      width: 100px !important;
+      right: 20px;
+      & > * {
+        display: inline-block!important;
+        width: 20px!important;
+        height: 20px!important;
+        vertical-align: top;
+        margin: 0 !important;
+        padding: 0 !important;
+        margin-right: 20px !important;
+      }
     }
   }
   .loader-wrapper {
@@ -33,9 +49,13 @@
 .launch-scenario-dialog-action {
   margin: .5rem 1rem .5rem 0;
 }
-
-.paper-body.launch-scenario-modal {
+.scenarios-list > div > div {
+  padding: 0 !important;
+}
+.expanded-content {
   padding: 20px;
+  background-color: whitesmoke;
+  margin-left: 0 !important;
   .details-pair {
     margin: 0.5rem 0;
     &.smaller-label {

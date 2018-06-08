@@ -52,12 +52,12 @@ class Persona extends Component {
         };
 
         this.state.type === PersonaList.TYPES.persona && (props.actions = [<h4 key={0} className='actions-label'>Create persona for: </h4>,
-            <RaisedButton key={1} labelPosition='before' primary icon={<i className='fa fa-user-md fa-2x fa-inverse' />} label='Practitioner' className='custom-button'
+            <RaisedButton key={1} labelPosition='after' primary icon={<i className='fa fa-user-md fa-2x fa-inverse' />} label='Practitioner' className='custom-button'
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.practitioner);
                               this.setState({ selectPractitioner: true })
                           }} />,
-            <RaisedButton key={2} labelPosition='before' primary icon={<i className='fa fa-user fa-2x fa-inverse' />} label='Patient' className='custom-button'
+            <RaisedButton key={2} labelPosition='after' primary icon={<i className='fa fa-user fa-2x fa-inverse' />} label='Patient' className='custom-button'
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.patient);
                               this.setState({ selectPatient: true })

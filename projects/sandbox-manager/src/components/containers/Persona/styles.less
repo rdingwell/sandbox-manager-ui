@@ -1,14 +1,12 @@
 .patients-wrapper {
-  height: 100%;
-  overflow: hidden;
+  height: ~'calc(100% - 64px)';
+  position: relative;
   & > div {
     height: 100%;
-    overflow: hidden;
     .paper-card {
       height: 100%;
-      overflow: hidden;
       .paper-body {
-        height: ~'calc(100% - 82px)';
+        height: 100%;
         overflow: hidden;
         & > div {
           &:first-of-type:not(.hidden) {
@@ -26,24 +24,29 @@
       }
     }
   }
+  .actions {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    .custom-button {
+      margin-right: 20px;
+      & > button span {
+        margin-right: 20px !important;
+      }
+      .fa {
+        margin-left: 30px !important;
+        font-size: 1.2rem;
+      }
+    }
+    h4 {
+      display: inline-block;
+      margin-right: 2rem;
+    }
+  }
 }
 
 .persona-info-dialog {
   & > div > div {
     padding: 0 !important;
-  }
-}
-
-.paper-card.persona-list {
-  min-height: 65vh;
-  .paper-body {
-    & > div:not(.search) {
-      & > div:nth-child(2) {
-        height: 45vh !important;
-      }
-    }
-  }
-  .actions {
-    padding-right: 60px;
   }
 }
