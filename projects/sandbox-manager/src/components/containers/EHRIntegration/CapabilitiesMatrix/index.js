@@ -13,15 +13,15 @@ class CapabilitiesMatrix extends Component {
     }
 
     render () {
-        return <Paper className='paper-card'>
+        return <div>
             <h3>Capabilities Matrix</h3>
-            <div className='paper-body'>
+            <div>
                 <p>SMART on FHIR EHR Capabilities Matrix</p>
                 <p>
                     <span className='Answer'><a href={matrixLocation}>{matrixLocation}</a></span>
                 </p>
             </div>
-        </Paper>
+        </div>
     }
 }
 
