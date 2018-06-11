@@ -17,29 +17,29 @@ class Index extends Component {
     }
 
     render () {
-        return <Paper className='paper-card'>
+        return <div>
             <h3>{this.props.type} Details</h3>
-            <div className='paper-body persona-details-wrapper'>
-                {this.props.type !== PersonaList.TYPES.persona && <Paper className='paper-card' zDepth={1}>
+            <div className='persona-details-wrapper'>
+                {this.props.type !== PersonaList.TYPES.persona && <div>
                     <Subheader>{this.props.type}</Subheader>
-                    <div className='paper-body'>
+                    <div>
                         <RaisedButton className='dm-launch-button' primary label='Open in DM' onClick={this.launch} />
                         <NameLabelValuePair label={'Name:'} value={this.props.persona.name[0] || this.props.persona.name} />
                         <LabelValuePair label={'FHIR ID:'} value={this.props.persona.id} />
                         <LabelValuePair label={'Gender:'} value={this.props.persona.gender} />
                         <LabelValuePair label={'Birth Date:'} value={this.props.persona.birthDate} />
                     </div>
-                </Paper>}
-                {this.props.type === PersonaList.TYPES.persona && <Paper className='paper-card' zDepth={1}>
+                </div>}
+                {this.props.type === PersonaList.TYPES.persona && <div>
                     <Subheader>{this.props.type}</Subheader>
-                    <div className='paper-body'>
+                    <div>
                         <LabelValuePair label={'Display name:'} value={this.props.persona.fhirName} />
                         <LabelValuePair label={'User Id:'} value={this.props.persona.personaUserId} />
                         <LabelValuePair label={'Password (not secured):'} value={this.props.persona.password} />
                         <LabelValuePair label={'FHIR Resource Type:'} value={this.props.persona.resource} />
                     </div>
-                </Paper>}
-                {this.props.type === PersonaList.TYPES.patient && <Paper className='paper-card' zDepth={1}>
+                </div>}
+                {this.props.type === PersonaList.TYPES.patient && <div>
                     <Subheader>Data summary</Subheader>
                     <PersonaData
                         patient={this.props.persona}
@@ -57,9 +57,9 @@ class Index extends Component {
                         procedureCount={this.props.procedureCount}
                         procedureRequestCount={this.props.procedureRequestCount}
                     />
-                </Paper>}
+                </div>}
             </div>
-        </Paper>
+        </div>
     }
 
     launch = () => {

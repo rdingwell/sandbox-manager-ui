@@ -18,20 +18,20 @@ import DataManager from '../components/containers/DataManager';
 export default <Router>
     <App>
         <Switch>
-            <Route path='/apps' component={Apps} />
-            <Route path='/launch' component={LaunchScenarios} />
-            <Route path='/launchApp' component={LaunchApp} />
-            <Route path='/patients' component={Persona} />
-            <Route path='/practitioners' component={Persona} />
-            <Route path='/personas' component={Persona} />
-            <Route path='/data-manager' component={DataManager} />
-            <Route path='/user-management' component={UserManagement} />
-            <Route path='/integration' component={EHRIntegration} />
-            <Route path='/settings' component={Settings} />
+            <Route path='/:sandboxId/apps' component={Apps} />
+            <Route path='/:sandboxId/launch' component={LaunchScenarios} />
+            <Route path='/:sandboxId/launchApp' component={LaunchApp} />
+            <Route path='/:sandboxId/patients' component={Persona} />
+            <Route path='/:sandboxId/practitioners' component={Persona} />
+            <Route path='/:sandboxId/personas' component={Persona} />
+            <Route path='/:sandboxId/data-manager' component={DataManager} />
+            <Route path='/:sandboxId/user-management' component={UserManagement} />
+            <Route path='/:sandboxId/integration' component={EHRIntegration} />
+            <Route path='/:sandboxId/settings' component={Settings} />
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/start' component={Start} />
             <Route path='/after-auth' component={AfterAuth} />
-            <Route path='/create-sandbox' component={CreateSandbox} />
+            <Route path='/:sandboxId/create-sandbox' component={CreateSandbox} />
             <Route path='/' component={Start} />
         </Switch>
     </App>

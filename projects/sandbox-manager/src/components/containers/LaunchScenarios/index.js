@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, Paper, RaisedButton, Card, TextField, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import { CircularProgress, Paper, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
@@ -53,6 +53,7 @@ class LaunchScenarios extends Component {
                     <DohMessage message='There are no launch scenarios in this sandbox platform yet.' />}
                 </div>
             </div>
+            {this.getModal()}
         </div>
     }
 
@@ -63,6 +64,28 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         this.setState({ selectedScenario: this.props.scenarios[row] }, this.toggleModal);
+    };
+
+    getModal = () => {
+        let title = this.state.selectedScenario ? 'Launch Scenario Details' : '';
+        let actions = this.state.selectedScenario ? this.getDetailsActions() : this.getBuildActions();
+        let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
+        let modalTitle = "";
+        if(content.props) {
+            modalTitle = content.props.title
+        }
+        return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
+            {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
+                <i className="material-icons">close</i>
+            </IconButton>}
+            {this.state.selectedScenario && <div className='modal'>
+                <h3>{title}</h3>
+                <div className='launch-scenario-modal'>
+                    {content}
+                </div>
+            </div>}
+            {!this.state.selectedScenario && content}
+        </Dialog>
     };
 
     getBuildActions = () => {
@@ -105,11 +128,11 @@ class LaunchScenarios extends Component {
                 ? selectedPatient => this.setState({ selectedPatient })
                 : selectedPersona => this.setState({ selectedPersona });
             let actions = this.state.selectedPersona
-                ? <RaisedButton primary label='Continue without a Patient' onClick={() => this.setState({ selectedPatient: {} })} />
+                ? <RaisedButton primary label='skip Patient' onClick={() => this.setState({ selectedPatient: {} })} />
                 : [];
 
             let props = {
-                title, type, click, personas, pagination, actions,
+                title, type, click, personas, pagination, actions, modal: true,
                 next: () => this.props.getPersonasPage(type, pagination, 'next'),
                 prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };
@@ -268,7 +291,7 @@ const mapStateToProps = state => {
         personas: state.persona.personas,
         patientsPagination: state.persona.patientsPagination,
         patients: state.persona.patients,
-        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox)
+        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
     }
 };
 

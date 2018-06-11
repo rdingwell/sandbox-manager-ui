@@ -1,4 +1,5 @@
 import getMuiTheme from "material-ui/styles/getMuiTheme";
+import { pink100, lightBlue100 } from "material-ui/styles/colors";
 
 export function customizeTheme(theme) {
     const newTheme = Object.assign({tableRow: {}, tabs: {}}, theme);
@@ -7,6 +8,8 @@ export function customizeTheme(theme) {
     newTheme.palette.primary3Color = "#005778";
     newTheme.palette.canvasColor = "#fff";
     newTheme.palette.accent1Color = "#005778";
+    newTheme.palette.accent2Color = pink100;
+    newTheme.palette.accent3Color = lightBlue100;
     newTheme.tableRow.hoverColor = 'rgba(0, 0, 0, 0.15)';
     newTheme.tableRow.stripeColor = 'whitesmoke';
     newTheme.tabs.backgroundColor = 'white';

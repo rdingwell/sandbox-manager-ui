@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, RaisedButton, Paper, TextField } from 'material-ui';
+import { Checkbox, RaisedButton, TextField } from 'material-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { updateSandbox } from '../../../../redux/action-creators';
@@ -20,8 +20,7 @@ class SandboxDetails extends Component {
     }
 
     render () {
-        return <Paper className='sandbox-details-wrapper' zDepth={1}>
-            <h4>Sandbox Details</h4>
+        return <div className='sandbox-details-wrapper'>
             <form onSubmit={this.updateSandboxHandler}>
                 <TextField disabled fullWidth defaultValue={this.props.sandboxId} floatingLabelText='Sandbox ID' />
                 <TextField disabled fullWidth defaultValue={`${window.location.origin}/${this.props.sandboxName}`} floatingLabelText='Sandbox URL' />
@@ -36,7 +35,7 @@ class SandboxDetails extends Component {
                            onChange={(event) => this.handleSandboxDescriptionChange(event)} />
                 <RaisedButton primary label='Save' className='details-button' type='submit' />
             </form>
-        </Paper>;
+        </div>;
     }
 
     updateSandboxHandler = (event) => {
@@ -65,7 +64,7 @@ class SandboxDetails extends Component {
 }
 
 const mapStateToProps = state => {
-    let sandbox = state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox);
+    let sandbox = state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId);
     let sandboxName = sandbox ? sandbox.name : '';
     let sandboxId = sandbox ? sandbox.sandboxId : '';
     let sandboxDescription = sandbox ? sandbox.description : '';

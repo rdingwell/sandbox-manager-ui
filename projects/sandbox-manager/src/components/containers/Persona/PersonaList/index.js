@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Badge, List, ListItem, Paper, RaisedButton, TextField } from 'material-ui';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table';
+import { Badge, List, ListItem, RaisedButton, TextField } from 'material-ui';
+import DohMessage from "../../../../../../../lib/components/DohMessage";
 
 import './styles.less';
-import DohMessage from "../../../../../../../lib/components/DohMessage";
 
 export default class PersonaList extends Component {
 
@@ -39,34 +38,43 @@ export default class PersonaList extends Component {
         };
         let isPatient = this.props.type === PersonaList.TYPES.patient;
         let isPractitioner = this.props.type === PersonaList.TYPES.practitioner;
-        let personas = this.props.personas && this.props.personas.map((persona, i) => (
-            <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
+
+        let personas = this.props.personas && this.props.personas.map((persona, i) => {
+            let style = this.props.theme
+                ? {
+                    backgroundColor: persona.gender === 'male' ? this.props.theme.accent2Color : this.props.theme.accent3Color
+                }
+                : undefined;
+
+            return <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
                 {isPatient && <span className='gender-wrapper'>
-                    <Badge primary={persona.gender === 'male'} secondary={persona.gender !== 'male'} badgeContent={persona.gender === 'male'
-                        ? <i className="fa fa-mars" />
-                        : <i className="fa fa-venus" />} />
+                    <Badge badgeStyle={style}
+                           badgeContent={persona.gender === 'male'
+                               ? <i className="fa fa-mars" />
+                               : <i className="fa fa-venus" />} />
                 </span>}
-                <span className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</span>
-                {isPatient && <span><span className='label'>Age:</span> {getAge(persona.birthDate) || ''}</span>}
-                {!isPatient && !isPractitioner && <div className='persona-info'>
-                    <span><span className='label'>User Id:</span> {persona.personaUserId}</span>
-                    <span><span className='label'>ResourceUrl:</span> {persona.resourceUrl}</span>
-                </div>}
+                <div className='persona-list-details'>
+                    <div className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</div>
+                    {isPatient && <div className='persona-info'><span className='label'>Age:</span> {getAge(persona.birthDate) || ''}</div>}
+                    {!isPatient && !isPractitioner && <div className='persona-info'>
+                        <span>{persona.personaUserId}</span>
+                    </div>}
+                </div>
             </ListItem>
-        ));
+        });
 
         let title = this.props.title
             ? this.props.title
             : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
 
-        return <div>
+        return <div className={this.props.modal ? 'persona-modal' : ''}>
             <div className='actions'>
                 {this.props.actions}
             </div>
             <div className='screen-title'>
                 <h1>{title}</h1>
             </div>
-            <div>
+            <div className={this.props.modal ? 'persona-list-wrapper' : ''}>
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
@@ -75,8 +83,9 @@ export default class PersonaList extends Component {
 
                 {personas && personas.length > 0
                     ? <div>
-                        <List className='persona-list'>{personas.filter((p, i) => i % 2 === 0)}</List>
-                        <List className='persona-list'>{personas.filter((p, i) => i % 2 === 1)}</List>
+                        <List className='persona-list'>{personas.filter((p, i) => i % 3 === 0)}</List>
+                        <List className='persona-list'>{personas.filter((p, i) => i % 3 === 1)}</List>
+                        <List className='persona-list'>{personas.filter((p, i) => i % 3 === 2)}</List>
                     </div>
                     : this.props.loading
                         ? <List>
