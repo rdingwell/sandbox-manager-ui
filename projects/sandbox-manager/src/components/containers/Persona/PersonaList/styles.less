@@ -9,6 +9,11 @@
   padding-top: 17%;
 }
 
+.practitioner-icon-wrapper > div {
+  padding: 6px 24px 12px 12px !important;
+  margin-right: 5px;
+}
+
 .persona-list-pagination-wrapper {
   text-align: center !important;
   margin-bottom: 10px;
@@ -33,45 +38,49 @@
   overflow: auto;
 }
 
-.persona-list {
-  display: inline-block;
-  width: 33%;
-  overflow: hidden;
-  vertical-align: top;
-  .persona-list-item {
-    .persona-list-details {
-      display: inline-block;
-      padding-left: 15px;
-      box-sizing: border-box;
-      max-width: calc(100% - 60px);
-    }
-    .persona-info {
-      font-size: 0.8rem;
-    }
-    & > div > div > * {
-      vertical-align: middle;
-    }
-  }
-  .gender-wrapper {
+.lists-wrapper {
+  text-align: center;
+  .persona-list {
+    text-align: left;
     display: inline-block;
-    width: 40px;
-    height: 40px;
-    div {
-      span {
-        width: 40px !important;
-        height: 40px !important;
+    width: 28%;
+    overflow: hidden;
+    vertical-align: top;
+    .persona-list-item {
+      .persona-list-details {
+        display: inline-block;
+        padding-left: 5px;
+        box-sizing: border-box;
+        max-width: calc(100% - 60px);
+      }
+      .persona-info {
+        font-size: 0.8rem;
+      }
+      & > div > div > * {
+        vertical-align: middle;
       }
     }
-  }
-  .name-wrapper {
-    display: inline-block;
-    width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .fa {
-    font-size: 2rem;
-    font-weight: 600;
+    .gender-wrapper {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      div {
+        span {
+          width: 40px !important;
+          height: 40px !important;
+        }
+      }
+    }
+    .name-wrapper {
+      display: inline-block;
+      width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fa {
+      font-size: 2rem;
+      font-weight: 600;
+    }
   }
 }

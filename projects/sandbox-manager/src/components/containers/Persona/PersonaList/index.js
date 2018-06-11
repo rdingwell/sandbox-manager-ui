@@ -42,7 +42,7 @@ export default class PersonaList extends Component {
         let personas = this.props.personas && this.props.personas.map((persona, i) => {
             let style = this.props.theme
                 ? {
-                    backgroundColor: persona.gender === 'male' ? this.props.theme.accent2Color : this.props.theme.accent3Color
+                    color: persona.gender === 'male' ? this.props.theme.accent2Color : this.props.theme.accent3Color
                 }
                 : undefined;
 
@@ -52,6 +52,9 @@ export default class PersonaList extends Component {
                            badgeContent={persona.gender === 'male'
                                ? <i className="fa fa-mars" />
                                : <i className="fa fa-venus" />} />
+                </span>}
+                {isPractitioner && <span className='practitioner-icon-wrapper'>
+                    <Badge badgeStyle={{color: this.props.theme.primary1Color}} badgeContent={<i className="fa fa-user-md fa-2x" />} />
                 </span>}
                 <div className='persona-list-details'>
                     <div className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</div>
@@ -82,7 +85,7 @@ export default class PersonaList extends Component {
                     : <div className='hidden'></div>}
 
                 {personas && personas.length > 0
-                    ? <div>
+                    ? <div className='lists-wrapper'>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 0)}</List>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 1)}</List>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 2)}</List>
