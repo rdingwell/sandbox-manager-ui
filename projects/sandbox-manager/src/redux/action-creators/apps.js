@@ -47,7 +47,7 @@ export function createApp (app) {
                 clientName: app.clientName
             },
             createdBy: state.users.oauthUser,
-            sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox),
+            sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
             briefDescription: app.briefDescription,
             clientJSON: JSON.stringify({
                 clientName: app.clientName,
@@ -176,7 +176,7 @@ export function loadSandboxApps () {
             let state = getState();
             dispatch(setSandboxAppsLoading(true));
 
-            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app?sandboxId=" + state.sandbox.selectedSandbox;
+            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app?sandboxId=" + sessionStorage.sandboxId;
             fetch(url, {
                 headers: {
                     Authorization: 'BEARER ' + window.fhirClient.server.auth.token,

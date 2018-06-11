@@ -91,12 +91,12 @@ export function fetchPersonas (type = "Patient", searchCrit = {}) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
-            let count = 20;
+            let count = 21;
 
             let state = getState();
             if (type === 'Persona') {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
-                fetch(`${url}/userPersona?sandboxId=${state.sandbox.selectedSandbox}`, {
+                fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {
                     headers: {
                         Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
                         Accept: "application/json",
@@ -150,12 +150,12 @@ export function createPersona (type, persona) {
                 resource: type,
                 resourceUrl: `${type}/${persona.id}`,
                 password: persona.password,
-                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox),
+                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
                 createdBy: state.users.oauthUser
             };
 
             let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
-            fetch(`${url}/userPersona?sandboxId=${state.sandbox.selectedSandbox}`, {
+            fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {
                 headers: {
                     Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
                     Accept: "application/json",

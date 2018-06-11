@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { TextField, Checkbox, RaisedButton, Paper, Dialog, IconButton} from 'material-ui';
+import { TextField, Checkbox, RaisedButton, div, Dialog, IconButton} from 'material-ui';
 
 import './styles.less';
 
@@ -23,24 +23,23 @@ class SandboxReset extends Component {
             <RaisedButton key={2} label='Cancel' primary onClick={this.toggleModal} className='cancel-button' />
         ];
 
-        return <Paper className='reset-wrapper' zDepth={1}>
+        return <div className='reset-wrapper'>
             {this.state.showResetModal && <Dialog paperClassName='app-dialog auto reset-sandbox-dialog' modal={false}
                                                   open={this.state.showResetModal} onRequestClose={this.toggleModal} actions={actions}>
-                <Paper className='paper-card reset-dialog'>
+                <div className='reset-dialog'>
                     <IconButton className="close-button" onClick={this.toggleModal}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h3>Reset Sandbox</h3>
-                    <div className='paper-body auto'>
+                    <div className='auto'>
                         <p>
                             Are you sure you want to reset sandbox {this.props.sandbox.name}? This is not reversible and will delete all FHIR data, launch scenarios, and personas
                         </p>
                         <TextField value={this.state.enableReset} floatingLabelText='Type "RESET"' fullWidth
                                    onChange={(_e, enableReset) => this.setState({ enableReset })} />
                     </div>
-                </Paper>
+                </div>
             </Dialog>}
-            <h4>Sandbox Reset</h4>
             <div className='reset-content'>
                 <p>Resetting the sandbox will delete:</p>
                 <ul>
@@ -62,7 +61,7 @@ class SandboxReset extends Component {
 
                 <RaisedButton primary disabled={!this.state.reset} label='Reset' className='button' onClick={this.toggleModal} />
             </div>
-        </Paper>;
+        </div>;
     }
 
     toggleModal = () => {

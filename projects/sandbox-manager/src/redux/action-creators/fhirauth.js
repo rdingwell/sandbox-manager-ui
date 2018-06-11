@@ -1,6 +1,5 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
-import { signOut } from "./app";
 
 let fhirClient = null;
 
@@ -76,7 +75,7 @@ function queryFhirVersion (dispatch, fhirClient, state) {
 }
 
 export function authorize (url, state, sandboxId) {
-    let thisUri = sandboxId ? window.location.origin + "/apps" : window.location.origin + "/after-auth";
+    let thisUri = sandboxId ? window.location.origin + "/" + sandboxId + "/apps" : window.location.origin + "/after-auth";
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
     let client = {
@@ -174,7 +173,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                                         .then(data => {
                                             dispatch(saveSandboxManagerUser(data));
                                             let state = getState();
-                                            redirect && redirect.push(`/${state.app.screen}`);
+                                            redirect && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
                                         });
                                 });
                         });

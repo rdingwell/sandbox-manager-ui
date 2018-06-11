@@ -7,6 +7,7 @@ import PersonaList from './PersonaList';
 import PersonaDetails from './PersonaDetails';
 import PersonaInputs from './PersonaInputs';
 import { RaisedButton, Dialog, FlatButton, IconButton } from 'material-ui';
+import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
@@ -47,6 +48,7 @@ class Persona extends Component {
             click: this.selectPersonHandler,
             search: this.props.fetchPersonas,
             loading: this.props.loading,
+            theme: this.props.muiTheme.palette,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };
@@ -113,9 +115,9 @@ class Persona extends Component {
             {!this.state.selectedForCreation &&
             <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({ selectedForCreation })}
                          pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}
-                         prev={() => this.props.getPrevPersonasPage(creationType, pagination)} />}
+                         prev={() => this.props.getPrevPersonasPage(creationType, pagination)} modal theme={this.props.muiTheme.palette} />}
             {this.state.selectedForCreation && <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={this.props.selectedSandbox}
+                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId}
                                onChange={(username, password) => this.setState({ username, password })} />
             </div>}
         </Dialog>
@@ -143,9 +145,9 @@ class Persona extends Component {
 }
 
 function getType (props) {
-    return (props.location && props.location.pathname === '/patients') || (props.type === 'Patient')
+    return (props.location && props.location.pathname.indexOf('/patients') >= 0) || (props.type === 'Patient')
         ? PersonaList.TYPES.patient
-        : (props.location && props.location.pathname === '/practitioners') || (props.type === 'Practitioner')
+        : (props.location && props.location.pathname.indexOf('/practitioners') >= 0) || (props.type === 'Practitioner')
             ? PersonaList.TYPES.practitioner
             : PersonaList.TYPES.persona;
 }
@@ -168,8 +170,7 @@ function mapStateToProps (state, ownProps) {
         patients: state.persona.patients,
         practitioners: state.persona.practitioners,
         loading: state.persona.loading,
-        creatingPersona: state.persona.createing,
-        selectedSandbox: state.sandbox.selectedSandbox
+        creatingPersona: state.persona.createing
     };
 }
 
@@ -180,4 +181,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona));
+export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona)));

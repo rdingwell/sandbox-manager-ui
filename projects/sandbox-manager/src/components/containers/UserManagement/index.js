@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Invitations from './Invitations';
 import Users from './Users';
+import { Tab, Tabs } from "material-ui";
 
 import { app_setScreen } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
@@ -16,8 +17,14 @@ class UserManagement extends Component {
 
     render () {
         return <div className='user-management-wrapper'>
-            <Users />
-            <Invitations />
+            <Tabs className='user-tabs' contentContainerClassName='user-tabs-container'>
+                <Tab label="Users" className='users-tab'>
+                    <Users />
+                </Tab>
+                <Tab label="Invitations">
+                    <Invitations />
+                </Tab>
+            </Tabs>
         </div>;
     }
 }

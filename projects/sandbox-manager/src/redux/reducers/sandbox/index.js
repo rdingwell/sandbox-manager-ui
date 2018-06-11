@@ -95,14 +95,14 @@ export default function (state = initialState, action) {
 };
 
 const updateSandbox = (state, action) => {
-    const sandbox = { ...state.sandboxes.filter((s) => s.sandboxId === state.selectedSandbox)[ 0 ] };
+    const sandbox = { ...state.sandboxes.filter((s) => s.sandboxId === sessionStorage.sandboxId)[ 0 ] };
     sandbox.name = action.sandboxDetails.name;
     sandbox.description = action.sandboxDetails.description;
     sandbox.allowOpenAccess = action.sandboxDetails.allowOpenAccess;
 
     let ind = 0;
     for (let index in state.sandboxes) {
-        if (state.sandboxes[ index ].sandboxId === state.selectedSandbox) {
+        if (state.sandboxes[ index ].sandboxId === sessionStorage.sandboxId) {
             ind = index;
             break;
         }
@@ -115,14 +115,14 @@ const updateSandbox = (state, action) => {
 
 const removeUser = (state, action) => {
     const cloneState = { ...state };
-    const sandbox = { ...cloneState.sandboxes.filter(s => s.sandboxId === state.selectedSandbox)[ 0 ] };
+    const sandbox = { ...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[ 0 ] };
     const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.id !== action.userId);
 
     sandbox.userRoles = remainingUsers;
 
     let ind = 0;
     for (let index in state.sandboxes) {
-        if (state.sandboxes[ index ].sandboxId === state.selectedSandbox) {
+        if (state.sandboxes[ index ].sandboxId === sessionStorage.sandboxId) {
             ind = index;
             break;
         }

@@ -5,10 +5,8 @@ const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
-    return {
-        type: actionTypes.SELECT_SANDBOX,
-        sandboxId: sandboxId
-    }
+    sessionStorage['sandboxId'] = sandboxId;
+    return { type: actionTypes.SELECT_SANDBOX }
 };
 
 export const removeUser = (userId) => {
@@ -159,7 +157,7 @@ export const deleteCurrentSandbox = (history) => {
     return (dispatch, getState) => {
         let state = getState();
 
-        let sandboxId = state.sandbox.selectedSandbox;
+        let sandboxId = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
@@ -187,7 +185,7 @@ export const resetCurrentSandbox = (applyDefaultDataSet) => {
         dispatch(setResettingCurrentSandbox(true));
         let state = getState();
 
-        let sandboxId = state.sandbox.selectedSandbox;
+        let sandboxId = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
         let dataSet = (applyDefaultDataSet ? 'DEFAULT' : 'NONE');
         let data = { sandboxId, dataSet };
@@ -222,9 +220,9 @@ export const updateSandbox = (sandboxDetails) => {
         // dispatch(setScenarioCreating(true));
         let state = getState();
 
-        let selectedSandbox = state.sandbox.selectedSandbox;
+        let selectedSandbox = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
-        let data = state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox);
+        let data = state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId);
         data = Object.assign(data, sandboxDetails);
         const config = {
             headers: {
@@ -288,7 +286,7 @@ export function toggleUserAdminRights (userId, toggle) {
             },
             body: JSON.stringify({})
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + state.sandbox.selectedSandbox + queryParams, Object.assign({ method: "PUT" }, config))
+        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, Object.assign({ method: "PUT" }, config))
             .then(() => {
                 dispatch(fetchSandboxes());
             });
@@ -394,7 +392,7 @@ export const inviteNewUser = (email) => {
                 invitee: {
                     email
                 },
-                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox)
+                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
             })
         };
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
@@ -445,7 +443,6 @@ export function getDefaultUserForSandbox (sandboxId) {
                 console.log(userResponse);
                 userResponse.json()
                     .then(user => {
-                        console.log(user);
                         dispatch(setDefaultSandboxUser(user));
                     })
             })
@@ -522,7 +519,7 @@ export const fetchSandboxInvites = () => {
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(fetchSandboxInvitesStart());
 
-        const queryParams = '?sandboxId=' + state.sandbox.selectedSandbox + '&status=PENDING';
+        const queryParams = '?sandboxId=' + sessionStorage.sandboxId + '&status=PENDING';
 
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig())
             .then(result => {
@@ -548,7 +545,7 @@ export function loadLaunchScenarios () {
         dispatch(setLaunchScenariosLoading(true));
         let state = getState();
         if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
-            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + state.sandbox.selectedSandbox;
+            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + sessionStorage.sandboxId;
             const config = {
                 headers: {
                     Authorization: 'BEARER ' + window.fhirClient.server.auth.token,

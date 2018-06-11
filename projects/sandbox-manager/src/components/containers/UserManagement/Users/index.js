@@ -25,9 +25,8 @@ class Users extends Component {
     }
 
     render () {
-        return <Paper className="paper-card">
-            <h3>Users</h3>
-            <div className="paper-body">
+        return <div>
+            <div>
                 <Table selectable={false}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                         <TableRow>
@@ -41,7 +40,7 @@ class Users extends Component {
                     </TableBody>
                 </Table>
             </div>
-        </Paper>;
+        </div>;
     }
 
     getRows = () => {
@@ -121,7 +120,7 @@ class Users extends Component {
 
 const mapStateToProps = state => {
     return {
-        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox)
+        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
     }
 };
 

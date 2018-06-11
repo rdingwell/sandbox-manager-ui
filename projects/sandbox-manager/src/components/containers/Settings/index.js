@@ -6,7 +6,7 @@ import { app_setScreen, resetCurrentSandbox, deleteCurrentSandbox } from '../../
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { bindActionCreators } from "redux";
-import { CircularProgress } from 'material-ui';
+import { CircularProgress, Tab, Tabs } from 'material-ui';
 
 import './styles.less';
 
@@ -19,23 +19,32 @@ class Settings extends Component {
 
     render () {
         return <div className='settings-wrapper'>
-            {!this.props.resetting && <SandboxDetails sandbox={this.props.sandbox} />}
-            {!this.props.resetting && <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} />}
-            {!this.props.resetting && <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} />}
-            {this.props.resetting && <div className='loader-wrapper'>
-                <p>
-                    Resetting sandbox settings
-                </p>
-                <CircularProgress size={80} thickness={5} />
-            </div>}
-        </div>
+            {!this.props.resetting
+                ? <Tabs className='settings-tabs' contentContainerClassName='settings-tabs-container'>
+                    <Tab label="Sandbox Details" className='sandbox-details-tab'>
+                        <SandboxDetails sandbox={this.props.sandbox} />
+                    </Tab>
+                    <Tab label="Sandbox Reset">
+                        <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} />
+                    </Tab>
+                    <Tab label="Sandbox Delete">
+                        <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} />
+                    </Tab>
+                </Tabs>
+                : <div className='loader-wrapper'>
+                    <p>
+                        Resetting sandbox settings
+                    </p>
+                    <CircularProgress size={80} thickness={5} />
+                </div>}
+        </div>;
     };
 }
 
 
 const mapStateToProps = state => {
     return {
-        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === state.sandbox.selectedSandbox),
+        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
         resetting: state.sandbox.resetting
     };
 };
