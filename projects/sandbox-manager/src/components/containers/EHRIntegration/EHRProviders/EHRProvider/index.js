@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
 
 export default class EHRProvider extends Component {
     render() {
-        return <Paper className='paper-card'>
+        return <div>
                 <h3>{this.props.providerName}</h3>
-                <div className='paper-body'>
+                <div>
                     <p>Where can I learn about {this.props.providerName}'s development programs?</p>
                     <p>
                         <span className='Answer'>
@@ -29,7 +28,7 @@ export default class EHRProvider extends Component {
                         <span className='Answer'>Not supported at this time</span>
                     </p>
                 </div>
-            </Paper>
+            </div>
     };
 
 }

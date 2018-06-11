@@ -8,9 +8,9 @@ import './styles.less';
 export default class EHRIntegration extends Component {
     render () {
         return <div className='integration-wrapper'>
-            <CapabilitiesMatrix />
             <EHRProviders />
             <SMART />
+            <CapabilitiesMatrix />
         </div>
     }
 }
