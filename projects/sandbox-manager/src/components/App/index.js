@@ -18,7 +18,7 @@ class App extends React.Component {
     componentDidMount () {
         window.addEventListener('resize', this.onResize);
 
-        !sessionStorage.sandboxId && window.location.pathname.split('/').length > 2 && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
+        !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length > 2 && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
     }
 
     componentWillUnmount () {

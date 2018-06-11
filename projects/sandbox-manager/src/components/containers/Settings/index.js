@@ -21,13 +21,13 @@ class Settings extends Component {
         return <div className='settings-wrapper'>
             {!this.props.resetting
                 ? <Tabs className='settings-tabs' contentContainerClassName='settings-tabs-container'>
-                    <Tab label="Sandbox Details" className='sandbox-details-tab'>
+                    <Tab label="Settings" className='sandbox-details-tab'>
                         <SandboxDetails sandbox={this.props.sandbox} />
                     </Tab>
-                    <Tab label="Sandbox Reset">
+                    <Tab label="Reset">
                         <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} />
                     </Tab>
-                    <Tab label="Sandbox Delete">
+                    <Tab label="Delete">
                         <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} />
                     </Tab>
                 </Tabs>

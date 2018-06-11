@@ -5,7 +5,6 @@ import { app_setScreen, customSearch, fhir_setCustomSearchResults } from '../../
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
-import ExternalBrowser from "./ExternalBrowser";
 import Import from "./Import";
 
 import './styles.less';
@@ -18,16 +17,13 @@ class DataManager extends Component {
     render () {
         return <div className='data-manager-wrapper'>
             <Tabs className='data-tabs' contentContainerClassName='data-tabs-container'>
-                <Tab label="Query browser" className='query-browser-tab'>
+                <Tab label="Browser" className='query-browser-tab'>
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} />
-                </Tab>
-                <Tab label="External FHIR Data">
-                    <ExternalBrowser search={this.search} results={this.props.results} />
                 </Tab>
                 <Tab label="Import">
                     <Import />
                 </Tab>
-                <Tab label="Export">
+                <Tab label="Export" disabled>
                     <div>
                         <h2>Tab Four</h2>
                     </div>

@@ -22,6 +22,10 @@ class SandboxDetails extends Component {
     render () {
         return <div className='sandbox-details-wrapper'>
             <form onSubmit={this.updateSandboxHandler}>
+                <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth
+                           onChange={this.handleSandboxNameChange} />
+                <TextField value={this.state.description} floatingLabelText='Sandbox Description'
+                           onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth />
                 <TextField disabled fullWidth defaultValue={this.props.sandboxId} floatingLabelText='Sandbox ID' />
                 <TextField disabled fullWidth defaultValue={`${window.location.origin}/${this.props.sandboxName}`} floatingLabelText='Sandbox URL' />
                 <TextField disabled fullWidth defaultValue={this.props.serviceUrl} floatingLabelText='Secure FHIR Server URL' />
@@ -29,11 +33,9 @@ class SandboxDetails extends Component {
                 <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}
                           onCheck={this.handleOpenFhirCheckboxChange} />
                 {this.state.allowOpen && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL' />}
-                <TextField value={this.state.name} floatingLabelText='Sandbox Name'
-                           onChange={this.handleSandboxNameChange} />
-                <TextField value={this.state.description} floatingLabelText='Sandbox Description'
-                           onChange={(event) => this.handleSandboxDescriptionChange(event)} />
-                <RaisedButton primary label='Save' className='details-button' type='submit' />
+                <div>
+                    <RaisedButton primary label='Save' className='details-button' type='submit' disabled={true} />
+                </div>
             </form>
         </div>;
     }

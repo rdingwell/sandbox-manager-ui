@@ -173,7 +173,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                                         .then(data => {
                                             dispatch(saveSandboxManagerUser(data));
                                             let state = getState();
-                                            redirect && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                                            redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
                                         });
                                 });
                         });
