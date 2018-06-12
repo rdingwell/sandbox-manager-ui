@@ -23,8 +23,19 @@ class Index extends Component {
         if (!this.props.loading) {
             sandboxes = this.props.sandboxes.map((sandbox, index) => {
                 let isThree = ['1', '2', '5'].indexOf(sandbox.apiEndpointIndex) === -1;
-                let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
-                let leftAvatar = <Avatar className={avatarClasses}>{!isThree ? 'DSTU2' : 'STU3'}</Avatar>;
+                let isFour = sandbox.apiEndpointIndex === '7';
+                let avatarClasses = 'sandbox-avatar';
+                let avatarText = 'STU3';
+                if (isFour) {
+                    avatarClasses += ' four';
+                    avatarText = 'R4';
+                } else if (isThree) {
+                    avatarClasses += ' three';
+                } else {
+                    avatarText = 'DSTU2';
+                }
+                // let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
+                let leftAvatar = <Avatar className={avatarClasses}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
                     ? <IconButton tooltip='Open endpoint'><SocialPublic /></IconButton>
                     : <IconButton tooltip='Authorization required'><ActionLock /></IconButton>;
