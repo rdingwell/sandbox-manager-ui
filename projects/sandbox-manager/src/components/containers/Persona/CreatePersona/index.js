@@ -71,5 +71,6 @@ export default class CreatePersona extends Component {
         }
 
         this.props.create && this.props.create(data);
+        this.toggleDialog();
     };
 }

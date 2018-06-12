@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, saveSandboxApiEndpointIndex } from './fhirauth';
+import { fetchPersonas } from "./persona";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -167,8 +168,8 @@ export function createResource (data) {
 
         fetch(url, config)
             .then(result => result.json()
-                .then(object => {
-                    console.log(object);
+                .then(_ => {
+                    dispatch(fetchPersonas(data.resourceType));
                 }))
     }
 }
