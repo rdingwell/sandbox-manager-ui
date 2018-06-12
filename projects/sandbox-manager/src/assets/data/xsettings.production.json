@@ -20,6 +20,7 @@
     "baseServiceUrl_4": "https://api-stu3.hspconsortium.org",
     "baseServiceUrl_5": "https://api-v5-dstu2.hspconsortium.org",
     "baseServiceUrl_6": "https://api-v5-stu3.hspconsortium.org",
+    "baseServiceUrl_7": "https://api-v5-r4.hspconsortium.org",
     "oauthLogoutUrl": "https://auth.hspconsortium.org/logout",
     "oauthUserInfoUrl": "https://auth.hspconsortium.org/userinfo",
     "sbmUrlHasContextPath": "false",
