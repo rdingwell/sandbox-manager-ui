@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona } from '../../../redux/action-creators';
+import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
@@ -49,6 +49,7 @@ class Persona extends Component {
             search: this.props.fetchPersonas,
             loading: this.props.loading,
             theme: this.props.muiTheme.palette,
+            create: this.props.createResource,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };
@@ -175,7 +176,7 @@ function mapStateToProps (state, ownProps) {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchPersonas, deletePersona, app_setScreen, createPersona,
+    fetchPersonas, deletePersona, app_setScreen, createPersona, createResource,
     getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
     getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
 }, dispatch);

@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, saveSandboxApiEndpointIndex } from './fhirauth';
+import { fetchPersonas } from "./persona";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -152,6 +153,26 @@ export const setResettingCurrentSandbox = (resetting) => {
         payload: { resetting }
     }
 };
+
+export function createResource (data) {
+    return dispatch => {
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        let url = `${window.fhirClient.server.serviceUrl}/${data.resourceType}`;
+
+        fetch(url, config)
+            .then(result => result.json()
+                .then(_ => {
+                    dispatch(fetchPersonas(data.resourceType));
+                }))
+    }
+}
 
 export const deleteCurrentSandbox = (history) => {
     return (dispatch, getState) => {

@@ -69,9 +69,6 @@ class Apps extends Component {
                                 icon={<AddIcon style={{ color: textColor, width: '40px', height: '40px' }} />} />
                 </div>
             </CardMedia>
-            <CardTitle className='explore-app-button-wrapper'>
-                <FlatButton fullWidth style={{ color: textColor }} label='Explore a demo app' onClick={this.handleAppSelect} />
-            </CardTitle>
         </Card>);
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible

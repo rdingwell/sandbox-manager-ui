@@ -9,7 +9,7 @@ export default class Import extends Component {
                 <Paper zDepth={3}>
                     <h2>Import JSON Bundle</h2>
                     <h4>Paste JSON FHIR Bundle in the Text Area</h4>
-                    <TextField fullWidth multiLine floatingLabelText='JSON' />
+                    <TextField className='inport-field-wrapper' underlineShow={false} fullWidth multiLine />
                 </Paper>
             </div>
             <div className='result-wrapper'>

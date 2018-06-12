@@ -6,7 +6,15 @@
     height: ~'calc(100vh - 190px)';
     box-sizing: border-box;
     overflow: hidden;
+    .inport-field-wrapper {
+      height: 100% !important;
+      & > div > textarea:nth-child(2) {
+        height: 98% !important;
+        padding: 0 10px !important;
+      }
+    }
     & > div {
+      box-shadow: none !important;
       padding: 0.5rem 1.5rem;
       height: 95%;
       & > h2 {
