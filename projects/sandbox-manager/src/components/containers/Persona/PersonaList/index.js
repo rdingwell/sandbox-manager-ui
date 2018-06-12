@@ -43,7 +43,7 @@ export default class PersonaList extends Component {
         let personas = this.props.personas && this.props.personas.map((persona, i) => {
             let style = this.props.theme
                 ? {
-                    color: persona.gender === 'male' ? this.props.theme.accent2Color : this.props.theme.accent3Color
+                    color: persona.gender === 'male' ? this.props.theme.accent4Color : this.props.theme.accent5Color
                 }
                 : undefined;
 
