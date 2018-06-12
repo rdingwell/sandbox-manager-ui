@@ -3,6 +3,7 @@ import { Badge, List, ListItem, RaisedButton, TextField } from 'material-ui';
 import DohMessage from "../../../../../../../lib/components/DohMessage";
 
 import './styles.less';
+import CreatePersona from "../CreatePersona";
 
 export default class PersonaList extends Component {
 
@@ -81,6 +82,9 @@ export default class PersonaList extends Component {
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
+                        <div>
+                            <CreatePersona create={this.props.create} type={this.props.type} />
+                        </div>
                     </div>
                     : <div className='hidden'></div>}
 

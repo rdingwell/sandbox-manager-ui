@@ -153,6 +153,26 @@ export const setResettingCurrentSandbox = (resetting) => {
     }
 };
 
+export function createResource (data) {
+    return dispatch => {
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        };
+        let url = `${window.fhirClient.server.serviceUrl}/${data.resourceType}`;
+
+        fetch(url, config)
+            .then(result => result.json()
+                .then(object => {
+                    console.log(object);
+                }))
+    }
+}
+
 export const deleteCurrentSandbox = (history) => {
     return (dispatch, getState) => {
         let state = getState();
