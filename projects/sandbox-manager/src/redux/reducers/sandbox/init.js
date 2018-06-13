@@ -14,8 +14,10 @@ export default {
     launchScenariosLoading: false,
     launchScenarioCreating: false,
     launchScenarioDeleting: false,
+    dataImporting: false,
     lookingForSandboxError: '',
     defaultUser: undefined,
+    importResults: undefined,
     lookupSandbox: '',
     sandboxApiEndpointIndexes : [
         {index: "1", name: "FHIR DSTU 2 (v1.0.2)", fhirVersion: "1.0.2", fhirTag: "1_0_2", altName: "FHIR v1.0.2", canCreate: false, supportsDataSets: false},

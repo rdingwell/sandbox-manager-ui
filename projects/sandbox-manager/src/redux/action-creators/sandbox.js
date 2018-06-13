@@ -17,6 +17,26 @@ export const removeUser = (userId) => {
     }
 };
 
+export const clearResults = () => {
+    return {
+        type: actionTypes.CLEAR_RESULTS
+    }
+};
+
+export const setDataImporting = (importing) => {
+    return {
+        type: actionTypes.SET_DATA_IMPORTING,
+        payload: { importing }
+    }
+};
+
+export const setImportResults = (results) => {
+    return {
+        type: actionTypes.SET_IMPORT_RESULTS,
+        payload: { results }
+    }
+};
+
 export function setLaunchScenariosLoading (loading) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_LOADING,
@@ -173,6 +193,27 @@ export function createResource (data) {
                 }))
     }
 }
+
+export const importData = (data) => {
+    return dispatch => {
+        dispatch(setDataImporting(true));
+        let promises = [window.fhirClient.api.transaction({ data })];
+        Promise.all(promises)
+            .then(result => {
+                console.log(result);
+                dispatch(setDataImporting(false));
+                result.json()
+                    .then(json => {
+                        dispatch(setImportResults(json));
+                    })
+            })
+            .catch(error => {
+                console.log(error);
+                dispatch(setDataImporting(false));
+                dispatch(setImportResults(error));
+            })
+    }
+};
 
 export const deleteCurrentSandbox = (history) => {
     return (dispatch, getState) => {

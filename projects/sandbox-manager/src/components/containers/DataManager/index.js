@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import { app_setScreen, customSearch, fhir_setCustomSearchResults } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -21,7 +21,7 @@ class DataManager extends Component {
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} />
                 </Tab>
                 <Tab label="Import">
-                    <Import />
+                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} />
                 </Tab>
                 <Tab label="Export" disabled>
                     <div>
@@ -40,10 +40,11 @@ class DataManager extends Component {
 const mapStateToProps = state => {
 
     return {
-        results: state.fhir.customSearchResults
+        results: state.fhir.customSearchResults,
+        importResults: state.sandbox.importResults
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager));
