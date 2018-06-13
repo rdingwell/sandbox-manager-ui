@@ -39,12 +39,14 @@ class LaunchScenarios extends Component {
 
     render () {
         return <div className='launch-scenarios-wrapper'>
-            <div className='screen-title'>
-                <h1>Launch Scenarios</h1>
-                <div className='actions'>
-                    <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
+            <div>
+                <div className='screen-title'>
+                    <h1>Launch Scenarios</h1>
+                    <div className='actions'>
+                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
+                    </div>
                 </div>
-                <div>
+                <div className='screen-content'>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5} />
                     </div>}
@@ -63,28 +65,22 @@ class LaunchScenarios extends Component {
     };
 
     handleRowSelect = (row) => {
-        this.setState({ selectedScenario: this.props.scenarios[row] }, this.toggleModal);
+        let selection = this.state.selectedScenario !== row ? row : undefined;
+        this.setState({ selectedScenario: selection });
     };
 
     getModal = () => {
-        let title = this.state.selectedScenario ? 'Launch Scenario Details' : '';
-        let actions = this.state.selectedScenario ? this.getDetailsActions() : this.getBuildActions();
-        let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
+        let actions = this.getBuildActions();
+        let content = this.getBuildContent();
         let modalTitle = "";
-        if(content.props) {
+        if (content.props) {
             modalTitle = content.props.title
         }
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
             {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
             </IconButton>}
-            {this.state.selectedScenario && <div className='modal'>
-                <h3>{title}</h3>
-                <div className='launch-scenario-modal'>
-                    {content}
-                </div>
-            </div>}
-            {!this.state.selectedScenario && content}
+            {content}
         </Dialog>
     };
 
@@ -250,11 +246,15 @@ class LaunchScenarios extends Component {
     getScenarios = () => {
         return <List className='scenarios-list'>
             {this.props.scenarios.map((sc, index) => {
-                    let details = <ListItem key={1} disabled className='expanded-content'>
+                    let isSelected = this.state.selectedScenario === index;
+                    let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
+
+                    let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
 
-                    return <ListItem key={index} className='launch-scenario-list-row' primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />}
+                    return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
+                                     hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
                                      leftIcon={<div className='actions-wrapper'>
                                          <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
                                              e.preventDefault();
@@ -275,7 +275,6 @@ class LaunchScenarios extends Component {
                     </ListItem>
                 }
             )}
-            {this.props.pagination && this.getPagination()}
         </List>
     };
 }

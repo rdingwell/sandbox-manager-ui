@@ -1,9 +1,15 @@
 .settings-wrapper {
   margin: 0!important;
   max-width: 100%!important;
-  padding-left: 10px;
-  .settings-tabs > div:not(.settings-tabs-container) {
-    width: 55% !important;
+  .settings-tabs > div:first-of-type {
+    border-bottom: 2px solid whitesmoke;
+    width: 100% !important;
+    & > button {
+      max-width: 125px;
+    }
+  }
+  .settings-tabs > div:nth-child(2) {
+    display: none !important;
   }
   .settings-tabs-container {
     padding-right: 10px;

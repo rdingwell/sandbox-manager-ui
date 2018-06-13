@@ -55,7 +55,7 @@ export default class PersonaList extends Component {
                                : <i className="fa fa-venus" />} />
                 </span>}
                 {isPractitioner && <span className='practitioner-icon-wrapper'>
-                    <Badge badgeStyle={{color: this.props.theme.primary1Color}} badgeContent={<i className="fa fa-user-md fa-2x" />} />
+                    <Badge badgeStyle={{ color: this.props.theme.primary1Color }} badgeContent={<i className="fa fa-user-md fa-2x" />} />
                 </span>}
                 <div className='persona-list-details'>
                     <div className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</div>
@@ -77,14 +77,14 @@ export default class PersonaList extends Component {
             </div>
             <div className='screen-title'>
                 <h1>{title}</h1>
+                {(isPractitioner || isPatient) && <div className='create-resource-button'>
+                    <CreatePersona create={this.props.create} type={this.props.type} />
+                </div>}
             </div>
-            <div className={this.props.modal ? 'persona-list-wrapper' : ''}>
+            <div className={'screen-content' + (this.props.modal ? 'persona-list-wrapper' : '')}>
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
-                        <div>
-                            <CreatePersona create={this.props.create} type={this.props.type} />
-                        </div>
                     </div>
                     : <div className='hidden'></div>}
 
