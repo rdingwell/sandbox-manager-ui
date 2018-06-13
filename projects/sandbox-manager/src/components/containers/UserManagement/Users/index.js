@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Paper, Dialog, RaisedButton, Toggle } from 'material-ui';
-
+import { List, ListItem, Dialog, RaisedButton, Toggle, IconButton } from 'material-ui';
+import muiThemeable from "material-ui/styles/muiThemeable";
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../../redux/action-creators';
-
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from "../../../../../../../lib/hoc/withErrorHandler";
+import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import './styles.less';
 
 class Users extends Component {
 
@@ -26,20 +25,17 @@ class Users extends Component {
 
     render () {
         return <div>
-            <div>
-                <Table selectable={false}>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Email</TableHeaderColumn>
-                            <TableHeaderColumn>Roles</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
-                        {this.props.sandbox && this.getRows()}
-                    </TableBody>
-                </Table>
-            </div>
+            {this.state.userToRemove &&
+            <Dialog title="Remove User from Sandbox" modal={false} open={this.state.open} onRequestClose={this.handleClose}
+                    actions={[
+                        <RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler} />,
+                        <RaisedButton label="Cancel" primary onClick={this.handleClose} />
+                    ]}>
+                Are you sure you want to remove {this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove).user.email}?
+            </Dialog>}
+            <List className='sandbox-users-list'>
+                {this.props.sandbox && this.getRows()}
+            </List>
         </div>;
     }
 
@@ -65,19 +61,17 @@ class Users extends Component {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
-            return <TableRow key={key}>
-                <TableRowColumn>
-                    {user.name}
-                </TableRowColumn>
-                <TableRowColumn>
-                    {user.email}
-                </TableRowColumn>
-                <TableRowColumn>
-                    <Toggle label='Administrator' labelPosition='right' toggled={isAdmin}
-                            onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)} />
-                </TableRowColumn>
-                {this.deleteButton(user.id, user.email, canDelete)}
-            </TableRow>
+            return <ListItem key={key}>
+                <span>{user.name}</span>
+                <div className='actions'>
+                    <Toggle label='Admin' labelPosition='right' toggled={isAdmin} onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)}
+                            thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
+                            trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}
+                            labelStyle={{ position: 'absolute', bottom: '-20px', left: '0' }} className='toggle' />
+                    {this.deleteButton(user.sbmUserId, user.email, canDelete)}
+                </div>
+                <span className='subscript'>{user.email}</span>
+            </ListItem>
         });
     };
 
@@ -86,18 +80,14 @@ class Users extends Component {
     };
 
     deleteButton = (userId, email, canDelete) => {
-        const actions = [
-            <RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler} />,
-            <RaisedButton label="Cancel" primary onClick={this.handleClose} />
-        ];
         if (canDelete) {
             return (
-                <TableRowColumn>
-                    <RaisedButton label="Remove User" onClick={() => this.handleOpen(userId)} secondary />
-                    <Dialog title="Remove User from Sandbox" actions={actions} modal={false} open={this.state.open} onRequestClose={this.handleClose}>
-                        Are you sure you want to remove {email}?
-                    </Dialog>
-                </TableRowColumn>
+                <div>
+                    <IconButton iconStyle={{ width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color }}
+                                style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(userId)} tooltip='Remove User'>
+                        <DeleteIcon />
+                    </IconButton>
+                </div>
             )
         } else {
             return null;
@@ -128,4 +118,4 @@ function mapDispatchToProps (dispatch) {
     return bindActionCreators({ fetchSandboxInvites, removeUser, toggleUserAdminRights }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Users));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Users)));

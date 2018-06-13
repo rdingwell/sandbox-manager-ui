@@ -25,7 +25,7 @@ class UserManagement extends Component {
 
     render () {
         return <div className='user-management-wrapper'>
-            <Tabs className='user-tabs' contentContainerClassName='user-tabs-container'>
+            <Tabs className='user-tabs' contentContainerClassName='screen-content'>
                 <Tab label="Users" className={'users-tab tab' + (this.state.activeTab === 'user' ? ' active' : '')} onActive={() => this.setActiveTab('user')}>
                     <Users />
                 </Tab>
