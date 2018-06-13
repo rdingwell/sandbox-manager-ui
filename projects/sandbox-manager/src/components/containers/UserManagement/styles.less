@@ -1,9 +1,15 @@
 .user-management-wrapper {
   margin: 0!important;
   max-width: 100%!important;
-  padding-left: 10px;
-  .user-tabs > div:not(.user-tabs-container) {
-    width: 45% !important;
+  .user-tabs > div:first-of-type {
+    border-bottom: 2px solid whitesmoke;
+    width: 100% !important;
+    & > button {
+      max-width: 125px;
+    }
+  }
+  .user-tabs > div:nth-child(2) {
+    display: none !important;
   }
   .user-tabs-container {
     padding-right: 10px;

@@ -2,20 +2,38 @@
   width: 100%;
   height: ~'calc(100% - 64px)';
   position: relative;
-  .actions {
-    position: absolute;
-    right: 0;
-    top: 10px;
-  }
   .launch-scenario-list-row {
+    @media (min-width: 1400px) {
+      &.active {
+        width: 110%;
+        left: -5%;
+        margin-top: 10px !important;
+        top: -1px !important;
+        & + * {
+          top: -1px;
+          width: 110%;
+          left: -5%;
+          position: relative;
+          margin-bottom: 10px;
+          &::after {
+            content: " ";
+            display: inline-block;
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: white;
+          }
+        }
+      }
+    }
     .actions-wrapper {
       left: auto !important;
       width: 100px !important;
       right: -40px;
       & > * {
-        display: inline-block!important;
-        width: 20px!important;
-        height: 20px!important;
+        display: inline-block !important;
+        width: 20px !important;
+        height: 20px !important;
         vertical-align: top;
         margin: 0 !important;
         padding: 0 !important;
@@ -50,12 +68,21 @@
 .launch-scenario-dialog-action {
   margin: .5rem 1rem .5rem 0;
 }
-.scenarios-list > div > div {
+
+.scenarios-list {
   padding: 0 !important;
+  margin-top: 70px !important;
+  & > div {
+    box-shadow: 0 0 1px #c0c0c0;
+    margin-bottom: 2px;
+    & > div {
+      padding: 0 !important;
+    }
+  }
 }
+
 .expanded-content {
   padding: 20px;
-  background-color: whitesmoke;
   margin-left: 0 !important;
   .details-pair {
     margin: 0.5rem 0;

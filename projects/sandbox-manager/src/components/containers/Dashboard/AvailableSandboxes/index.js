@@ -49,7 +49,7 @@ class Index extends Component {
             <h3>My Sandboxes
                 <RaisedButton primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
             </h3>
-            <div className='paper-body'>
+            <div>
                 <List>
                     {sandboxes}
                 </List>

@@ -85,7 +85,7 @@ class Apps extends Component {
             <div className='screen-title'>
                 <h1>{this.props.title ? this.props.title : 'Registered Apps'}</h1>
             </div>
-            <div>
+            <div className='screen-content'>
                 {!this.props.appDeleting && !this.props.appCreating && apps}
                 {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
                 <DohMessage message='There are no apps in this sandbox platform yet.' />}

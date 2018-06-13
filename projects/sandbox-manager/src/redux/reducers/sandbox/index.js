@@ -30,6 +30,17 @@ export default function (state = initialState, action) {
         case actionTypes.REMOVE_SANDBOX_USER:
             state = removeUser(state, action);
             break;
+        case actionTypes.CLEAR_RESULTS:
+            state.dataImporting = false;
+            state.importResults = undefined;
+            break;
+        case actionTypes.SET_DATA_IMPORTING:
+            state.dataImporting = action.payload.importing;
+            state.importResults = undefined;
+            break;
+        case actionTypes.SET_IMPORT_RESULTS:
+            state.importResults = action.payload.results;
+            break;
         case actionTypes.SET_INVITES_LOADING:
             state.userInvitesLoading = action.payload.loading;
             break;
@@ -88,6 +99,8 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
+            state.dataImporting = false;
+            state.importResults = undefined;
             break;
     }
 

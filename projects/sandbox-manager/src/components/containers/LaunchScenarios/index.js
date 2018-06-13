@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, Paper, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
@@ -13,6 +13,7 @@ import DeleteIcon from "material-ui/svg-icons/action/delete";
 
 import './styles.less';
 import DohMessage from "../../../../../../lib/components/DohMessage";
+import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 class LaunchScenarios extends Component {
@@ -39,12 +40,16 @@ class LaunchScenarios extends Component {
 
     render () {
         return <div className='launch-scenarios-wrapper'>
-            <div className='screen-title'>
-                <h1>Launch Scenarios</h1>
-                <div className='actions'>
-                    <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
+            <div>
+                <div className='screen-title'>
+                    <h1>Launch Scenarios</h1>
+                    {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter} />}
+                    <div className='actions'>
+                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
+                    </div>
                 </div>
-                <div>
+                <div className='screen-content'>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5} />
                     </div>}
@@ -57,34 +62,32 @@ class LaunchScenarios extends Component {
         </div>
     }
 
+    onFilter = (appId) => {
+        this.setState({ appIdFilter: appId });
+    };
+
     launchScenario = (sc) => {
         this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
         !sc && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
     };
 
     handleRowSelect = (row) => {
-        this.setState({ selectedScenario: this.props.scenarios[row] }, this.toggleModal);
+        let selection = this.state.selectedScenario !== row ? row : undefined;
+        this.setState({ selectedScenario: selection });
     };
 
     getModal = () => {
-        let title = this.state.selectedScenario ? 'Launch Scenario Details' : '';
-        let actions = this.state.selectedScenario ? this.getDetailsActions() : this.getBuildActions();
-        let content = this.state.selectedScenario ? this.getDetailsContent() : this.getBuildContent();
+        let actions = this.getBuildActions();
+        let content = this.getBuildContent();
         let modalTitle = "";
-        if(content.props) {
+        if (content.props) {
             modalTitle = content.props.title
         }
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
             {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
             </IconButton>}
-            {this.state.selectedScenario && <div className='modal'>
-                <h3>{title}</h3>
-                <div className='launch-scenario-modal'>
-                    {content}
-                </div>
-            </div>}
-            {!this.state.selectedScenario && content}
+            {content}
         </Dialog>
     };
 
@@ -250,32 +253,36 @@ class LaunchScenarios extends Component {
     getScenarios = () => {
         return <List className='scenarios-list'>
             {this.props.scenarios.map((sc, index) => {
-                    let details = <ListItem key={1} disabled className='expanded-content'>
+                    let isSelected = this.state.selectedScenario === index;
+                    let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
+
+                    let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
-
-                    return <ListItem key={index} className='launch-scenario-list-row' primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />}
-                                     leftIcon={<div className='actions-wrapper'>
-                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                             e.preventDefault();
-                                             e.stopPropagation();
-                                             this.launchScenario(sc);
-                                         }} tooltip='Launch'>
-                                             <LaunchIcon style={{ width: '24px', height: '24px' }} />
-                                         </IconButton>
-                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                             e.preventDefault();
-                                             e.stopPropagation();
-                                             this.deleteScenario(sc);
-                                         }} tooltip='Delete'>
-                                             <DeleteIcon style={{ width: '24px', height: '24px' }} />
-                                         </IconButton>
-                                     </div>}>
-                        {sc.description}
-                    </ListItem>
+                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
+                                         hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
+                                         leftIcon={<div className='actions-wrapper'>
+                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                                 e.preventDefault();
+                                                 e.stopPropagation();
+                                                 this.launchScenario(sc);
+                                             }} tooltip='Launch'>
+                                                 <LaunchIcon style={{ width: '24px', height: '24px' }} />
+                                             </IconButton>
+                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                                 e.preventDefault();
+                                                 e.stopPropagation();
+                                                 this.deleteScenario(sc);
+                                             }} tooltip='Delete'>
+                                                 <DeleteIcon style={{ width: '24px', height: '24px' }} />
+                                             </IconButton>
+                                         </div>}>
+                            {sc.description}
+                        </ListItem>
+                    }
                 }
             )}
-            {this.props.pagination && this.getPagination()}
         </List>
     };
 }
@@ -283,6 +290,7 @@ class LaunchScenarios extends Component {
 const mapStateToProps = state => {
     return {
         user: state.users.oauthUser,
+        apps: state.apps.apps,
         creating: state.sandbox.launchScenarioCreating,
         deleting: state.sandbox.launchScenarioDeleting,
         scenariosLoading: state.sandbox.launchScenariosLoading,

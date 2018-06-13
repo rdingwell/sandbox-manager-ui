@@ -1,21 +1,30 @@
 .import-wrapper {
-  padding: 2rem;
+  padding: 3.5rem 2rem 2rem 2rem;
+  .import-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
   .result-wrapper {
     width: ~'calc(50% - 1rem)';
     display: inline-block;
-    height: ~'calc(100vh - 190px)';
+    height: ~'calc(100vh - 210px)';
     box-sizing: border-box;
     overflow: hidden;
-    .inport-field-wrapper {
-      height: 100% !important;
-      & > div > textarea:nth-child(2) {
-        height: 98% !important;
-        padding: 0 10px !important;
+    position: relative;
+    .import-field-wrapper {
+      width: 99.5% !important;
+      & > div {
+        overflow: hidden;
+        & > textarea:nth-child(2) {
+          height: 100% !important;
+          padding: 10px !important;
+          margin: 0 !important;
+        }
       }
     }
     & > div {
       box-shadow: none !important;
-      padding: 0.5rem 1.5rem;
       height: 95%;
       & > h2 {
         margin: 0;

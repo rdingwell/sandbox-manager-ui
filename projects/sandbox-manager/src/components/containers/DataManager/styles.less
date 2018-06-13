@@ -1,17 +1,17 @@
 .data-manager-wrapper {
-  margin: 0 !important;
-  max-width: 100% !important;
-  padding-left: 10px;
-  .data-tabs {
-    height: 100%;
-    & > div:not(:nth-child(3)) {
-      width: 55% !important;
+  margin: 0!important;
+  max-width: 100%!important;
+  .data-tabs > div:first-of-type {
+    border-bottom: 2px solid whitesmoke;
+    width: 100% !important;
+    & > button {
+      max-width: 125px;
     }
-    .data-tabs-container {
-      height: ~'calc(100% - 50px)';
-      & > * {
-        height: 100%;
-      }
-    }
+  }
+  .data-tabs > div:nth-child(2) {
+    display: none !important;
+  }
+  .data-tabs-container {
+    padding-right: 10px;
   }
 }

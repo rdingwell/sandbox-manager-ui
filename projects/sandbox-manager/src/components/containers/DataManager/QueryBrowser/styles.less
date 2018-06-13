@@ -3,7 +3,7 @@
   background-color: white;
   height: 100%;
   .fhir-query-wrapper {
-    min-width: 300px;
+    min-width: 700px;
     max-width: 45vw;
     .input-wrapper {
       width: 85%;
@@ -23,6 +23,7 @@
   height: ~'calc(100vh - 236px)';
   box-sizing: border-box;
   overflow: hidden;
+  min-width: 500px;
   .query-result-wrapper {
     .result-item {
       & > *:first-child {
@@ -46,11 +47,10 @@
       }
     }
   }
-  & > div {
-    padding: 0.5rem 1.5rem;
+  & > div:not(.import-button) {
     height: 100%;
     & > div {
-      height: 91%;
+      height: ~'calc(100vh - 290px)' !important;
       overflow: auto;
       border: 1px solid darkgray;
       border-radius: 5px;
