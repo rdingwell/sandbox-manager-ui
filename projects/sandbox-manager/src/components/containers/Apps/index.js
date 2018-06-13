@@ -42,26 +42,27 @@ class Apps extends Component {
     render () {
         let textColor = this.props.muiTheme.palette.primary3Color;
 
-        let apps = this.props.apps
-            ? this.props.apps.map((app, index) => (
-                <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
-                      onClick={() => this.appCardClick(app)}>
-                    <CardMedia className='media-wrapper'>
-                        <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
-                    </CardMedia>
-                    <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                        <h3 className='app-name'>{app.authClient.clientName}</h3>
-                        <div className='app-description'>{app.briefDescription}</div>
-                    </CardTitle>
-                    {!this.props.noActions && <CardActions className='card-actions-wrapper'>
-                        <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={() => this.handleAppLaunch(index)}
-                                    icon={<LaunchIcon style={{ width: '24px', height: '24px' }} />} label='Launch' />
-                        <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={() => this.handleAppSelect(index)}
-                                    icon={<SettingsIcon style={{ width: '24px', height: '24px' }} />} label='Settings' />
-                    </CardActions>}
-                </Card>
-            ))
-            : [];
+        let appsList = this.props.apps ? this.props.apps.slice() : [];
+        appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
+
+        let apps = appsList.map((app, index) => (
+            <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+                  onClick={() => this.appCardClick(app)}>
+                <CardMedia className='media-wrapper'>
+                    <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
+                </CardMedia>
+                <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
+                    <h3 className='app-name'>{app.authClient.clientName}</h3>
+                    <div className='app-description'>{app.briefDescription}</div>
+                </CardTitle>
+                {!this.props.noActions && <CardActions className='card-actions-wrapper'>
+                    <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleAppLaunch(e, index)}
+                                icon={<LaunchIcon style={{ width: '24px', height: '24px' }} />} label='Launch' />
+                    <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleAppSelect(e, index)}
+                                icon={<SettingsIcon style={{ width: '24px', height: '24px' }} />} label='Settings' />
+                </CardActions>}
+            </Card>
+        ))
         apps.unshift(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
@@ -70,6 +71,8 @@ class Apps extends Component {
                 </div>
             </CardMedia>
         </Card>);
+
+        console.log(apps);
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
@@ -127,7 +130,9 @@ class Apps extends Component {
         this.setState({ selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false });
     };
 
-    handleAppSelect = (index) => {
+    handleAppSelect = (event, index) => {
+        event.preventDefault();
+        event.stopPropagation();
         let app = this.props.apps[index]
             ? this.props.apps[index]
             : {
@@ -147,7 +152,9 @@ class Apps extends Component {
         this.setState({ selectedApp: app, registerDialogVisible: false, appIsLoading: !!this.props.apps[index] });
     };
 
-    handleAppLaunch = (index) => {
+    handleAppLaunch = (event, index) => {
+        event.preventDefault();
+        event.stopPropagation();
         this.setState({ appToLaunch: this.props.apps[index], registerDialogVisible: false });
     };
 }
