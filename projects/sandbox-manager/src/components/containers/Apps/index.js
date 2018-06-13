@@ -62,7 +62,7 @@ class Apps extends Component {
                                 icon={<SettingsIcon style={{ width: '24px', height: '24px' }} />} label='Settings' />
                 </CardActions>}
             </Card>
-        ))
+        ));
         apps.unshift(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
@@ -71,8 +71,6 @@ class Apps extends Component {
                 </div>
             </CardMedia>
         </Card>);
-
-        console.log(apps);
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
