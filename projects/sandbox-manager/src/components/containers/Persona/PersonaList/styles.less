@@ -48,12 +48,15 @@
   white-space: nowrap;
   overflow: hidden;
   margin: 0 20px;
+  padding-top: 20px;
   box-sizing: border-box;
   max-width: ~'calc(100vw - 296px)';
 }
 
 .lists-wrapper {
   text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
   .persona-list {
     text-align: left;
     display: inline-block;
@@ -70,8 +73,11 @@
       .persona-info {
         font-size: 0.8rem;
       }
-      & > div > div > * {
-        vertical-align: middle;
+      & > div > div {
+        padding: 8px 16px !important;
+        & > * {
+          vertical-align: middle;
+        }
       }
     }
     .gender-wrapper {

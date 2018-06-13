@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Paper, Dialog, RaisedButton, Toggle } from 'material-ui';
+import { List, ListItem, Dialog, RaisedButton, Toggle } from 'material-ui';
 
 import { fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../../redux/action-creators';
-
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -25,22 +23,9 @@ class Users extends Component {
     }
 
     render () {
-        return <div>
-            <div>
-                <Table selectable={false}>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Email</TableHeaderColumn>
-                            <TableHeaderColumn>Roles</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
-                        {this.props.sandbox && this.getRows()}
-                    </TableBody>
-                </Table>
-            </div>
-        </div>;
+        return <List>
+            {this.props.sandbox && this.getRows()}
+        </List>;
     }
 
     getRows = () => {
@@ -65,19 +50,15 @@ class Users extends Component {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
-            return <TableRow key={key}>
-                <TableRowColumn>
-                    {user.name}
-                </TableRowColumn>
-                <TableRowColumn>
-                    {user.email}
-                </TableRowColumn>
-                <TableRowColumn>
-                    <Toggle label='Administrator' labelPosition='right' toggled={isAdmin}
+            return <ListItem key={key}>
+                <span>{user.name}</span>
+                <span className='fa-subscript'>{user.email}</span>
+                <div className='actions'>
+                    <Toggle label='Admin' labelPosition='right' toggled={isAdmin}
                             onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)} />
-                </TableRowColumn>
-                {this.deleteButton(user.id, user.email, canDelete)}
-            </TableRow>
+                    {this.deleteButton(user.id, user.email, canDelete)}
+                </div>
+            </ListItem>
         });
     };
 
