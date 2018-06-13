@@ -32,7 +32,32 @@ body {
   height: 48px;
   overflow: hidden;
   border-bottom: 2px solid whitesmoke;
+  .actions {
+    position: absolute;
+    right: 30px;
+    top: 7px;
+  }
+  .filters {
+    display: inline-block;
+    .chip {
+      padding-right: 20px !important;
+      &.active {
+        padding-right: 0 !important;
+        span svg {
+          display: none !important;
+        }
+      }
+      span svg {
+        position: absolute;
+        top: 5px;
+      }
+      svg {
+        z-index: 1000;
+      }
+    }
+  }
   h1 {
+    display: inline-block;
     color: #565656;
     padding-left: 20px;
     margin: 14px;

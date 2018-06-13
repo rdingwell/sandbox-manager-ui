@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, Paper, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
@@ -13,6 +13,7 @@ import DeleteIcon from "material-ui/svg-icons/action/delete";
 
 import './styles.less';
 import DohMessage from "../../../../../../lib/components/DohMessage";
+import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 class LaunchScenarios extends Component {
@@ -42,6 +43,8 @@ class LaunchScenarios extends Component {
             <div>
                 <div className='screen-title'>
                     <h1>Launch Scenarios</h1>
+                    {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter} />}
                     <div className='actions'>
                         <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
                     </div>
@@ -58,6 +61,10 @@ class LaunchScenarios extends Component {
             {this.getModal()}
         </div>
     }
+
+    onFilter = (appId) => {
+        this.setState({ appIdFilter: appId });
+    };
 
     launchScenario = (sc) => {
         this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
@@ -252,27 +259,28 @@ class LaunchScenarios extends Component {
                     let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
-
-                    return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
-                                     hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
-                                     leftIcon={<div className='actions-wrapper'>
-                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                             e.preventDefault();
-                                             e.stopPropagation();
-                                             this.launchScenario(sc);
-                                         }} tooltip='Launch'>
-                                             <LaunchIcon style={{ width: '24px', height: '24px' }} />
-                                         </IconButton>
-                                         <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                             e.preventDefault();
-                                             e.stopPropagation();
-                                             this.deleteScenario(sc);
-                                         }} tooltip='Delete'>
-                                             <DeleteIcon style={{ width: '24px', height: '24px' }} />
-                                         </IconButton>
-                                     </div>}>
-                        {sc.description}
-                    </ListItem>
+                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
+                                         hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
+                                         leftIcon={<div className='actions-wrapper'>
+                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                                 e.preventDefault();
+                                                 e.stopPropagation();
+                                                 this.launchScenario(sc);
+                                             }} tooltip='Launch'>
+                                                 <LaunchIcon style={{ width: '24px', height: '24px' }} />
+                                             </IconButton>
+                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                                 e.preventDefault();
+                                                 e.stopPropagation();
+                                                 this.deleteScenario(sc);
+                                             }} tooltip='Delete'>
+                                                 <DeleteIcon style={{ width: '24px', height: '24px' }} />
+                                             </IconButton>
+                                         </div>}>
+                            {sc.description}
+                        </ListItem>
+                    }
                 }
             )}
         </List>
@@ -282,6 +290,7 @@ class LaunchScenarios extends Component {
 const mapStateToProps = state => {
     return {
         user: state.users.oauthUser,
+        apps: state.apps.apps,
         creating: state.sandbox.launchScenarioCreating,
         deleting: state.sandbox.launchScenarioDeleting,
         scenariosLoading: state.sandbox.launchScenariosLoading,

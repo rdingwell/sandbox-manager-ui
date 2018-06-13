@@ -70,7 +70,6 @@ export default class PersonaList extends Component {
         let title = this.props.title
             ? this.props.title
             : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
-
         return <div className={this.props.modal ? 'persona-modal' : ''}>
             <div className='actions'>
                 {this.props.actions}
@@ -84,7 +83,7 @@ export default class PersonaList extends Component {
             <div className={'screen-content' + (this.props.modal ? 'persona-list-wrapper' : '')}>
                 {isPractitioner || isPatient
                     ? <div className='search'>
-                        <span>Search by name: </span><TextField id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
+                        <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
                     </div>
                     : <div className='hidden'></div>}
 

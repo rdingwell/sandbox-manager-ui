@@ -4,8 +4,8 @@ import { pink100, lightBlue100 } from "material-ui/styles/colors";
 export function customizeTheme(theme) {
     const newTheme = Object.assign({tableRow: {}, tabs: {}}, theme);
 
-    newTheme.palette.primary1Color = "#0E5676";
-    newTheme.palette.primary2Color = "#1B9F7D";
+    newTheme.palette.primary1Color = "#1B9F7D";
+    newTheme.palette.primary2Color = "#0E5676";
     newTheme.palette.primary3Color = "#757575";
     newTheme.palette.primary4Color = "#9C0227";
     newTheme.palette.primary5Color = "#F5F5F5";
