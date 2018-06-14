@@ -1,12 +1,11 @@
 import React from 'react';
 
 const labelStyle = {
-    width: '30%',
+    width: '90px',
     display: 'inline-block'
 };
 
 const valueStyle = {
-    width: '60%',
     display: 'inline-block'
 };
 

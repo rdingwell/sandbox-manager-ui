@@ -82,7 +82,7 @@ export default class PersonaList extends Component {
             <div className='screen-title' style={titleStyle}>
                 <h1 style={titleStyle}>{title}</h1>
                 {(isPractitioner || isPatient) && !this.props.modal && <div className='create-resource-button'>
-                    <CreatePersona create={this.props.create} type={this.props.type} />
+                    <CreatePersona create={this.props.create} type={this.props.type} theme={this.props.theme} />
                 </div>}
             </div>
             <div className={'screen-content' + (this.props.modal ? 'persona-list-wrapper' : '')}>
