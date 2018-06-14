@@ -11,6 +11,7 @@ import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
 class Index extends Component {
 
     componentDidMount () {
+        sessionStorage.clear();
         this.fetchSandboxes();
     }
 

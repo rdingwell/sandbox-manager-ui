@@ -1,9 +1,11 @@
 .create-sandbox-wrapper {
   height: 100%;
   overflow: hidden;
+  border-radius: 0 !important;
   .paper-card {
     height: 100%;
     overflow: hidden;
+    border-radius: 0 !important;
     .paper-body {
       height: ~'calc(100% - 82px)';
       overflow: auto;
@@ -23,5 +25,25 @@
   .fhirVersion div div {
     padding-left: 0 !important;
     margin: -1px 24px -1px 0 !important;
+  }
+}
+
+.create-sandbox-dialog {
+  border-radius: 0 !important;
+  height: 63vh;
+  overflow: hidden;
+  & > div:first-of-type {
+    height: 90%;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-bottom: 1px solid whitesmoke !important;
+  }
+  & > div:not(:first-of-type) {
+    & > * {
+      margin-right: 10px;
+    }
+  }
+  .paper-card {
+    border-radius: 0 !important;
   }
 }

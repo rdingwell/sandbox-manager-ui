@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Dialog } from 'material-ui';
 import AvailableSandboxes from './AvailableSandboxes';
 import CreateSandbox from '../CreateSandbox';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
@@ -25,9 +24,7 @@ class Dashboard extends Component {
 
     render () {
         let dialog = this.state.open
-            ? <Dialog paperClassName='create-sandbox-dialog' modal open={this.state.open}>
-                <CreateSandbox onCancel={this.toggle} />
-            </Dialog>
+            ? <CreateSandbox onCancel={this.toggle} open={this.state.open} />
             : null;
 
         return <div className='dashboard-wrapper'>
