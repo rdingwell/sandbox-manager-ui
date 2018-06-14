@@ -56,14 +56,14 @@ export default class QueryBrowser extends Component {
                 <div>
                     <h2 className='title'>Summary</h2>
                     {this.props.results && this.props.results.entry && <span className='query-size'>
-                        <span>Total: <span className='number'>{this.props.results.total}</span></span>
-                        <span>Current set: <span className='number'>{this.props.results.entry.length}</span></span>
+                        <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
+                        <span> of <span className='number'>{this.props.results.total}</span></span>
                     </span>}
                     <div className='query-result-wrapper'>
                         <List>
                             {this.props.results && this.props.results.entry && this.props.results.entry.map((e, i) => {
                                 let entry = parseEntry(e);
-                                return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })}>
+                                return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
                                     {entry.props.map((item, index) => {
                                         return <div className='result-item' key={index}>
                                             <span>{item.label}: </span>

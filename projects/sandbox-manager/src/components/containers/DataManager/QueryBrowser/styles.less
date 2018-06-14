@@ -17,6 +17,7 @@
     margin-right: 2rem;
   }
 }
+
 .result-wrapper {
   width: ~'calc(50% - 1rem)';
   display: inline-block;
@@ -24,13 +25,21 @@
   box-sizing: border-box;
   overflow: hidden;
   min-width: 500px;
+  .react-json-view {
+    padding: 10px;
+  }
+  .result-list-item {
+    & > div > div {
+      padding: 5px 14px !important;
+    }
+  }
   .query-result-wrapper {
     .result-item {
       & > *:first-child {
         font-weight: bold;
         display: inline-block;
-        margin-right: 1rem;
-        width: 7rem;
+        margin-right: 5px;
+        width: 5.5rem;
       }
     }
   }
@@ -39,8 +48,8 @@
     margin-right: 2rem;
   }
   .query-size {
+    float: right;
     & > * {
-      margin-right: 1rem;
       color: darkgray;
       .number {
         color: #000;
@@ -62,6 +71,7 @@
     }
   }
 }
+
 .paper-body {
   .result-wrapper {
     width: 100% !important;
@@ -72,6 +82,7 @@
     }
   }
 }
+
 .query-result-dialog {
   margin: 0;
   padding: 0;
