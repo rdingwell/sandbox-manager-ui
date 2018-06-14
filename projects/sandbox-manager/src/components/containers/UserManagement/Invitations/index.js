@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton, Dialog, TextField } from 'material-ui';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { RaisedButton, Dialog, TextField, List, ListItem, IconButton } from 'material-ui';
 import { inviteNewUser, removeInvitation } from '../../../../redux/action-creators';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import './styles.less';
+import { ActionAutorenew } from "material-ui/svg-icons/index";
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import muiThemeable from "material-ui/styles/muiThemeable";
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -53,19 +54,20 @@ class Invitations extends Component {
     };
 
     render () {
-        const resendStyle = {
-            margin: 10
-        };
-
-        let rows = this.props.pendingUsers.map((pendingUser, index) =>
-            <TableRow key={index}>
-                <TableRowColumn>{pendingUser.status}</TableRowColumn>
-                <TableRowColumn>{pendingUser.invitee.email}</TableRowColumn>
-                <TableRowColumn>
-                    <RaisedButton label="Resend" style={resendStyle} primary onClick={() => this.resendEmail(pendingUser.invitee.email)} />
-                    <RaisedButton label="Revoke" style={resendStyle} secondary onClick={() => this.revokeInvitation(pendingUser.id)} />
-                </TableRowColumn>
-            </TableRow>
+        let items = this.props.pendingUsers.map((pendingUser, index) =>
+            <ListItem key={index}>
+                <span className='email-wrapper'>{pendingUser.invitee.email}</span>
+                <span className='action-buttons-wrapper'>
+                    <IconButton iconStyle={{ width: '30px', height: '30px', color: this.props.muiTheme.palette.primary1Color }} disabled={false}
+                                style={{ width: '55px', height: '55px' }} onClick={() => this.resendEmail(pendingUser.invitee.email)} tooltip='Resend'>
+                        <ActionAutorenew />
+                    </IconButton>
+                    <IconButton iconStyle={{ width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color }} disabled={false}
+                                style={{ width: '55px', height: '55px' }} onClick={() => this.revokeInvitation(pendingUser.id)} tooltip='Revoke'>
+                        <DeleteIcon />
+                    </IconButton>
+                </span>
+            </ListItem>
         );
 
         const actions = [
@@ -74,30 +76,21 @@ class Invitations extends Component {
         ];
 
 
-        return (
-            <div>
-                <h3><RaisedButton onClick={this.toggleModal} label="Invite" style={{ float: "right", transform: 'translate(0, -20%)' }} /></h3>
-                <Dialog title="Invite New User" actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
-                        actionsContainerClassName='invite-actions-wrapper'>
-                    <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)}
-                               errorText={this.state.emailError} />
-                </Dialog>
-                <div>
-                    <Table selectable={false}>
-                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                            <TableRow>
-                                <TableHeaderColumn>Status</TableHeaderColumn>
-                                <TableHeaderColumn>Email</TableHeaderColumn>
-                                <TableHeaderColumn />
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody displayRowCheckbox={false}>
-                            {rows}
-                        </TableBody>
-                    </Table>
-                </div>
+        return <div className='invitations-wrapper'>
+            <div className='actions'>
+                <RaisedButton onClick={this.toggleModal} primary label="Invite" style={{ float: "right", transform: 'translate(0, -20%)' }} />
             </div>
-        );
+            <Dialog title="Invite New User" actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
+                    actionsContainerClassName='invite-actions-wrapper'>
+                <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)}
+                           errorText={this.state.emailError} />
+            </Dialog>
+            <div className='invitations-list-wrapper'>
+                <List>
+                    {items}
+                </List>
+            </div>
+        </div>;
     }
 
 }
@@ -113,4 +106,4 @@ function mapDispatchToProps (dispatch) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Invitations);
+export default connect(mapStateToProps, mapDispatchToProps)(muiThemeable()(Invitations));
