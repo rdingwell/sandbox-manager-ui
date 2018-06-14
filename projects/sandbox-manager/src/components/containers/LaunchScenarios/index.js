@@ -86,7 +86,7 @@ class LaunchScenarios extends Component {
             modalTitle = content.props.title
         }
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
+            {modalTitle !== "Select app" && <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
             </IconButton>}
             {content}
@@ -138,6 +138,7 @@ class LaunchScenarios extends Component {
 
             let props = {
                 title, type, click, personas, pagination, actions, modal: true,
+                theme: this.props.muiTheme.palette,
                 next: () => this.props.getPersonasPage(type, pagination, 'next'),
                 prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };

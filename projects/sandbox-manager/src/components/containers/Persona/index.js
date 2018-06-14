@@ -50,6 +50,8 @@ class Persona extends Component {
             loading: this.props.loading,
             theme: this.props.muiTheme.palette,
             create: this.props.createResource,
+            modal: this.props.modal,
+            title: this.props.title,
             lookupPersonasStart: this.props.lookupPersonasStart,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)

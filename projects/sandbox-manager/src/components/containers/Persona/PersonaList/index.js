@@ -42,9 +42,7 @@ export default class PersonaList extends Component {
 
         let personas = this.props.personas && this.props.personas.map((persona, i) => {
             let style = this.props.theme
-                ? {
-                    color: persona.gender === 'male' ? this.props.theme.accent4Color : this.props.theme.accent5Color
-                }
+                ? { color: persona.gender === 'male' ? this.props.theme.accent4Color : this.props.theme.accent5Color }
                 : undefined;
 
             return <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
@@ -70,13 +68,20 @@ export default class PersonaList extends Component {
         let title = this.props.title
             ? this.props.title
             : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
+        let titleStyle = this.props.modal
+            ? {
+                backgroundColor: this.props.theme.primary2Color,
+                color: this.props.theme.alternateTextColor
+            }
+            : undefined;
+
         return <div className={this.props.modal ? 'persona-modal' : ''}>
             <div className='actions'>
                 {this.props.actions}
             </div>
-            <div className='screen-title'>
-                <h1>{title}</h1>
-                {(isPractitioner || isPatient) && <div className='create-resource-button'>
+            <div className='screen-title' style={titleStyle}>
+                <h1 style={titleStyle}>{title}</h1>
+                {(isPractitioner || isPatient) && !this.props.modal && <div className='create-resource-button'>
                     <CreatePersona create={this.props.create} type={this.props.type} />
                 </div>}
             </div>

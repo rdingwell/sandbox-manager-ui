@@ -78,7 +78,7 @@ class Apps extends Component {
                          onClose={this.closeAll} doLaunch={this.doLaunch} />
             : this.state.appToLaunch
                 ? <Dialog paperClassName='app-dialog' modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
-                    <Personas type='Patient' doLaunch={this.doLaunch} />
+                    <Personas title='Select a patient' modal muiTheme={this.props.muiTheme} type='Patient' doLaunch={this.doLaunch} />
                 </Dialog>
                 : null;
 
@@ -148,8 +148,8 @@ class Apps extends Component {
     };
 
     handleAppLaunch = (event, index) => {
-        event.preventDefault();
-        event.stopPropagation();
+        event && event.preventDefault();
+        event && event.stopPropagation();
         this.setState({ appToLaunch: this.props.apps[index], registerDialogVisible: false });
     };
 }
