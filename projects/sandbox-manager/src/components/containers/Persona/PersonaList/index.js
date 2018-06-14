@@ -87,14 +87,14 @@ export default class PersonaList extends Component {
                     </div>
                     : <div className='hidden'></div>}
 
-                {personas && personas.length > 0
+                {personas && personas.length > 0 && !this.props.loading
                     ? <div className='lists-wrapper'>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 0)}</List>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 1)}</List>
                         <List className='persona-list'>{personas.filter((p, i) => i % 3 === 2)}</List>
                     </div>
                     : this.props.loading
-                        ? <List>
+                        ? <List className='user-loader-list'>
                             <ListItem disabled>
                                 <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
                             </ListItem>
@@ -108,6 +108,7 @@ export default class PersonaList extends Component {
     critChanged = (_e, searchCrit) => {
         this.setState({ searchCrit });
         clearTimeout(this.timeout);
+        this.props.lookupPersonasStart && this.props.lookupPersonasStart(true);
         this.timeout = setTimeout(() => {
             this.props.search(this.props.type, { name: this.state.searchCrit });
         }, 500);
@@ -121,13 +122,13 @@ export default class PersonaList extends Component {
 
         return this.props.pagination && <div className='persona-list-pagination-wrapper'>
             <div>
-                {start > 1 && <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} />}
+                <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} disabled={start === 1 || this.props.loading} />
             </div>
             <div>
                 <span>Showing {start} to {end} of {this.props.pagination.total}</span>
             </div>
             <div>
-                {end + 1 < this.props.pagination.total && <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} />}
+                <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} disabled={end + 1 >= this.props.pagination.total || this.props.loading} />
             </div>
         </div>
     };
