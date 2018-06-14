@@ -110,7 +110,7 @@ export default class PersonaList extends Component {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
             this.props.search(this.props.type, { name: this.state.searchCrit });
-        }, 1500);
+        }, 500);
     };
 
     getPagination = () => {

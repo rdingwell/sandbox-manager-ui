@@ -107,7 +107,12 @@ class AppDialog extends Component {
                         < br />
                         <div className='image-button-wrapper'>
                             <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} />
-                            <div><span className='subscript'>(Display size 210px W X 150px H)</span></div>
+                            <div>
+                                <span className='subscript'>(Display size 300px W X 200px H)</span>
+                            </div>
+                            <div>
+                                <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
+                            </div>
                         </div>
                         <div className='image-wrapper'>
                             <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput} />

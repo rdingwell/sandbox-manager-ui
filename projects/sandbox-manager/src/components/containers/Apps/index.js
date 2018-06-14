@@ -47,7 +47,7 @@ class Apps extends Component {
 
         let apps = appsList.map((app, index) => (
             <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
-                  onClick={() => this.appCardClick(app)}>
+                  onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                 </CardMedia>
@@ -63,7 +63,7 @@ class Apps extends Component {
                 </CardActions>}
             </Card>
         ));
-        apps.unshift(<Card className='app-card' key='create'>
+        !this.props.noActions && apps.push(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
                     <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
@@ -96,12 +96,8 @@ class Apps extends Component {
     }
 
     appCardClick = (app) => {
-        if (this.props.onCardClick) {
-            this.props.onCardClick(app);
-        } else {
-            let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
-            this.setState({ toggledApp });
-        }
+        let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
+        this.setState({ toggledApp });
     };
 
     delete = () => {

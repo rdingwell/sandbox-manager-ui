@@ -41,6 +41,7 @@ class Users extends Component {
 
     getRows = () => {
         let users = {};
+        let currentIsAdmin = false;
         this.props.sandbox.userRoles.map(r => {
             users[r.user.id] = users[r.user.id] || {
                 name: r.user.name,
@@ -48,6 +49,7 @@ class Users extends Component {
                 sbmUserId: r.user.sbmUserId,
                 roles: []
             };
+            r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN' && (currentIsAdmin = true);
             users[r.user.id].roles.push(r.role);
         });
 
@@ -65,10 +67,16 @@ class Users extends Component {
                 <span>{user.name}</span>
                 <div className='actions'>
                     <Toggle label='Admin' labelPosition='right' toggled={isAdmin} onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)}
-                            thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
-                            trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}
+                            thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }} disabled={!currentIsAdmin}
+                            trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}
                             labelStyle={{ position: 'absolute', bottom: '-20px', left: '0' }} className='toggle' />
-                    {this.deleteButton(user.sbmUserId, user.email, canDelete)}
+                    <div>
+                        <IconButton iconStyle={{ width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color }}
+                                    disabled={!currentIsAdmin || !canDelete}
+                                    style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(userId)} tooltip='Remove User'>
+                            <DeleteIcon />
+                        </IconButton>
+                    </div>
                 </div>
                 <span className='subscript'>{user.email}</span>
             </ListItem>
@@ -77,21 +85,6 @@ class Users extends Component {
 
     toggleAdmin = (userId, toggle) => {
         this.props.toggleUserAdminRights(userId, !toggle);
-    };
-
-    deleteButton = (userId, email, canDelete) => {
-        if (canDelete) {
-            return (
-                <div>
-                    <IconButton iconStyle={{ width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color }}
-                                style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(userId)} tooltip='Remove User'>
-                        <DeleteIcon />
-                    </IconButton>
-                </div>
-            )
-        } else {
-            return null;
-        }
     };
 
     handleOpen = (userId) => {
@@ -110,7 +103,8 @@ class Users extends Component {
 
 const mapStateToProps = state => {
     return {
-        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
+        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
+        user: state.users.user
     }
 };
 

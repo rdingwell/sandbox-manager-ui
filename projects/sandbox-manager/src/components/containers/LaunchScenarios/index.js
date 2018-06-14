@@ -73,7 +73,7 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ selectedScenario: selection });
+        setTimeout(() => this.setState({ selectedScenario: selection }), 100);
     };
 
     getModal = () => {
@@ -255,13 +255,15 @@ class LaunchScenarios extends Component {
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
+                    let nestedStyles = { height: 0, overflow: 'hidden', transition: 'all .5s' };
 
                     let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
                     if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
-                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} style={itemStyles}
                                          hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
+                                         nestedListStyle={nestedStyles}
                                          leftIcon={<div className='actions-wrapper'>
                                              <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
                                                  e.preventDefault();

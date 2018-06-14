@@ -34,6 +34,7 @@ class Index extends Component {
                 } else {
                     avatarText = 'DSTU2';
                 }
+
                 // let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
                 let leftAvatar = <Avatar className={avatarClasses}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
