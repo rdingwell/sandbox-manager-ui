@@ -8,9 +8,9 @@ export default (state = initialState, action) => {
         case actionTypes.LOOKUP_PERSONAS_START:
             state.loading = true;
             state.loadingError = null;
-            action.payload.type === "Patient" && (state.patients = undefined);
-            action.payload.type === "Practitioner" && (state.practitioners = undefined);
-            action.payload.type === "Persona" && (state.personas = undefined);
+            // action.payload.type === "Patient" && (state.patients = undefined);
+            // action.payload.type === "Practitioner" && (state.practitioners = undefined);
+            // action.payload.type === "Persona" && (state.personas = undefined);
             break;
         case actionTypes.LOOKUP_PERSONAS_FAIL:
             state.loading = false;

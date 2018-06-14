@@ -390,10 +390,6 @@ export function createScenario (data) {
         };
         fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({ method: "POST" }, config))
             .then(result => {
-                result.json()
-                    .then(r => {
-                        console.log(r);
-                    });
             })
             .catch(e => {
                 console.log(e);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona } from '../../../redux/action-creators';
+import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
@@ -50,6 +50,9 @@ class Persona extends Component {
             loading: this.props.loading,
             theme: this.props.muiTheme.palette,
             create: this.props.createResource,
+            modal: this.props.modal,
+            title: this.props.title,
+            lookupPersonasStart: this.props.lookupPersonasStart,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };
@@ -69,7 +72,7 @@ class Persona extends Component {
         let personaList = <PersonaList {...props} />;
         let personaDetails = null;
         if (!this.props.doLaunch && this.state.selectedPersona) {
-            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} />;
+            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog} />;
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
@@ -85,19 +88,17 @@ class Persona extends Component {
 
     getDetailsWindow = () => {
         let actions = [
-            <FlatButton key={2} label='Close' secondary onClick={this.closeDialog} />
+            <RaisedButton key={2} label='Close' secondary onClick={this.closeDialog} />
         ];
         this.state.type === PersonaList.TYPES.persona &&
-        actions.unshift(<RaisedButton key={1} label='DELETE' secondary onClick={() => {
+        actions.unshift(<RaisedButton key={1} label='DELETE' primary style={{marginRight: '1rem'}} onClick={() => {
             this.props.deletePersona(this.state.viewPersona);
             this.closeDialog();
         }} />);
 
         return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
-            <IconButton className="close-button" onClick={this.closeDialog}>
-                <i className="material-icons">close</i>
-            </IconButton>
-            {!this.state.selectedForCreation && <PersonaDetails type={this.state.type} persona={this.state.viewPersona} />}
+            {!this.state.selectedForCreation &&
+            <PersonaDetails type={this.state.type} persona={this.state.viewPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog}/>}
         </Dialog>
     };
 
@@ -176,7 +177,7 @@ function mapStateToProps (state, ownProps) {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchPersonas, deletePersona, app_setScreen, createPersona, createResource,
+    fetchPersonas, deletePersona, app_setScreen, createPersona, createResource, lookupPersonasStart,
     getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
     getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
 }, dispatch);

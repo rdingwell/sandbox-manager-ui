@@ -25,6 +25,7 @@ class LaunchScenarios extends Component {
             showModal: false,
             descriptionEditing: false,
             selectedScenario: undefined,
+            willOpen: undefined,
             description: ''
         }
     }
@@ -73,7 +74,8 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ selectedScenario: selection });
+        this.setState({ willOpen: selection });
+        setTimeout(() => this.setState({ selectedScenario: selection }), 200);
     };
 
     getModal = () => {
@@ -84,7 +86,7 @@ class LaunchScenarios extends Component {
             modalTitle = content.props.title
         }
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            {modalTitle !== "Select app" && <IconButton className="close-button" onClick={this.toggleModal}>
+            {modalTitle !== "Select app" && <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
             </IconButton>}
             {content}
@@ -136,6 +138,7 @@ class LaunchScenarios extends Component {
 
             let props = {
                 title, type, click, personas, pagination, actions, modal: true,
+                theme: this.props.muiTheme.palette,
                 next: () => this.props.getPersonasPage(type, pagination, 'next'),
                 prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };
@@ -254,14 +257,17 @@ class LaunchScenarios extends Component {
         return <List className='scenarios-list'>
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
+                    let willOpen = this.state.willOpen === index;
                     let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
+                    let nestedStyles = { height: 0, overflow: 'hidden', transition: 'all .5s' };
 
                     let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
                     if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
-                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} open={isSelected} style={itemStyles}
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} style={itemStyles} open={willOpen || isSelected}
                                          hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
+                                         nestedListStyle={nestedStyles}
                                          leftIcon={<div className='actions-wrapper'>
                                              <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
                                                  e.preventDefault();

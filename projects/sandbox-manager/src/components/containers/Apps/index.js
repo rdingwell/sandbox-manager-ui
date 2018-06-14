@@ -47,7 +47,7 @@ class Apps extends Component {
 
         let apps = appsList.map((app, index) => (
             <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
-                  onClick={() => this.appCardClick(app)}>
+                  onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
                 </CardMedia>
@@ -63,7 +63,7 @@ class Apps extends Component {
                 </CardActions>}
             </Card>
         ));
-        apps.unshift(<Card className='app-card' key='create'>
+        !this.props.noActions && apps.push(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
                     <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
@@ -74,10 +74,11 @@ class Apps extends Component {
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
-                         app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible} onClose={this.closeAll} doLaunch={this.doLaunch} />
+                         muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
+                         onClose={this.closeAll} doLaunch={this.doLaunch} />
             : this.state.appToLaunch
                 ? <Dialog paperClassName='app-dialog' modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
-                    <Personas type='Patient' doLaunch={this.doLaunch} />
+                    <Personas title='Select a patient' modal muiTheme={this.props.muiTheme} type='Patient' doLaunch={this.doLaunch} />
                 </Dialog>
                 : null;
 
@@ -96,12 +97,8 @@ class Apps extends Component {
     }
 
     appCardClick = (app) => {
-        if (this.props.onCardClick) {
-            this.props.onCardClick(app);
-        } else {
-            let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
-            this.setState({ toggledApp });
-        }
+        let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
+        this.setState({ toggledApp });
     };
 
     delete = () => {
@@ -151,8 +148,8 @@ class Apps extends Component {
     };
 
     handleAppLaunch = (event, index) => {
-        event.preventDefault();
-        event.stopPropagation();
+        event && event.preventDefault();
+        event && event.stopPropagation();
         this.setState({ appToLaunch: this.props.apps[index], registerDialogVisible: false });
     };
 }

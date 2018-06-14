@@ -28,6 +28,7 @@
     position: absolute;
     right: 10px;
     top: 1px;
+    z-index: 1000;
     .custom-button {
       margin-right: 20px;
       & > button span {
@@ -46,7 +47,7 @@
 }
 
 .persona-info-dialog {
-  & > div > div {
-    padding: 0 0 20px 20px !important;
+  & > div > div:first-of-type {
+    padding: 0 !important;
   }
 }

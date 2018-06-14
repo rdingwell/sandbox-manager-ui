@@ -5,16 +5,20 @@
   .launch-scenario-list-row {
     @media (min-width: 1400px) {
       &.active {
-        width: 110%;
-        left: -5%;
+        width: 105%;
+        left: -2.5%;
         margin-top: 10px !important;
         top: -1px !important;
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        text-decoration: underline !important;
         & + * {
           top: -1px;
-          width: 110%;
-          left: -5%;
+          width: 105%;
+          left: -2.5%;
           position: relative;
           margin-bottom: 10px;
+          height: 580px !important;
           &::after {
             content: " ";
             display: inline-block;
@@ -62,6 +66,9 @@
     & > div {
       padding: 0 !important;
     }
+  }
+  .close-button {
+    margin-top: 0 !important;
   }
 }
 
