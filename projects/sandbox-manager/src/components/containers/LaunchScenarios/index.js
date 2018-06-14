@@ -25,6 +25,7 @@ class LaunchScenarios extends Component {
             showModal: false,
             descriptionEditing: false,
             selectedScenario: undefined,
+            willOpen: undefined,
             description: ''
         }
     }
@@ -73,7 +74,8 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        setTimeout(() => this.setState({ selectedScenario: selection }), 100);
+        this.setState({ willOpen: selection });
+        setTimeout(() => this.setState({ selectedScenario: selection }), 200);
     };
 
     getModal = () => {
@@ -254,6 +256,7 @@ class LaunchScenarios extends Component {
         return <List className='scenarios-list'>
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
+                    let willOpen = this.state.willOpen === index;
                     let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
                     let nestedStyles = { height: 0, overflow: 'hidden', transition: 'all .5s' };
 
@@ -261,7 +264,7 @@ class LaunchScenarios extends Component {
                         {this.getDetailsContent(sc)}
                     </ListItem>;
                     if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
-                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} style={itemStyles}
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} style={itemStyles} open={willOpen || isSelected}
                                          hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
                                          nestedListStyle={nestedStyles}
                                          leftIcon={<div className='actions-wrapper'>
