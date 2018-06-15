@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { TextField, Checkbox, RaisedButton, div, Dialog, IconButton} from 'material-ui';
+import { TextField, Checkbox, RaisedButton, div, Dialog, IconButton } from 'material-ui';
 
 import './styles.less';
 
@@ -53,11 +53,12 @@ class SandboxReset extends Component {
                     <li>Registered apps</li>
                     <li>Sandbox members</li>
                 </ul>
-                <Checkbox checked={this.state.applyDefaultDataSet} label='Apply Default Data Set' onCheck={(_e, applyDefaultDataSet) => this.setState({ applyDefaultDataSet })} />
+                <Checkbox checked={this.state.applyDefaultDataSet} label='Apply Default Data Set' onCheck={(_e, applyDefaultDataSet) => this.setState({ applyDefaultDataSet })}
+                          labelStyle={{ color: this.props.theme.primary2Color }} />
                 <p>If not selected, the sandbox will be empty</p>
                 {this.props.sandbox &&
                 <Checkbox checked={this.state.reset} label={'Are you sure you want to reset sandbox ' + this.props.sandbox.name + '?'}
-                          onCheck={(_e, reset) => this.setState({ reset })} />}
+                          onCheck={(_e, reset) => this.setState({ reset })} labelStyle={{ color: this.props.theme.primary2Color }} />}
 
                 <RaisedButton primary disabled={!this.state.reset} label='Reset' className='button' onClick={this.toggleModal} />
             </div>

@@ -74,16 +74,27 @@ class Invitations extends Component {
             <RaisedButton key={2} label="Invite" primary keyboardFocused onClick={this.handleSendInvite} />,
             <RaisedButton key={1} label="Cancel" secondary onClick={this.toggleModal} />
         ];
-
+        let titleStyle = {
+            backgroundColor: this.props.muiTheme.palette.primary2Color,
+            color: this.props.muiTheme.palette.alternateTextColor
+        };
 
         return <div className='invitations-wrapper'>
             <div className='actions'>
                 <RaisedButton onClick={this.toggleModal} primary label="Invite" style={{ float: "right", transform: 'translate(0, -20%)' }} />
             </div>
-            <Dialog title="Invite New User" actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
-                    actionsContainerClassName='invite-actions-wrapper'>
-                <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)}
-                           errorText={this.state.emailError} />
+            <Dialog actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
+                    bodyClassName='invite-dialog-wrapper' actionsContainerClassName='invite-dialog-actions-wrapper'>
+                <div className='screen-title invitations' style={titleStyle}>
+                    <h1 style={titleStyle}>Invite New User</h1>
+                    <IconButton className="close-button" onClick={this.toggleModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                </div>
+                <div className='screen-content'>
+                    <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)}
+                               errorText={this.state.emailError} />
+                </div>
             </Dialog>
             <div className='invitations-list-wrapper'>
                 <List>
