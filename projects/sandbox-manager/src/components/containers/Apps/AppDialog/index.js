@@ -101,7 +101,9 @@ class AppDialog extends Component {
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
-                            <Toggle label='Allow offline access' defaultToggled={false} />
+                            <Toggle label='Allow offline access' defaultToggled={false}
+                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }} />
                             <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)} />
                         </div>}
                         < br />

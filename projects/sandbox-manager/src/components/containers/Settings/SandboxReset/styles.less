@@ -23,6 +23,7 @@
     margin: 0 !important;
   }
 }
+
 .paper-card.reset-dialog {
   h3 {
     font-size: 2rem;
@@ -30,7 +31,19 @@
     color: white;
   }
 }
+
 .reset-sandbox-dialog {
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid whitesmoke;
+  & > * {
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+}
+
+.app-dialog {
   .cancel-button {
     margin-left: 1rem;
   }
