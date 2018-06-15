@@ -42,7 +42,7 @@ export default class PersonaList extends Component {
 
         let personas = this.props.personas && this.props.personas.map((persona, i) => {
             let style = this.props.theme
-                ? { color: persona.gender === 'male' ? this.props.theme.accent4Color : this.props.theme.accent5Color }
+                ? { color: persona.gender === 'male' ? this.props.theme.accent5Color : this.props.theme.accent4Color }
                 : undefined;
 
             return <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
@@ -85,7 +85,7 @@ export default class PersonaList extends Component {
                     <CreatePersona create={this.props.create} type={this.props.type} theme={this.props.theme} />
                 </div>}
             </div>
-            <div className={'screen-content' + (this.props.modal ? 'persona-list-wrapper' : '')}>
+            <div className={'screen-content' + (this.props.modal && !this.props.additionalPadding ? ' persona-list-wrapper' : '')}>
                 {isPractitioner || isPatient
                     ? <div className='search'>
                         <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
@@ -104,7 +104,9 @@ export default class PersonaList extends Component {
                                 <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
                             </ListItem>
                         </List>
-                        : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
+                        : this.state.searchCrit
+                            ? <div className='centered'>No results found</div>
+                            : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
                 {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
             </div>
         </div>

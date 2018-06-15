@@ -10,8 +10,6 @@
         margin-top: 10px !important;
         top: -1px !important;
         font-size: 2rem !important;
-        font-weight: 600 !important;
-        text-decoration: underline !important;
         & + * {
           top: -1px;
           width: 105%;
@@ -62,13 +60,24 @@
 
 .launch-scenario-dialog {
   & > div {
-    padding: 0 20px;
+    //padding: 0 20px;
     & > div {
       padding: 0 !important;
     }
   }
   .close-button {
     margin-top: 0 !important;
+  }
+  .inputs {
+    padding: 20px;
+    margin-top: 50px;
+    .label-value {
+      span:first-of-type {
+        display: inline-block;
+        width: 80px;
+        color: lightgray;
+      }
+    }
   }
 }
 

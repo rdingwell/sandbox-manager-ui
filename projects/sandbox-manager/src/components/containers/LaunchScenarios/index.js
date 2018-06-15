@@ -81,14 +81,11 @@ class LaunchScenarios extends Component {
     getModal = () => {
         let actions = this.getBuildActions();
         let content = this.getBuildContent();
-        let modalTitle = "";
-        if (content.props) {
-            modalTitle = content.props.title
-        }
+
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            {modalTitle !== "Select app" && <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleModal}>
+            <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
-            </IconButton>}
+            </IconButton>
             {content}
         </Dialog>
     };
@@ -143,19 +140,33 @@ class LaunchScenarios extends Component {
                 prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };
 
-            return <PersonaList {...props} />;
+            return <PersonaList {...props} additionalPadding />;
         } else if (!this.state.selectedApp) {
-            return <Apps title='Select app' noActions onCardClick={selectedApp => this.setState({ selectedApp })} />
+            return <Apps title='Select app' modal onCardClick={selectedApp => this.setState({ selectedApp })} />
         } else {
+            let titleStyle = {
+                backgroundColor: this.props.muiTheme.palette.primary2Color,
+                color: this.props.muiTheme.palette.alternateTextColor
+            };
+
             return <div>
-                <div className='screen-title'>
-                    <h1>Save Launch Scenario</h1>
+                <div className='screen-title' style={titleStyle}>
+                    <h1 style={titleStyle}>Save Launch Scenario</h1>
                 </div>
-                <div>
+                <div className='inputs'>
+                    <div className='label-value'>
+                        <span>Persona: </span>
+                        <span>{this.state.selectedPersona.personaName}</span>
+                    </div>
+                    <div className='label-value'>
+                        <span>Patient: </span>
+                        <span>{this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'}</span>
+                    </div>
+                    <div className='label-value'>
+                        <span>App: </span>
+                        <span>{this.state.selectedApp.authClient.clientName}</span>
+                    </div>
                     <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })} />
-                    <TextField floatingLabelText='Persona' fullWidth disabled value={this.state.selectedPersona.personaName} />
-                    <TextField floatingLabelText='Patient' fullWidth disabled value={this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'} />
-                    <TextField floatingLabelText='App' fullWidth disabled value={this.state.selectedApp.authClient.clientName} />
                 </div>
             </div>
         }

@@ -20,7 +20,7 @@ export default <Router>
         <Switch>
             <Route path='/:sandboxId/apps' component={Apps} />
             <Route path='/:sandboxId/launch' component={LaunchScenarios} />
-            <Route path='/:sandboxId/launchApp' component={LaunchApp} />
+            <Route path='/launchApp' component={LaunchApp} />
             <Route path='/:sandboxId/patients' component={Persona} />
             <Route path='/:sandboxId/practitioners' component={Persona} />
             <Route path='/:sandboxId/personas' component={Persona} />

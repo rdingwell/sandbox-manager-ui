@@ -76,7 +76,9 @@ class Persona extends Component {
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
-        return <div className='patients-wrapper'>
+        return this.props.modal
+            ? personaList
+            : <div className='patients-wrapper'>
             <div>
                 {creationType && this.getSelectionDialog(creationType)}
                 {this.getDetailsWindow()}
