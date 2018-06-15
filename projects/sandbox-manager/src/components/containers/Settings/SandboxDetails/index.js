@@ -13,6 +13,7 @@ class SandboxDetails extends Component {
         super(props);
 
         this.state = {
+            updateDone: false,
             name: this.props.sandboxName,
             description: this.props.sandboxDescription,
             allowOpen: this.props.sandboxAllowOpenAccess
@@ -34,7 +35,7 @@ class SandboxDetails extends Component {
                           onCheck={this.handleOpenFhirCheckboxChange} />
                 {this.state.allowOpen && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL' />}
                 <div>
-                    <RaisedButton primary label='Save' className='details-button' type='submit' disabled={true} />
+                    <RaisedButton primary label='Save' className='details-button' type='submit' disabled={!this.state.updateDone} />
                 </div>
             </form>
         </div>;
@@ -53,7 +54,7 @@ class SandboxDetails extends Component {
     };
 
     handleSandboxNameChange = (_e, name) => {
-        this.setState({ name });
+        this.setState({ name, updateDone: true });
     };
 
     handleSandboxDescriptionChange = (event) => {
@@ -61,7 +62,7 @@ class SandboxDetails extends Component {
     };
 
     handleOpenFhirCheckboxChange = (_e, allowOpen) => {
-        this.setState({ allowOpen })
+        this.setState({ allowOpen, updateDone: true })
     };
 }
 

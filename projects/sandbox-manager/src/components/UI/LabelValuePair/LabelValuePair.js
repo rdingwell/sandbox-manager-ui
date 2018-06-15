@@ -1,19 +1,24 @@
 import React from 'react';
 
-const labelStyle = {
+let labelStyle = {
     width: '90px',
     display: 'inline-block',
     color: 'gray'
 };
 
-const valueStyle = {
+let valueStyle = {
     display: 'inline-block'
 };
 
+let additionalStyles = {
+    textAlign: 'right',
+    width: '120px',
+    marginRight: '10px'
+};
 
 const labelValuePair = (props) => (
     <div>
-        <div style={labelStyle}>
+        <div style={props.large ? Object.assign({}, labelStyle, additionalStyles) : labelStyle}>
             {props.label}
         </div>
         <div style={valueStyle}>

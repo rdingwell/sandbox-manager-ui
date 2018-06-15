@@ -621,12 +621,33 @@ export function loadLaunchScenarios () {
     }
 }
 
+export function updateSandboxInvite (invite, answer) {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        dispatch(setInvitesLoading(true));
+        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite/${invite.id}?status=${answer}`;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'PUT'
+        };
+        fetch(url, config)
+            .then(() => {
+                dispatch(loadInvites());
+            });
+    }
+}
+
 export function loadInvites () {
     return (dispatch, getState) => {
         let state = getState();
 
         dispatch(setInvitesLoading(true));
-        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=${status}`;
+        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=PENDING`;
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
