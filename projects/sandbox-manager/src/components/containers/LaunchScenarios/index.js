@@ -295,7 +295,7 @@ class LaunchScenarios extends Component {
                                                  <DeleteIcon style={{ width: '24px', height: '24px' }} />
                                              </IconButton>
                                          </div>}>
-                            {sc.description}
+                            <span className='launch-scenario-title'>{sc.description}</span>
                         </ListItem>
                     }
                 }
