@@ -29,7 +29,8 @@
 .persona-modal {
   .actions {
     position: absolute;
-    right: 140px;
+    left: ~'calc(50% - 50px)';
+    top: 55px;
   }
   .search {
     padding-top: 50px;
@@ -40,6 +41,8 @@
     height: 40px;
   }
 }
+
+
 
 .screen-content {
   .hidden {
@@ -52,11 +55,6 @@
   position: absolute;
   right: 40px;
   top: 7px;
-}
-
-.persona-list-wrapper {
-  max-height: 63vh;
-  overflow: auto;
 }
 
 .search {
@@ -128,4 +126,8 @@
       font-weight: 600;
     }
   }
+}
+
+.persona-list-wrapper {
+  margin-top: 0 !important;
 }

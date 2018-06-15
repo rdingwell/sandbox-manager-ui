@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import AddIcon from "material-ui/svg-icons/content/add";
 import LaunchIcon from "material-ui/svg-icons/action/launch";
@@ -46,7 +46,7 @@ class Apps extends Component {
         appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
 
         let apps = appsList.map((app, index) => (
-            <Card className={`app-card ${this.props.noActions ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+            <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
                   onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: 200 }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo' />
@@ -55,7 +55,7 @@ class Apps extends Component {
                     <h3 className='app-name'>{app.authClient.clientName}</h3>
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
-                {!this.props.noActions && <CardActions className='card-actions-wrapper'>
+                {!this.props.modal && <CardActions className='card-actions-wrapper'>
                     <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleAppLaunch(e, index)}
                                 icon={<LaunchIcon style={{ width: '24px', height: '24px' }} />} label='Launch' />
                     <FlatButton labelStyle={{ fontSize: '10px' }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleAppSelect(e, index)}
@@ -63,7 +63,8 @@ class Apps extends Component {
                 </CardActions>}
             </Card>
         ));
-        !this.props.noActions && apps.push(<Card className='app-card' key='create'>
+
+        !this.props.modal && apps.push(<Card className='app-card' key='create'>
             <CardMedia className='media-wrapper register'>
                 <div>
                     <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
@@ -77,15 +78,21 @@ class Apps extends Component {
                          muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch} />
             : this.state.appToLaunch
-                ? <Dialog paperClassName='app-dialog' modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
+                ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
                     <Personas title='Select a patient' modal muiTheme={this.props.muiTheme} type='Patient' doLaunch={this.doLaunch} />
                 </Dialog>
                 : null;
+        let titleStyle = this.props.modal
+            ? {
+                backgroundColor: this.props.muiTheme.palette.primary2Color,
+                color: this.props.muiTheme.palette.alternateTextColor
+            }
+            : undefined;
 
-        return <div className='apps-screen-wrapper'>
+        return <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
             {dialog}
-            <div className='screen-title'>
-                <h1>{this.props.title ? this.props.title : 'Registered Apps'}</h1>
+            <div className='screen-title' style={titleStyle}>
+                <h1 style={titleStyle}>{this.props.title ? this.props.title : 'Registered Apps'}</h1>
             </div>
             <div className='screen-content'>
                 {!this.props.appDeleting && !this.props.appCreating && apps}

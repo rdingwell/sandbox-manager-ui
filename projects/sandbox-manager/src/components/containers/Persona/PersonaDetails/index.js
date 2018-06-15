@@ -39,8 +39,8 @@ class Index extends Component {
                         <div>
                             <LabelValuePair label={'Display name:'} value={this.props.persona.fhirName} />
                             <LabelValuePair label={'User Id:'} value={this.props.persona.personaUserId} />
-                            <LabelValuePair label={'Password (not secured):'} value={this.props.persona.password} />
-                            <LabelValuePair label={'FHIR Resource Type:'} value={this.props.persona.resource} />
+                            <LabelValuePair label={'Password:'} value={this.props.persona.password} />
+                            <LabelValuePair label={'Resource Type:'} value={this.props.persona.resource} />
                         </div>
                     </div>}
                     {this.props.type === PersonaList.TYPES.patient && <div>
