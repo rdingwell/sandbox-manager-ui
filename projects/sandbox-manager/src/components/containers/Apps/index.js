@@ -95,10 +95,10 @@ class Apps extends Component {
                 <h1 style={titleStyle}>{this.props.title ? this.props.title : 'Registered Apps'}</h1>
             </div>
             <div className='screen-content'>
-                {!this.props.appDeleting && !this.props.appCreating && apps}
-                {!this.props.appDeleting && !this.props.appCreating && apps.length === 0 && this.props.apps &&
+                {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps}
+                {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
                 <DohMessage message='There are no apps in this sandbox platform yet.' />}
-                {this.props.appDeleting || this.props.appCreating && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
+                {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5} /></div>}
             </div>
         </div>
     }
@@ -123,8 +123,8 @@ class Apps extends Component {
         this.closeAll();
     };
 
-    doLaunch = () => {
-        this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp);
+    doLaunch = (persona) => {
+        this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona);
         this.closeAll();
     };
 
@@ -164,7 +164,7 @@ class Apps extends Component {
 const mapStateToProps = state => {
     return {
         apps: state.apps.apps,
-        appLoading: state.apps.loadingApp,
+        appLoading: state.apps.loading,
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting
     };

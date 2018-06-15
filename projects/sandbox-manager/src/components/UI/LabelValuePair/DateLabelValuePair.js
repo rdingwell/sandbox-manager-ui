@@ -2,7 +2,8 @@ import React from 'react';
 
 const labelStyle = {
     width: '90px',
-    display: 'inline-block'
+    display: 'inline-block',
+    color: 'gray'
 };
 
 const valueStyle = {
