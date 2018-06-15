@@ -35,12 +35,11 @@ class Index extends Component {
                         </div>
                     </div>}
                     {this.props.type === PersonaList.TYPES.persona && <div>
-                        <Subheader>{this.props.type}</Subheader>
                         <div>
-                            <LabelValuePair label={'Display name:'} value={this.props.persona.fhirName} />
-                            <LabelValuePair label={'User Id:'} value={this.props.persona.personaUserId} />
-                            <LabelValuePair label={'Password:'} value={this.props.persona.password} />
-                            <LabelValuePair label={'Resource Type:'} value={this.props.persona.resource} />
+                            <LabelValuePair large label={'Display name:'} value={this.props.persona.fhirName} />
+                            <LabelValuePair large label={'User Id:'} value={this.props.persona.personaUserId} />
+                            <LabelValuePair large label={'Password:'} value={this.props.persona.password} />
+                            <LabelValuePair large label={'Resource Type:'} value={this.props.persona.resource} />
                         </div>
                     </div>}
                     {this.props.type === PersonaList.TYPES.patient && <div>
