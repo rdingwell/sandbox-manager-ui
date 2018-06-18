@@ -73,7 +73,7 @@ class Users extends Component {
                     <div>
                         <IconButton iconStyle={{ width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color }}
                                     disabled={!currentIsAdmin || !canDelete}
-                                    style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(userId)} tooltip='Remove User'>
+                                    style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(user.sbmUserId)} tooltip='Remove User'>
                             <DeleteIcon />
                         </IconButton>
                     </div>
