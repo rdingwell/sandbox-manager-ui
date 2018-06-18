@@ -12,7 +12,7 @@
   .right {
     float: right;
     color: whitesmoke;
-    &:hover {
+    &:hover:not(.disabled) {
       cursor: pointer;
     }
   }
@@ -24,6 +24,9 @@
 
 .notification-menu {
   padding: 8px 0 30px 0 !important;
+  a.disabled:hover {
+    cursor: default;
+  }
   .notification-menu-item {
     line-height: 25px !important;
     min-width: 140px !important;
