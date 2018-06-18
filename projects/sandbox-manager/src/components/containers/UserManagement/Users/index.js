@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {List, ListItem, Dialog, RaisedButton, Toggle, IconButton} from 'material-ui';
+import {List, ListItem, Dialog, RaisedButton, Toggle, IconButton, CircularProgress} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import {fetchSandboxInvites, removeUser, toggleUserAdminRights} from '../../../../redux/action-creators';
@@ -48,9 +48,15 @@ class Users extends Component {
                     remove {this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove).user.email}?
                 </div>
             </Dialog>}
-            <List className='sandbox-users-list'>
+            {!this.props.updatingUser && <List className='sandbox-users-list'>
                 {this.props.sandbox && this.getRows()}
-            </List>
+            </List>}
+            {this.props.updatingUser && <div className='loader-wrapper'>
+                <p>
+                    Updating user
+                </p>
+                <CircularProgress size={80} thickness={5}/>
+            </div>}
         </div>;
     }
 
@@ -117,7 +123,8 @@ class Users extends Component {
 const mapStateToProps = state => {
     return {
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
-        user: state.users.user
+        user: state.users.user,
+        updatingUser: state.sandbox.updatingUser
     }
 };
 
