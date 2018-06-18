@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart} from '../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import PersonaList from './PersonaList';
 import PersonaDetails from './PersonaDetails';
 import PersonaInputs from './PersonaInputs';
-import { RaisedButton, Dialog, FlatButton, IconButton } from 'material-ui';
+import {RaisedButton, Dialog, FlatButton, IconButton} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
 class Persona extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let type = getType(props);
@@ -27,19 +27,19 @@ class Persona extends Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         let type = this.state.type;
         this.props.fetchPersonas(type);
         this.props.app_setScreen(type === PersonaList.TYPES.patient ? 'patients' : type === PersonaList.TYPES.practitioner ? 'practitioners' : 'personas');
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         let type = getType(nextProps);
-        type !== this.state.type && this.setState({ type, createPersona: false });
+        type !== this.state.type && this.setState({type, createPersona: false});
         (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && this.props.fetchPersonas(type);
     }
 
-    render () {
+    render() {
         let props = {
             key: this.state.type,
             type: this.state.type,
@@ -58,45 +58,45 @@ class Persona extends Component {
         };
 
         this.state.type === PersonaList.TYPES.persona && (props.actions = [<h4 key={0} className='actions-label'>Create persona for: </h4>,
-            <RaisedButton key={1} labelPosition='after' primary icon={<i className='fa fa-user-md fa-2x fa-inverse' />} label='Practitioner' className='custom-button'
+            <RaisedButton key={1} labelPosition='after' primary icon={<i className='fa fa-user-md fa-2x fa-inverse'/>} label='Practitioner' className='custom-button'
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.practitioner);
-                              this.setState({ selectPractitioner: true })
-                          }} />,
-            <RaisedButton key={2} labelPosition='after' primary icon={<i className='fa fa-user fa-2x fa-inverse' />} label='Patient' className='custom-button'
+                              this.setState({selectPractitioner: true})
+                          }}/>,
+            <RaisedButton key={2} labelPosition='after' primary icon={<i className='fa fa-user fa-2x fa-inverse'/>} label='Patient' className='custom-button'
                           onClick={() => {
                               this.props.fetchPersonas(PersonaList.TYPES.patient);
-                              this.setState({ selectPatient: true })
-                          }} />]);
+                              this.setState({selectPatient: true})
+                          }}/>]);
 
         let personaList = <PersonaList {...props} />;
         let personaDetails = null;
         if (!this.props.doLaunch && this.state.selectedPersona) {
-            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog} />;
+            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog}/>;
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
         return this.props.modal
             ? personaList
             : <div className='patients-wrapper'>
-            <div>
-                {creationType && this.getSelectionDialog(creationType)}
-                {this.getDetailsWindow()}
-                {personaList}
-                {personaDetails}
-            </div>
-        </div>;
+                <div>
+                    {creationType && this.getSelectionDialog(creationType)}
+                    {this.getDetailsWindow()}
+                    {personaList}
+                    {personaDetails}
+                </div>
+            </div>;
     }
 
     getDetailsWindow = () => {
         let actions = [
-            <RaisedButton key={2} label='Close' secondary onClick={this.closeDialog} />
+            <RaisedButton key={2} label='Close' secondary onClick={this.closeDialog}/>
         ];
         this.state.type === PersonaList.TYPES.persona &&
         actions.unshift(<RaisedButton key={1} label='DELETE' primary style={{marginRight: '1rem'}} onClick={() => {
             this.props.deletePersona(this.state.viewPersona);
             this.closeDialog();
-        }} />);
+        }}/>);
 
         return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
             {!this.state.selectedForCreation &&
@@ -105,30 +105,31 @@ class Persona extends Component {
     };
 
     getSelectionDialog = (creationType) => {
-        let actions = [
-            <FlatButton key={1} label='Save' primary onClick={this.createPersona} />,
-            <FlatButton key={2} label='Cancel' secondary onClick={this.closeDialog} />
-        ];
+        let saveEnabled = this.state.username && this.state.username.length > 2 && this.state.password && this.state.password.length > 2;
+        console.log(saveEnabled);
+        let actions = [<RaisedButton key={2} label='Cancel' secondary onClick={this.closeDialog}/>];
+        let save = <RaisedButton key={1} label='Save' primary onClick={this.createPersona} disabled={!saveEnabled}/>;
+        this.state.selectedForCreation && actions.unshift(save);
         let personas = creationType === PersonaList.TYPES.practitioner ? this.props.practitioners : this.props.patients;
         let pagination = creationType === PersonaList.TYPES.practitioner ? this.props.practitionersPagination : this.props.patientsPagination;
 
-        return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
+        return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions} actionsContainerClassName='invite-dialog-actions-wrapper'>
             <IconButton className="close-button" onClick={this.closeDialog}>
                 <i className="material-icons">close</i>
             </IconButton>
             {!this.state.selectedForCreation &&
-            <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({ selectedForCreation })}
+            <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({selectedForCreation})}
                          pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}
-                         prev={() => this.props.getPrevPersonasPage(creationType, pagination)} modal theme={this.props.muiTheme.palette} />}
+                         prev={() => this.props.getPrevPersonasPage(creationType, pagination)} modal theme={this.props.muiTheme.palette}/>}
             {this.state.selectedForCreation && <div className='persona-inputs'>
                 <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId}
-                               onChange={(username, password) => this.setState({ username, password })} />
+                               onChange={(username, password) => this.setState({username, password})}/>
             </div>}
         </Dialog>
     };
 
     closeDialog = () => {
-        this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined });
+        this.setState({selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined});
     };
 
     createPersona = () => {
@@ -144,11 +145,11 @@ class Persona extends Component {
     selectPersonHandler = (persona) => {
         this.props.doLaunch && this.props.doLaunch(persona);
         this.props.doLaunch && this.closeDialog();
-        !this.props.doLaunch && this.setState({ viewPersona: persona });
+        !this.props.doLaunch && this.setState({viewPersona: persona});
     };
 }
 
-function getType (props) {
+function getType(props) {
     return (props.location && props.location.pathname.indexOf('/patients') >= 0) || (props.type === 'Patient')
         ? PersonaList.TYPES.patient
         : (props.location && props.location.pathname.indexOf('/practitioners') >= 0) || (props.type === 'Practitioner')
@@ -156,7 +157,7 @@ function getType (props) {
             : PersonaList.TYPES.persona;
 }
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps(state, ownProps) {
     let type = getType(ownProps);
 
     let currentPersonas = type === PersonaList.TYPES.patient ? state.persona.patients

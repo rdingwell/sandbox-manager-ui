@@ -51,8 +51,9 @@ class AppDialog extends Component {
             </div>;
         }
 
+        let saveEnabled = this.state.app.clientName.length > 2 && this.state.app.launchUri.length > 2 && this.state.app.redirectUris.length > 2;
         let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} />
+            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled} />
         ];
 
         this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete} />);
