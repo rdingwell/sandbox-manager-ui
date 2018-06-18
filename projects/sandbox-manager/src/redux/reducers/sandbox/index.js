@@ -50,6 +50,9 @@ export default function (state = initialState, action) {
         case actionTypes.FETCH_SANDBOX_INVITES_START:
             state.invitesLoading = true;
             break;
+        case actionTypes.UPDATING_USER:
+            state.updatingUser = action.payload.updating;
+            break;
         case actionTypes.FETCH_SANDBOX_INVITES_SUCCESS:
             state.invitations = action.invitations;
             state.invitesLoading = false;
@@ -129,7 +132,7 @@ const updateSandbox = (state, action) => {
 const removeUser = (state, action) => {
     const cloneState = { ...state };
     const sandbox = { ...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[ 0 ] };
-    const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.id !== action.userId);
+    const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.sbmUserId !== action.userId);
 
     sandbox.userRoles = remainingUsers;
 

@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { List, ListItem, Dialog, RaisedButton, Toggle, IconButton } from 'material-ui';
+import React, {Component} from 'react';
+import {List, ListItem, Dialog, RaisedButton, Toggle, IconButton} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
-import { fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {fetchSandboxInvites, removeUser, toggleUserAdminRights} from '../../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import './styles.less';
 
 class Users extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -19,19 +19,33 @@ class Users extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.fetchSandboxInvites();
     }
 
-    render () {
+    render() {
+        let titleStyle = {
+            backgroundColor: this.props.muiTheme.palette.primary2Color,
+            color: this.props.muiTheme.palette.alternateTextColor
+        };
+
         return <div>
             {this.state.userToRemove &&
-            <Dialog title="Remove User from Sandbox" modal={false} open={this.state.open} onRequestClose={this.handleClose}
+            <Dialog modal={false} open={this.state.open} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
                     actions={[
-                        <RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler} />,
-                        <RaisedButton label="Cancel" primary onClick={this.handleClose} />
+                        <RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler}/>,
+                        <RaisedButton label="Cancel" primary onClick={this.handleClose}/>
                     ]}>
-                Are you sure you want to remove {this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove).user.email}?
+                <div className='screen-title invitations' style={titleStyle}>
+                    <h1 style={titleStyle}>Remove User from Sandbox</h1>
+                    <IconButton className="close-button" onClick={this.handleClose}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                </div>
+                <div className='screen-content'>
+                    Are you sure you want to
+                    remove {this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove).user.email}?
+                </div>
             </Dialog>}
             <List className='sandbox-users-list'>
                 {this.props.sandbox && this.getRows()}
@@ -66,15 +80,12 @@ class Users extends Component {
             return <ListItem key={key}>
                 <span>{user.name}</span>
                 <div className='actions'>
-                    <Toggle label='Admin' labelPosition='right' toggled={isAdmin} onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)}
-                            thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }} disabled={!currentIsAdmin}
-                            trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}
-                            labelStyle={{ position: 'absolute', bottom: '-20px', left: '0' }} className='toggle' />
+                    <Toggle label='Admin' labelPosition='right' toggled={isAdmin} onToggle={() => this.toggleAdmin(user.sbmUserId, isAdmin)} thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
+                            disabled={!currentIsAdmin} trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}} labelStyle={{position: 'absolute', bottom: '-20px', left: '0'}} className='toggle'/>
                     <div>
-                        <IconButton iconStyle={{ width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color }}
-                                    disabled={!currentIsAdmin || !canDelete}
-                                    style={{ width: '70px', height: '70px' }} onClick={() => this.handleOpen(user.sbmUserId)} tooltip='Remove User'>
-                            <DeleteIcon />
+                        <IconButton iconStyle={{width: '35px', height: '35px', color: this.props.muiTheme.palette.primary4Color}}
+                                    disabled={!currentIsAdmin || !canDelete} style={{width: '70px', height: '70px'}} onClick={() => this.handleOpen(user.sbmUserId)} tooltip='Remove User'>
+                            <DeleteIcon/>
                         </IconButton>
                     </div>
                 </div>
@@ -88,16 +99,16 @@ class Users extends Component {
     };
 
     handleOpen = (userId) => {
-        this.setState({ open: true });
-        this.setState({ userToRemove: userId });
+        this.setState({open: true});
+        this.setState({userToRemove: userId});
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({open: false});
     };
 
     deleteSandboxUserHandler = () => {
-        this.props.onRemoveUser(this.state.userToRemove);
+        this.props.removeUser(this.state.userToRemove);
     };
 }
 
@@ -108,8 +119,8 @@ const mapStateToProps = state => {
     }
 };
 
-function mapDispatchToProps (dispatch) {
-    return bindActionCreators({ fetchSandboxInvites, removeUser, toggleUserAdminRights }, dispatch);
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({fetchSandboxInvites, removeUser, toggleUserAdminRights}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Users)));

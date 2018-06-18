@@ -1,21 +1,21 @@
 import * as actionTypes from './types';
-import { authorize, saveSandboxApiEndpointIndex } from './fhirauth';
-import { fetchPersonas } from "./persona";
+import {authorize, saveSandboxApiEndpointIndex} from './fhirauth';
+import {fetchPersonas} from "./persona";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
     sessionStorage['sandboxId'] = sandboxId;
-    return { type: actionTypes.SELECT_SANDBOX }
+    return {type: actionTypes.SELECT_SANDBOX}
 };
 
-export const removeUser = (userId) => {
+export function setUpdatingUser(updating) {
     return {
-        type: actionTypes.REMOVE_SANDBOX_USER,
-        userId: userId
+        type: actionTypes.UPDATING_USER,
+        payload: {updating}
     }
-};
+}
 
 export const clearResults = () => {
     return {
@@ -26,42 +26,42 @@ export const clearResults = () => {
 export const setDataImporting = (importing) => {
     return {
         type: actionTypes.SET_DATA_IMPORTING,
-        payload: { importing }
+        payload: {importing}
     }
 };
 
 export const setImportResults = (results) => {
     return {
         type: actionTypes.SET_IMPORT_RESULTS,
-        payload: { results }
+        payload: {results}
     }
 };
 
-export function setLaunchScenariosLoading (loading) {
+export function setLaunchScenariosLoading(loading) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_LOADING,
-        payload: { loading }
+        payload: {loading}
     }
 }
 
-export function setScenarioCreating (creating) {
+export function setScenarioCreating(creating) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
-        payload: { creating }
+        payload: {creating}
     }
 }
 
-export function setScenarioDeleting (deleting) {
+export function setScenarioDeleting(deleting) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_DELETING,
-        payload: { deleting }
+        payload: {deleting}
     }
 }
 
-export function setLaunchScenarios (scenarios) {
+export function setLaunchScenarios(scenarios) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS,
-        payload: { scenarios }
+        payload: {scenarios}
     }
 }
 
@@ -108,7 +108,7 @@ export const fetchSandboxInvitesFail = (error) => {
 export const setCreatingSandbox = (creating) => {
     return {
         type: actionTypes.CREATING_SANDBOX,
-        payload: { creating }
+        payload: {creating}
     }
 };
 
@@ -149,32 +149,32 @@ export const lookupSandboxByIdSuccess = (sandboxes) => {
 export const setDefaultSandboxUser = (user) => {
     return {
         type: actionTypes.SET_DEFAULT_SANDBOX_USER,
-        payload: { user }
+        payload: {user}
     }
 };
 
 export const setInvitesLoading = (loading) => {
     return {
         type: actionTypes.SET_INVITES_LOADING,
-        payload: { loading }
+        payload: {loading}
     }
 };
 
 export const setInvites = (invites) => {
     return {
         type: actionTypes.SET_INVITES,
-        payload: { invites }
+        payload: {invites}
     }
 };
 
 export const setResettingCurrentSandbox = (resetting) => {
     return {
         type: actionTypes.SET_RESETTING_CURRENT_SANDBOX,
-        payload: { resetting }
+        payload: {resetting}
     }
 };
 
-export function createResource (data) {
+export function createResource(data) {
     return dispatch => {
         const config = {
             headers: {
@@ -197,7 +197,7 @@ export function createResource (data) {
 export const importData = (data) => {
     return dispatch => {
         dispatch(setDataImporting(true));
-        let promises = [window.fhirClient.api.transaction({ data })];
+        let promises = [window.fhirClient.api.transaction({data})];
         Promise.all(promises)
             .then(result => {
                 console.log(result);
@@ -247,7 +247,7 @@ export const resetCurrentSandbox = (applyDefaultDataSet) => {
         let sandboxId = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
         let dataSet = (applyDefaultDataSet ? 'DEFAULT' : 'NONE');
-        let data = { sandboxId, dataSet };
+        let data = {sandboxId, dataSet};
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
@@ -320,7 +320,7 @@ export const selectSandbox = (sandbox) => {
         };
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
-            fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
+            fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({method: "POST"}, config))
                 .then(() => {
                     dispatch(authorizeSandbox(sandbox));
                     dispatch(setDefaultUrl(sandboxId));
@@ -332,7 +332,7 @@ export const selectSandbox = (sandbox) => {
 
 };
 
-export function toggleUserAdminRights (userId, toggle) {
+export function toggleUserAdminRights(userId, toggle) {
     return (dispatch, getState) => {
         let state = getState();
         let queryParams = "?editUserRole=" + encodeURIComponent(userId) + "&role=ADMIN&add=" + (toggle ? 'true' : 'false');
@@ -345,14 +345,14 @@ export function toggleUserAdminRights (userId, toggle) {
             },
             body: JSON.stringify({})
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, Object.assign({ method: "PUT" }, config))
+        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, Object.assign({method: "PUT"}, config))
             .then(() => {
                 dispatch(fetchSandboxes());
             });
     };
 }
 
-export function deleteScenario (scenario) {
+export function deleteScenario(scenario) {
     return (dispatch, getState) => {
         dispatch(setScenarioDeleting(true));
         let state = getState();
@@ -375,7 +375,7 @@ export function deleteScenario (scenario) {
     }
 }
 
-export function createScenario (data) {
+export function createScenario(data) {
     return (dispatch, getState) => {
         dispatch(setScenarioCreating(true));
         let state = getState();
@@ -388,7 +388,7 @@ export function createScenario (data) {
             },
             body: JSON.stringify(data)
         };
-        fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({ method: "POST" }, config))
+        fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({method: "POST"}, config))
             .then(result => {
             })
             .catch(e => {
@@ -400,7 +400,7 @@ export function createScenario (data) {
     }
 }
 
-export function updateLaunchScenario (scenario, description) {
+export function updateLaunchScenario(scenario, description) {
     return (dispatch, getState) => {
         dispatch(setScenarioCreating(true));
         let state = getState();
@@ -414,7 +414,7 @@ export function updateLaunchScenario (scenario, description) {
             },
             body: JSON.stringify(scenario)
         };
-        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, Object.assign({ method: "PUT" }, config))
+        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, Object.assign({method: "PUT"}, config))
             .then(result => {
                 result.json()
                     .then(r => {
@@ -450,7 +450,7 @@ export const inviteNewUser = (email) => {
                 sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
             })
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
+        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({method: "PUT"}, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
             })
@@ -471,7 +471,7 @@ export const removeInvitation = (id) => {
                 'Content-Type': 'application/json'
             }
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({ method: "PUT" }, config))
+        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({method: "PUT"}, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
             })
@@ -481,7 +481,7 @@ export const removeInvitation = (id) => {
     };
 };
 
-export function getDefaultUserForSandbox (sandboxId) {
+export function getDefaultUserForSandbox(sandboxId) {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -505,7 +505,7 @@ export function getDefaultUserForSandbox (sandboxId) {
     }
 }
 
-export function authorizeSandbox (sandbox) {
+export function authorizeSandbox(sandbox) {
     return (dispatch, getState) => {
         if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
@@ -595,7 +595,7 @@ export const fetchSandboxInvites = () => {
     };
 };
 
-export function loadLaunchScenarios () {
+export function loadLaunchScenarios() {
     return (dispatch, getState) => {
         dispatch(setLaunchScenariosLoading(true));
         let state = getState();
@@ -621,7 +621,33 @@ export function loadLaunchScenarios () {
     }
 }
 
-export function updateSandboxInvite (invite, answer) {
+export function removeUser(userId) {
+    return (dispatch, getState) => {
+        dispatch(setUpdatingUser(true));
+        let sandboxId = sessionStorage.sandboxId;
+        let state = getState();
+
+        if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox/${sandboxId}?removeUserId=${encodeURIComponent(userId)}`;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                method: 'PUT'
+            };
+
+            fetch(url, config)
+                .then(() => {
+                    dispatch(setUpdatingUser(false));
+                    dispatch({type: actionTypes.REMOVE_SANDBOX_USER, userId: userId});
+                })
+        }
+    }
+}
+
+export function updateSandboxInvite(invite, answer) {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -642,7 +668,7 @@ export function updateSandboxInvite (invite, answer) {
     }
 }
 
-export function loadInvites () {
+export function loadInvites() {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -668,7 +694,7 @@ export function loadInvites () {
     }
 }
 
-export function doLaunch (app, persona = {}, user) {
+export function doLaunch(app, persona = {}, user) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -679,13 +705,13 @@ export function doLaunch (app, persona = {}, user) {
 
         let params = {};
         if (persona.fhirId || persona.id) {
-            params = { patient: persona.fhirId || persona.id };
+            params = {patient: persona.fhirId || persona.id};
         }
 
         params["need_patient_banner"] = false;
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let config = getConfig(state);
-        config.body = JSON.stringify({ username: user.personaUserId, password: user.password });
+        config.body = JSON.stringify({username: user.personaUserId, password: user.password});
         config.method = "POST";
         config.headers["Content-Type"] = "application/json";
         let launchDetails = {
@@ -730,7 +756,7 @@ const setDefaultUrl = (sandboxId) => {
     }
 };
 
-function random (length) {
+function random(length) {
     let result = '';
     for (let i = length; i > 0; --i) {
         result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];
@@ -738,7 +764,7 @@ function random (length) {
     return result;
 }
 
-function registerAppContext (app, params, launchDetails, key) {
+function registerAppContext(app, params, launchDetails, key) {
     let appToLaunch = Object.assign({}, app);
     delete appToLaunch.clientJSON;
     delete appToLaunch.createdBy;
@@ -746,7 +772,7 @@ function registerAppContext (app, params, launchDetails, key) {
     callRegisterContext(appToLaunch, params, window.fhirClient.server.serviceUrl, launchDetails, key);
 }
 
-function callRegisterContext (appToLaunch, params, issuer, launchDetails, key) {
+function callRegisterContext(appToLaunch, params, issuer, launchDetails, key) {
     let config = {
         method: 'POST',
         headers: {

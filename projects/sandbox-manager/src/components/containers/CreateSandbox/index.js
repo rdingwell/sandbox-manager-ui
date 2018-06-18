@@ -40,7 +40,7 @@ class Index extends Component {
                     </h3>
                     <div className='paper-body'>
                         <form>
-                            <TextField id='name' floatingLabelText='Sandbox Name' defaultValue={this.state.name} onChange={this.sandboxNameChangedHandler} /> <br />
+                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler} /> <br />
                             <div className='subscript'>Letters and numbers only. Must be less than 50 characters.</div>
                             <div className='subscript'>e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler} /><br />
@@ -110,11 +110,13 @@ class Index extends Component {
     };
 
     sandboxIdChangedHandler = (event) => {
-        this.setState({ sandboxId: event.target.value, createDisabled: event.target.value === 0 })
+        let value = event.target.value.replace(/[^a-z0-9]/gi,'');
+        this.setState({ sandboxId: value, createDisabled: value === 0 })
     };
 
     sandboxNameChangedHandler = (event) => {
-        this.setState({ name: event.target.value, sandboxId: event.target.value, createDisabled: event.target.value === 0 });
+        let value = event.target.value.replace(/[^a-z0-9]/gi,'');
+        this.setState({ name: value, sandboxId: value, createDisabled: value === 0 });
     };
 
     sandboxFhirVersionChangedHandler = (prop, val) => {
@@ -128,7 +130,8 @@ class Index extends Component {
 
 const mapStateToProps = state => {
     return {
-        user: state.users.oauthUser
+        user: state.users.oauthUser,
+        sandboxes: state.sandbox.sandboxes
     };
 };
 
