@@ -41,7 +41,7 @@ class Settings extends Component {
                 </Tabs>
                 : <div className='loader-wrapper'>
                     <p>
-                        Resetting sandbox settings
+                        Resetting sandbox
                     </p>
                     <CircularProgress size={80} thickness={5} />
                 </div>}

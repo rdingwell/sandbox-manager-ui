@@ -17,6 +17,7 @@ class Index extends Component {
             version: '',
             allowOpen: false,
             applyDefaultDataSet: true,
+            applyDefaultApps: true,
             description: '',
             createDisabled: true,
             apiEndpointIndex: '6'
@@ -46,7 +47,7 @@ class Index extends Component {
                             <div className='subscript'>Letters and numbers only. Must be less than 50 characters.</div>
                             <div className='subscript'>e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
-                                       errorText={duplicate ? 'There is a sandbox with that ID alwady, pleace choose another one' : undefined}/><br/>
+                                       errorText={duplicate ? 'ID already in use' : undefined}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
@@ -60,10 +61,11 @@ class Index extends Component {
                             <div className='checkboxes'>
                                 <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler}/>
                                 <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler}/>
+                                <Checkbox label='Apply Default Apps Set' className='checkbox' defaultChecked onCheck={this.applyDefaultAppsChangeHandler}/>
                                 <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
                             <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}/><br/>
-                            <div>e.g., This sandbox is the QA environment for NewCo.</div>
+                            <div className='subscript'>e.g., This sandbox is the QA environment for NewCo.</div>
                         </form>
                     </div>
                 </Paper>
@@ -84,6 +86,7 @@ class Index extends Component {
             sandboxId: this.state.sandboxId,
             description: this.state.description,
             dataSet: this.state.applyDefaultDataSet ? 'DEFAULT' : 'NONE',
+            apps: this.state.applyDefaultApps ? 'DEFAULT' : 'NONE',
             apiEndpointIndex: this.state.apiEndpointIndex,
             allowOpenAccess: this.state.allowOpen,
             users: [this.props.user]
@@ -106,6 +109,10 @@ class Index extends Component {
                 applyDefaultDataSet: !oldState.checked,
             };
         });
+    };
+
+    applyDefaultAppsChangeHandler = (_, applyDefaultApps) => {
+        this.setState({applyDefaultApps});
     };
 
     handleCancel = () => {

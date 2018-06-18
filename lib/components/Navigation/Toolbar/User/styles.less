@@ -1,6 +1,10 @@
 .user-wrapper {
   position: absolute;
   right: 24px;
+  .anchor {
+    position: relative;
+    right: -32px;
+  }
   .right {
     float: right;
     margin: 10px;
@@ -12,6 +16,17 @@
   .left {
     float: left;
     margin: 10px;
+  }
+  a {
+    display: block;
+    padding: 4px;
+    border-radius: 3px;
+    &.active {
+      background: rgba(0, 0, 0, 0.1);
+      svg {
+        fill: #A5A5A5 !important;
+      }
+    }
   }
 }
 

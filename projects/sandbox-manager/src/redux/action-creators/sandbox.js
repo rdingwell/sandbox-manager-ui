@@ -17,6 +17,13 @@ export function setUpdatingUser(updating) {
     }
 }
 
+export function setSandboxSelecting(selecting) {
+    return {
+        type: actionTypes.SET_SANDBOX_SELECTING,
+        payload: {selecting}
+    }
+}
+
 export const clearResults = () => {
     return {
         type: actionTypes.CLEAR_RESULTS
@@ -308,6 +315,7 @@ export const updateSandbox = (sandboxDetails) => {
 
 export const selectSandbox = (sandbox) => {
     return (dispatch, getState) => {
+        dispatch(setSandboxSelecting(true));
         let state = getState();
 
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
@@ -503,7 +511,8 @@ export function getDefaultUserForSandbox(sandboxId) {
                         dispatch(setDefaultSandboxUser(user));
                     })
             })
-            .catch(e => console.log(e));
+            .catch(e => console.log(e))
+            .then(() => dispatch(setSandboxSelecting(false)));
     }
 }
 
@@ -670,6 +679,7 @@ export function updateSandboxInvite(invite, answer) {
         fetch(url, config)
             .then(() => {
                 dispatch(loadInvites());
+                dispatch(fetchSandboxes());
             });
     }
 }

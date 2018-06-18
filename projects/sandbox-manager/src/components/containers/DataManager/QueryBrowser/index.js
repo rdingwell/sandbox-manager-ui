@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, FloatingActionButton, List, ListItem, Dialog, Paper } from 'material-ui';
+import {TextField, FloatingActionButton, List, ListItem, Dialog, Paper, IconButton} from 'material-ui';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import { parseEntry } from '../../../../../../../lib/utils';
@@ -33,6 +33,9 @@ export default class QueryBrowser extends Component {
                     <h3>
                         Details
                     </h3>
+                    <IconButton className="close-button" onClick={this.toggle}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
                     <div className='paper-body'>
                         <div className='result-wrapper'>
                             {this.state.selectedEntry && <ReactJson src={this.state.selectedEntry} />}

@@ -34,7 +34,7 @@ export default class CreatePersona extends Component {
                     <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.toggleDialog}>
                         <i className="material-icons">close</i>
                     </IconButton>
-                    <h3>Registered App Details</h3>
+                    <h3>Create {this.props.type.toLowerCase()}</h3>
                     <div className='paper-body'>
                         <TextField floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })} />
                         <TextField floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })} />

@@ -9,6 +9,7 @@ export default {
     userInvitesLoading: false,
     creatingSandbox: false,
     updatingUser: false,
+    selecting: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,

@@ -13,6 +13,7 @@ import Layout from '../../../../../lib/components/Layout';
 import Init from '../Init/';
 
 import './style.less';
+import {CircularProgress} from "material-ui";
 
 class App extends React.Component {
     componentDidMount () {
@@ -29,12 +30,18 @@ class App extends React.Component {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
             <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
                     signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite}>
-                <div className='app-root' ref={this.refStage()}>
+                {!this.props.sandbox.selecting && <div className='app-root' ref={this.refStage()}>
                     <Init {...this.props} />
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
                         {this.props.children}
                     </div>
-                </div>
+                </div>}
+                {this.props.sandbox.selecting && <div className='loader-wrapper'>
+                    <p>
+                        Loading sandboxes
+                    </p>
+                    <CircularProgress size={80} thickness={5}/>
+                </div>}
             </Layout>
         </MuiThemeProvider>;
     }

@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import { Paper, RaisedButton, List, ListItem, Avatar, IconButton } from 'material-ui';
-import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress} from 'material-ui';
+import {fetchSandboxes, selectSandbox} from '../../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import { withRouter } from 'react-router';
+import {withRouter} from 'react-router';
 import './styles.less';
-import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
+import {ActionLock, SocialPublic} from "material-ui/svg-icons/index";
 
 class Index extends Component {
 
-    componentDidMount () {
+    componentDidMount() {
         sessionStorage.clear();
         this.fetchSandboxes();
     }
 
-    componentDidUpdate (prevProps) {
+    componentDidUpdate(prevProps) {
         !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient && this.props.fetchSandboxes();
     }
 
-    render () {
+    render() {
         let sandboxes = null;
         if (!this.props.loading) {
             sandboxes = this.props.sandboxes.map((sandbox, index) => {
@@ -39,22 +39,28 @@ class Index extends Component {
                 // let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
                 let leftAvatar = <Avatar className={avatarClasses}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
-                    ? <IconButton tooltip='Open endpoint'><SocialPublic /></IconButton>
-                    : <IconButton tooltip='Authorization required'><ActionLock /></IconButton>;
+                    ? <IconButton tooltip='Open endpoint'><SocialPublic/></IconButton>
+                    : <IconButton tooltip='Authorization required'><ActionLock/></IconButton>;
                 return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
-                                 leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} />
+                                 leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)}/>
             });
 
         }
 
         return <Paper className='sandboxes-wrapper paper-card'>
             <h3>My Sandboxes
-                <RaisedButton primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' />
+                <RaisedButton primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
             </h3>
             <div>
-                <List>
+                {!this.props.loading && <List>
                     {sandboxes}
-                </List>
+                </List>}
+                {this.props.loading && <div className='loader-wrapper'>
+                    <p>
+                        Loading sandboxes
+                    </p>
+                    <CircularProgress size={80} thickness={5}/>
+                </div>}
             </div>
         </Paper>;
     }
@@ -69,7 +75,7 @@ class Index extends Component {
         this.props.selectSandbox(sandbox);
     };
 
-    fetchSandboxes () {
+    fetchSandboxes() {
         window.fhirClient && this.props.fetchSandboxes();
     }
 }
@@ -83,7 +89,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchSandboxes, selectSandbox }, dispatch);
+    return bindActionCreators({fetchSandboxes, selectSandbox}, dispatch);
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));
