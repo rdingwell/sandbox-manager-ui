@@ -8,6 +8,9 @@ export default function (state = initialState, action) {
         case actionTypes.FETCH_SANDBOXES_START :
             state.loading = true;
             break;
+        case actionTypes.SET_SANDBOX_SELECTING :
+            state.selecting = action.selecting;
+            break;
         case actionTypes.FETCH_SANDBOXES_SUCCESS:
             state.sandboxes = action.sandboxes;
             state.loading = false;
