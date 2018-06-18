@@ -20,13 +20,23 @@
     float: left;
     margin: 10px;
   }
+  a {
+    display: block;
+    padding: 4px;
+    border-radius: 3px;
+    position: relative;
+    top: -4px;
+    &.active {
+      background: rgba(0, 0, 0, 0.1);
+      svg {
+        fill: #A5A5A5 !important;
+      }
+    }
+  }
 }
 
 .notification-menu {
   padding: 8px 0 30px 0 !important;
-  a.disabled:hover {
-    cursor: default;
-  }
   .notification-menu-item {
     line-height: 25px !important;
     min-width: 140px !important;

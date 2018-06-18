@@ -1,6 +1,17 @@
 .help-wrapper {
   position: absolute;
   right: 120px;
+  a {
+    display: block;
+    padding: 4px;
+    border-radius: 3px;
+    &.active {
+      background: rgba(0, 0, 0, 0.1);
+      svg {
+        fill: #A5A5A5 !important;
+      }
+    }
+  }
   .right {
     float: right;
     margin: 10px;
