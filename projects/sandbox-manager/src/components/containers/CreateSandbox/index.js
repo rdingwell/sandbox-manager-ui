@@ -65,7 +65,7 @@ class Index extends Component {
                                 <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
                             <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}/><br/>
-                            <div>e.g., This sandbox is the QA environment for NewCo.</div>
+                            <div className='subscript'>e.g., This sandbox is the QA environment for NewCo.</div>
                         </form>
                     </div>
                 </Paper>
