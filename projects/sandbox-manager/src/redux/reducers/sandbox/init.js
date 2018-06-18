@@ -8,6 +8,7 @@ export default {
     invitesLoading: false,
     userInvitesLoading: false,
     creatingSandbox: false,
+    updatingUser: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,
