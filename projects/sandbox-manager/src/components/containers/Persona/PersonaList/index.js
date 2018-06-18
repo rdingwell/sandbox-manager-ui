@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Badge, List, ListItem, RaisedButton, TextField } from 'material-ui';
+import React, {Component} from 'react';
+import {Badge, List, ListItem, RaisedButton, TextField} from 'material-ui';
 import DohMessage from "../../../../../../../lib/components/DohMessage";
 
 import './styles.less';
@@ -13,7 +13,7 @@ export default class PersonaList extends Component {
         practitioner: 'Practitioner'
     };
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.timeout = null;
@@ -23,12 +23,14 @@ export default class PersonaList extends Component {
         };
     }
 
-    render () {
+    render() {
         let getName = (name) => {
             let strName = (name.family || name.family[0]) + ',';
             let i;
-            for (i = 0; i < name.given.length; i++) {
-                strName += ' ' + name.given[i];
+            if (name.given && name.given.length) {
+                for (i = 0; i < name.given.length; i++) {
+                    strName += ' ' + name.given[i];
+                }
             }
             return strName;
         };
@@ -42,18 +44,18 @@ export default class PersonaList extends Component {
 
         let personas = this.props.personas && this.props.personas.map((persona, i) => {
             let style = this.props.theme
-                ? { color: persona.gender === 'male' ? this.props.theme.accent5Color : this.props.theme.accent4Color }
+                ? {color: persona.gender === 'male' ? this.props.theme.accent5Color : this.props.theme.accent4Color}
                 : undefined;
 
             return <ListItem key={persona.id} className='persona-list-item' onClick={() => this.handleRowSelect(i)}>
                 {isPatient && <span className='gender-wrapper'>
                     <Badge badgeStyle={style}
                            badgeContent={persona.gender === 'male'
-                               ? <i className="fa fa-mars" />
-                               : <i className="fa fa-venus" />} />
+                               ? <i className="fa fa-mars"/>
+                               : <i className="fa fa-venus"/>}/>
                 </span>}
                 {isPractitioner && <span className='practitioner-icon-wrapper'>
-                    <Badge badgeStyle={{ color: this.props.theme.primary1Color }} badgeContent={<i className="fa fa-user-md fa-2x" />} />
+                    <Badge badgeStyle={{color: this.props.theme.primary1Color}} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
                 </span>}
                 <div className='persona-list-details'>
                     <div className='name-wrapper'>{persona.fhirName || getName(persona.name[0] || persona.name)}</div>
@@ -81,13 +83,13 @@ export default class PersonaList extends Component {
             <div className='screen-title' style={titleStyle}>
                 <h1 style={titleStyle}>{title}</h1>
                 {(isPractitioner || isPatient) && !this.props.modal && <div className='create-resource-button'>
-                    <CreatePersona create={this.props.create} type={this.props.type} theme={this.props.theme} />
+                    <CreatePersona create={this.props.create} type={this.props.type} theme={this.props.theme}/>
                 </div>}
             </div>
             <div className={'screen-content' + (this.props.modal && !this.props.additionalPadding ? ' persona-list-wrapper' : '')}>
                 {(isPractitioner || isPatient) && personas && personas.length > 0 && !this.props.loading
                     ? <div className='search'>
-                        <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
+                        <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged}/>
                     </div>
                     : <div className='hidden'></div>}
 
@@ -100,23 +102,23 @@ export default class PersonaList extends Component {
                     : this.props.loading
                         ? <List className='user-loader-list'>
                             <ListItem disabled>
-                                <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw' /></div>
+                                <div className='personas-loader-wrapper'><i className='fa fa-spinner fa-pulse fa-3x fa-fw'/></div>
                             </ListItem>
                         </List>
                         : this.state.searchCrit
                             ? <div className='centered'>No results found</div>
-                            : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`} />}
+                            : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`}/>}
                 {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
             </div>
         </div>
     }
 
     critChanged = (_e, searchCrit) => {
-        this.setState({ searchCrit });
+        this.setState({searchCrit});
         clearTimeout(this.timeout);
         this.props.lookupPersonasStart && this.props.lookupPersonasStart(true);
         this.timeout = setTimeout(() => {
-            this.props.search(this.props.type, { name: this.state.searchCrit });
+            this.props.search(this.props.type, {name: this.state.searchCrit});
         }, 500);
     };
 
@@ -128,13 +130,13 @@ export default class PersonaList extends Component {
 
         return this.props.pagination && <div className='persona-list-pagination-wrapper'>
             <div>
-                <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} disabled={start === 1 || this.props.loading} />
+                <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} disabled={start === 1 || this.props.loading}/>
             </div>
             <div>
                 <span>Showing {start} to {end} of {this.props.pagination.total}</span>
             </div>
             <div>
-                <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} disabled={end + 1 >= this.props.pagination.total || this.props.loading} />
+                <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} disabled={end + 1 >= this.props.pagination.total || this.props.loading}/>
             </div>
         </div>
     };
