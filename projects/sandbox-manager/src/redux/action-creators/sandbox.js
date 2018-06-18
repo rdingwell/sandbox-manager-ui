@@ -670,6 +670,7 @@ export function updateSandboxInvite(invite, answer) {
         fetch(url, config)
             .then(() => {
                 dispatch(loadInvites());
+                dispatch(fetchSandboxes());
             });
     }
 }
