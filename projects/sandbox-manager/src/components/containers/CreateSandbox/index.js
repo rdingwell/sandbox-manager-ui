@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton, Dialog } from 'material-ui';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton, Dialog} from 'material-ui';
 import * as  actions from '../../../redux/action-creators';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import muiThemeable from "material-ui/styles/muiThemeable";
-import { withRouter } from 'react-router';
+import {withRouter} from 'react-router';
 import './styles.less';
 
 class Index extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -23,16 +23,18 @@ class Index extends Component {
         };
     }
 
-    render () {
+    render() {
+        let duplicate = this.props.sandboxes.find(i => i.sandboxId === this.state.sandboxId);
+
         let actions = [
-            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled} className='button' primary onClick={this.handleCreateSandbox} />,
-            <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)} />
+            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate} className='button' primary onClick={this.handleCreateSandbox}/>,
+            <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)}/>
         ];
 
         return <Dialog paperClassName='create-sandbox-dialog' modal open={this.props.open} actions={actions} autoScrollBodyContent>
             <div className='create-sandbox-wrapper'>
                 <Paper className='paper-card'>
-                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
+                    <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.handleCancel}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h3>
@@ -40,37 +42,38 @@ class Index extends Component {
                     </h3>
                     <div className='paper-body'>
                         <form>
-                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler} /> <br />
+                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler}/> <br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 50 characters.</div>
                             <div className='subscript'>e.g., NewCo Sandbox</div>
-                            <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler} /><br />
+                            <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
+                                       errorText={duplicate ? 'There is a sandbox with that ID alwady, pleace choose another one' : undefined}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
                                           className='fhirVersion'>
-                                <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)' />
-                                <MenuItem value='6' primaryText='FHIR STU3 (v3.0.1)' />
-                                <MenuItem value='7' primaryText='FHIR R4 (v3.2.0) [beta]' />
+                                <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
+                                <MenuItem value='6' primaryText='FHIR STU3 (v3.0.1)'/>
+                                <MenuItem value='7' primaryText='FHIR R4 (v3.2.0) [beta]'/>
                             </DropDownMenu>
                             <div className='subscript'>Choose a version of the FHIR Standard</div>
-                            <br />
+                            <br/>
                             <div className='checkboxes'>
-                                <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler} />
-                                <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler} />
+                                <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler}/>
+                                <Checkbox label='Apply Default Data Set' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler}/>
                                 <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
-                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange} /><br />
+                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}/><br/>
                             <div>e.g., This sandbox is the QA environment for NewCo.</div>
                         </form>
                     </div>
                 </Paper>
-                <div style={{ clear: 'both' }} />
+                <div style={{clear: 'both'}}/>
             </div>
         </Dialog>
     }
 
     sandboxDescriptionChange = (_e, description) => {
-        this.setState({ description });
+        this.setState({description});
     };
 
     handleCreateSandbox = (event) => {
@@ -110,20 +113,20 @@ class Index extends Component {
     };
 
     sandboxIdChangedHandler = (event) => {
-        let value = event.target.value.replace(/[^a-z0-9]/gi,'');
-        this.setState({ sandboxId: value, createDisabled: value === 0 })
+        let value = event.target.value.replace(/[^a-z0-9]/gi, '');
+        this.setState({sandboxId: value, createDisabled: value === 0})
     };
 
     sandboxNameChangedHandler = (event) => {
-        let value = event.target.value.replace(/[^a-z0-9]/gi,'');
-        this.setState({ name: value, sandboxId: value, createDisabled: value === 0 });
+        let value = event.target.value.replace(/[^a-z0-9]/gi, '');
+        this.setState({name: value, sandboxId: value, createDisabled: value === 0});
     };
 
     sandboxFhirVersionChangedHandler = (prop, val) => {
         let sandbox = this.state || this.props || {};
         sandbox[prop] = val;
 
-        this.setState({ sandbox });
+        this.setState({sandbox});
     };
 
 }

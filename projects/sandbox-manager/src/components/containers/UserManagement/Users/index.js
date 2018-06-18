@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import './styles.less';
+import {withRouter} from "react-router";
 
 class Users extends Component {
 
@@ -108,7 +109,8 @@ class Users extends Component {
     };
 
     deleteSandboxUserHandler = () => {
-        this.props.removeUser(this.state.userToRemove);
+        this.setState({userToRemove: undefined});
+        this.props.removeUser(this.state.userToRemove, this.props.history);
     };
 }
 
@@ -123,4 +125,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({fetchSandboxInvites, removeUser, toggleUserAdminRights}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Users)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(withRouter(Users))));

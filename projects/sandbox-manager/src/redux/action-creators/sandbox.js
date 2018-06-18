@@ -621,7 +621,7 @@ export function loadLaunchScenarios() {
     }
 }
 
-export function removeUser(userId) {
+export function removeUser(userId, history) {
     return (dispatch, getState) => {
         dispatch(setUpdatingUser(true));
         let sandboxId = sessionStorage.sandboxId;
@@ -640,6 +640,10 @@ export function removeUser(userId) {
 
             fetch(url, config)
                 .then(() => {
+                    if (userId === state.users.user.sbmUserId) {
+                        history && history.push('/dashboard');
+                    }
+
                     dispatch(setUpdatingUser(false));
                     dispatch({type: actionTypes.REMOVE_SANDBOX_USER, userId: userId});
                 })
