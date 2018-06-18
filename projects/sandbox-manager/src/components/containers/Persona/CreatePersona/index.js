@@ -23,16 +23,20 @@ export default class CreatePersona extends Component {
     }
 
     render () {
+        let createEnabled = this.props.type === PersonaList.TYPES.patient
+        ? this.state.name.length > 2 && this.state.fName.length > 2 && this.state.birthDate.length === 10 && this.state.gender.length > 2
+        : this.state.name.length > 2 && this.state.fName.length > 2;
+
         return <div>
             <Dialog bodyClassName='create-persona-dialog' open={this.state.dialogVisible} onRequestClose={this.toggleDialog}
-                    actions={[<RaisedButton label='Create' onClick={this.create} primary />]}>
+                    actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled} />]}>
                 <Paper className='paper-card'>
                     <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.toggleDialog}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h3>Registered App Details</h3>
                     <div className='paper-body'>
-                        <TextField floatingLabelText='Name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })} />
+                        <TextField floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })} />
                         <TextField floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })} />
 
                         {this.props.type === PersonaList.TYPES.patient &&

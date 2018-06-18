@@ -49,6 +49,6 @@ export default class PersonaInputs extends Component {
         let state = {};
         state[field] = value;
 
-        this.setState(state, () => this.props.onChange && this.props.onChange(`${this.state.userId}@${this.props.sandbox}`, this.state.password));
+        this.setState(state, () => this.props.onChange && this.props.onChange(this.state.userId.length > 1 ? `${this.state.userId}@${this.props.sandbox}` : '', this.state.password));
     };
 }

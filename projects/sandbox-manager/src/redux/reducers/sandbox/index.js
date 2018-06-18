@@ -111,44 +111,46 @@ export default function (state = initialState, action) {
 };
 
 const updateSandbox = (state, action) => {
-    const sandbox = { ...state.sandboxes.filter((s) => s.sandboxId === sessionStorage.sandboxId)[ 0 ] };
+    const sandbox = {...state.sandboxes.filter((s) => s.sandboxId === sessionStorage.sandboxId)[0]};
     sandbox.name = action.sandboxDetails.name;
     sandbox.description = action.sandboxDetails.description;
     sandbox.allowOpenAccess = action.sandboxDetails.allowOpenAccess;
 
     let ind = 0;
     for (let index in state.sandboxes) {
-        if (state.sandboxes[ index ].sandboxId === sessionStorage.sandboxId) {
+        if (state.sandboxes[index].sandboxId === sessionStorage.sandboxId) {
             ind = index;
             break;
         }
     }
 
-    state.sandboxes = [ ...state.sandboxes.slice(0, ind), sandbox, ...state.sandboxes.slice(ind + 1) ];
+    state.sandboxes = [...state.sandboxes.slice(0, ind), sandbox, ...state.sandboxes.slice(ind + 1)];
 
     return state;
 };
 
 const removeUser = (state, action) => {
-    const cloneState = { ...state };
-    const sandbox = { ...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[ 0 ] };
-    const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.sbmUserId !== action.userId);
+    const cloneState = {...state};
+    const sandbox = {...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[0]};
+    if (sandbox.userRoles) {
+        const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.sbmUserId !== action.userId);
 
-    sandbox.userRoles = remainingUsers;
+        sandbox.userRoles = remainingUsers;
 
-    let ind = 0;
-    for (let index in state.sandboxes) {
-        if (state.sandboxes[ index ].sandboxId === sessionStorage.sandboxId) {
-            ind = index;
-            break;
+        let ind = 0;
+        for (let index in state.sandboxes) {
+            if (state.sandboxes[index].sandboxId === sessionStorage.sandboxId) {
+                ind = index;
+                break;
+            }
         }
-    }
 
-    state.sandboxes = [
-        ...state.sandboxes.slice(0, ind),
-        sandbox,
-        ...state.sandboxes.slice(ind + 1)
-    ];
+        state.sandboxes = [
+            ...state.sandboxes.slice(0, ind),
+            sandbox,
+            ...state.sandboxes.slice(ind + 1)
+        ];
+    }
 
     return state;
 };

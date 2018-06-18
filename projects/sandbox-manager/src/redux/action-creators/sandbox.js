@@ -334,6 +334,7 @@ export const selectSandbox = (sandbox) => {
 
 export function toggleUserAdminRights(userId, toggle) {
     return (dispatch, getState) => {
+        dispatch(setUpdatingUser(true));
         let state = getState();
         let queryParams = "?editUserRole=" + encodeURIComponent(userId) + "&role=ADMIN&add=" + (toggle ? 'true' : 'false');
 
@@ -347,6 +348,7 @@ export function toggleUserAdminRights(userId, toggle) {
         };
         fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, Object.assign({method: "PUT"}, config))
             .then(() => {
+                dispatch(setUpdatingUser(false));
                 dispatch(fetchSandboxes());
             });
     };
@@ -621,7 +623,7 @@ export function loadLaunchScenarios() {
     }
 }
 
-export function removeUser(userId) {
+export function removeUser(userId, history) {
     return (dispatch, getState) => {
         dispatch(setUpdatingUser(true));
         let sandboxId = sessionStorage.sandboxId;
@@ -640,6 +642,10 @@ export function removeUser(userId) {
 
             fetch(url, config)
                 .then(() => {
+                    if (userId === state.users.user.sbmUserId) {
+                        history && history.push('/dashboard');
+                    }
+
                     dispatch(setUpdatingUser(false));
                     dispatch({type: actionTypes.REMOVE_SANDBOX_USER, userId: userId});
                 })
