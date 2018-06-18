@@ -18,7 +18,7 @@ class SandboxReset extends Component {
 
     render () {
         let actions = [
-            <RaisedButton key={1} label='Delete' secondary onClick={this.deleteSandbox} disabled={this.state.enableDelete !== 'DELETE'} />,
+            <RaisedButton key={1} label='Delete' secondary onClick={this.deleteSandbox} disabled={this.state.enableDelete.toLowerCase() !== 'delete'} />,
             <RaisedButton key={2} label='Cancel' primary onClick={this.toggleModal} className='cancel-button' />
         ];
         let titleStyle = {
