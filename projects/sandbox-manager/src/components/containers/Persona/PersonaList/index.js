@@ -65,9 +65,8 @@ export default class PersonaList extends Component {
             </ListItem>
         });
 
-        let title = this.props.title
-            ? this.props.title
-            : isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
+        let defaultTitle = isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
+        let title = this.props.title ? this.props.title : defaultTitle;
         let titleStyle = this.props.modal
             ? {
                 backgroundColor: this.props.theme.primary2Color,
@@ -86,7 +85,7 @@ export default class PersonaList extends Component {
                 </div>}
             </div>
             <div className={'screen-content' + (this.props.modal && !this.props.additionalPadding ? ' persona-list-wrapper' : '')}>
-                {isPractitioner || isPatient
+                {(isPractitioner || isPatient) && personas && personas.length > 0 && !this.props.loading
                     ? <div className='search'>
                         <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged} />
                     </div>
@@ -106,7 +105,7 @@ export default class PersonaList extends Component {
                         </List>
                         : this.state.searchCrit
                             ? <div className='centered'>No results found</div>
-                            : <DohMessage message={`There are no ${title} in this sandbox platform yet.`} />}
+                            : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`} />}
                 {personas && personas.length > 0 && this.props.pagination && this.getPagination()}
             </div>
         </div>

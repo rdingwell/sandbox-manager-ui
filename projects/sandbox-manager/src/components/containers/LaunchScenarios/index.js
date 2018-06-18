@@ -56,7 +56,7 @@ class LaunchScenarios extends Component {
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
-                    <DohMessage message='There are no launch scenarios in this sandbox platform yet.' />}
+                    <DohMessage message='No launch scenarios in sandbox.' topMargin />}
                 </div>
             </div>
             {this.getModal()}
