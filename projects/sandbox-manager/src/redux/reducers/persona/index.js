@@ -40,6 +40,7 @@ export default (state = initialState, action) => {
             }
             break;
         case actionTypes.APP_RESET_STATE:
+        case actionTypes.SET_SANDBOX_SELECTING:
             state = initialState;
             break;
         case "persist/REHYDRATE":

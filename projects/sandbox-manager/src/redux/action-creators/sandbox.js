@@ -748,7 +748,7 @@ export function doLaunch (app, persona = {}, user) {
                             const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                             const date = new Date();
                             date.setTime(date.getTime() + (3 * 60 * 1000));
-                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.toString()}; domain=${url}; path=/`;
+                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                             document.cookie = cookie;
                             registerAppContext(app, params, launchDetails, key);
                         });
