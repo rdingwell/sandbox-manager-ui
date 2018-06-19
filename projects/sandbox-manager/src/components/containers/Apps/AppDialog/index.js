@@ -46,8 +46,9 @@ class AppDialog extends Component {
         let clientId = null;
 
         if (this.props.app) {
-            clientId = <div>
-                <TextField defaultValue={this.props.app.authClient.clientId} floatingLabelText='Client Id' fullWidth disabled /><br />
+            clientId = <div className='label-value'>
+                <span>Client Id: </span>
+                <span>{this.props.app.authClient.clientId}</span>
             </div>;
         }
 

@@ -27,13 +27,21 @@ class SandboxDetails extends Component {
                            onChange={this.handleSandboxNameChange} />
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description'
                            onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth />
-                <TextField disabled fullWidth defaultValue={this.props.sandboxId} floatingLabelText='Sandbox ID' />
-                <TextField disabled fullWidth defaultValue={`${window.location.origin}/${this.props.sandboxName}`} floatingLabelText='Sandbox URL' />
-                <TextField disabled fullWidth defaultValue={this.props.serviceUrl} floatingLabelText='Secure FHIR Server URL' />
-                <TextField disabled fullWidth defaultValue={this.props.sandboxVersion.name} floatingLabelText='Sandbox FHIR Version' />
                 <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}
                           onCheck={this.handleOpenFhirCheckboxChange} />
                 {this.state.allowOpen && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL' />}
+                <div className='label-value'>
+                    <span>Sandbox ID: </span>
+                    <span>{this.props.sandboxId}</span>
+                </div>
+                <div className='label-value'>
+                    <span>Sandbox URL: </span>
+                    <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
+                </div>
+                <div className='label-value'>
+                    <span>Sandbox FHIR Version: </span>
+                    <span>{this.props.sandboxVersion.name}</span>
+                </div>
                 <div>
                     <RaisedButton primary label='Save' className='details-button' type='submit' disabled={!this.state.updateDone} />
                 </div>
