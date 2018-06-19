@@ -1,5 +1,5 @@
 import * as actionTypes from './types';
-import { authorize, saveSandboxApiEndpointIndex } from './fhirauth';
+import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
 import { fetchPersonas } from "./persona";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -499,25 +499,29 @@ export const removeInvitation = (id) => {
 
 export function getDefaultUserForSandbox (sandboxId) {
     return (dispatch, getState) => {
-        let state = getState();
+        if (window.fhirClient) {
+            let state = getState();
 
-        let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
-            },
-            contentType: "application/json",
-        };
+            let configuration = state.config.xsettings.data.sandboxManager;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+                },
+                contentType: "application/json",
+            };
 
-        fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
-            .then(userResponse => {
-                userResponse.json()
-                    .then(user => {
-                        dispatch(setDefaultSandboxUser(user));
-                    })
-            })
-            .catch(e => console.log(e))
-            .then(() => dispatch(setSandboxSelecting(false)));
+            fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
+                .then(userResponse => {
+                    userResponse.json()
+                        .then(user => {
+                            dispatch(setDefaultSandboxUser(user));
+                        })
+                })
+                .catch(e => console.log(e))
+                .then(() => dispatch(setSandboxSelecting(false)));
+        } else {
+            goHome();
+        }
     }
 }
 
@@ -694,24 +698,28 @@ export function loadInvites () {
         let state = getState();
 
         dispatch(setInvitesLoading(true));
-        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=PENDING`;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        };
-        fetch(url, config)
-            .then(result => {
-                result.json()
-                    .then(invitations => {
-                        setInvitesLoading(false);
-                        dispatch(setInvites(invitations));
-                    })
-            })
-            .catch(e => console.log(e))
-            .then(() => dispatch(setInvitesLoading(false)));
+        if (state.config.xsettings.data.sandboxManager) {
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=PENDING`;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+            fetch(url, config)
+                .then(result => {
+                    result.json()
+                        .then(invitations => {
+                            setInvitesLoading(false);
+                            dispatch(setInvites(invitations));
+                        })
+                })
+                .catch(e => console.log(e))
+                .then(() => dispatch(setInvitesLoading(false)));
+        } else {
+            goHome();
+        }
     }
 }
 
