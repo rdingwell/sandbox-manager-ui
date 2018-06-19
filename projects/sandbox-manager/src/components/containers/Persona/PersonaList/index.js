@@ -87,7 +87,7 @@ export default class PersonaList extends Component {
                 </div>}
             </div>
             <div className={'screen-content' + (this.props.modal && !this.props.additionalPadding ? ' persona-list-wrapper' : '')}>
-                {(isPractitioner || isPatient) && personas && personas.length > 0 && !this.props.loading
+                {(isPractitioner || isPatient) && personas && personas.length > 0
                     ? <div className='search'>
                         <span>Search by name: </span><TextField fullWidth id='name-crit' value={this.state.searchCrit} onChange={this.critChanged}/>
                     </div>

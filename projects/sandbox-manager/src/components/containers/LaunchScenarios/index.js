@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart} from '../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import {getPatientName} from '../../../../../../lib/utils/fhir';
+import {CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton} from 'material-ui';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
@@ -18,7 +18,7 @@ import muiThemeable from "material-ui/styles/muiThemeable";
 
 class LaunchScenarios extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -30,33 +30,33 @@ class LaunchScenarios extends Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.app_setScreen('launch');
         this.props.loadLaunchScenarios();
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         ((this.props.creating && !nextProps.creating) || (this.props.deleting && !nextProps.deleting)) && this.props.loadLaunchScenarios();
     }
 
-    render () {
+    render() {
         return <div className='launch-scenarios-wrapper'>
             <div>
                 <div className='screen-title'>
                     <h1>Launch Scenarios</h1>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
-                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter} />}
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter}/>}
                     <div className='actions'>
-                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal} />
+                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal}/>
                     </div>
                 </div>
                 <div className='screen-content'>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
-                        <CircularProgress size={80} thickness={5} />
+                        <CircularProgress size={80} thickness={5}/>
                     </div>}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
-                    <DohMessage message='No launch scenarios in sandbox.' topMargin />}
+                    <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
             </div>
             {this.getModal()}
@@ -64,18 +64,18 @@ class LaunchScenarios extends Component {
     }
 
     onFilter = (appId) => {
-        this.setState({ appIdFilter: appId });
+        this.setState({appIdFilter: appId});
     };
 
     launchScenario = (sc) => {
-        this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
-        !sc && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+        sc.app && this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
+        !sc.app && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
     };
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ willOpen: selection });
-        setTimeout(() => this.setState({ selectedScenario: selection }), 200);
+        this.setState({willOpen: selection});
+        setTimeout(() => this.setState({selectedScenario: selection}), 200);
     };
 
     getModal = () => {
@@ -83,7 +83,7 @@ class LaunchScenarios extends Component {
         let content = this.getBuildContent();
 
         return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleModal}>
+            <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.toggleModal}>
                 <i className="material-icons">close</i>
             </IconButton>
             {content}
@@ -91,9 +91,9 @@ class LaunchScenarios extends Component {
     };
 
     getBuildActions = () => {
-        let actions = [<RaisedButton key={3} label='Cancel' className='launch-scenario-dialog-action' onClick={this.toggleModal} />];
-        return this.state.selectedApp && ([<RaisedButton key={1} label='Just Launch' primary className='launch-scenario-dialog-action' onClick={this.launchScenario} />,
-            <RaisedButton key={2} label='Save' secondary className='launch-scenario-dialog-action' onClick={this.createScenario} />]).concat(actions);
+        let actions = [<RaisedButton key={3} label='Cancel' className='launch-scenario-dialog-action' onClick={this.toggleModal}/>];
+        return this.state.selectedApp && ([<RaisedButton key={1} label='Just Launch' primary className='launch-scenario-dialog-action' onClick={this.launchScenario}/>,
+            <RaisedButton key={2} label='Save' secondary className='launch-scenario-dialog-action' onClick={this.createScenario}/>]).concat(actions);
     };
 
     createScenario = () => {
@@ -127,22 +127,25 @@ class LaunchScenarios extends Component {
             let personas = this.state.selectedPersona ? this.props.patients : this.props.personas;
             let pagination = this.state.selectedPersona ? this.props.patientsPagination : this.props.personasPagination;
             let click = this.state.selectedPersona
-                ? selectedPatient => this.setState({ selectedPatient })
-                : selectedPersona => this.setState({ selectedPersona });
+                ? selectedPatient => this.setState({selectedPatient})
+                : selectedPersona => this.setState({selectedPersona});
             let actions = this.state.selectedPersona
-                ? <RaisedButton primary label='skip Patient' onClick={() => this.setState({ selectedPatient: {} })} />
+                ? <RaisedButton primary label='skip Patient' onClick={() => this.setState({selectedPatient: {}})}/>
                 : [];
 
             let props = {
                 title, type, click, personas, pagination, actions, modal: true,
                 theme: this.props.muiTheme.palette,
+                lookupPersonasStart: this.props.lookupPersonasStart,
+                search: this.props.fetchPersonas,
+                loading: this.props.personaLoading,
                 next: () => this.props.getPersonasPage(type, pagination, 'next'),
                 prev: () => this.props.getPersonasPage(type, pagination, 'previous')
             };
 
-            return <PersonaList {...props} additionalPadding />;
+            return <PersonaList {...props} additionalPadding/>;
         } else if (!this.state.selectedApp) {
-            return <Apps title='Select app' modal onCardClick={selectedApp => this.setState({ selectedApp })} />
+            return <Apps title='Select app' modal onCardClick={selectedApp => this.setState({selectedApp})}/>
         } else {
             let titleStyle = {
                 backgroundColor: this.props.muiTheme.palette.primary2Color,
@@ -166,7 +169,7 @@ class LaunchScenarios extends Component {
                         <span>App: </span>
                         <span>{this.state.selectedApp.authClient.clientName}</span>
                     </div>
-                    <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })} />
+                    <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({description})}/>
                 </div>
             </div>
         }
@@ -186,9 +189,9 @@ class LaunchScenarios extends Component {
                 <label>Description:</label>
                 <span>
                     {this.state.descriptionEditing
-                        ? <TextField defaultValue={selectedScenario.description} id='description' onBlur={this.updateScenario} />
+                        ? <TextField defaultValue={selectedScenario.description} id='description' onBlur={this.updateScenario}/>
                         : selectedScenario.description}
-                    <FlatButton className='description-edit-button' primary icon={<EditIcon />} onClick={this.toggleDescriptionEdit} />
+                    <FlatButton className='description-edit-button' primary icon={<EditIcon/>} onClick={this.toggleDescriptionEdit}/>
                 </span>
             </div>,
             <div key={2} className='details-pair smaller-label'>
@@ -208,7 +211,7 @@ class LaunchScenarios extends Component {
                     <div className='details-pair'>
                         <label>FHIR Resource Type:</label>
                         <span>
-                            <i className={`fa ${selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`} />
+                            <i className={`fa ${selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`}/>
                             {selectedScenario.userPersona.resource}
                         </span>
                     </div>
@@ -239,7 +242,7 @@ class LaunchScenarios extends Component {
                         <span className='center'>
                             <img src={selectedScenario.app.logoUri
                                 ? selectedScenario.app.logoUri
-                                : 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} />
+                                : 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}/>
                         </span>
                     </div>
                 </div>
@@ -247,16 +250,17 @@ class LaunchScenarios extends Component {
     };
 
     toggleModal = () => {
+        this.props.fetchPersonas(PersonaList.TYPES.patient);
         let showModal = !this.state.showModal;
         let selectedScenario = showModal ? this.state.selectedScenario : undefined;
         showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
         showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
         showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
-        this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
+        this.setState({showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: ''});
     };
 
     toggleDescriptionEdit = () => {
-        this.setState({ descriptionEditing: !this.state.descriptionEditing });
+        this.setState({descriptionEditing: !this.state.descriptionEditing});
     };
 
     updateScenario = (e) => {
@@ -269,30 +273,30 @@ class LaunchScenarios extends Component {
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let willOpen = this.state.willOpen === index;
-                    let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
-                    let nestedStyles = { height: 0, overflow: 'hidden', transition: 'all .5s' };
+                    let itemStyles = isSelected ? {backgroundColor: this.props.muiTheme.palette.primary5Color} : {backgroundColor: 'transparent'};
+                    let nestedStyles = {height: 0, overflow: 'hidden', transition: 'all .5s'};
 
                     let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
                         {this.getDetailsContent(sc)}
                     </ListItem>;
                     if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
-                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span />} style={itemStyles} open={willOpen || isSelected}
+                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span/>} style={itemStyles} open={willOpen || isSelected}
                                          hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
                                          nestedListStyle={nestedStyles}
                                          leftIcon={<div className='actions-wrapper'>
-                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                             <IconButton style={{color: this.props.muiTheme.palette.primary1Color}} onClick={(e) => {
                                                  e.preventDefault();
                                                  e.stopPropagation();
                                                  this.launchScenario(sc);
                                              }} tooltip='Launch'>
-                                                 <LaunchIcon style={{ width: '24px', height: '24px' }} />
+                                                 <LaunchIcon style={{width: '24px', height: '24px'}}/>
                                              </IconButton>
-                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                             <IconButton style={{color: this.props.muiTheme.palette.primary1Color}} onClick={(e) => {
                                                  e.preventDefault();
                                                  e.stopPropagation();
                                                  this.deleteScenario(sc);
                                              }} tooltip='Delete'>
-                                                 <DeleteIcon style={{ width: '24px', height: '24px' }} />
+                                                 <DeleteIcon style={{width: '24px', height: '24px'}}/>
                                              </IconButton>
                                          </div>}>
                             <span className='launch-scenario-title'>{sc.description}</span>
@@ -316,13 +320,15 @@ const mapStateToProps = state => {
         personas: state.persona.personas,
         patientsPagination: state.persona.patientsPagination,
         patients: state.persona.patients,
+        personaLoading: state.persona.loading,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
     }
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(
-    { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario },
-    dispatch);
+    {app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart},
+    dispatch
+);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(LaunchScenarios)))

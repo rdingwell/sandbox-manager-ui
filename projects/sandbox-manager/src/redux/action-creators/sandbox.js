@@ -333,7 +333,6 @@ export const selectSandbox = (sandbox) => {
                     dispatch(authorizeSandbox(sandbox));
                     dispatch(setDefaultUrl(sandboxId));
                     dispatch(selectSandboxById(sandboxId));
-                    dispatch(getDefaultUserForSandbox(sandboxId));
                 });
         }
     };
@@ -505,7 +504,6 @@ export function getDefaultUserForSandbox(sandboxId) {
 
         fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
             .then(userResponse => {
-                console.log(userResponse);
                 userResponse.json()
                     .then(user => {
                         dispatch(setDefaultSandboxUser(user));
