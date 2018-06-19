@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton, Dialog} from 'material-ui';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton, Dialog } from 'material-ui';
 import * as  actions from '../../../redux/action-creators';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import muiThemeable from "material-ui/styles/muiThemeable";
-import {withRouter} from 'react-router';
+import { withRouter } from 'react-router';
 import './styles.less';
 
 class Index extends Component {
-    constructor(props) {
+    constructor( props ) {
         super(props);
 
         this.state = {
@@ -29,13 +29,13 @@ class Index extends Component {
 
         let actions = [
             <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate} className='button' primary onClick={this.handleCreateSandbox}/>,
-            <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)}/>
+            <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={( event ) => this.handleCancel(event)}/>
         ];
 
         return <Dialog paperClassName='create-sandbox-dialog' modal open={this.props.open} actions={actions} autoScrollBodyContent>
             <div className='create-sandbox-wrapper'>
                 <Paper className='paper-card'>
-                    <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.handleCancel}>
+                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h3>
@@ -44,13 +44,12 @@ class Index extends Component {
                     <div className='paper-body'>
                         <form>
                             <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler}/> <br/>
-                            <div className='subscript'>Letters and numbers only. Must be less than 50 characters.</div>
-                            <div className='subscript'>e.g., NewCo Sandbox</div>
+                            <div className='subscript'>Must be less than 50 characters. e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
                                        errorText={duplicate ? 'ID already in use' : undefined}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
-                            <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
+                            <DropDownMenu value={this.state.apiEndpointIndex} onChange={( _e, _k, value ) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
                                           className='fhirVersion'>
                                 <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
                                 <MenuItem value='6' primaryText='FHIR STU3 (v3.0.1)'/>
@@ -69,16 +68,16 @@ class Index extends Component {
                         </form>
                     </div>
                 </Paper>
-                <div style={{clear: 'both'}}/>
+                <div style={{ clear: 'both' }}/>
             </div>
         </Dialog>
     }
 
-    sandboxDescriptionChange = (_e, description) => {
-        this.setState({description});
+    sandboxDescriptionChange = ( _e, description ) => {
+        this.setState({ description });
     };
 
-    handleCreateSandbox = (event) => {
+    handleCreateSandbox = ( event ) => {
         event.preventDefault();
         let createRequest = {
             createdBy: this.props.user,
@@ -96,7 +95,7 @@ class Index extends Component {
     };
 
     allowOpenChangeHandler = () => {
-        this.setState((oldState) => {
+        this.setState(( oldState ) => {
             return {
                 allowOpen: !oldState.checked,
             };
@@ -104,36 +103,46 @@ class Index extends Component {
     };
 
     applyDefaultChangeHandler = () => {
-        this.setState((oldState) => {
+        this.setState(( oldState ) => {
             return {
                 applyDefaultDataSet: !oldState.checked,
             };
         });
     };
 
-    applyDefaultAppsChangeHandler = (_, applyDefaultApps) => {
-        this.setState({applyDefaultApps});
+    applyDefaultAppsChangeHandler = ( _, applyDefaultApps ) => {
+        this.setState({ applyDefaultApps });
     };
 
     handleCancel = () => {
         this.props.onCancel && this.props.onCancel();
     };
 
-    sandboxIdChangedHandler = (event) => {
+    sandboxIdChangedHandler = ( event ) => {
         let value = event.target.value.replace(/[^a-z0-9]/gi, '');
-        this.setState({sandboxId: value, createDisabled: value === 0})
+        if (value.length > 20) {
+            value = value.substring(0, 20);
+        }
+        this.setState({ sandboxId: value, createDisabled: value === 0 })
     };
 
-    sandboxNameChangedHandler = (event) => {
-        let value = event.target.value.replace(/[^a-z0-9]/gi, '');
-        this.setState({name: value, sandboxId: value, createDisabled: value === 0});
+    sandboxNameChangedHandler = ( event ) => {
+        let value = event.target.value;
+        if (value.length > 50) {
+            value = value.substring(0, 50);
+        }
+        let cleanValue = value.replace(/[^a-z0-9]/gi, '');
+        if (cleanValue.length > 20) {
+            cleanValue = cleanValue.substring(0, 20);
+        }
+        this.setState({ name: value, sandboxId: cleanValue, createDisabled: value === 0 });
     };
 
-    sandboxFhirVersionChangedHandler = (prop, val) => {
+    sandboxFhirVersionChangedHandler = ( prop, val ) => {
         let sandbox = this.state || this.props || {};
         sandbox[prop] = val;
 
-        this.setState({sandbox});
+        this.setState({ sandbox });
     };
 
 }
@@ -148,7 +157,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createSandbox: (sandboxDetails) => dispatch(actions.createSandbox(sandboxDetails))
+        createSandbox: ( sandboxDetails ) => dispatch(actions.createSandbox(sandboxDetails))
     };
 };
 
