@@ -499,25 +499,29 @@ export const removeInvitation = (id) => {
 
 export function getDefaultUserForSandbox (sandboxId) {
     return (dispatch, getState) => {
-        let state = getState();
+        if (window.fhirClient) {
+            let state = getState();
 
-        let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
-            },
-            contentType: "application/json",
-        };
+            let configuration = state.config.xsettings.data.sandboxManager;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token
+                },
+                contentType: "application/json",
+            };
 
-        fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
-            .then(userResponse => {
-                userResponse.json()
-                    .then(user => {
-                        dispatch(setDefaultSandboxUser(user));
-                    })
-            })
-            .catch(e => console.log(e))
-            .then(() => dispatch(setSandboxSelecting(false)));
+            fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
+                .then(userResponse => {
+                    userResponse.json()
+                        .then(user => {
+                            dispatch(setDefaultSandboxUser(user));
+                        })
+                })
+                .catch(e => console.log(e))
+                .then(() => dispatch(setSandboxSelecting(false)));
+        } else {
+            goHome();
+        }
     }
 }
 
