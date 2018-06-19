@@ -22,7 +22,7 @@ export default (state = initialState, action) => {
             state.apps = apps;
             break;
         case types.SET_SANDBOX_SELECTING:
-            state.apps = [];
+            action.payload.selecting && (state.apps = []);
             break;
         case types.APP_RESET_STATE:
             state = initialState;
