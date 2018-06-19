@@ -181,6 +181,13 @@ export const setResettingCurrentSandbox = (resetting) => {
     }
 };
 
+export const setDeletingCurrentSandbox = (deleting) => {
+    return {
+        type: actionTypes.SET_DELETING_CURRENT_SANDBOX,
+        payload: {deleting}
+    }
+};
+
 export function createResource(data) {
     return dispatch => {
         const config = {
@@ -232,17 +239,17 @@ export const deleteCurrentSandbox = (history) => {
             },
             method: 'DELETE'
         };
-        dispatch(setResettingCurrentSandbox(true));
+        dispatch(setDeletingCurrentSandbox(true));
 
         fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${sandboxId}`, config)
             .then(() => {
                 history && history.push('/dashboard');
-                dispatch(setResettingCurrentSandbox(false));
                 dispatch(selectSandboxById());
             })
             .catch(e => {
                 console.log(e);
-            });
+            })
+            .then(() => dispatch(setDeletingCurrentSandbox(false)));
     }
 };
 

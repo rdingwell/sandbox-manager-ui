@@ -67,17 +67,19 @@ export function createApp (app) {
             .then(e => {
                 e.json()
                     .then(createdApp => {
-                        let formData = new FormData();
-                        formData.append("file", app.logoFile);
-                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
-                        fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                            .then(() => dispatch(appCreating(false)));
+                        if (app.logoFile) {
+                            let formData = new FormData();
+                            formData.append("file", app.logoFile);
+                            url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
+                            fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
+                                .then(() => dispatch(appCreating(false)));
+                        }
                     });
             })
             .catch(e => {
                 console.log(e);
-                dispatch(appCreating(false));
-            });
+            })
+            .then(() => dispatch(appCreating(false)));
     }
 }
 
@@ -111,7 +113,15 @@ export function updateApp (newValues, originalApp) {
 
         fetch(url, Object.assign({ method: "PUT", body: JSON.stringify(newApp) }, config))
             .then(e => {
-                e.json().then(a => console.log(a));
+                e.json().then(() => {
+                    if (newValues.logoFile) {
+                        let formData = new FormData();
+                        formData.append("file", newValues.logoFile);
+                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
+                        fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
+                            .then(() => dispatch(appCreating(false)));
+                    }
+                });
             })
             .catch(e => console.log(e))
             .then(() => {
@@ -158,13 +168,13 @@ export function loadApp (app) {
                     response.json()
                         .then(app => {
                             dispatch(setApp(app));
-                        })
-                        .then(() => {
-                            dispatch(setSandboxAppLoading(false));
                         });
                 })
                 .catch(e => {
                     console.log(e);
+                })
+                .then(() => {
+                    dispatch(setSandboxAppLoading(false));
                 });
         }
     }

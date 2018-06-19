@@ -27,29 +27,29 @@ class Settings extends Component {
 
     render () {
         return <div className='settings-wrapper'>
-            {!this.props.resetting
+            {!this.props.resetting && !this.props.deleting
                 ? <Tabs className='settings-tabs' contentContainerClassName='settings-tabs-container'>
                     <Tab label="Settings" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} onActive={() => this.setActiveTab('details')}>
-                        <SandboxDetails sandbox={this.props.sandbox} />
+                        <SandboxDetails sandbox={this.props.sandbox}/>
                     </Tab>
                     <Tab label="Reset" className={'sandbox-reset tab' + (this.state.activeTab === 'reset' ? ' active' : '')} onActive={() => this.setActiveTab('reset')}>
-                        <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} theme={this.props.muiTheme.palette} />
+                        <SandboxReset sandbox={this.props.sandbox} resetCurrentSandbox={this.props.resetCurrentSandbox} theme={this.props.muiTheme.palette}/>
                     </Tab>
                     <Tab label="Delete" className={'sandbox-delete tab' + (this.state.activeTab === 'delete' ? ' active' : '')} onActive={() => this.setActiveTab('delete')}>
-                        <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} theme={this.props.muiTheme.palette} />
+                        <DeleteSandbox sandbox={this.props.sandbox} deleteCurrentSandbox={this.props.deleteCurrentSandbox} theme={this.props.muiTheme.palette}/>
                     </Tab>
                 </Tabs>
                 : <div className='loader-wrapper'>
                     <p>
-                        Resetting sandbox
+                        {this.props.deleting ? 'Deleting' : 'Resetting'} sandbox
                     </p>
-                    <CircularProgress size={80} thickness={5} />
+                    <CircularProgress size={80} thickness={5}/>
                 </div>}
         </div>;
     };
 
     setActiveTab = (tab) => {
-        this.setState({activeTab: tab});
+        this.setState({ activeTab: tab });
     };
 }
 
@@ -57,7 +57,8 @@ class Settings extends Component {
 const mapStateToProps = state => {
     return {
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
-        resetting: state.sandbox.resetting
+        resetting: state.sandbox.resetting,
+        deleting: state.sandbox.deleting
     };
 };
 
