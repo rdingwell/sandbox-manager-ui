@@ -100,6 +100,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_RESETTING_CURRENT_SANDBOX:
             state.resetting = action.payload.resetting;
             break;
+        case actionTypes.SET_DELETING_CURRENT_SANDBOX:
+            state.deleting = action.payload.deleting;
+            break;
         case actionTypes.APP_RESET_STATE:
             state = initialState;
             break;

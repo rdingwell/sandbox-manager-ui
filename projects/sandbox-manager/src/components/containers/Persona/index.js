@@ -106,7 +106,6 @@ class Persona extends Component {
 
     getSelectionDialog = (creationType) => {
         let saveEnabled = this.state.username && this.state.username.length > 2 && this.state.password && this.state.password.length > 2;
-        console.log(saveEnabled);
         let actions = [<RaisedButton key={2} label='Cancel' secondary onClick={this.closeDialog}/>];
         let save = <RaisedButton key={1} label='Save' primary onClick={this.createPersona} disabled={!saveEnabled}/>;
         this.state.selectedForCreation && actions.unshift(save);

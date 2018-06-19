@@ -16,6 +16,57 @@ import DohMessage from "../../../../../../lib/components/DohMessage";
 import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
+const DEFAULT_APPS = [
+    {
+        "id": 1,
+        "authClient": {
+            "clientName": "Bilirubin Chart",
+            "clientId": "bilirubin_chart",
+            "redirectUri": "https://bilirubin-risk-chart-test.hspconsortium.org/index.html"
+        },
+        "appUri": "https://bilirubin-risk-chart-test.hspconsortium.org/",
+        "launchUri": "https://bilirubin-risk-chart-test.hspconsortium.org/launch.html",
+        "logoUri": "https://content.hspconsortium.org/images/bilirubin/logo/bilirubin.png",
+        "samplePatients": "Patient?_id=BILIBABY,SMART-1288992",
+        "briefDescription": "The HSPC Bilirubin Risk Chart is a sample app that demonstrates many of the features of the SMART on FHIR app launch specification and HL7 FHIR standard."
+    },
+    {
+        "id": 4,
+        "authClient": {
+            "clientName": "Patient Data Manager",
+            "clientId": "patient_data_manager",
+            "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
+        },
+        "appUri": "https://patient-data-manager.hspconsortium.org/",
+        "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
+        "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
+        "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+    },
+    {
+        "id": 2,
+        "authClient": {
+            "clientName": "My Web App",
+            "clientId": "my_web_app",
+            "redirectUri": "http://localhost:8000/fhir-app/"
+        },
+        "launchUri": "http://localhost:8000/fhir-app/launch.html",
+        "logoUri": "https://content.hspconsortium.org/images/my-web-app/logo/my.png",
+        "briefDescription": "Perform a SMART launch at http://localhost:8000/fhir-app/launch.html using the client: my_web_app"
+    },
+    {
+        "id": 3,
+        "authClient": {
+            "clientName": "CDS Hooks Sandbox",
+            "clientId": "48163c5e-88b5-4cb3-92d3-23b800caa927",
+            "redirectUri": "http://sandbox.cds-hooks.org/launch.html"
+        },
+        "appUri": "http://sandbox.cds-hooks.org/",
+        "launchUri": "http://sandbox.cds-hooks.org/launch.html",
+        "logoUri": "https://content.hspconsortium.org/images/cds-hooks-sandbox/logo/CdsHooks.png",
+        "briefDescription": "The CDS Hooks Sandbox is a tool that allows users to simulate the workflow of the CDS Hooks standard."
+    }
+];
+
 class Apps extends Component {
 
     constructor(props) {
@@ -45,6 +96,7 @@ class Apps extends Component {
 
         let appsList = this.props.apps ? this.props.apps.slice() : [];
         appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
+        appsList = DEFAULT_APPS.concat(appsList);
 
         let apps = appsList.map((app, index) => (
             <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
@@ -57,9 +109,9 @@ class Apps extends Component {
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
                 {!this.props.modal && <CardActions className='card-actions-wrapper'>
-                    <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppLaunch(e, index)}
+                    <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppLaunch(e, app)}
                                 icon={<LaunchIcon style={{width: '24px', height: '24px'}}/>} label='Launch'/>
-                    <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppSelect(e, index)}
+                    <FlatButton labelStyle={{fontSize: '10px'}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppSelect(e, app)}
                                 icon={<SettingsIcon style={{width: '24px', height: '24px'}}/>} label='Settings'/>
                 </CardActions>}
             </Card>
@@ -134,32 +186,18 @@ class Apps extends Component {
         this.setState({selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false});
     };
 
-    handleAppSelect = (event, index) => {
+    handleAppSelect = (event, app) => {
         event.preventDefault();
         event.stopPropagation();
-        let app = this.props.apps[index]
-            ? this.props.apps[index]
-            : {
-                "isDefault": true,
-                "authClient": {
-                    "clientName": "Bilirubin Chart",
-                    "clientId": "bilirubin_chart",
-                    "redirectUri": "https://bilirubin-risk-chart-test.hspconsortium.org/index.html"
-                },
-                "appUri": "https://bilirubin-risk-chart-test.hspconsortium.org/",
-                "launchUri": "https://bilirubin-risk-chart-test.hspconsortium.org/launch.html",
-                "logoUri": "https://content.hspconsortium.org/images/bilirubin/logo/bilirubin.png",
-                "samplePatients": "Patient?_id=BILIBABY,SMART-1288992",
-                "briefDescription": "The HSPC Bilirubin Risk Chart is a sample app that demonstrates many of the features of the SMART on FHIR app launch specification and HL7 FHIR standard."
-            };
-        this.props.apps[index] && this.props.loadApp(app);
-        this.setState({selectedApp: app, registerDialogVisible: false, appIsLoading: !!this.props.apps[index]});
+        let isDefault = DEFAULT_APPS.indexOf(app) >= 0;
+        !isDefault && this.props.loadApp(app);
+        this.setState({selectedApp: app, registerDialogVisible: false, appIsLoading: !isDefault});
     };
 
-    handleAppLaunch = (event, index) => {
+    handleAppLaunch = (event, app) => {
         event && event.preventDefault();
         event && event.stopPropagation();
-        this.setState({appToLaunch: this.props.apps[index], registerDialogVisible: false});
+        this.setState({appToLaunch: app, registerDialogVisible: false});
     };
 }
 

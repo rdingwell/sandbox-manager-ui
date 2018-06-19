@@ -10,6 +10,7 @@ export default {
     creatingSandbox: false,
     updatingUser: false,
     selecting: false,
+    deleting: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,
