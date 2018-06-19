@@ -123,10 +123,10 @@ export function updateApp (newValues, originalApp) {
                     }
                 });
             })
-            .catch(e => console.log(e))
-            .then(() => {
+            .catch(e => {
+                console.log(e);
                 dispatch(appCreating(false));
-            })
+            });
     }
 }
 
