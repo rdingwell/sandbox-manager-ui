@@ -21,6 +21,9 @@ export default (state = initialState, action) => {
             let apps = action.payload.apps || [];
             state.apps = apps;
             break;
+        case types.SET_SANDBOX_SELECTING:
+            state.apps = [];
+            break;
         case types.APP_RESET_STATE:
             state = initialState;
             break;
