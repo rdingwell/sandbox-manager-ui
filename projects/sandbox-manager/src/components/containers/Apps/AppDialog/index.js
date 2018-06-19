@@ -31,7 +31,7 @@ class AppDialog extends Component {
 
     componentWillReceiveProps (nextProps) {
         if ((this.props.app && !this.props.app.clientJSON && nextProps.app.clientJSON) ||
-            (this.props.app && this.props.app.clientJSON && this.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
+            (this.props.app && this.props.app.clientJSON && nextProps.app.clientJSONthis.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
             let clientJSON = nextProps.app && nextProps.app.clientJSON && JSON.parse(nextProps.app.clientJSON);
             let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
             let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
