@@ -13,7 +13,7 @@ import Layout from '../../../../../lib/components/Layout';
 import Init from '../Init/';
 
 import './style.less';
-import {CircularProgress} from "material-ui";
+import { CircularProgress, Dialog } from "material-ui";
 
 class App extends React.Component {
     componentDidMount () {
@@ -30,18 +30,18 @@ class App extends React.Component {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
             <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
                     signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite}>
-                {!this.props.sandbox.selecting && <div className='app-root' ref={this.refStage()}>
+                {!this.props.selecting && <div className='app-root' ref={this.refStage()}>
                     <Init {...this.props} />
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
                         {this.props.children}
                     </div>
                 </div>}
-                {this.props.sandbox.selecting && <div className='loader-wrapper'>
+                {this.props.selecting && <Dialog className='loader-wrapper' modal open={this.props.selecting}>
                     <p>
-                        Loading sandboxes
+                        Loading sandbox data
                     </p>
                     <CircularProgress size={80} thickness={5}/>
-                </div>}
+                </Dialog>}
             </Layout>
         </MuiThemeProvider>;
     }
@@ -62,7 +62,9 @@ App.propTypes = {
     ui: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({ ...glib, ...lib, ...state, ...ownProps });
+const mapStateToProps = (state) => {
+    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting }
+};
 const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);

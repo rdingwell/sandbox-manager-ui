@@ -9,7 +9,7 @@ export default function (state = initialState, action) {
             state.loading = true;
             break;
         case actionTypes.SET_SANDBOX_SELECTING :
-            state.selecting = action.selecting;
+            state.selecting = action.payload.selecting;
             break;
         case actionTypes.FETCH_SANDBOXES_SUCCESS:
             state.sandboxes = action.sandboxes;
@@ -109,6 +109,7 @@ export default function (state = initialState, action) {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             state.dataImporting = false;
+            state.selecting = false;
             state.importResults = undefined;
             break;
     }

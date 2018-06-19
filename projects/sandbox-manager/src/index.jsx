@@ -24,5 +24,5 @@ configStore()
         </Provider>;
 
         render(provider, document.getElementById('app'));
-        registerServiceWorker();
+        // registerServiceWorker();
     });
