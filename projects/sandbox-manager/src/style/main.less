@@ -66,6 +66,22 @@ body {
   }
 }
 
+:global(.label-value) {
+  margin: 1rem 0;
+  color: #000;
+  padding-top: 1.2rem;
+  position: relative;
+  & > span {
+    margin-right: 1rem;
+    &:first-of-type {
+      opacity: .5;
+      position: absolute;
+      top: 0;
+      font-size: 0.9rem;
+    }
+  }
+}
+
 :global(.screen-content) {
   margin-top: 48px;
   max-width: 1024px;
