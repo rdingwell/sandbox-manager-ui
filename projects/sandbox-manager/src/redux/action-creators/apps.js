@@ -198,14 +198,13 @@ export function loadSandboxApps () {
                     response.json()
                         .then(apps => {
                             dispatch(setSandboxApps(apps));
+                            dispatch(setSandboxAppsLoading(false));
                         })
                 })
                 .catch(e => {
                     console.log(e);
-                })
-                .then(() => {
                     dispatch(setSandboxAppsLoading(false));
-                })
+                });
         }
     }
 }
