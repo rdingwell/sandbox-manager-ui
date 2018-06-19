@@ -135,6 +135,7 @@ export function afterFhirAuth (url) {
                 }, 1000);
             } catch (e) {
                 console.log(e);
+                goHome();
             }
         }
     }
@@ -222,4 +223,27 @@ export function setServerUrl () {
 
     state.fhirClient = fhirClient;
     return state;
+}
+
+
+export function goHome() {
+    sessionStorage && sessionStorage.clear && sessionStorage.clear();
+    localStorage && localStorage.clear && localStorage.clear();
+
+    let cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        let spcook = cookies[i].split("=");
+        deleteCookie(spcook[0]);
+    }
+
+    function deleteCookie (cookiename) {
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        let expires = ";expires=" + d;
+        let name = cookiename;
+        let value = "";
+        document.cookie = name + "=" + value + expires + "; path=/acc/html";
+    }
+
+    window.location = window.location.origin;
 }
