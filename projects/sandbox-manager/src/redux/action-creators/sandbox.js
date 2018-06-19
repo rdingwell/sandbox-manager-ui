@@ -322,7 +322,7 @@ export const updateSandbox = (sandboxDetails) => {
 
 export const selectSandbox = (sandbox) => {
     return (dispatch, getState) => {
-        dispatch(setSandboxSelecting(true));
+        sandbox && dispatch(setSandboxSelecting(true));
         let state = getState();
 
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
