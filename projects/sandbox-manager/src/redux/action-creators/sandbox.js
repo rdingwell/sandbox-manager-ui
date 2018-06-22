@@ -329,6 +329,10 @@ export const selectSandbox = (sandbox) => {
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
 
         let configuration = state.config.xsettings.data.sandboxManager;
+
+        const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+        document.cookie = `${configuration.personaCookieName}=''; expires=${new Date(Date.UTC(0))}; domain=${domain}; path=/`;
+
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token
@@ -757,8 +761,7 @@ export function doLaunch (app, persona = {}, user) {
                             const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                             const date = new Date();
                             date.setTime(date.getTime() + (3 * 60 * 1000));
-                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
-                            document.cookie = cookie;
+                            document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                             registerAppContext(app, params, launchDetails, key);
                         });
                 });
