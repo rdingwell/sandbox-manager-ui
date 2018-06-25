@@ -749,16 +749,17 @@ export function doLaunch (app, persona = {}, user) {
             patientContext: persona.id
         };
 
+        const cookieURl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+        document.cookie = `${configuration.personaCookieName}=''; expires=${new Date(Date.UTC(0))}; domain=${cookieURl}; path=/`;
+
         try {
             fetch(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", config)
                 .then(function (response) {
                     response.json()
                         .then(data => {
-                            const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                             const date = new Date();
                             date.setTime(date.getTime() + (3 * 60 * 1000));
-                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
-                            document.cookie = cookie;
+                            document.cookie = `${configuration.personaCookieName}=${data.jwt}; expires=${date.getTime()}; domain=${cookieURl}; path=/`;
                             registerAppContext(app, params, launchDetails, key);
                         });
                 });

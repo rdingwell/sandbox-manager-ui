@@ -85,6 +85,10 @@ export function authorize (url, state, sandboxId) {
     };
 
     let config = state.config.xsettings.data.sandboxManager;
+
+    const cookieURl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+    document.cookie = `${config.personaCookieName}=''; expires=${new Date(Date.UTC(0))}; domain=${cookieURl}; path=/`;
+
     let serviceUrl = config.defaultServiceUrl;
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
