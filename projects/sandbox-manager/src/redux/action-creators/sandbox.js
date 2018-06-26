@@ -51,6 +51,13 @@ export function setLaunchScenariosLoading (loading) {
     }
 }
 
+export function setUserInviting (inviting) {
+    return {
+        type: actionTypes.SET_USER_INVITING,
+        payload: { inviting }
+    }
+}
+
 export function setScenarioCreating (creating) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
@@ -455,6 +462,7 @@ export const inviteNewUser = (email) => {
     return (dispatch, getState) => {
         let state = getState();
 
+        dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
@@ -474,9 +482,11 @@ export const inviteNewUser = (email) => {
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
+                dispatch(setUserInviting(false));
             })
             .catch(e => {
                 console.log(e);
+                dispatch(setUserInviting(false));
             });
     };
 };
@@ -485,6 +495,7 @@ export const removeInvitation = (id) => {
     return (dispatch, getState) => {
         let state = getState();
 
+        dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
@@ -495,9 +506,11 @@ export const removeInvitation = (id) => {
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({ method: "PUT" }, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
+                dispatch(setUserInviting(false));
             })
             .catch(e => {
                 console.log(e);
+                dispatch(setUserInviting(false));
             });
     };
 };
@@ -648,7 +661,7 @@ export function loadLaunchScenarios () {
 
 export function removeUser (userId, history) {
     return (dispatch, getState) => {
-        dispatch(setUpdatingUser(true));
+        dispatch(setInvitesLoading(true));
         let sandboxId = sessionStorage.sandboxId;
         let state = getState();
 
@@ -669,7 +682,7 @@ export function removeUser (userId, history) {
                         history && history.push('/dashboard');
                     }
 
-                    dispatch(setUpdatingUser(false));
+                    dispatch(setInvitesLoading(false));
                     dispatch({ type: actionTypes.REMOVE_SANDBOX_USER, userId: userId });
                 })
         }

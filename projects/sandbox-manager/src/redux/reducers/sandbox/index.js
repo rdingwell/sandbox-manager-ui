@@ -18,6 +18,9 @@ export default function (state = initialState, action) {
         case actionTypes.FETCH_SANDBOXES_FAIL:
             state.loading = false;
             break;
+            case actionTypes.SET_USER_INVITING:
+            state.inviting = action.payload.inviting;
+            break;
         case actionTypes.DELETE_SANDBOX :
             const sandboxes = state.sandboxes.filter(sandbox => sandbox.id !== action.sandboxId);
             state.sandboxes = sandboxes;

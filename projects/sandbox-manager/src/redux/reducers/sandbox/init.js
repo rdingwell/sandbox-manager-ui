@@ -11,6 +11,7 @@ export default {
     updatingUser: false,
     selecting: false,
     deleting: false,
+    inviting: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,
