@@ -92,14 +92,15 @@ class AppDialog extends Component {
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
-                        {this.props.app &&
                         <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)}
-                                   hintText='eg: launch patient/*.* openid profile' />}
+                                   hintText='eg: launch patient/*.* openid profile' />
+                        <span className='subscript'>
+                            Note: If you do not provide scope, defaults will be set.
+                        </span>
+                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
+                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)} />
                         {this.props.app &&
                         <span className='subscript'>Space separated list of scopes.</span>}
-                        {this.props.app &&
-                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
-                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)} />}
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>

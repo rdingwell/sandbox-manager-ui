@@ -38,6 +38,11 @@ export function createApp (app) {
                 "Content-Type": "application/json"
             }
         };
+        let scope = app.scope.length > 2
+            ? app.scope.split(' ')
+            : app.patientScoped
+                ? ["launch", "patient/*.*", "profile", "openid", "offline_access"]
+                : ["launch", "user/*.*", "profile", "openid"];
 
         let newApp = {
             launchUri: app.launchUri,
@@ -49,13 +54,14 @@ export function createApp (app) {
             createdBy: state.users.oauthUser,
             sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
             briefDescription: app.briefDescription,
+            samplePatients: app.samplePatients,
             clientJSON: JSON.stringify({
+                scope,
                 clientName: app.clientName,
                 launchUri: app.launchUri,
                 redirectUris: app.redirectUris.split(','),
                 grantTypes: ["authorization_code", "refresh_token"],
                 tokenEndpointAuthMethod: app.tokenEndpointAuthMethod,
-                scope: app.patientScoped ? ["launch", "patient/*.*", "profile", "openid", "offline_access"] : ["launch", "user/*.*", "profile", "openid"],
                 requireAuthTime: false,
                 accessTokenValiditySeconds: 3600,
                 idTokenValiditySeconds: 3600,
