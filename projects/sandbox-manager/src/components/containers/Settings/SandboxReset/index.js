@@ -57,7 +57,7 @@ class SandboxReset extends Component {
                     <li>Registered apps</li>
                     <li>Sandbox members</li>
                 </ul>
-                <Checkbox checked={this.state.applyDefaultDataSet} label='Apply Default Data Set' onCheck={(_e, applyDefaultDataSet) => this.setState({ applyDefaultDataSet })}
+                <Checkbox checked={this.state.applyDefaultDataSet} label='Import sample patients and practitioners' onCheck={(_e, applyDefaultDataSet) => this.setState({ applyDefaultDataSet })}
                           labelStyle={{ color: this.props.theme.primary2Color }} />
                 <p>If not selected, the sandbox will be empty</p>
                 {this.props.sandbox &&
