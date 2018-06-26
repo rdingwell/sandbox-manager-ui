@@ -17,7 +17,7 @@ export default class PersonaInputs extends Component {
 
     render () {
         return <Paper className='paper-card persona-inputs-wrapper'>
-            <h3 style={{ width: 'auto' }}>Persona information</h3>
+            <h3>Persona information</h3>
             <div className='actions'>
                 {this.props.actions}
             </div>

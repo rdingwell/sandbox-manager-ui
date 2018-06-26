@@ -76,7 +76,8 @@ class Invitations extends Component {
         ];
         let titleStyle = {
             backgroundColor: this.props.muiTheme.palette.primary2Color,
-            color: this.props.muiTheme.palette.alternateTextColor
+            color: this.props.muiTheme.palette.alternateTextColor,
+            paddingLeft: '10px'
         };
 
         return <div className='invitations-wrapper'>
@@ -86,7 +87,7 @@ class Invitations extends Component {
             <Dialog actions={actions} modal={false} open={this.state.open} onRequestClose={this.toggleModal}
                     bodyClassName='invite-dialog-wrapper' actionsContainerClassName='invite-dialog-actions-wrapper'>
                 <div className='screen-title invitations' style={titleStyle}>
-                    <h1 style={titleStyle}>Invite New User</h1>
+                    <h3 style={titleStyle}>Invite a new user</h3>
                     <IconButton className="close-button" onClick={this.toggleModal}>
                         <i className="material-icons">close</i>
                     </IconButton>
