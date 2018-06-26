@@ -23,7 +23,9 @@ class SandboxReset extends Component {
         ];
         let titleStyle = {
             backgroundColor: this.props.theme.primary2Color,
-            color: this.props.theme.alternateTextColor
+            color: this.props.theme.alternateTextColor,
+            paddingLeft: '10px',
+            marginLeft: '0'
         };
 
         return <div className='delete-wrapper'>

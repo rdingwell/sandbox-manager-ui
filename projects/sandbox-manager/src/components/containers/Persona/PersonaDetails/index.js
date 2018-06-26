@@ -27,7 +27,7 @@ class Index extends Component {
                     {this.props.type !== PersonaList.TYPES.persona &&
                     <div>
                         <div>
-                            <RaisedButton className='dm-launch-button' primary label='Open in DM' onClick={this.launch} />
+                            {this.props.type === PersonaList.TYPES.patient &&<RaisedButton className='dm-launch-button' primary label='Open in DM' onClick={this.launch} />}
                             <NameLabelValuePair label={'Name:'} value={this.props.persona.name[0] || this.props.persona.name} />
                             <LabelValuePair label={'FHIR ID:'} value={this.props.persona.id} />
                             <LabelValuePair label={'Gender:'} value={this.props.persona.gender} />

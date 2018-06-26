@@ -93,7 +93,7 @@ export default class QueryBrowser extends Component {
                 <div>
                     <h2>Result JSON Bundle</h2>
                     <div>
-                        {this.props.results && <ReactJson src={this.props.results}/>}
+                        {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     </div>
                 </div>
             </div>

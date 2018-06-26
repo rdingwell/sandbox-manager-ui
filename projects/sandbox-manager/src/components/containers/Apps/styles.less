@@ -4,6 +4,9 @@
     overflow: auto;
     width: 100%;
   }
+  .screen-content {
+    text-align: center;
+  }
   .app-card {
     width: 30%;
     height: 235px;
@@ -11,6 +14,7 @@
     display: inline-block;
     position: relative;
     overflow: hidden;
+    min-width: 308px;
     &:hover, &.active {
       .card-title, .card-actions-wrapper {
         transition: all .5s;
@@ -56,7 +60,7 @@
       color: whitesmoke;
       width: 100%;
       height: 45%;
-      bottom: -29%;
+      bottom: -30%;
       box-sizing: border-box;
       transition: all .5s;
       .app-name {
@@ -79,7 +83,7 @@
       position: absolute !important;
       width: 100%;
       left: 0;
-      bottom: -29%;
+      bottom: -30%;
       box-sizing: border-box;
       display: flex;
       justify-content: flex-start;

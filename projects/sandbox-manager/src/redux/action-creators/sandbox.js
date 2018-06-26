@@ -51,6 +51,13 @@ export function setLaunchScenariosLoading (loading) {
     }
 }
 
+export function setUserInviting (inviting) {
+    return {
+        type: actionTypes.SET_USER_INVITING,
+        payload: { inviting }
+    }
+}
+
 export function setScenarioCreating (creating) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
@@ -329,6 +336,10 @@ export const selectSandbox = (sandbox) => {
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
 
         let configuration = state.config.xsettings.data.sandboxManager;
+
+        const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+        document.cookie = `${configuration.personaCookieName}=''; expires=${new Date(Date.UTC(0))}; domain=${domain}; path=/`;
+
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token
@@ -451,6 +462,7 @@ export const inviteNewUser = (email) => {
     return (dispatch, getState) => {
         let state = getState();
 
+        dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
@@ -470,9 +482,11 @@ export const inviteNewUser = (email) => {
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
+                dispatch(setUserInviting(false));
             })
             .catch(e => {
                 console.log(e);
+                dispatch(setUserInviting(false));
             });
     };
 };
@@ -481,6 +495,7 @@ export const removeInvitation = (id) => {
     return (dispatch, getState) => {
         let state = getState();
 
+        dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
         const config = {
             headers: {
@@ -491,9 +506,11 @@ export const removeInvitation = (id) => {
         fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({ method: "PUT" }, config))
             .then(() => {
                 dispatch(fetchSandboxInvites());
+                dispatch(setUserInviting(false));
             })
             .catch(e => {
                 console.log(e);
+                dispatch(setUserInviting(false));
             });
     };
 };
@@ -644,7 +661,7 @@ export function loadLaunchScenarios () {
 
 export function removeUser (userId, history) {
     return (dispatch, getState) => {
-        dispatch(setUpdatingUser(true));
+        dispatch(setInvitesLoading(true));
         let sandboxId = sessionStorage.sandboxId;
         let state = getState();
 
@@ -665,7 +682,7 @@ export function removeUser (userId, history) {
                         history && history.push('/dashboard');
                     }
 
-                    dispatch(setUpdatingUser(false));
+                    dispatch(setInvitesLoading(false));
                     dispatch({ type: actionTypes.REMOVE_SANDBOX_USER, userId: userId });
                 })
         }
@@ -757,8 +774,7 @@ export function doLaunch (app, persona = {}, user) {
                             const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                             const date = new Date();
                             date.setTime(date.getTime() + (3 * 60 * 1000));
-                            let cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
-                            document.cookie = cookie;
+                            document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                             registerAppContext(app, params, launchDetails, key);
                         });
                 });
