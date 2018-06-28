@@ -2,50 +2,7 @@
   width: 100%;
   height: ~'calc(100% - 70px)';
   position: relative;
-  .launch-scenario-list-row {
-    @media (min-width: 1400px) {
-      &.active {
-        width: 105%;
-        left: -2.5%;
-        margin-top: 10px !important;
-        top: -1px !important;
-        font-size: 1.3rem !important;
-        & + * {
-          top: -1px;
-          width: 105%;
-          left: -2.5%;
-          position: relative;
-          margin-bottom: 10px;
-          height: 580px !important;
-          &::after {
-            content: " ";
-            display: inline-block;
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-          }
-        }
-      }
-    }
-    .actions-wrapper {
-      left: auto !important;
-      width: 100px !important;
-      right: -40px;
-      & > * {
-        display: inline-block !important;
-        width: 20px !important;
-        height: 20px !important;
-        vertical-align: top;
-        margin: 0 !important;
-        padding: 0 !important;
-        margin-right: 20px !important;
-      }
-    }
-    div > div {
-      padding-left: 15px !important;
-    }
-  }
+
   .loader-wrapper {
     width: 100%;
     height: 100%;
@@ -86,80 +43,42 @@
 }
 
 .scenarios-list {
-  padding: 0 !important;
-  margin-top: 70px !important;
-  .launch-scenario-title {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 96%;
-  }
-  & > div {
-    box-shadow: 0 0 1px #c0c0c0;
-    margin-bottom: 2px;
-    & > div {
-      padding: 0 !important;
+  .scenarios-list-row {
+    position: relative;
+    &::before {
+      bottom: 0;
+      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+      content: '';
+      display: block;
+      left: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
-  }
-}
-
-.expanded-content {
-  padding: 20px;
-  margin-left: 0 !important;
-  .details-pair {
-    margin: 0.5rem 0;
-    &.smaller-label {
-      & > label {
-        width: 30%;
-        line-height: 36px;
-      }
-      & > span {
-        width: 70%;
-      }
-    }
-    & > label {
+    & > * {
       display: inline-block;
-      width: 50%;
-      vertical-align: top;
-      font-weight: bold;
-      color: gray;
+      vertical-align: middle;
     }
-    & > span {
-      width: 50%;
-      display: inline-block;
-      word-wrap: break-word;
-      font-weight: bold;
-      &.center {
-        text-align: center;
+    .left-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      margin-left: 17px;
+      text-align: center;
+      border-radius: 20px;
+      margin-right: 16px;
+      .left-icon {
+        margin-top: 12px;
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        font-size: 16px;
+        position: relative;
+        right: -1px;
       }
-      & > i.fa {
-        margin-right: .4rem;
-      }
-      img {
-        height: 240px;
-      }
+    }
+    .content {
+      display: none;
     }
   }
-  .launch-scenario-dialog-detail {
-    width: 48%;
-    margin-top: 1rem;
-    display: inline-block;
-    &.margin {
-      margin-left: 4%;
-    }
-    &.full {
-      width: 100%;
-    }
-    h3 {
-      margin: 0.5rem;
-    }
-    & > div > div {
-      padding: 0 0.5rem 0.5rem 0.5rem;
-    }
-  }
-}
-
-.description-edit-button {
-  display: inline-block;
 }
