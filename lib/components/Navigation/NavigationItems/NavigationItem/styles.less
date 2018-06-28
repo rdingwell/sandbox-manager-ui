@@ -1,0 +1,31 @@
+.navigation-item {
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  align-items: left;
+  height: 56px;
+  overflow: hidden;
+  &:first-of-type {
+    margin-top: 8px;
+  }
+  a {
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    height: 24px;
+    padding: 16px 20px;
+    & > * {
+      vertical-align: middle;
+    }
+    i {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      line-height: inherit;
+      padding-right: 22px;
+      padding-left: 2px;
+    }
+  }
+}

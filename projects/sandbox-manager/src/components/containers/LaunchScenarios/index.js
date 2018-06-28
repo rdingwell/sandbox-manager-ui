@@ -25,7 +25,6 @@ class LaunchScenarios extends Component {
             showModal: false,
             descriptionEditing: false,
             selectedScenario: undefined,
-            willOpen: undefined,
             description: ''
         }
     }
@@ -74,8 +73,7 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ willOpen: selection });
-        setTimeout(() => this.setState({ selectedScenario: selection }), 200);
+        this.setState({ selectedScenario: selection });
     };
 
     getModal = () => {
@@ -92,8 +90,7 @@ class LaunchScenarios extends Component {
 
     getBuildActions = () => {
         let actions = [<RaisedButton key={3} label='Cancel' className='launch-scenario-dialog-action' onClick={this.toggleModal}/>];
-        return this.state.selectedApp && ([<RaisedButton key={1} label='Just Launch' primary className='launch-scenario-dialog-action' onClick={this.launchScenario}/>,
-            <RaisedButton key={2} label='Save' secondary className='launch-scenario-dialog-action' onClick={this.createScenario}/>]).concat(actions);
+        return this.state.selectedApp && ([<RaisedButton key={2} label='Save' secondary className='launch-scenario-dialog-action' onClick={this.createScenario}/>]).concat(actions);
     };
 
     createScenario = () => {
@@ -179,6 +176,98 @@ class LaunchScenarios extends Component {
         }
     };
 
+    toggleModal = () => {
+        this.props.fetchPersonas(PersonaList.TYPES.patient);
+        let showModal = !this.state.showModal;
+        let selectedScenario = showModal ? this.state.selectedScenario : undefined;
+        showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
+        showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
+        showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
+        this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
+    };
+
+    toggleDescriptionEdit = () => {
+        this.setState({ descriptionEditing: !this.state.descriptionEditing });
+    };
+
+    getScenarios = () => {
+        return <div className='scenarios-list'>
+            {this.props.scenarios.map((sc, index) => {
+                    let isSelected = this.state.selectedScenario === index;
+                    let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
+                    let isPatient = sc.userPersona.resource !== 'Practitioner';
+                    let iconStyle = isPatient
+                        ? {
+                            backgroundColor: this.props.muiTheme.palette.accent1Color,
+                            color: this.props.muiTheme.palette.primary5Color
+                        }
+                        : {
+                            backgroundColor: this.props.muiTheme.palette.primary5Color,
+                            color: this.props.muiTheme.palette.accent1Color
+                        };
+
+                    let details = <div key={1} className='expanded-content'>
+                        {this.getDetailsContent(sc)}
+                    </div>;
+                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
+                        return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
+                            <div className='left-icon-wrapper' style={iconStyle}>
+                                <span className='left-icon'>
+                                    {isPatient
+                                        ? <i>
+                                            <svg width="100%" height="100%" viewBox="0 0 24 24" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinejoin: 'round', strokeMiterlimit: '1.41421' }}>
+                                                <g transform="matrix(0.2,0,0,0.2,2,1.9999)">
+                                                    <circle cx="72.5" cy="45.78" r="9.843"/>
+                                                    <path
+                                                        d="M57.313,44.375L16.25,44.375C10.036,44.375 5,48.783 5,54.219C5,58.002 5,61.289 5,62.938C5,63.559 5.503,64.063 6.125,64.063L57.313,64.063C57.936,64.063 58.438,63.559 58.438,62.938L58.438,45.5C58.438,44.878 57.936,44.375 57.313,44.375Z"
+                                                        style={{ fillRule: 'nonzero' }}/>
+                                                    <path
+                                                        d="M25.813,23.749L34.064,23.749L34.064,32C34.064,32.622 34.567,33.125 35.189,33.125L42.312,33.125C42.934,33.125 43.437,32.622 43.437,32L43.437,23.749L51.687,23.749C52.31,23.749 52.812,23.246 52.812,22.624L52.812,15.501C52.812,14.879 52.31,14.376 51.687,14.376L43.437,14.376L43.437,6.125C43.437,5.503 42.934,5 42.312,5L35.189,5C34.567,5 34.064,5.503 34.064,6.125L34.064,14.376L25.813,14.376C25.191,14.376 24.688,14.879 24.688,15.501L24.688,22.624C24.688,23.246 25.19,23.749 25.813,23.749Z"
+                                                        style={{ fillRule: 'nonzero' }}/>
+                                                    <path
+                                                        d="M64.063,64.063L80.938,64.063C82.493,64.063 83.751,62.805 83.751,61.25C83.751,59.695 82.492,58.437 80.938,58.437L64.063,58.437C62.509,58.437 61.25,59.695 61.25,61.25C61.25,62.805 62.509,64.063 64.063,64.063Z"
+                                                        style={{ fillRule: 'nonzero' }}/>
+                                                    <path
+                                                        d="M86.563,34.25L86.563,66.875L6.125,66.875C5.503,66.875 5,67.378 5,68L5,93.875C5,94.496 5.503,95 6.125,95L12.313,95C12.935,95 13.438,94.496 13.438,93.875L13.438,80.938L86.563,80.938L86.563,93.876C86.563,94.497 87.067,95.001 87.688,95.001L93.876,95.001C94.497,95 95,94.496 95,93.875L95,34.25C95,33.628 94.497,33.125 93.875,33.125L87.687,33.125C87.064,33.125 86.563,33.628 86.563,34.25Z"
+                                                        style={{ fillRule: 'nonzero' }}/>
+                                                </g>
+                                                <g transform="matrix(0.666667,0,0,0.727273,0,0)">
+                                                    <rect x="0" y="0" width="36" height="33" style={{fill: 'none'}}/>
+                                                </g>
+                                            </svg>
+                                        </i>
+                                        : <i className='fa fa-user-md fa-lg'/>}
+                                </span>
+                            </div>
+                            <div>
+                                <span className='launch-scenario-title'>{sc.description}</span>
+                            </div>
+                            <div className='actions-wrapper'>
+                                <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.launchScenario(sc);
+                                }} tooltip='Launch'>
+                                    <LaunchIcon style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>
+                                <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.deleteScenario(sc);
+                                }} tooltip='Delete'>
+                                    <DeleteIcon style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>
+                            </div>
+                            <div className='content'>
+                                {details}
+                            </div>
+                        </div>
+                    }
+                }
+            )}
+        </div>
+    };
+
     getDetailsContent = (selectedScenario) => {
         let patient = selectedScenario.patient;
         let label = selectedScenario.userPersona !== null && selectedScenario.userPersona.resource === 'Practitioner'
@@ -253,62 +342,9 @@ class LaunchScenarios extends Component {
             </Card>]
     };
 
-    toggleModal = () => {
-        this.props.fetchPersonas(PersonaList.TYPES.patient);
-        let showModal = !this.state.showModal;
-        let selectedScenario = showModal ? this.state.selectedScenario : undefined;
-        showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
-        showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
-        showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
-        this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
-    };
-
-    toggleDescriptionEdit = () => {
-        this.setState({ descriptionEditing: !this.state.descriptionEditing });
-    };
-
     updateScenario = (e) => {
         e.target.value !== this.state.selectedScenario.description && this.props.updateLaunchScenario(this.state.selectedScenario, e.target.value);
         this.toggleDescriptionEdit();
-    };
-
-    getScenarios = () => {
-        return <List className='scenarios-list'>
-            {this.props.scenarios.map((sc, index) => {
-                    let isSelected = this.state.selectedScenario === index;
-                    let willOpen = this.state.willOpen === index;
-                    let itemStyles = isSelected ? { backgroundColor: this.props.muiTheme.palette.primary5Color } : { backgroundColor: 'transparent' };
-                    let nestedStyles = { height: 0, overflow: 'hidden', transition: 'all .5s' };
-
-                    let details = <ListItem key={1} disabled className='expanded-content' style={itemStyles}>
-                        {this.getDetailsContent(sc)}
-                    </ListItem>;
-                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
-                        return <ListItem key={index} primaryTogglesNestedList nestedItems={[details]} rightToggle={<span/>} style={itemStyles} open={willOpen || isSelected}
-                                         hoverColor='whitesmoke' onClick={() => this.handleRowSelect(index)} className={'launch-scenario-list-row' + (isSelected ? ' active' : '')}
-                                         nestedListStyle={nestedStyles}
-                                         leftIcon={<div className='actions-wrapper'>
-                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                                 e.preventDefault();
-                                                 e.stopPropagation();
-                                                 this.launchScenario(sc);
-                                             }} tooltip='Launch'>
-                                                 <LaunchIcon style={{ width: '24px', height: '24px' }}/>
-                                             </IconButton>
-                                             <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
-                                                 e.preventDefault();
-                                                 e.stopPropagation();
-                                                 this.deleteScenario(sc);
-                                             }} tooltip='Delete'>
-                                                 <DeleteIcon style={{ width: '24px', height: '24px' }}/>
-                                             </IconButton>
-                                         </div>}>
-                            <span className='launch-scenario-title'>{sc.description}</span>
-                        </ListItem>
-                    }
-                }
-            )}
-        </List>
     };
 }
 
