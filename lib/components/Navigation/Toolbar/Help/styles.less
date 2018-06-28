@@ -1,14 +1,19 @@
 .help-wrapper {
   position: absolute;
-  right: 120px;
+  right: 88px;
   .anchor {
     position: relative;
     right: -32px;
+    top: -26px;
   }
   a {
     display: block;
-    padding: 4px;
     border-radius: 3px;
+    height: 24px;
+    opacity: .75;
+    &:hover {
+      opacity: 1;
+    }
     &.active {
       background: rgba(0, 0, 0, 0.1);
       svg {
@@ -18,7 +23,6 @@
   }
   .right {
     float: right;
-    margin: 10px;
     color: whitesmoke;
     &:hover {
       cursor: pointer;
@@ -26,7 +30,6 @@
   }
   .left {
     float: left;
-    margin: 10px;
   }
 }
 
