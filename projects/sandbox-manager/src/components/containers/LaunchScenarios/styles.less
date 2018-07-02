@@ -13,11 +13,26 @@
     justify-content: center;
     align-items: center;
   }
+
+  .filter-wrapper {
+    margin: 16px 0;
+    & > * {
+      display: inline-block;
+      vertical-align: middle;
+      &:not(.actions) {
+        margin-right: 16px;
+      }
+      &.actions {
+        float: right;
+        position: relative;
+        top: -25px;
+      }
+    }
+  }
 }
 
 .launch-scenario-dialog {
   & > div {
-    //padding: 0 20px;
     & > div {
       padding: 0 !important;
     }
@@ -45,9 +60,15 @@
 .scenarios-list {
   .scenarios-list-row {
     position: relative;
+    height: 70px;
+    white-space: nowrap;
+    transition: all .3s;
+    &:hover {
+      cursor: pointer;
+    }
     &::before {
       bottom: 0;
-      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+      box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
       content: '';
       display: block;
       left: 0;
@@ -56,9 +77,81 @@
       right: 0;
       top: 0;
     }
+    &.active {
+      height: 470px;
+      margin: 16px 0;
+      transform: scale(1.03);
+      transition: all .3s;
+      .expanded-toggle {
+        transition: all .3s;
+        transform: scaleY(-1);
+      }
+      .content {
+        transition: all .3s;
+        height: ~'calc(100% - 70px)';
+        opacity: 1;
+        &:hover {
+          cursor: initial;
+        }
+        & > * {
+          opacity: 1;
+        }
+      }
+      .actions-wrapper {
+        width: 135px;
+      }
+      .title-wrapper {
+        width: ~'calc(100% - 64px - 121px - 34px)';
+        left: -50px;
+        top: 10px;
+        transition: all .3s;
+        .launch-scenario-title {
+          transition: all .3s;
+        }
+        .launch-scenario-app-name {
+          transition: all .1s;
+          opacity: 0;
+        }
+      }
+      .left-icon-wrapper {
+        transition: all .3s;
+        top: 112px;
+        left: 14px;
+      }
+    }
+    .title-wrapper {
+      line-height: 16px;
+      width: ~'calc(100% - 64px - 121px)';
+      overflow: hidden;
+      left: 0;
+      position: relative;
+      transition: all .3s;
+      .launch-scenario-title {
+        color: rgba(0, 0, 0, 0.8);
+        font-size: 16px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
+        transition: all .3s;
+      }
+      .launch-scenario-app-name {
+        display: block;
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 14px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        transition: all .3s;
+        transition-delay: .2s;
+      }
+    }
     & > * {
       display: inline-block;
       vertical-align: middle;
+      line-height: 70px;
     }
     .left-icon-wrapper {
       width: 40px;
@@ -67,18 +160,91 @@
       text-align: center;
       border-radius: 20px;
       margin-right: 16px;
+      position: relative;
+      transition: all .3s;
+      top: 0;
+      left: 0;
       .left-icon {
-        margin-top: 12px;
         width: 24px;
         height: 24px;
         display: inline-block;
         font-size: 16px;
         position: relative;
         right: -1px;
+        i {
+          position: absolute;
+          top: -3px;
+          left: 3px;
+          svg {
+            position: absolute;
+            top: -6px;
+            left: -3px;
+            width: 24px;
+            height: 24px;
+            fill: #FFF;
+          }
+        }
       }
     }
     .content {
-      display: none;
+      transition: all .3s;
+      display: block;
+      height: 0;
+      overflow: hidden;
+      padding: 17px 32px;
+      & > * {
+        opacity: 0;
+        transition: all .3s;
+        transition-delay: .2s;
+      }
+      .persona-wrapper, .context-wrapper {
+        max-width: 400px;
+        min-width: 300px;
+        line-height: 20px;
+        display: inline-block;
+        margin-right: 36px;
+        vertical-align: top;
+        .section-title {
+          display: block;
+          font-size: 11px;
+          margin-bottom: 16px;
+        }
+        .persona-name, .persona-id {
+          font-size: 14px;
+          display: block;
+          margin-left: 56px;
+        }
+        .persona-name {
+          font-weight: 700;
+        }
+        .persona-id {
+          line-height: 30px;
+        }
+        .section-label {
+          width: 100px;
+          display: inline-block;
+          font-size: 14px;
+        }
+        .section-value {
+          font-size: 14px;
+          font-weight: 700;
+        }
+      }
+    }
+    .actions-wrapper {
+      width: 103px;
+      & > * {
+        vertical-align: middle;
+      }
+      button {
+        padding: 0 !important;
+        width: 24px !important;
+        height: 24px !important;
+        margin-right: 8px !important;
+      }
+      .expanded-toggle {
+        transition: all .3s;
+      }
     }
   }
 }

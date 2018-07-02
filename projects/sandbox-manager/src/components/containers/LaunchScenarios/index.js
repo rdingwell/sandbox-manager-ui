@@ -4,17 +4,42 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
+import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
+import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
+import FilterList from "material-ui/svg-icons/content/filter-list";
+import Page from '../../../../../../lib/components/Page';
 
 import './styles.less';
 import DohMessage from "../../../../../../lib/components/DohMessage";
 import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
+
+const patientIcon = <svg width="100%" height="100%" viewBox="0 0 24 24" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinejoin: 'round', strokeMiterlimit: '1.41421' }}>
+    <g transform="matrix(0.2,0,0,0.2,2,1.9999)">
+        <circle cx="72.5" cy="45.78" r="9.843"/>
+        <path d="M57.313,44.375L16.25,44.375C10.036,44.375 5,48.783 5,54.219C5,58.002 5,61.289 5,62.938C5,63.559 5.503,64.063 6.125,64.063L57.313,64.063C57.936,
+                                                        64.063 58.438,63.559 58.438,62.938L58.438,45.5C58.438,44.878 57.936,44.375 57.313,44.375Z" style={{ fillRule: 'nonzero' }}/>
+        <path d="M25.813,23.749L34.064,23.749L34.064,32C34.064,32.622 34.567,33.125 35.189,33.125L42.312,33.125C42.934,33.125 43.437,32.622 43.437,32L43.437,
+                                                        23.749L51.687,23.749C52.31,23.749 52.812,23.246 52.812,22.624L52.812,15.501C52.812,14.879 52.31,14.376 51.687,14.376L43.437,14.376L43.437,
+                                                        6.125C43.437,5.503 42.934,5 42.312,5L35.189,5C34.567,5 34.064,5.503 34.064,6.125L34.064,14.376L25.813,14.376C25.191,14.376 24.688,14.879 24.688,
+                                                        15.501L24.688,22.624C24.688,23.246 25.19,23.749 25.813,23.749Z" style={{ fillRule: 'nonzero' }}/>
+        <path d="M64.063,64.063L80.938,64.063C82.493,64.063 83.751,62.805 83.751,61.25C83.751,59.695 82.492,58.437 80.938,58.437L64.063,58.437C62.509,58.437 61.25,
+                                                        59.695 61.25,61.25C61.25,62.805 62.509,64.063 64.063,64.063Z" style={{ fillRule: 'nonzero' }}/>
+        <path d="M86.563,34.25L86.563,66.875L6.125,66.875C5.503,66.875 5,67.378 5,68L5,93.875C5,94.496 5.503,95 6.125,95L12.313,95C12.935,95 13.438,94.496 13.438,
+                                                        93.875L13.438,80.938L86.563,80.938L86.563,93.876C86.563,94.497 87.067,95.001 87.688,95.001L93.876,95.001C94.497,95 95,94.496 95,93.875L95,34.25C95,
+                                                        33.628 94.497,33.125 93.875,33.125L87.687,33.125C87.064,33.125 86.563,33.628 86.563,34.25Z" style={{ fillRule: 'nonzero' }}/>
+    </g>
+    <g transform="matrix(0.666667,0,0,0.727273,0,0)">
+        <rect x="0" y="0" width="36" height="33" style={{ fill: 'none' }}/>
+    </g>
+</svg>;
 
 class LaunchScenarios extends Component {
 
@@ -39,17 +64,19 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <div className='launch-scenarios-wrapper'>
-            <div>
-                <div className='screen-title'>
-                    <h1>Launch Scenarios</h1>
+        return <Page title='Launch Scenarios'>
+            <div className='launch-scenarios-wrapper'>
+                <div className='filter-wrapper'>
+                    <FilterList color={this.props.muiTheme.palette.primary3Color}/>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
-                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter}/>}
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>}
                     <div className='actions'>
-                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal}/>
+                        <FloatingActionButton onClick={this.toggleModal}>
+                            <ContentAdd/>
+                        </FloatingActionButton>
                     </div>
                 </div>
-                <div className='screen-content'>
+                <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5}/>
                     </div>}
@@ -57,13 +84,15 @@ class LaunchScenarios extends Component {
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
                     <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
+                {this.getModal()}
             </div>
-            {this.getModal()}
-        </div>
+        </Page>
     }
 
-    onFilter = (appId) => {
-        this.setState({ appIdFilter: appId });
+    onFilter = (type, appId) => {
+        let state = {};
+        state[type] = appId;
+        this.setState(state);
     };
 
     launchScenario = (sc) => {
@@ -195,6 +224,7 @@ class LaunchScenarios extends Component {
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
+                    let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
                     let isPatient = sc.userPersona.resource !== 'Practitioner';
                     let iconStyle = isPatient
                         ? {
@@ -209,56 +239,51 @@ class LaunchScenarios extends Component {
                     let details = <div key={1} className='expanded-content'>
                         {this.getDetailsContent(sc)}
                     </div>;
-                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
+                    let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) &&
+                        (!this.state.typeFilter || this.state.typeFilter === sc.userPersona.resource);
+                    if (filter) {
                         return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
                                     {isPatient
-                                        ? <i>
-                                            <svg width="100%" height="100%" viewBox="0 0 24 24" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinejoin: 'round', strokeMiterlimit: '1.41421' }}>
-                                                <g transform="matrix(0.2,0,0,0.2,2,1.9999)">
-                                                    <circle cx="72.5" cy="45.78" r="9.843"/>
-                                                    <path
-                                                        d="M57.313,44.375L16.25,44.375C10.036,44.375 5,48.783 5,54.219C5,58.002 5,61.289 5,62.938C5,63.559 5.503,64.063 6.125,64.063L57.313,64.063C57.936,64.063 58.438,63.559 58.438,62.938L58.438,45.5C58.438,44.878 57.936,44.375 57.313,44.375Z"
-                                                        style={{ fillRule: 'nonzero' }}/>
-                                                    <path
-                                                        d="M25.813,23.749L34.064,23.749L34.064,32C34.064,32.622 34.567,33.125 35.189,33.125L42.312,33.125C42.934,33.125 43.437,32.622 43.437,32L43.437,23.749L51.687,23.749C52.31,23.749 52.812,23.246 52.812,22.624L52.812,15.501C52.812,14.879 52.31,14.376 51.687,14.376L43.437,14.376L43.437,6.125C43.437,5.503 42.934,5 42.312,5L35.189,5C34.567,5 34.064,5.503 34.064,6.125L34.064,14.376L25.813,14.376C25.191,14.376 24.688,14.879 24.688,15.501L24.688,22.624C24.688,23.246 25.19,23.749 25.813,23.749Z"
-                                                        style={{ fillRule: 'nonzero' }}/>
-                                                    <path
-                                                        d="M64.063,64.063L80.938,64.063C82.493,64.063 83.751,62.805 83.751,61.25C83.751,59.695 82.492,58.437 80.938,58.437L64.063,58.437C62.509,58.437 61.25,59.695 61.25,61.25C61.25,62.805 62.509,64.063 64.063,64.063Z"
-                                                        style={{ fillRule: 'nonzero' }}/>
-                                                    <path
-                                                        d="M86.563,34.25L86.563,66.875L6.125,66.875C5.503,66.875 5,67.378 5,68L5,93.875C5,94.496 5.503,95 6.125,95L12.313,95C12.935,95 13.438,94.496 13.438,93.875L13.438,80.938L86.563,80.938L86.563,93.876C86.563,94.497 87.067,95.001 87.688,95.001L93.876,95.001C94.497,95 95,94.496 95,93.875L95,34.25C95,33.628 94.497,33.125 93.875,33.125L87.687,33.125C87.064,33.125 86.563,33.628 86.563,34.25Z"
-                                                        style={{ fillRule: 'nonzero' }}/>
-                                                </g>
-                                                <g transform="matrix(0.666667,0,0,0.727273,0,0)">
-                                                    <rect x="0" y="0" width="36" height="33" style={{fill: 'none'}}/>
-                                                </g>
-                                            </svg>
-                                        </i>
+                                        ? <i>{patientIcon}</i>
                                         : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
-                            <div>
+                            <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.description}</span>
+                                <span className='launch-scenario-app-name'>{sc.description}</span>
                             </div>
                             <div className='actions-wrapper'>
-                                <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                <IconButton onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     this.launchScenario(sc);
                                 }} tooltip='Launch'>
-                                    <LaunchIcon style={{ width: '24px', height: '24px' }}/>
+                                    <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
-                                <IconButton style={{ color: this.props.muiTheme.palette.primary1Color }} onClick={(e) => {
+                                {!isSelected && <IconButton>
+                                    <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     this.deleteScenario(sc);
                                 }} tooltip='Delete'>
-                                    <DeleteIcon style={{ width: '24px', height: '24px' }}/>
+                                    <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.deleteScenario(sc);
+                                }} tooltip='Delete'>
+                                    <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                <IconButton className='expanded-toggle'>
+                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
                             </div>
-                            <div className='content'>
+                            <div className='content' style={contentStyles} onClick={e => e.stopPropagation()}>
                                 {details}
                             </div>
                         </div>
@@ -273,73 +298,34 @@ class LaunchScenarios extends Component {
         let label = selectedScenario.userPersona !== null && selectedScenario.userPersona.resource === 'Practitioner'
             ? `Launch App as a Practitioner with ${patient.fhirId !== '0' ? '' : 'NO'} Patient Context`
             : 'Launch an App As a Patient';
+        let lightColor = { color: this.props.muiTheme.palette.primary3Color };
+        let darkColor = { color: this.props.muiTheme.palette.primary6Color };
 
-        return [
-            <div key={0}>
-                <span>{label}</span>
-            </div>,
-            <div key={1} className='details-pair smaller-label'>
-                <label>Description:</label>
-                <span>
-                    {this.state.descriptionEditing
-                        ? <TextField defaultValue={selectedScenario.description} id='description' onBlur={this.updateScenario}/>
-                        : selectedScenario.description}
-                    <FlatButton className='description-edit-button' primary icon={<EditIcon/>} onClick={this.toggleDescriptionEdit}/>
-                </span>
-            </div>,
-            <div key={2} className='details-pair smaller-label'>
-                <label>Launch Embedded: </label>
-            </div>,
-            <Card key={3} className='launch-scenario-dialog-detail'>
-                <h3>Persona</h3>
+        return <div className='launch-scenario-wrapper'>
+            <div className='persona-wrapper'>
+                <span className='section-title' style={lightColor}>Persona</span>
+                <span className='persona-name' style={darkColor}>{selectedScenario.userPersona.fhirName}</span>
+                <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId}</span>
+            </div>
+            <div className='context-wrapper'>
+                <span className='section-title' style={lightColor}>Context</span>
                 <div>
-                    <div className='details-pair'>
-                        <label>Launch As:</label>
-                        <span>{selectedScenario.userPersona.fhirName}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>User Id:</label>
-                        <span>{selectedScenario.userPersona.personaUserId}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>FHIR Resource Type:</label>
-                        <span>
-                            <i className={`fa ${selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`}/>
-                            {selectedScenario.userPersona.resource}
-                        </span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Patient: </span>
+                    <span className='section-value' style={darkColor}>{selectedScenario.patient.name ? selectedScenario.patient.name : '-'}</span>
                 </div>
-            </Card>,
-            <Card key={4} className='launch-scenario-dialog-detail margin'>
-                <h3>With Context</h3>
                 <div>
-                    <div className='details-pair'>
-                        <label>Patient:</label>
-                        <span>{selectedScenario.patient.name}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>Encounter:</label>
-                        <span>None</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>Location:</label>
-                        <span>None</span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Encounter: </span>
+                    <span className='section-value' style={darkColor}>-</span>
                 </div>
-            </Card>,
-            <Card key={5} className='launch-scenario-dialog-detail full'>
-                <h3>App</h3>
                 <div>
-                    <div className='details-pair smaller-label'>
-                        <label>{selectedScenario.app.authClient.clientName}</label>
-                        <span className='center'>
-                            <img src={selectedScenario.app.logoUri
-                                ? selectedScenario.app.logoUri
-                                : 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}/>
-                        </span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Location: </span>
+                    <span className='section-value' style={darkColor}>-</span>
                 </div>
-            </Card>]
+            </div>
+            <div className='app-wrapper'>
+
+            </div>
+        </div>
     };
 
     updateScenario = (e) => {

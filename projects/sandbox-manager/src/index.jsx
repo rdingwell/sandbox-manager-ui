@@ -7,8 +7,6 @@ import { Provider } from 'react-redux';
 import Router from './router/';
 import configStore from './redux/';
 
-// import registerServiceWorker from '../../../lib/utils/registerServiceWorker';
-
 import supportedPatientResources from './assets/config/supported-patient-resources_3_0_1.json';
 
 import './style/main.less';
@@ -24,5 +22,4 @@ configStore()
         </Provider>;
 
         render(provider, document.getElementById('app'));
-        // registerServiceWorker();
     });
