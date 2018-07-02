@@ -14,7 +14,7 @@ class Start extends Component {
     }
 
     render () {
-        return <div className='start-page-wrapper'>
+        return <div className='start-page-wrapper no-padding'>
             <img src='./img/hspc-sndbx-logo.png'/>
             <CircularProgress/>
             <div>
