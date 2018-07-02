@@ -9,6 +9,8 @@ export function customizeTheme(theme) {
     newTheme.palette.primary3Color = "#757575";
     newTheme.palette.primary4Color = "#9C0227";
     newTheme.palette.primary5Color = "#F5F5F5";
+    newTheme.palette.primary6Color = "#3D3D3D";
+    newTheme.palette.primary7Color = "#D7D7D7";
     newTheme.palette.canvasColor = "#fff";
     newTheme.palette.accent1Color = "#9D0072";
     newTheme.palette.accent2Color = "#9E7B20";
