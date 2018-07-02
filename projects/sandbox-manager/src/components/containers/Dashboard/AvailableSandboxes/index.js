@@ -1,25 +1,27 @@
-import React, {Component} from 'react';
-import {Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress} from 'material-ui';
-import {fetchSandboxes, selectSandbox} from '../../../../redux/action-creators';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { Component } from 'react';
+import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress } from 'material-ui';
+import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import {withRouter} from 'react-router';
+import { withRouter } from 'react-router';
+import { ActionLock, ActionLockOpen } from "material-ui/svg-icons/index";
+import muiThemeable from "material-ui/styles/muiThemeable";
+
 import './styles.less';
-import {ActionLock, SocialPublic} from "material-ui/svg-icons/index";
 
 class Index extends Component {
 
-    componentDidMount() {
+    componentDidMount () {
         sessionStorage.clear();
         this.fetchSandboxes();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate (prevProps) {
         !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient && this.props.fetchSandboxes();
     }
 
-    render() {
+    render () {
         let sandboxes = null;
         if (!this.props.loading) {
             sandboxes = this.props.sandboxes.map((sandbox, index) => {
@@ -27,20 +29,23 @@ class Index extends Component {
                 let isFour = sandbox.apiEndpointIndex === '7';
                 let avatarClasses = 'sandbox-avatar';
                 let avatarText = 'STU3';
+                let backgroundColor = this.props.muiTheme.palette.accent1Color;
                 if (isFour) {
-                    avatarClasses += ' four';
+                    backgroundColor = this.props.muiTheme.palette.primary1Color;
                     avatarText = 'R4';
-                } else if (isThree) {
-                    avatarClasses += ' three';
-                } else {
+                } else if (!isThree) {
+                    backgroundColor = this.props.muiTheme.palette.primary3Color;
                     avatarText = 'DSTU2';
                 }
 
-                // let avatarClasses = 'sandbox-avatar' + (isThree ? ' three' : '');
-                let leftAvatar = <Avatar className={avatarClasses}>{avatarText}</Avatar>;
+                let leftAvatar = <Avatar className={avatarClasses} backgroundColor={backgroundColor}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
-                    ? <IconButton tooltip='Open endpoint'><SocialPublic/></IconButton>
-                    : <IconButton tooltip='Authorization required'><ActionLock/></IconButton>;
+                    ? <IconButton tooltip='Open endpoint'>
+                        <ActionLockOpen color={this.props.muiTheme.palette.primary3Color}/>
+                    </IconButton>
+                    : <IconButton tooltip='Authorization required'>
+                        <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
+                    </IconButton>;
                 return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
                                  leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)}/>
             });
@@ -75,7 +80,7 @@ class Index extends Component {
         this.props.selectSandbox(sandbox);
     };
 
-    fetchSandboxes() {
+    fetchSandboxes () {
         window.fhirClient && this.props.fetchSandboxes();
     }
 }
@@ -89,7 +94,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({fetchSandboxes, selectSandbox}, dispatch);
+    return bindActionCreators({ fetchSandboxes, selectSandbox }, dispatch);
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Index))));
