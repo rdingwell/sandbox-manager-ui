@@ -224,6 +224,7 @@ class LaunchScenarios extends Component {
             {this.props.scenarios.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
+                    let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
                     let isPatient = sc.userPersona.resource !== 'Practitioner';
                     let iconStyle = isPatient
                         ? {
@@ -279,10 +280,10 @@ class LaunchScenarios extends Component {
                                     <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>}
                                 <IconButton className='expanded-toggle'>
-                                        <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
                             </div>
-                            <div className='content'>
+                            <div className='content' style={contentStyles} onClick={e => e.stopPropagation()}>
                                 {details}
                             </div>
                         </div>
@@ -297,73 +298,34 @@ class LaunchScenarios extends Component {
         let label = selectedScenario.userPersona !== null && selectedScenario.userPersona.resource === 'Practitioner'
             ? `Launch App as a Practitioner with ${patient.fhirId !== '0' ? '' : 'NO'} Patient Context`
             : 'Launch an App As a Patient';
+        let lightColor = { color: this.props.muiTheme.palette.primary3Color };
+        let darkColor = { color: this.props.muiTheme.palette.primary6Color };
 
-        return [
-            <div key={0}>
-                <span>{label}</span>
-            </div>,
-            <div key={1} className='details-pair smaller-label'>
-                <label>Description:</label>
-                <span>
-                    {this.state.descriptionEditing
-                        ? <TextField defaultValue={selectedScenario.description} id='description' onBlur={this.updateScenario}/>
-                        : selectedScenario.description}
-                    <FlatButton className='description-edit-button' primary icon={<EditIcon/>} onClick={this.toggleDescriptionEdit}/>
-                </span>
-            </div>,
-            <div key={2} className='details-pair smaller-label'>
-                <label>Launch Embedded: </label>
-            </div>,
-            <Card key={3} className='launch-scenario-dialog-detail'>
-                <h3>Persona</h3>
+        return <div className='launch-scenario-wrapper'>
+            <div className='persona-wrapper'>
+                <span className='section-title' style={lightColor}>Persona</span>
+                <span className='persona-name' style={darkColor}>{selectedScenario.userPersona.fhirName}</span>
+                <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId}</span>
+            </div>
+            <div className='context-wrapper'>
+                <span className='section-title' style={lightColor}>Context</span>
                 <div>
-                    <div className='details-pair'>
-                        <label>Launch As:</label>
-                        <span>{selectedScenario.userPersona.fhirName}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>User Id:</label>
-                        <span>{selectedScenario.userPersona.personaUserId}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>FHIR Resource Type:</label>
-                        <span>
-                            <i className={`fa ${selectedScenario.userPersona.resource === 'Patient' ? 'fa-bed' : 'fa-user-md'}`}/>
-                            {selectedScenario.userPersona.resource}
-                        </span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Patient: </span>
+                    <span className='section-value' style={darkColor}>{selectedScenario.patient.name ? selectedScenario.patient.name : '-'}</span>
                 </div>
-            </Card>,
-            <Card key={4} className='launch-scenario-dialog-detail margin'>
-                <h3>With Context</h3>
                 <div>
-                    <div className='details-pair'>
-                        <label>Patient:</label>
-                        <span>{selectedScenario.patient.name}</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>Encounter:</label>
-                        <span>None</span>
-                    </div>
-                    <div className='details-pair'>
-                        <label>Location:</label>
-                        <span>None</span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Encounter: </span>
+                    <span className='section-value' style={darkColor}>-</span>
                 </div>
-            </Card>,
-            <Card key={5} className='launch-scenario-dialog-detail full'>
-                <h3>App</h3>
                 <div>
-                    <div className='details-pair smaller-label'>
-                        <label>{selectedScenario.app.authClient.clientName}</label>
-                        <span className='center'>
-                            <img src={selectedScenario.app.logoUri
-                                ? selectedScenario.app.logoUri
-                                : 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}/>
-                        </span>
-                    </div>
+                    <span className='section-label' style={lightColor}>Location: </span>
+                    <span className='section-value' style={darkColor}>-</span>
                 </div>
-            </Card>]
+            </div>
+            <div className='app-wrapper'>
+
+            </div>
+        </div>
     };
 
     updateScenario = (e) => {
