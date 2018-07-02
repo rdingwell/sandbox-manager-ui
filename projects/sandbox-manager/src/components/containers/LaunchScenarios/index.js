@@ -4,12 +4,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, List, ListItem, IconButton } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/PersonaList';
 import Apps from '../Apps';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
+import FilterList from "material-ui/svg-icons/content/filter-list";
+import Page from '../../../../../../lib/components/Page';
 
 import './styles.less';
 import DohMessage from "../../../../../../lib/components/DohMessage";
@@ -39,17 +42,19 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <div className='launch-scenarios-wrapper'>
-            <div>
-                <div className='screen-title'>
-                    <h1>Launch Scenarios</h1>
+        return <Page title='Launch Scenarios'>
+            <div className='launch-scenarios-wrapper'>
+                <div className='filter-wrapper'>
+                    <FilterList color={this.props.muiTheme.palette.primary3Color}/>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
-                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedFilters={this.state.appIdFilter}/>}
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>}
                     <div className='actions'>
-                        <RaisedButton primary label='Build Launch Scenario' onClick={this.toggleModal}/>
+                        <FloatingActionButton onClick={this.toggleModal}>
+                            <ContentAdd/>
+                        </FloatingActionButton>
                     </div>
                 </div>
-                <div className='screen-content'>
+                <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
                         <CircularProgress size={80} thickness={5}/>
                     </div>}
@@ -57,13 +62,15 @@ class LaunchScenarios extends Component {
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length === 0 &&
                     <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
+                {this.getModal()}
             </div>
-            {this.getModal()}
-        </div>
+        </Page>
     }
 
-    onFilter = (appId) => {
-        this.setState({ appIdFilter: appId });
+    onFilter = (type, appId) => {
+        let state = {};
+        state[type] = appId;
+        this.setState(state);
     };
 
     launchScenario = (sc) => {
@@ -209,7 +216,9 @@ class LaunchScenarios extends Component {
                     let details = <div key={1} className='expanded-content'>
                         {this.getDetailsContent(sc)}
                     </div>;
-                    if (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) {
+                    let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) &&
+                        (!this.state.typeFilter || this.state.typeFilter === sc.userPersona.resource);
+                    if (filter) {
                         return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>

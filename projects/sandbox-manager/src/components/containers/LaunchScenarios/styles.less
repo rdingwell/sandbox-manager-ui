@@ -13,11 +13,26 @@
     justify-content: center;
     align-items: center;
   }
+
+  .filter-wrapper {
+    margin: 16px 0;
+    & > * {
+      display: inline-block;
+      vertical-align: middle;
+      &:not(.actions) {
+        margin-right: 16px;
+      }
+      &.actions {
+        float: right;
+        position: relative;
+        top: -25px;
+      }
+    }
+  }
 }
 
 .launch-scenario-dialog {
   & > div {
-    //padding: 0 20px;
     & > div {
       padding: 0 !important;
     }
