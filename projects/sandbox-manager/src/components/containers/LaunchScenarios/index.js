@@ -261,11 +261,25 @@ class LaunchScenarios extends Component {
                                 }} tooltip='Launch'>
                                     <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
-                                <IconButton>
+                                {!isSelected && <IconButton>
                                     <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                                </IconButton>
-                                <IconButton>
-                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.deleteScenario(sc);
+                                }} tooltip='Delete'>
+                                    <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.deleteScenario(sc);
+                                }} tooltip='Delete'>
+                                    <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>}
+                                <IconButton className='expanded-toggle'>
+                                        <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
                             </div>
                             <div className='content'>
