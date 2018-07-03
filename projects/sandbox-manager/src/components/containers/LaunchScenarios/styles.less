@@ -3,6 +3,98 @@
   height: ~'calc(100% - 70px)';
   position: relative;
 
+  .launch-scenario-wrapper {
+    .app-card {
+      width: 206px;
+      height: 139px;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      .explore-app-button-wrapper {
+        padding: 9px 0 !important;
+      }
+      & > div {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+        height: 100%;
+      }
+      .media-wrapper {
+        height: 100%;
+        overflow: hidden;
+        & > div {
+          height: 77%;
+        }
+        &.register {
+          border-bottom: 2px solid whitesmoke;
+          & > div {
+            height: 100%;
+            width: 100%;
+            & > div {
+              height: 100%;
+              width: 100%;
+              & > button {
+                height: 100% !important;
+                width: 100%;
+                & > div {
+                  & > svg {
+                    margin: 0 !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .card-title {
+        position: absolute!important;
+        color: #f5f5f5;
+        width: 100%;
+        height: 46px;
+        bottom: 0;
+        box-sizing: border-box;
+        .app-name {
+          font-weight: 700;
+          font-size: 14px;
+          text-align: left;
+          position: absolute;
+          line-height: 14px;
+          top: 16px;
+          padding: 0 20px;
+          display: inline-block;
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          box-sizing: border-box;
+        }
+        .app-description {
+          font-size: 12px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+      .card-actions-wrapper {
+        padding: 8px;
+        position: absolute !important;
+        width: 100%;
+        left: 0;
+        bottom: -22%;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: flex-start;
+        transition: all .5s;
+        & > * {
+          margin-right: 0 !important;
+        }
+        button {
+          color: whitesmoke !important;
+        }
+      }
+    }
+  }
+
   .loader-wrapper {
     width: 100%;
     height: 100%;
@@ -78,8 +170,8 @@
       top: 0;
     }
     &.active {
-      height: 470px;
-      margin: 16px 0;
+      height: 408px;
+      margin: 21px 0;
       transform: scale(1.03);
       transition: all .3s;
       .expanded-toggle {
@@ -99,10 +191,19 @@
       }
       .actions-wrapper {
         width: 135px;
+        button.hidden-button {
+          width: 24px !important;
+          margin: 8px !important;
+        }
+        button.visible-button {
+          width: 0 !important;
+          margin: 0 !important;
+          overflow: hidden !important;
+        }
       }
       .title-wrapper {
         width: ~'calc(100% - 64px - 121px - 34px)';
-        left: -50px;
+        left: -60px;
         top: 10px;
         transition: all .3s;
         .launch-scenario-title {
@@ -117,6 +218,7 @@
         transition: all .3s;
         top: 112px;
         left: 14px;
+        z-index: -1;
       }
     }
     .title-wrapper {
@@ -197,18 +299,29 @@
         transition: all .3s;
         transition-delay: .2s;
       }
+      .section-title {
+        display: block;
+        font-size: 11px;
+        margin-bottom: 16px;
+        line-height: 16px;
+      }
+      .app-wrapper {
+        &:before {
+          content: ' ';
+          display: block;
+          border-top: 1px solid #D7D7D7;
+          position: relative;
+          left: -17px;
+          margin-bottom: 16px;
+        }
+        width: 240px;
+      }
       .persona-wrapper, .context-wrapper {
-        max-width: 400px;
-        min-width: 300px;
+        width: 250px;
         line-height: 20px;
         display: inline-block;
         margin-right: 36px;
         vertical-align: top;
-        .section-title {
-          display: block;
-          font-size: 11px;
-          margin-bottom: 16px;
-        }
         .persona-name, .persona-id {
           font-size: 14px;
           display: block;
@@ -235,6 +348,11 @@
       width: 103px;
       & > * {
         vertical-align: middle;
+      }
+      button.hidden-button {
+        width: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
       }
       button {
         padding: 0 !important;

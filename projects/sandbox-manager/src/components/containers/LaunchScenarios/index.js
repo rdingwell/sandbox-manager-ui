@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, IconButton, FloatingActionButton, CardMedia } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-import PersonaList from '../Persona/PersonaList';
+import PersonaList from '../Persona/List';
 import Apps from '../Apps';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
@@ -252,7 +252,7 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.description}</span>
-                                <span className='launch-scenario-app-name'>{sc.description}</span>
+                                <span className='launch-scenario-app-name'>{sc.app.authClient.clientName}</span>
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={(e) => {
@@ -262,23 +262,23 @@ class LaunchScenarios extends Component {
                                 }} tooltip='Launch'>
                                     <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
-                                {!isSelected && <IconButton>
+                                <IconButton className='visible-button'>
                                     <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                                </IconButton>}
-                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
+                                </IconButton>
+                                <IconButton className='hidden-button' style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.deleteScenario(sc);
+                                }} tooltip='Edit'>
+                                    <EditIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                </IconButton>
+                                <IconButton className='hidden-button' style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     this.deleteScenario(sc);
                                 }} tooltip='Delete'>
                                     <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                                </IconButton>}
-                                {isSelected && <IconButton style={{ color: this.props.muiTheme.palette.primary3Color }} onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    this.deleteScenario(sc);
-                                }} tooltip='Delete'>
-                                    <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                                </IconButton>}
+                                </IconButton>
                                 <IconButton className='expanded-toggle'>
                                     <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
                                 </IconButton>
@@ -310,20 +310,28 @@ class LaunchScenarios extends Component {
             <div className='context-wrapper'>
                 <span className='section-title' style={lightColor}>Context</span>
                 <div>
-                    <span className='section-label' style={lightColor}>Patient: </span>
+                    <label className='section-label' style={lightColor}>Patient: </label>
                     <span className='section-value' style={darkColor}>{selectedScenario.patient.name ? selectedScenario.patient.name : '-'}</span>
                 </div>
                 <div>
-                    <span className='section-label' style={lightColor}>Encounter: </span>
+                    <label className='section-label' style={lightColor}>Encounter: </label>
                     <span className='section-value' style={darkColor}>-</span>
                 </div>
                 <div>
-                    <span className='section-label' style={lightColor}>Location: </span>
+                    <label className='section-label' style={lightColor}>Location: </label>
                     <span className='section-value' style={darkColor}>-</span>
                 </div>
             </div>
             <div className='app-wrapper'>
-
+                <span className='section-title' style={lightColor}>App</span>
+                <Card className='app-card small'>
+                    <CardMedia className='media-wrapper'>
+                        <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                    </CardMedia>
+                    <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
+                        <span className='app-name'>{selectedScenario.app.authClient.clientName}</span>
+                    </div>
+                </Card>
             </div>
         </div>
     };
