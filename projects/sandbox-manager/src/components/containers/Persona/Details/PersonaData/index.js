@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BarChart } from 'react-chartkick';
 
-
 class Index extends Component {
     constructor (props) {
         super(props);
@@ -34,8 +33,7 @@ class Index extends Component {
         newState.push(['Immunization', props.immunizationCount]);
         newState.push(['Medication Dispense', props.medicationDispenseCount]);
         newState.push(['Medication Request', props.medicationRequestCount]);
-        let observation = ['Observation', props.observationCount];
-        newState.push(observation);
+        newState.push(['Observation', props.observationCount]);
         newState.push(['Procedure', props.procedureCount]);
         newState.push(['Procedure Request', props.procedureRequestCount]);
 

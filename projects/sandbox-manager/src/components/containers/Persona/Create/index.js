@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { RaisedButton, TextField, Dialog, RadioButtonGroup, RadioButton, Paper, IconButton } from 'material-ui';
 
 import './styles.less';
-import PersonaList from "../PersonaList";
+import PersonaList from "../List";
 
 export default class CreatePersona extends Component {
 

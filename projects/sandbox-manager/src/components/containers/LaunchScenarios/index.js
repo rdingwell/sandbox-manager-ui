@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, FlatButton, IconButton, FloatingActionButton, CardMedia, CardTitle, CardActions } from 'material-ui';
+import { CircularProgress, RaisedButton, Card, TextField, Dialog, IconButton, FloatingActionButton, CardMedia } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
-import PersonaList from '../Persona/PersonaList';
+import PersonaList from '../Persona/List';
 import Apps from '../Apps';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
@@ -252,7 +252,7 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.description}</span>
-                                <span className='launch-scenario-app-name'>{sc.description}</span>
+                                <span className='launch-scenario-app-name'>{sc.app.authClient.clientName}</span>
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={(e) => {

@@ -3,9 +3,9 @@ import {createResource, getPersonasPage, fetchPersonas, deletePersona, app_setSc
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import PersonaList from './PersonaList';
-import PersonaDetails from './PersonaDetails';
-import PersonaInputs from './PersonaInputs';
+import PersonaList from './List';
+import PersonaDetails from './Details';
+import PersonaInputs from './Inputs';
 import {RaisedButton, Dialog, FlatButton, IconButton} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
@@ -76,16 +76,7 @@ class Persona extends Component {
         }
         let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
 
-        return this.props.modal
-            ? personaList
-            : <div className='patients-wrapper'>
-                <div>
-                    {creationType && this.getSelectionDialog(creationType)}
-                    {this.getDetailsWindow()}
-                    {personaList}
-                    {personaDetails}
-                </div>
-            </div>;
+        return personaList;
     }
 
     getDetailsWindow = () => {
