@@ -1,17 +1,102 @@
+@media (max-width: 1322px) {
+  .layout-main.open {
+    .apps-screen-wrapper {
+      .screen-content {
+        //screen width - width of two cards - width of side bar - parent padding padding
+        padding-left: ~'calc((100vw - 648px - 256px - 48px - 48px) / 2)';
+        transition: padding-left .2s;
+      }
+    }
+  }
+
+  .apps-screen-wrapper {
+    .screen-content {
+      padding-left: ~'calc((100vw - 648px - 48px - 48px) / 2)';
+      transition: padding-left .2s;
+    }
+  }
+}
+
+@media (min-width: 1323px) and (max-width: 1646px) {
+  .layout-main.open {
+    .apps-screen-wrapper {
+      .screen-content {
+        padding-left: ~'calc((100vw - 972px - 256px - 48px - 48px) / 2)';
+        transition: padding-left .2s;
+      }
+    }
+  }
+
+  .apps-screen-wrapper {
+    .screen-content {
+      padding-left: ~'calc((100vw - 972px - 48px - 48px) / 2)';
+      transition: padding-left .2s;
+    }
+  }
+}
+
+@media (min-width: 1647px) and (max-width: 1910px) {
+  .layout-main.open {
+    .apps-screen-wrapper {
+      .screen-content {
+        padding-left: ~'calc((100vw - 1296px - 256px - 48px - 48px) / 2)';
+        transition: padding-left .2s;
+      }
+    }
+  }
+
+  .apps-screen-wrapper {
+    .screen-content {
+      padding-left: ~'calc((100vw - 1296px - 48px - 48px) / 2)';
+      transition: padding-left .2s;
+    }
+  }
+}
+
+@media (min-width: 1911px) {
+  .layout-main.open {
+    .apps-screen-wrapper {
+      .screen-content {
+        padding-left: ~'calc((100vw - 1620px - 256px - 48px - 48px) / 2)';
+        transition: padding-left .2s;
+      }
+    }
+  }
+
+  .apps-screen-wrapper {
+    .screen-content {
+      padding-left: ~'calc((100vw - 1620px - 48px - 48px) / 2)';
+      transition: padding-left .2s;
+    }
+  }
+}
+
+.apps-page-wrapper {
+  position: relative;
+  .filter-wrapper {
+    position: absolute;
+    right: 0;
+    top: -9px;
+  }
+}
+
 .apps-screen-wrapper {
+  padding-top: 40px;
+  .screen-content {
+    max-width: 1570px;
+  }
   &.modal {
     max-height: 76vh;
     overflow: auto;
     width: 100%;
   }
   .app-card {
-    width: 344px;
-    height: 300px;
+    width: 280px;
+    height: 235px;
     display: inline-block;
     position: relative;
     overflow: hidden;
-    margin-right: 32px;
-    margin-top: 24px;
+    margin: 24px 16px 0 16px;
     &:hover, &.active {
       .card-title, .card-actions-wrapper {
         transition: all .5s;
@@ -31,7 +116,7 @@
       height: 100%;
       overflow: hidden;
       & > div {
-        height: 77%;
+        height: 187px;
       }
       &.register {
         border-bottom: 2px solid whitesmoke;
@@ -60,7 +145,7 @@
       color: whitesmoke;
       width: 100%;
       height: 45%;
-      bottom: -22%;
+      bottom: -24%;
       box-sizing: border-box;
       transition: all .5s;
       .app-name {
@@ -72,7 +157,6 @@
         overflow: hidden;
         font-size: 24px;
         text-align: left;
-        padding-top: 20px;
       }
       .app-description {
         font-size: 12px;

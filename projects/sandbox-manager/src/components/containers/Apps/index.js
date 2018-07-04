@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import AddIcon from "material-ui/svg-icons/content/add";
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import Page from '../../../../../../lib/components/Page';
 
@@ -93,8 +93,6 @@ class Apps extends Component {
     }
 
     render () {
-        let textColor = this.props.muiTheme.palette.primary3Color;
-
         let appsList = this.props.apps ? this.props.apps.slice() : [];
         appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
         appsList = DEFAULT_APPS.concat(appsList);
@@ -118,15 +116,6 @@ class Apps extends Component {
             </Card>
         ));
 
-        !this.props.modal && apps.push(<Card className='app-card' key='create'>
-            <CardMedia className='media-wrapper register'>
-                <div>
-                    <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
-                                icon={<AddIcon style={{ color: textColor, width: '40px', height: '40px' }}/>}/>
-                </div>
-            </CardMedia>
-        </Card>);
-
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
                          muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
@@ -139,13 +128,22 @@ class Apps extends Component {
                 : null;
 
         return <Page title={this.props.title ? this.props.title : 'Registered Apps'}>
-            <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
-                {dialog}
-                <div className='screen-content'>
-                    {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps}
-                    {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
-                    <DohMessage message='There are no apps in this sandbox platform yet.'/>}
-                    {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+            <div className='apps-page-wrapper'>
+                <div className='filter-wrapper'>
+                    <div className='actions'>
+                        <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
+                            <ContentAdd/>
+                        </FloatingActionButton>
+                    </div>
+                </div>
+                <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
+                    {dialog}
+                    <div className='screen-content'>
+                        {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps}
+                        {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
+                        <DohMessage message='There are no apps in this sandbox platform yet.'/>}
+                        {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+                    </div>
                 </div>
             </div>
         </Page>
