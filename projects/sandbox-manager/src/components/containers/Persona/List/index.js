@@ -1,40 +1,36 @@
 import React, { Component } from 'react';
 import { Badge, CircularProgress, FloatingActionButton, IconButton, ListItem, RaisedButton } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import EditIcon from 'material-ui/svg-icons/image/edit';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
 import DohMessage from "../../../../../../../lib/components/DohMessage";
+import ConfirmModal from "../../../../../../../lib/components/ConfirmModal";
 import Page from '../../../../../../../lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
-import muiThemeable from "material-ui/styles/muiThemeable";
 import moment from 'moment';
 
 import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { doLaunch, fetchPatientDetails, patientDetailsFetchStarted } from "../../../../redux/action-creators";
-
-const TYPES = {
-    patient: 'Patient',
-    persona: 'Persona',
-    practitioner: 'Practitioner'
-};
+import { doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
-const CHART = <BarChart data={chartData} library={{ yAxis: { allowDecimals: false }, plotOptions: { series: { dataLabels: { enabled: true } } } }}/>;
-
 let rowSelectionTimer = null;
+const TYPES = {
+    patient: 'Patient',
+    persona: 'Persona',
+    practitioner: 'Practitioner'
+};
+const CHART = <BarChart data={chartData} library={{ yAxis: { allowDecimals: false }, plotOptions: { series: { dataLabels: { enabled: true } } } }}/>;
 
 class PersonaList extends Component {
 
@@ -42,7 +38,10 @@ class PersonaList extends Component {
         super(props);
 
         this.state = {
-            searchCrit: ''
+            searchCrit: '',
+            creationType: '',
+            showConfirmModal: false,
+            showCreateModal: false
         };
     }
 
@@ -68,21 +67,33 @@ class PersonaList extends Component {
 
         let defaultTitle = isPatient ? 'Patients' : isPractitioner ? 'Practitioners' : 'Personas';
         let title = this.props.title ? this.props.title : defaultTitle;
-        // let createButton = (isPractitioner || isPatient) && !this.props.modal && <div className='create-resource-button'>
-        //     <CreatePersona create={this.props.create} type={this.props.type} theme={this.props.theme}/>
-        // </div>;
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
         return <Page title={title}>
+            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} onCancel={() => this.setState({ showConfirmModal: false })} title='Confirm'>
+                <p>
+                    Are you sure you want to delete this {this.props.type.toLowerCase()}?
+                </p>
+            </ConfirmModal>
+            {!this.props.modal && <div className='create-resource-button'>
+                <CreatePersona open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
+                               personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
+            </div>}
             <div className='personas-wrapper'>
                 <div className='filter-wrapper'>
-                    <FilterList color={this.props.muiTheme.palette.primary3Color}/>
-                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>
+                    <FilterList color={this.props.theme.primary3Color}/>
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} />
                     <div className='actions'>
-                        {this.getPagination()}
-                        {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={this.toggleModal}>
+                        {personaList && personaList.length > 0 && this.props.pagination && this.getPagination()}
+                        {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal()}>
                             <ContentAdd/>
+                        </FloatingActionButton>}
+                        {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.patient)} style={{ marginRight: '16px' }}>
+                            <i className='fa fa-bed fa-lg'/>
+                        </FloatingActionButton>}
+                        {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.practitioner)}>
+                            <i className='fa fa-user-md fa-lg'/>
                         </FloatingActionButton>}
                     </div>
                 </div>
@@ -104,10 +115,15 @@ class PersonaList extends Component {
         </Page>
     }
 
-    getPersonaList = (isPatient, isPractitioner) => {
-        let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
+    toggleCreateModal = (type) => {
+        type && this.props.fetchPersonas(type);
+        this.setState({ showCreateModal: !this.state.showCreateModal, creationType: type || '' });
+    };
 
-        return this.props.personas && this.props.personas.map((persona, i) => {
+    getPersonaList = (isPatient, isPractitioner) => {
+        let itemStyles = { backgroundColor: this.props.theme.canvasColor };
+
+        return this.props.personaList && this.props.personaList.map((persona, i) => {
             let style = this.props.theme
                 ? { backgroundColor: persona.gender === 'male' ? this.props.theme.primary2Color : this.props.theme.accent1Color, color: this.props.theme.primary5Color }
                 : undefined;
@@ -117,9 +133,10 @@ class PersonaList extends Component {
                     : <Badge badgeContent=' '/>;
             let age = this.getAge(persona.birthDate);
             let isSelected = i === this.state.selected;
-            let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
+            let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.theme.primary7Color } : {};
+            let rowClick = isPatient && !this.props.modal ? () => this.handleRowSelect(i, persona) : undefined;
 
-            return <div key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={() => this.handleRowSelect(i, persona)}>
+            return <div key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={rowClick}>
                 <span className='left-icon-wrapper'>
                     {badge}
                 </span>
@@ -130,28 +147,47 @@ class PersonaList extends Component {
                         <span>{persona.personaUserId}</span>
                     </div>}
                 </div>
-                <div className='actions-wrapper'>
-                    <IconButton tooltip='Launch'>
-                        <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                {!this.props.modal && <div className='actions-wrapper'>
+                    <IconButton tooltip='Open in Patient Data Manager' onClick={e => this.openInDM(e, persona)}>
+                        <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
-                    <IconButton className='visible-button'>
-                        <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                    </IconButton>
-                    <IconButton className='hidden-button' style={{ color: this.props.muiTheme.palette.primary3Color }} tooltip='Edit'>
-                        <EditIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                    </IconButton>
-                    <IconButton className='hidden-button' style={{ color: this.props.muiTheme.palette.primary3Color }} tooltip='Delete'>
-                        <DeleteIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                    </IconButton>
-                    <IconButton className='expanded-toggle'>
-                        <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                    </IconButton>
-                </div>
+                    {!isPatient && !isPractitioner && <IconButton style={{ color: this.props.theme.primary3Color }} tooltip='Delete' onClick={e => this.deletePersona(e, persona)}>
+                        <DeleteIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>}
+                    {isPatient && <IconButton className='expanded-toggle'>
+                        <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>}
+                </div>}
                 <div className='content' style={contentStyles}>
                     {isSelected && CHART}
                 </div>
             </div>
         });
+    };
+
+    deletePersona = (e, persona) => {
+        if (persona && !this.state.personaToDelete) {
+            this.setState({ showConfirmModal: true, personaToDelete: persona });
+            e.stopPropagation();
+        } else {
+            this.props.deletePersona(this.state.personaToDelete);
+            this.setState({ showConfirmModal: false, personaToDelete: undefined });
+        }
+    };
+
+    openInDM = (e, persona) => {
+        e.stopPropagation();
+        this.props.doLaunch({
+            "authClient": {
+                "clientName": "Patient Data Manager",
+                "clientId": "patient_data_manager",
+                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
+            },
+            "appUri": "https://patient-data-manager.hspconsortium.org/",
+            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
+            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
+            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+        }, persona);
     };
 
     getAge = (birthday) => {
@@ -189,7 +225,7 @@ class PersonaList extends Component {
         let self = this.props.pagination.link.find(i => i.relation === 'self');
         let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
         let start = currentSkip + 1;
-        let end = start + this.props.personas.length - 1;
+        let end = start + this.props.personaList.length - 1;
 
         return this.props.pagination && <div className='persona-list-pagination-wrapper'>
             <div>
@@ -210,12 +246,12 @@ class PersonaList extends Component {
 
     paginate = toCall => {
         toCall && toCall();
-        toCall && this.setState({selected: undefined});
+        toCall && this.setState({ selected: undefined });
     };
 
     handleRowSelect = (row, persona) => {
         let selection = getSelection();
-        let parentNodeClass = selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
+        let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
         let actualClick = (parentNodeClass !== 'persona-info' && parentNodeClass !== 'name-wrapper') || selection.toString().length === 0;
         if (!rowSelectionTimer && actualClick) {
             rowSelectionTimer = setTimeout(() => {
@@ -233,8 +269,14 @@ class PersonaList extends Component {
 }
 
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
     return {
+        patients: state.persona.patients,
+        practitioners: state.persona.practitioners,
+        personas: state.persona.personas,
+        patientsPagination: state.persona.patientsPagination,
+        practitionersPagination: state.persona.practitionersPagination,
+        personasPagination: state.persona.personasPagination,
         fetchingDetails: state.patient.fetching,
         observationCount: state.patient.details.Observation || 0,
         encounterCount: state.patient.details.Encounter || 0,
@@ -251,9 +293,9 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchPatientDetails, patientDetailsFetchStarted, doLaunch }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchPatientDetails, patientDetailsFetchStarted, doLaunch, deletePersona }, dispatch);
 
-let PersonaListWithTheme = connect(mapStateToProps, mapDispatchToProps)(muiThemeable()(PersonaList));
+let PersonaListWithTheme = connect(mapStateToProps, mapDispatchToProps)(PersonaList);
 
 PersonaListWithTheme.TYPES = TYPES;
 

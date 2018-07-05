@@ -4,9 +4,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import PersonaList from './List';
-import PersonaDetails from './Details';
-import PersonaInputs from './Inputs';
-import {RaisedButton, Dialog, FlatButton, IconButton} from 'material-ui';
+import {RaisedButton} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
@@ -43,7 +41,7 @@ class Persona extends Component {
         let props = {
             key: this.state.type,
             type: this.state.type,
-            personas: this.props.currentPersonas,
+            personaList: this.props.currentPersonas,
             pagination: this.props.currentPagination,
             click: this.selectPersonHandler,
             search: this.props.fetchPersonas,
@@ -52,71 +50,14 @@ class Persona extends Component {
             create: this.props.createResource,
             modal: this.props.modal,
             title: this.props.title,
+            fetchPersonas: this.props.fetchPersonas,
             lookupPersonasStart: this.props.lookupPersonasStart,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.currentPagination),
             prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.currentPagination)
         };
 
-        this.state.type === PersonaList.TYPES.persona && (props.actions = [<h4 key={0} className='actions-label'>Create persona for: </h4>,
-            <RaisedButton key={1} labelPosition='after' primary icon={<i className='fa fa-user-md fa-2x fa-inverse'/>} label='Practitioner' className='custom-button'
-                          onClick={() => {
-                              this.props.fetchPersonas(PersonaList.TYPES.practitioner);
-                              this.setState({selectPractitioner: true})
-                          }}/>,
-            <RaisedButton key={2} labelPosition='after' primary icon={<i className='fa fa-user fa-2x fa-inverse'/>} label='Patient' className='custom-button'
-                          onClick={() => {
-                              this.props.fetchPersonas(PersonaList.TYPES.patient);
-                              this.setState({selectPatient: true})
-                          }}/>]);
-
-        let personaList = <PersonaList {...props} />;
-        let personaDetails = null;
-        if (!this.props.doLaunch && this.state.selectedPersona) {
-            personaDetails = <PersonaDetails type={this.state.type} persona={this.state.selectedPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog}/>;
-        }
-        let creationType = this.state.selectPractitioner ? PersonaList.TYPES.practitioner : this.state.selectPatient ? PersonaList.TYPES.patient : null;
-
-        return personaList;
+        return <PersonaList {...props} />;
     }
-
-    getDetailsWindow = () => {
-        let actions = [
-            <RaisedButton key={2} label='Close' secondary onClick={this.closeDialog}/>
-        ];
-        this.state.type === PersonaList.TYPES.persona &&
-        actions.unshift(<RaisedButton key={1} label='DELETE' primary style={{marginRight: '1rem'}} onClick={() => {
-            this.props.deletePersona(this.state.viewPersona);
-            this.closeDialog();
-        }}/>);
-
-        return <Dialog open={!!this.state.viewPersona} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions}>
-            {!this.state.selectedForCreation &&
-            <PersonaDetails type={this.state.type} persona={this.state.viewPersona} theme={this.props.muiTheme.palette} onClose={this.closeDialog}/>}
-        </Dialog>
-    };
-
-    getSelectionDialog = (creationType) => {
-        let saveEnabled = this.state.username && this.state.username.length > 2 && this.state.password && this.state.password.length > 2;
-        let actions = [<RaisedButton key={2} label='Cancel' secondary onClick={this.closeDialog}/>];
-        let save = <RaisedButton key={1} label='Save' primary onClick={this.createPersona} disabled={!saveEnabled}/>;
-        this.state.selectedForCreation && actions.unshift(save);
-        let personas = creationType === PersonaList.TYPES.practitioner ? this.props.practitioners : this.props.patients;
-        let pagination = creationType === PersonaList.TYPES.practitioner ? this.props.practitionersPagination : this.props.patientsPagination;
-
-        return <Dialog open={!!creationType} modal={false} onRequestClose={this.closeDialog} contentClassName='persona-info-dialog' actions={actions} actionsContainerClassName='invite-dialog-actions-wrapper'>
-            <IconButton className="close-button" onClick={this.closeDialog}>
-                <i className="material-icons">close</i>
-            </IconButton>
-            {!this.state.selectedForCreation &&
-            <PersonaList type={creationType} key={creationType} personas={personas} click={selectedForCreation => this.setState({selectedForCreation})}
-                         pagination={pagination} next={() => this.props.getNextPersonasPage(creationType, pagination)}
-                         prev={() => this.props.getPrevPersonasPage(creationType, pagination)} modal theme={this.props.muiTheme.palette}/>}
-            {this.state.selectedForCreation && <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId}
-                               onChange={(username, password) => this.setState({username, password})}/>
-            </div>}
-        </Dialog>
-    };
 
     closeDialog = () => {
         this.setState({selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined});

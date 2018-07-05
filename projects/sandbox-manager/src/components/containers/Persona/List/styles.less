@@ -61,7 +61,7 @@
         }
       }
       .actions-wrapper {
-        width: 135px;
+        text-align: right;
         button.hidden-button {
           width: 24px !important;
           margin: 8px !important;
@@ -73,7 +73,8 @@
         }
       }
       .persona-list-details {
-        width: ~'calc(100% - 64px - 121px - 34px)';
+        width: ~'calc(100% - 64px - 107px - 34px)';
+        transition: width .3s;
       }
     }
     .persona-list-details {
@@ -81,6 +82,7 @@
       width: ~'calc(100% - 64px - 121px)';
       overflow: hidden;
       position: relative;
+      transition: width .3s;
       .name-wrapper {
         color: rgba(0, 0, 0, 0.8);
         font-size: 16px;
@@ -174,6 +176,7 @@
     }
     .actions-wrapper {
       width: 103px;
+      text-align: right;
       & > * {
         vertical-align: middle;
       }
