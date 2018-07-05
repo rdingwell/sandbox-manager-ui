@@ -30,7 +30,7 @@ let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
-const CHART = <BarChart data={chartData}/>;
+const CHART = <BarChart data={chartData} library={{ yAxis: { allowDecimals: false }, plotOptions: {series: {dataLabels: {enabled: true}}} }}/>;
 
 class PersonaList extends Component {
 

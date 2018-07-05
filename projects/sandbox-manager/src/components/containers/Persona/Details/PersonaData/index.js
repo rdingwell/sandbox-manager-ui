@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BarChart } from 'react-chartkick';
+import { BarChart, configure } from 'react-chartkick';
 
 class Index extends Component {
     constructor (props) {
@@ -15,8 +15,9 @@ class Index extends Component {
     }
 
     render () {
+        console.log(configure);
         return <div>
-            <BarChart key={Math.random()} data={this.state.data} />
+            <BarChart key={Math.random()} ref='test' data={this.state.data} configure={{min:0, max:1000, download: true, discrete: true, xtitle: "Size", ytitle: "Population"}} min={0} max={10000} download={true} />
         </div>
     }
 
@@ -37,7 +38,7 @@ class Index extends Component {
         newState.push(['Procedure', props.procedureCount]);
         newState.push(['Procedure Request', props.procedureRequestCount]);
 
-        this.setState({ data: newState });
+        this.setState({ data: newState, min:0, max:1000, download: true, discrete: true, xtitle: "Size", ytitle: "Population" });
     }
 }
 

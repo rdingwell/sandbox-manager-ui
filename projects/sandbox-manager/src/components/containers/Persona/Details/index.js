@@ -3,11 +3,7 @@ import { fetchPatientDetails, doLaunch } from '../../../../redux/action-creators
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
-import { Paper, Subheader, RaisedButton, IconButton } from 'material-ui';
-import LabelValuePair from '../../../UI/LabelValuePair/LabelValuePair';
-import NameLabelValuePair from '../../../UI/LabelValuePair/NameLabelValuePair';
 import PersonaData from './PersonaData';
-import PersonaList from '../List';
 
 import './styles.less';
 
