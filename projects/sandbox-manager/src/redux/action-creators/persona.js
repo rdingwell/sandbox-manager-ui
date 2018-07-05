@@ -91,7 +91,7 @@ export function fetchPersonas (type = "Patient", searchCrit = {}) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
-            let count = 21;
+            let count = 9;
 
             let state = getState();
             if (type === 'Persona') {

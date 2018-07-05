@@ -50,7 +50,7 @@ export function fetchPatientDetails (patient, type) {
             DETAILS.map(d => {
                 let query = {};
                 query[d.patientSearch] = `Patient/${patient.id}`;
-                let params = { type: d.resourceType, count: 50, query };
+                let params = { type: d.resourceType, count: 1, query };
 
                 promises.push(window.fhirClient.api.search(params));
             });
@@ -59,7 +59,7 @@ export function fetchPatientDetails (patient, type) {
                 .then(data => {
                     let details = {};
                     data.map(d => {
-                        details[d.config.type] = d.data && d.data.entry ? d.data.entry.length : 0;
+                        details[d.config.type] = d.data ? d.data.total : 0;
                     });
                     dispatch(setPatientDetails(details));
                     dispatch(patientDetailsFetchSuccess());

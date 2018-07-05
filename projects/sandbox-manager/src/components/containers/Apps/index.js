@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import AddIcon from "material-ui/svg-icons/content/add";
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import Page from '../../../../../../lib/components/Page';
+import ConfirmModal from '../../../../../../lib/components/ConfirmModal';
 
 import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
@@ -17,57 +18,6 @@ import DohMessage from "../../../../../../lib/components/DohMessage";
 import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
-const DEFAULT_APPS = [
-    {
-        "id": 1,
-        "authClient": {
-            "clientName": "Bilirubin Chart",
-            "clientId": "bilirubin_chart",
-            "redirectUri": "https://bilirubin-risk-chart-test.hspconsortium.org/index.html"
-        },
-        "appUri": "https://bilirubin-risk-chart-test.hspconsortium.org/",
-        "launchUri": "https://bilirubin-risk-chart-test.hspconsortium.org/launch.html",
-        "logoUri": "https://content.hspconsortium.org/images/bilirubin/logo/bilirubin.png",
-        "samplePatients": "Patient?_id=BILIBABY,SMART-1288992",
-        "briefDescription": "The HSPC Bilirubin Risk Chart is a sample app that demonstrates many of the features of the SMART on FHIR app launch specification and HL7 FHIR standard."
-    },
-    {
-        "id": 4,
-        "authClient": {
-            "clientName": "Patient Data Manager",
-            "clientId": "patient_data_manager",
-            "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
-        },
-        "appUri": "https://patient-data-manager.hspconsortium.org/",
-        "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
-        "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
-        "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
-    },
-    {
-        "id": 2,
-        "authClient": {
-            "clientName": "My Web App",
-            "clientId": "my_web_app",
-            "redirectUri": "http://localhost:8000/fhir-app/"
-        },
-        "launchUri": "http://localhost:8000/fhir-app/launch.html",
-        "logoUri": "https://content.hspconsortium.org/images/my-web-app/logo/my.png",
-        "briefDescription": "Perform a SMART launch at http://localhost:8000/fhir-app/launch.html using the client: my_web_app"
-    },
-    {
-        "id": 3,
-        "authClient": {
-            "clientName": "CDS Hooks Sandbox",
-            "clientId": "48163c5e-88b5-4cb3-92d3-23b800caa927",
-            "redirectUri": "http://sandbox.cds-hooks.org/launch.html"
-        },
-        "appUri": "http://sandbox.cds-hooks.org/",
-        "launchUri": "http://sandbox.cds-hooks.org/launch.html",
-        "logoUri": "https://content.hspconsortium.org/images/cds-hooks-sandbox/logo/CdsHooks.png",
-        "briefDescription": "The CDS Hooks Sandbox is a tool that allows users to simulate the workflow of the CDS Hooks standard."
-    }
-];
-
 class Apps extends Component {
 
     constructor (props) {
@@ -77,6 +27,7 @@ class Apps extends Component {
             selectedApp: undefined,
             appToLaunch: undefined,
             registerDialogVisible: false,
+            showConfirmModal: false,
             appIsLoading: false
         };
     }
@@ -93,11 +44,8 @@ class Apps extends Component {
     }
 
     render () {
-        let textColor = this.props.muiTheme.palette.primary3Color;
-
         let appsList = this.props.apps ? this.props.apps.slice() : [];
         appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
-        appsList = DEFAULT_APPS.concat(appsList);
 
         let apps = appsList.map((app, index) => (
             <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
@@ -118,17 +66,8 @@ class Apps extends Component {
             </Card>
         ));
 
-        !this.props.modal && apps.push(<Card className='app-card' key='create'>
-            <CardMedia className='media-wrapper register'>
-                <div>
-                    <FlatButton style={{ color: textColor }} label='Register App' labelStyle={{ display: 'block' }} onClick={() => this.setState({ registerDialogVisible: true })}
-                                icon={<AddIcon style={{ color: textColor, width: '40px', height: '40px' }}/>}/>
-                </div>
-            </CardMedia>
-        </Card>);
-
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
-            ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.delete}
+            ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
                          muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
@@ -139,17 +78,36 @@ class Apps extends Component {
                 : null;
 
         return <Page title={this.props.title ? this.props.title : 'Registered Apps'}>
-            <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
-                {dialog}
-                <div className='screen-content'>
-                    {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps}
-                    {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
-                    <DohMessage message='There are no apps in this sandbox platform yet.'/>}
-                    {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+            <div className='apps-page-wrapper'>
+                <div className='filter-wrapper'>
+                    <div className='actions'>
+                        <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
+                            <ContentAdd/>
+                        </FloatingActionButton>
+                    </div>
+                </div>
+                <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
+                    {dialog}
+                    <div className='screen-content'>
+                        {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps}
+                        {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
+                        <DohMessage message='There are no apps in this sandbox platform yet.'/>}
+                        {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+                    </div>
                 </div>
             </div>
+            {this.state.showConfirmModal && <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
+                <p>
+                    Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.authClient.clientName : ''}"?<br/>
+                    Deleting this app will result in the deletion of all the launch scenarios connected to it.
+                </p>
+            </ConfirmModal>}
         </Page>
     }
+
+    toggleConfirmation = () => {
+        this.setState({ showConfirmModal: !this.state.showConfirmModal });
+    };
 
     appCardClick = (app) => {
         let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
@@ -177,15 +135,14 @@ class Apps extends Component {
     };
 
     closeAll = () => {
-        this.setState({ selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false });
+        this.setState({ selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false });
     };
 
     handleAppSelect = (event, app) => {
         event.preventDefault();
         event.stopPropagation();
-        let isDefault = DEFAULT_APPS.indexOf(app) >= 0;
-        !isDefault && this.props.loadApp(app);
-        this.setState({ selectedApp: app, registerDialogVisible: false, appIsLoading: !isDefault });
+        this.props.loadApp(app);
+        this.setState({ selectedApp: app, registerDialogVisible: false, appIsLoading: true });
     };
 
     handleAppLaunch = (event, app) => {

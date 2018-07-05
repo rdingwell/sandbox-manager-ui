@@ -3,6 +3,7 @@ import { RaisedButton, TextField, Dialog, RadioButtonGroup, RadioButton, Paper, 
 
 import './styles.less';
 import PersonaList from "../List";
+import PersonaInputs from "../Inputs";
 
 export default class CreatePersona extends Component {
 
@@ -10,7 +11,6 @@ export default class CreatePersona extends Component {
         super(props);
 
         this.state = {
-            dialogVisible: false,
             date: undefined,
             name: '',
             fName: '',
@@ -24,47 +24,61 @@ export default class CreatePersona extends Component {
 
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
-        ? this.state.name.length > 2 && this.state.fName.length > 2 && this.state.birthDate.length === 10 && this.state.gender.length > 2
-        : this.state.name.length > 2 && this.state.fName.length > 2;
+            ? this.state.name.length > 2 && this.state.fName.length > 2 && this.state.birthDate.length === 10 && this.state.gender.length > 2
+            : this.props.type === PersonaList.TYPES.practitioner
+                ? this.state.name.length > 2 && this.state.fName.length > 2
+                : this.state.username && this.state.username.length > 2 && this.state.password && this.state.password.length > 2;
 
         return <div>
-            <Dialog bodyClassName='create-persona-dialog' open={this.state.dialogVisible} onRequestClose={this.toggleDialog}
-                    actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled} />]}>
-                <Paper className='paper-card'>
-                    <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.toggleDialog}>
-                        <i className="material-icons">close</i>
-                    </IconButton>
-                    <h3>Create {this.props.type.toLowerCase()}</h3>
-                    <div className='paper-body'>
-                        <TextField floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })} />
-                        <TextField floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })} />
-
-                        {this.props.type === PersonaList.TYPES.patient &&
-                        <div>
-                            <TextField floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
-                                       onChange={(_, birthDate) => this.setState({ birthDate })} />
-                            <h4>Gender</h4>
-                            <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
-                                <RadioButton value="male" label="Male" />
-                                <RadioButton value="female" label="Female" />
-                            </RadioButtonGroup>
-                        </div>}
-                        {this.props.type === PersonaList.TYPES.practitioner &&
-                        <div>
-                            <TextField floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })} />
-                            <TextField floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
-                                       onChange={(_, speciality) => this.setState({ speciality })} />
-                            <TextField floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })} />
-                        </div>}
-                    </div>
-                </Paper>
+            <Dialog bodyClassName='create-persona-dialog' open={this.props.open} onRequestClose={this.props.close}
+                    actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
+                {this.props.type !== PersonaList.TYPES.persona && this.getDefaultContent()}
+                {this.props.type === PersonaList.TYPES.persona && this.getPersonaContent()}
             </Dialog>
-            <RaisedButton label='Create' onClick={this.toggleDialog} primary />
         </div>
     }
 
-    toggleDialog = () => {
-        this.setState({ dialogVisible: !this.state.dialogVisible });
+    getPersonaContent = () => {
+        let pagination = this.props.personaType === PersonaList.TYPES.practitioner ? this.props.practitionersPagination : this.props.patientsPagination;
+
+        return this.state.selectedForCreation
+            ? <div className='persona-inputs'>
+                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}/>
+            </div>
+            : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
+                           next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
+                           prev={() => this.props.getPrevPersonasPage(this.props.personaType, pagination)} search={this.props.search} />
+    };
+
+    getDefaultContent = () => {
+        return <Paper className='paper-card'>
+            <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.props.close}>
+                <i className="material-icons">close</i>
+            </IconButton>
+            <h3>Create {this.props.type.toLowerCase()}</h3>
+            <div className='paper-body'>
+                <TextField floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
+                <TextField floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
+
+                {this.props.type === PersonaList.TYPES.patient &&
+                <div>
+                    <TextField floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                               onChange={(_, birthDate) => this.setState({ birthDate })}/>
+                    <h4>Gender</h4>
+                    <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
+                        <RadioButton value="male" label="Male"/>
+                        <RadioButton value="female" label="Female"/>
+                    </RadioButtonGroup>
+                </div>}
+                {this.props.type === PersonaList.TYPES.practitioner &&
+                <div>
+                    <TextField floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
+                    <TextField floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
+                               onChange={(_, speciality) => this.setState({ speciality })}/>
+                    <TextField floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
+                </div>}
+            </div>
+        </Paper>
     };
 
     create = () => {
@@ -84,6 +98,6 @@ export default class CreatePersona extends Component {
         }
 
         this.props.create && this.props.create(data);
-        this.toggleDialog();
+        this.props.close();
     };
 }

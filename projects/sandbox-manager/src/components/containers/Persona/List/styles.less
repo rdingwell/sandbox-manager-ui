@@ -11,6 +11,9 @@
         float: right;
         position: relative;
         top: -25px;
+        & > * {
+          float: left;
+        }
       }
     }
   }
@@ -49,6 +52,7 @@
         transition: all .3s;
         height: ~'calc(100% - 70px)';
         opacity: 1;
+        padding: 17px 32px;
         &:hover {
           cursor: initial;
         }
@@ -57,7 +61,7 @@
         }
       }
       .actions-wrapper {
-        width: 135px;
+        text-align: right;
         button.hidden-button {
           width: 24px !important;
           margin: 8px !important;
@@ -69,7 +73,8 @@
         }
       }
       .persona-list-details {
-        width: ~'calc(100% - 64px - 121px - 34px)';
+        width: ~'calc(100% - 64px - 107px - 34px)';
+        transition: width .3s;
       }
     }
     .persona-list-details {
@@ -77,6 +82,7 @@
       width: ~'calc(100% - 64px - 121px)';
       overflow: hidden;
       position: relative;
+      transition: width .3s;
       .name-wrapper {
         color: rgba(0, 0, 0, 0.8);
         font-size: 16px;
@@ -130,7 +136,6 @@
       display: block;
       height: 0;
       overflow: hidden;
-      padding: 17px 32px;
       & > * {
         opacity: 0;
         transition: all .3s;
@@ -171,6 +176,7 @@
     }
     .actions-wrapper {
       width: 103px;
+      text-align: right;
       & > * {
         vertical-align: middle;
       }
@@ -193,13 +199,16 @@
 }
 
 .persona-list-pagination-wrapper {
-  text-align: center !important;
-  margin: 10px 0;
+  text-align: right !important;
   & > * {
-    &:not(:first-child) {
-      margin-left: 1rem;
+    button {
+      height: 60px !important;
+    }
+    span {
+      font-size: 12px;
+      line-height: 20px;
     }
     display: inline-block;
-    min-width: 88px;
+    vertical-align: middle;
   }
 }

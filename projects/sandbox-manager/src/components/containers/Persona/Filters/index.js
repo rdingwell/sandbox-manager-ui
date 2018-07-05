@@ -15,7 +15,7 @@ export default class Filters extends Component {
     }
 
     render () {
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
 
         let genderActive = this.state.filters.gender;
         let genderTitle = genderActive ? this.state.filters.gender : 'Gender';
