@@ -11,6 +11,9 @@
         float: right;
         position: relative;
         top: -25px;
+        & > * {
+          float: left;
+        }
       }
     }
   }
@@ -49,6 +52,7 @@
         transition: all .3s;
         height: ~'calc(100% - 70px)';
         opacity: 1;
+        padding: 17px 32px;
         &:hover {
           cursor: initial;
         }
@@ -130,7 +134,6 @@
       display: block;
       height: 0;
       overflow: hidden;
-      padding: 17px 32px;
       & > * {
         opacity: 0;
         transition: all .3s;
@@ -193,13 +196,16 @@
 }
 
 .persona-list-pagination-wrapper {
-  text-align: center !important;
-  margin: 10px 0;
+  text-align: right !important;
   & > * {
-    &:not(:first-child) {
-      margin-left: 1rem;
+    button {
+      height: 60px !important;
+    }
+    span {
+      font-size: 12px;
+      line-height: 20px;
     }
     display: inline-block;
-    min-width: 88px;
+    vertical-align: middle;
   }
 }

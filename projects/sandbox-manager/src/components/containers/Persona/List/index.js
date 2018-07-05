@@ -6,6 +6,8 @@ import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
+import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
+import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
 import DohMessage from "../../../../../../../lib/components/DohMessage";
@@ -30,14 +32,14 @@ let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
-const CHART = <BarChart data={chartData} library={{ yAxis: { allowDecimals: false }, plotOptions: {series: {dataLabels: {enabled: true}}} }}/>;
+const CHART = <BarChart data={chartData} library={{ yAxis: { allowDecimals: false }, plotOptions: { series: { dataLabels: { enabled: true } } } }}/>;
+
+let rowSelectionTimer = null;
 
 class PersonaList extends Component {
 
     constructor (props) {
         super(props);
-
-        this.timeout = null;
 
         this.state = {
             searchCrit: ''
@@ -78,6 +80,7 @@ class PersonaList extends Component {
                     <FilterList color={this.props.muiTheme.palette.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>
                     <div className='actions'>
+                        {this.getPagination()}
                         {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={this.toggleModal}>
                             <ContentAdd/>
                         </FloatingActionButton>}
@@ -190,24 +193,42 @@ class PersonaList extends Component {
 
         return this.props.pagination && <div className='persona-list-pagination-wrapper'>
             <div>
-                <RaisedButton label='Prev' secondary onClick={() => this.props.prev && this.props.prev()} disabled={start === 1 || this.props.loading}/>
+                <IconButton onClick={() => this.paginate(this.props.prev)} disabled={start === 1 || this.props.loading}>
+                    <LeftIcon/>
+                </IconButton>
             </div>
             <div>
                 <span>Showing {start} to {end} of {this.props.pagination.total}</span>
             </div>
             <div>
-                <RaisedButton label='Next' secondary onClick={() => this.props.next && this.props.next()} disabled={end + 1 >= this.props.pagination.total || this.props.loading}/>
+                <IconButton onClick={() => this.paginate(this.props.next)} disabled={end + 1 >= this.props.pagination.total || this.props.loading}>
+                    <RightIcon/>
+                </IconButton>
             </div>
         </div>
     };
 
+    paginate = toCall => {
+        toCall && toCall();
+        toCall && this.setState({selected: undefined});
+    };
+
     handleRowSelect = (row, persona) => {
-        // if (!this.props.fetchingDetails) {
-        let selected = this.state.selected !== row ? row : undefined;
-        selected !== undefined && this.props.patientDetailsFetchStarted();
-        selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(persona), 500);
-        this.setState({ selected });
-        // }
+        let selection = getSelection();
+        let parentNodeClass = selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
+        let actualClick = (parentNodeClass !== 'persona-info' && parentNodeClass !== 'name-wrapper') || selection.toString().length === 0;
+        if (!rowSelectionTimer && actualClick) {
+            rowSelectionTimer = setTimeout(() => {
+                rowSelectionTimer = null;
+                let selected = this.state.selected !== row ? row : undefined;
+                selected !== undefined && this.props.patientDetailsFetchStarted();
+                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(persona), 500);
+                this.setState({ selected });
+            }, 500)
+        } else {
+            clearTimeout(rowSelectionTimer);
+            rowSelectionTimer = null;
+        }
     };
 }
 
