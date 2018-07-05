@@ -83,7 +83,7 @@ class PersonaList extends Component {
             <div className='personas-wrapper'>
                 <div className='filter-wrapper'>
                     <FilterList color={this.props.theme.primary3Color}/>
-                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} />
+                    <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
                         {personaList && personaList.length > 0 && this.props.pagination && this.getPagination()}
                         {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal()}>
@@ -134,9 +134,8 @@ class PersonaList extends Component {
             let age = this.getAge(persona.birthDate);
             let isSelected = i === this.state.selected;
             let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.theme.primary7Color } : {};
-            let rowClick = isPatient && !this.props.modal ? () => this.handleRowSelect(i, persona) : undefined;
 
-            return <div key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={rowClick}>
+            return <div key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={() => this.handleRowSelect(i, persona)}>
                 <span className='left-icon-wrapper'>
                     {badge}
                 </span>
@@ -250,20 +249,24 @@ class PersonaList extends Component {
     };
 
     handleRowSelect = (row, persona) => {
-        let selection = getSelection();
-        let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
-        let actualClick = (parentNodeClass !== 'persona-info' && parentNodeClass !== 'name-wrapper') || selection.toString().length === 0;
-        if (!rowSelectionTimer && actualClick) {
-            rowSelectionTimer = setTimeout(() => {
+        if (!this.props.modal) {
+            let selection = getSelection();
+            let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
+            let actualClick = (parentNodeClass !== 'persona-info' && parentNodeClass !== 'name-wrapper') || selection.toString().length === 0;
+            if (!rowSelectionTimer && actualClick) {
+                rowSelectionTimer = setTimeout(() => {
+                    rowSelectionTimer = null;
+                    let selected = this.state.selected !== row ? row : undefined;
+                    selected !== undefined && this.props.patientDetailsFetchStarted();
+                    selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(persona), 500);
+                    this.setState({ selected });
+                }, 500)
+            } else {
+                clearTimeout(rowSelectionTimer);
                 rowSelectionTimer = null;
-                let selected = this.state.selected !== row ? row : undefined;
-                selected !== undefined && this.props.patientDetailsFetchStarted();
-                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(persona), 500);
-                this.setState({ selected });
-            }, 500)
+            }
         } else {
-            clearTimeout(rowSelectionTimer);
-            rowSelectionTimer = null;
+            this.props.click && this.props.click(persona);
         }
     };
 }
