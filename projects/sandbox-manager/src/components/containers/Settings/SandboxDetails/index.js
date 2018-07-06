@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { Checkbox, RaisedButton, TextField } from 'material-ui';
+import { CircularProgress, Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog } from 'material-ui';
+import Redo from 'material-ui/svg-icons/content/redo';
+import Delete from 'material-ui/svg-icons/action/delete';
+import Edit from 'material-ui/svg-icons/image/edit';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
-import { updateSandbox } from '../../../../redux/action-creators';
+import { updateSandbox, resetCurrentSandbox, deleteCurrentSandbox } from '../../../../redux/action-creators';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 
 import './styles.less';
+import SandboxReset from "../SandboxReset";
+import DeleteSandbox from '../DeleteSandbox';
+
+const MODALS = { edit: 'edit', reset: 'reset', delete: 'delete' };
 
 class SandboxDetails extends Component {
 
@@ -14,6 +22,9 @@ class SandboxDetails extends Component {
 
         this.state = {
             updateDone: false,
+            toggleReset: false,
+            addSampleData: false,
+            modalToShow: undefined,
             name: this.props.sandboxName,
             description: this.props.sandboxDescription,
             allowOpen: this.props.sandboxAllowOpenAccess
@@ -21,33 +32,133 @@ class SandboxDetails extends Component {
     }
 
     render () {
-        return <div className='sandbox-details-wrapper'>
-            <form onSubmit={this.updateSandboxHandler}>
-                <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth
-                           onChange={this.handleSandboxNameChange} />
-                <TextField value={this.state.description} floatingLabelText='Sandbox Description'
-                           onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth />
-                <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}
-                          onCheck={this.handleOpenFhirCheckboxChange} />
-                {this.state.allowOpen && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL' />}
-                <div className='label-value'>
-                    <span>Sandbox ID: </span>
-                    <span>{this.props.sandboxId}</span>
+        let titleStyle = { backgroundColor: this.props.theme.primary5Color };
+        let [actions, content] = this.getModalContent();
+
+        return <Card className='sandbox-details-wrapper'>
+            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog'
+                    contentStyle={{ maxWidth: '450px' }}>
+                {content}
+            </Dialog>
+            <CardHeader className='details-header' style={titleStyle}>
+                <div className='header-actions-wrapper'>
+                    <IconButton tooltip='Edit' onClick={() => this.toggleModal(MODALS.edit)}>
+                        <Edit color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>
+                    <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)}>
+                        <Redo color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>
+                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)}>
+                        <Delete color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>
                 </div>
-                <div className='label-value'>
-                    <span>Sandbox URL: </span>
-                    <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
-                </div>
-                <div className='label-value'>
-                    <span>Sandbox FHIR Version: </span>
-                    <span>{this.props.sandboxVersion.name}</span>
-                </div>
-                <div>
-                    <RaisedButton primary label='Save' className='details-button' type='submit' disabled={!this.state.updateDone} />
-                </div>
-            </form>
-        </div>;
+            </CardHeader>
+            <CardText>
+                {!this.props.resetting && !this.props.deleting
+                    ? <div>
+                        <div className='label-value'>
+                            <span>Sandbox Name: </span>
+                            <span>{this.props.sandboxName}</span>
+                        </div>
+                        <div className='label-value'>
+                            <span>Sandbox Description: </span>
+                            <span>{this.props.sandboxDescription || 'no description available'}</span>
+                        </div>
+                        <Checkbox disabled label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}/>
+                        {this.props.sandboxAllowOpenAccess && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL'/>}
+                        <div className='label-value'>
+                            <span>Sandbox ID: </span>
+                            <span>{this.props.sandboxId}</span>
+                        </div>
+                        <div className='label-value'>
+                            <span>Sandbox URL: </span>
+                            <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
+                        </div>
+                        <div className='label-value'>
+                            <span>Sandbox FHIR Version: </span>
+                            <span>{this.props.sandboxVersion.name}</span>
+                        </div>
+                    </div>
+                    : <div className='loader-wrapper'>
+                        <p>
+                            {this.props.deleting ? 'Deleting' : 'Resetting'} sandbox
+                        </p>
+                        <CircularProgress size={80} thickness={5}/>
+                    </div>}
+            </CardText>
+        </Card>;
     }
+
+    getModalContent = () => {
+        let titleStyle = {
+            backgroundColor: this.props.theme.primary1Color,
+            color: this.props.theme.alternateTextColor,
+            paddingLeft: '10px',
+            marginLeft: '0'
+        };
+
+        let actions = this.state.modalToShow === MODALS.edit
+            ? <div className='modal-bottom-actions-wrapper'>
+                <RaisedButton label='Save' secondary onClick={this.updateSandboxHandler}/>
+            </div>
+            : this.state.modalToShow === MODALS.reset
+                ? <div className='modal-bottom-actions-wrapper'>
+                    <RaisedButton disabled={!this.state.toggleReset} label=' Reset ' secondary onClick={this.resetSandbox}/>
+                </div>
+                : <div className='modal-bottom-actions-wrapper'>
+                    <RaisedButton disabled={!this.state.toggleDelete} label='Delete sandbox' secondary onClick={this.deleteSandbox}/>
+                </div>;
+
+        let content = this.state.modalToShow === MODALS.edit
+            ? <div className='sandbox-edit-modal'>
+                <div className='screen-title' style={titleStyle}>
+                    <IconButton className="close-button" onClick={this.props.onClose}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h1 style={titleStyle}>RESET SANDBOX</h1>
+                </div>
+                <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
+                <TextField value={this.state.description} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
+                <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen} onCheck={this.handleOpenFhirCheckboxChange}/>
+            </div>
+            : this.state.modalToShow === MODALS.reset
+                ? <div>
+                    <SandboxReset toggleSampleData={this.toggleSampleData} theme={this.props.theme} sandbox={this.props.sandbox} toggleReset={this.toggleReset} onClose={() => this.toggleModal()}/>
+                </div>
+                : this.state.modalToShow === MODALS.delete
+                    ? <div>
+                        <DeleteSandbox toggleDelete={this.toggleDelete} theme={this.props.theme} sandbox={this.props.sandbox} onClose={() => this.toggleModal()}/>
+                    </div>
+                    : null;
+
+        return [actions, content];
+    };
+
+    resetSandbox = () => {
+        this.props.resetCurrentSandbox(this.state.addSampleData);
+        this.toggleModal();
+    };
+
+    deleteSandbox = () => {
+        this.props.deleteCurrentSandbox(this.props.history);
+        this.toggleModal();
+    };
+
+    toggleSampleData = (addSampleData) => {
+        this.setState({ addSampleData });
+    };
+
+    toggleReset = (toggleReset) => {
+        this.setState({ toggleReset });
+    };
+
+    toggleDelete = (toggleDelete) => {
+        this.setState({ toggleDelete });
+    };
+
+    toggleModal = (type) => {
+        this.setState({ modalToShow: type, addSampleData: false, toggleReset: false, toggleDelete: false });
+    };
 
     updateSandboxHandler = (event) => {
         event.preventDefault();
@@ -59,6 +170,7 @@ class SandboxDetails extends Component {
         };
 
         this.props.updateSandbox(details);
+        this.toggleModal();
     };
 
     handleSandboxNameChange = (_e, name) => {
@@ -85,10 +197,12 @@ const mapStateToProps = state => {
         : { name: 'unknown' };
 
     return {
-        sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion,
-        serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl
+        sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion, sandbox,
+        serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl,
+        resetting: state.sandbox.resetting,
+        deleting: state.sandbox.deleting
     };
 };
-const mapDispatchToProps = dispatch => bindActionCreators({ updateSandbox }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ updateSandbox, resetCurrentSandbox, deleteCurrentSandbox }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(SandboxDetails))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(SandboxDetails)))

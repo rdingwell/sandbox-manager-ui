@@ -313,10 +313,8 @@ export const updateSandbox = (sandboxDetails) => {
             body: JSON.stringify(data)
         };
         fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${selectedSandbox}`, config)
-            .then(result => {
-                result.json().then(() => {
-                    dispatch(UPDATE_EVENT);
-                });
+            .then(() => {
+                dispatch(UPDATE_EVENT);
             })
             .catch(e => {
                 console.log(e);
