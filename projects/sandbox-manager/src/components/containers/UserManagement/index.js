@@ -19,10 +19,6 @@ class UserManagement extends Component {
         };
     }
 
-    componentDidMount () {
-        this.props.app_setScreen('user-management');
-    }
-
     render () {
         return <div className='user-management-wrapper'>
             <Tabs className='user-tabs' contentContainerClassName='screen-content'>

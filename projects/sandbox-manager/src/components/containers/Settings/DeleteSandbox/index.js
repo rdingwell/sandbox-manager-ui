@@ -1,51 +1,25 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
-import { TextField, Checkbox, RaisedButton, Dialog, IconButton } from 'material-ui';
+import { Checkbox, IconButton } from 'material-ui';
 
 import './styles.less';
 
-class SandboxReset extends Component {
-
-    constructor (props) {
-        super(props);
-
-        this.state = {
-            del: false,
-            showDeleteModal: false,
-            enableDelete: ''
-        };
-    }
+export default class SandboxReset extends Component {
 
     render () {
-        let actions = [
-            <RaisedButton key={1} label='Delete' secondary onClick={this.deleteSandbox} disabled={this.state.enableDelete.toLowerCase() !== 'delete'} />,
-            <RaisedButton key={2} label='Cancel' primary onClick={this.toggleModal} className='cancel-button' />
-        ];
         let titleStyle = {
-            backgroundColor: this.props.theme.primary2Color,
+            backgroundColor: this.props.theme.primary4Color,
             color: this.props.theme.alternateTextColor,
             paddingLeft: '10px',
             marginLeft: '0'
         };
 
         return <div className='delete-wrapper'>
-            {this.state.showDeleteModal && <Dialog paperClassName='app-dialog auto delete-sandbox-dialog' modal={false}
-                                                   open={this.state.showDeleteModal} onRequestClose={this.toggleModal} actions={actions}>
-                <div className='screen-title' style={titleStyle}>
-                    <IconButton className="close-button" onClick={this.toggleModal}>
-                        <i className="material-icons">close</i>
-                    </IconButton>
-                    <h1 style={titleStyle}>Delete Sandbox</h1>
-                </div>
-                <div className='screen-content delete-sandbox-confirm-dialog'>
-                    <p>
-                        Are you sure you want to delete sandbox {this.props.sandbox.name}? This is not reversible and will delete all FHIR data, launch scenarios, registered
-                        app, etc.
-                    </p>
-                    <TextField value={this.state.enableDelete} floatingLabelText='Type "DELETE"' fullWidth
-                               onChange={(_e, enableDelete) => this.setState({ enableDelete })} />
-                </div>
-            </Dialog>}
+            <div className='screen-title' style={titleStyle}>
+                <IconButton className="close-button" onClick={this.props.onClose}>
+                    <i className="material-icons">close</i>
+                </IconButton>
+                <h1 style={titleStyle}>RESET SANDBOX</h1>
+            </div>
             <div className='delete-content'>
                 <p>Deleting the sandbox will delete:</p>
                 <ul>
@@ -55,22 +29,13 @@ class SandboxReset extends Component {
                     <li>Remove access for all sandbox members</li>
                 </ul>
                 <p>This is NOT reversible!</p>
-                {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name} onCheck={(_e, del) => this.setState({ del })}
+                <p>
+                    Are you sure you want to delete sandbox {this.props.sandbox.name}? This is not reversible and will delete all FHIR data, launch scenarios, registered
+                    app, etc.
+                </p>
+                {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name} onCheck={(_e, del) => this.props.toggleDelete(del)}
                                                  labelStyle={{ color: this.props.theme.primary2Color }} />}
-                <RaisedButton primary disabled={!this.state.del} label="Delete" className='button' onClick={this.toggleModal} />
             </div>
         </div>;
     }
-
-    toggleModal = () => {
-        this.setState({ showDeleteModal: !this.state.showDeleteModal });
-    };
-
-    deleteSandbox = () => {
-        this.props.deleteCurrentSandbox(this.props.history);
-        this.toggleModal();
-    }
 }
-
-
-export default withRouter(SandboxReset);
