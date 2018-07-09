@@ -272,7 +272,7 @@ class PersonaList extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
     return {
         patients: state.persona.patients,
         practitioners: state.persona.practitioners,
