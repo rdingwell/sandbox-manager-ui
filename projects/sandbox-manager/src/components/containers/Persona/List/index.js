@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, CircularProgress, FloatingActionButton, IconButton, ListItem, RaisedButton } from 'material-ui';
+import { Badge, CircularProgress, FloatingActionButton, IconButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
@@ -85,7 +85,7 @@ class PersonaList extends Component {
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
-                        {personaList && personaList.length > 0 && this.props.pagination && this.getPagination()}
+                        {personaList && this.props.pagination && this.getPagination()}
                         {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal()}>
                             <ContentAdd/>
                         </FloatingActionButton>}
@@ -97,9 +97,9 @@ class PersonaList extends Component {
                         </FloatingActionButton>}
                     </div>
                 </div>
-                <div>
-                    {personaList && personaList.length > 0 && !this.props.loading
-                        ? <div className='persona-list'>
+                <div style={{position: 'absolute'}}>
+                    {personaList && !this.props.loading
+                        ? <div className='persona-table-wrapper'>
                             {personaList}
                         </div>
                         : this.props.loading
@@ -109,7 +109,7 @@ class PersonaList extends Component {
                             : this.state.searchCrit
                                 ? <div className='centered'>No results found</div>
                                 : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`}/>}
-                    {personaList && personaList.length > 0 && this.props.pagination && this.getPagination()}
+                    {personaList && this.props.pagination && this.getPagination()}
                 </div>
             </div>
         </Page>
@@ -123,30 +123,40 @@ class PersonaList extends Component {
     getPersonaList = (isPatient, isPractitioner) => {
         let itemStyles = { backgroundColor: this.props.theme.canvasColor };
 
-        return this.props.personaList && this.props.personaList.map((persona, i) => {
+        let rows = [];
+        this.props.personaList && this.props.personaList.map((persona, i) => {
             let style = this.props.theme
                 ? { backgroundColor: persona.gender === 'male' ? this.props.theme.primary2Color : this.props.theme.accent1Color, color: this.props.theme.primary5Color }
                 : undefined;
             let badge = isPatient
                 ? <Badge badgeStyle={style} badgeContent={persona.gender === 'male' ? <i className="fa fa-mars"/> : <i className="fa fa-venus"/>}/>
-                : isPractitioner ? <Badge badgeStyle={{ color: this.props.theme.primary1Color }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
+                : isPractitioner
+                    ? <Badge badgeStyle={{ color: this.props.theme.primary1Color }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
                     : <Badge badgeContent=' '/>;
             let age = this.getAge(persona.birthDate);
             let isSelected = i === this.state.selected;
             let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.theme.primary7Color } : {};
 
-            return <div key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={() => this.handleRowSelect(i, persona)}>
-                <span className='left-icon-wrapper'>
+            rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={() => this.handleRowSelect(i, persona)}>
+                <TableRowColumn className='left-icon-wrapper'>
                     {badge}
-                </span>
-                <div className='persona-list-details'>
-                    <div className='name-wrapper'>{persona.fhirName || this.getName(persona.name[0] || persona.name)}</div>
-                    {isPatient && <div className='persona-info'>{age ? (age + ' | ') : ''} {persona.birthDate ? (' dob ' + moment(persona.birthDate).format('DD MMM YYYY')) + ' | ' : ''} {persona.id}</div>}
-                    {!isPatient && !isPractitioner && <div className='persona-info'>
-                        <span>{persona.personaUserId}</span>
-                    </div>}
-                </div>
-                {!this.props.modal && <div className='actions-wrapper'>
+                </TableRowColumn>
+                <TableRowColumn className='name-wrapper'>
+                    {persona.fhirName || this.getName(persona.name[0] || persona.name)}
+                </TableRowColumn>
+                {!isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
+                    <span>{persona.personaUserId}</span>
+                </TableRowColumn>}
+                <TableRowColumn className='left-icon-wrapper'>
+                    {badge}
+                </TableRowColumn>
+                <TableRowColumn className='left-icon-wrapper'>
+                    {badge}
+                </TableRowColumn>
+                {/*<div className='persona-list-details'>*/}
+                {/*{isPatient && <div className='persona-info'>{age ? (age + ' | ') : ''} {persona.birthDate ? (' dob ' + moment(persona.birthDate).format('DD MMM YYYY')) + ' | ' : ''} {persona.id}</div>}*/}
+                {/*</div>*/}
+                {!this.props.modal && <TableRowColumn className='actions-wrapper'>
                     <IconButton tooltip='Open in Patient Data Manager' onClick={e => this.openInDM(e, persona)}>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
@@ -156,12 +166,32 @@ class PersonaList extends Component {
                     {isPatient && <IconButton className='expanded-toggle'>
                         <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                </div>}
-                <div className='content' style={contentStyles}>
+                </TableRowColumn>}
+            </TableRow>);
+            rows.push(<TableRow key={persona.id + '_content'} className='content' style={contentStyles}>
+                <TableRowColumn colSpan='6'>
                     {isSelected && CHART}
-                </div>
-            </div>
+                </TableRowColumn>
+            </TableRow>)
         });
+
+        return this.props.personaList && this.props.personaList.length > 0
+            ? <Table className='persona-table' selectable={false}>
+                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{backgroundColor: this.props.theme.primary7Color}}>
+                    <TableRow>
+                        <TableHeaderColumn> </TableHeaderColumn>
+                        <TableHeaderColumn>Name</TableHeaderColumn>
+                        <TableHeaderColumn>User Name</TableHeaderColumn>
+                        <TableHeaderColumn>Password</TableHeaderColumn>
+                        <TableHeaderColumn>FHIR Resource</TableHeaderColumn>
+                        <TableHeaderColumn> </TableHeaderColumn>
+                    </TableRow>
+                </TableHeader>
+                <TableBody displayRowCheckbox={false}>
+                    {rows}
+                </TableBody>
+            </Table>
+            : null;
     };
 
     deletePersona = (e, persona) => {

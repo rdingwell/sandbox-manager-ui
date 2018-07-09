@@ -1,4 +1,5 @@
 .personas-wrapper {
+  position: relative;
   .filter-wrapper {
     margin: 16px 0;
     & > * {
@@ -14,6 +15,33 @@
         & > * {
           float: left;
         }
+      }
+    }
+  }
+  .persona-table-wrapper {
+    box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+    td:first-of-type, th:first-of-type {
+      width: 64px !important;
+    }
+    .persona-table-header {
+      tr {
+        height: 32px !important;
+        th {
+          height: 32px !important;
+        }
+      }
+    }
+    tr.content {
+      height: 0 !important;
+      position: relative;
+      top: -5px;
+      margin: 0;
+      padding: 0;
+      border-bottom: none !important;
+      & > td {
+        height: 0 !important;
+        margin: 0;
+        padding: 0;
       }
     }
   }

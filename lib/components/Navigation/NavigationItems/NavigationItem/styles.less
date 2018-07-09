@@ -4,7 +4,7 @@
   display: block;
   width: 100%;
   align-items: left;
-  height: 40px;
+  height: 48px;
   overflow: hidden;
   &:first-of-type {
     height: 56px;
@@ -18,17 +18,24 @@
     box-sizing: border-box;
     display: block;
     height: 24px;
-    padding: 8px 20px;
+    padding: 12px 20px;
+    font-weight: 500;
+    &.active {
+      svg {
+        color: #005778 !important;
+      }
+    }
     & > * {
       vertical-align: middle;
     }
     i {
-      font-size: 24px;
+      font-size: 21px;
       width: 24px;
       height: 24px;
       line-height: inherit;
-      padding-right: 22px;
-      padding-left: 2px;
+      display: inline-block;
+      margin-right: 24px;
+      text-align: center;
     }
   }
 }
