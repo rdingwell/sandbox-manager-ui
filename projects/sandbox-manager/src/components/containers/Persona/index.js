@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import PersonaList from './List';
-import {RaisedButton} from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';

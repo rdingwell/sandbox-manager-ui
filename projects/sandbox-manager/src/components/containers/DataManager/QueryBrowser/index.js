@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { TextField, FloatingActionButton, List, ListItem, Dialog, Paper, IconButton, AutoComplete } from 'material-ui';
+import { FloatingActionButton, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab } from 'material-ui';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import CodeIcon from 'material-ui/svg-icons/action/code';
+import ListIcon from 'material-ui/svg-icons/action/list';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import { parseEntry } from '../../../../../../../lib/utils';
 import ReactJson from 'react-json-view';
@@ -16,25 +18,29 @@ const SUGGESTIONS = [
 
 export default class QueryBrowser extends Component {
 
-    constructor( props ) {
+    constructor (props) {
         super(props);
 
         this.state = {
             showDialog: false,
             selectedEntry: undefined,
-            query: ''
+            query: '',
+            activeTab: 'summary'
         };
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.refs.query.refs.searchTextField.input.addEventListener('keypress', this.submitMaybe);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
     }
 
-    render() {
+    render () {
+        let palette = this.props.muiTheme.palette;
+        let json = this.state.activeTab === 'json';
+
         return <div className='query-browser-wrapper'>
             <Dialog paperClassName='query-result-dialog' open={this.state.showDialog} onRequestClose={this.toggle}>
                 <Paper className='paper-card'>
@@ -53,9 +59,8 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    {/*<TextField ref='query' id='query' value={this.state.query} fullWidth floatingLabelText='FHIR Query' onChange={(_, query) => this.setState({ query })} />*/}
                     <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => this.setState({ query })}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.search(this.state.query)} />
+                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.search(this.state.query)}/>
                 </div>
                 {this.state.query.length > 0 &&
                 <FloatingActionButton onClick={this.clearQuery} className='clear-query-button' mini secondary>
@@ -65,19 +70,19 @@ export default class QueryBrowser extends Component {
                     <SearchIcon/>
                 </FloatingActionButton>
             </div>
-            <div className='result-wrapper'>
-                <div>
-                    <h2 className='title'>Summary</h2>
+            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}>
+                <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
+                     onActive={() => this.setActiveTab('summary')}>
                     {this.props.results && this.props.results.entry && <span className='query-size'>
                         <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
                         <span> of <span className='number'>{this.props.results.total}</span></span>
                     </span>}
                     <div className='query-result-wrapper'>
                         <List>
-                            {this.props.results && this.props.results.entry && this.props.results.entry.map(( e, i ) => {
+                            {this.props.results && this.props.results.entry && this.props.results.entry.map((e, i) => {
                                 let entry = parseEntry(e);
                                 return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
-                                    {entry.props.map(( item, index ) => {
+                                    {entry.props.map((item, index) => {
                                         return <div className='result-item' key={index}>
                                             <span>{item.label}: </span>
                                             <span>{item.value}</span>
@@ -87,16 +92,12 @@ export default class QueryBrowser extends Component {
                             })}
                         </List>
                     </div>
-                </div>
-            </div>
-            <div className='result-wrapper'>
-                <div>
-                    <h2>Result JSON Bundle</h2>
-                    <div>
-                        {this.props.results && <ReactJson src={this.props.results} name={false}/>}
-                    </div>
-                </div>
-            </div>
+                </Tab>
+                <Tab label={<span><CodeIcon style={{ color: json ? palette.primary5Color : palette.primary3Color }}/> JSON</span>} className={'json tab' + (json ? ' active' : '')}
+                     onActive={() => this.setActiveTab('json')}>
+                    {this.props.results && <ReactJson src={this.props.results} name={false}/>}
+                </Tab>
+            </Tabs>
         </div>;
     }
 
@@ -112,7 +113,11 @@ export default class QueryBrowser extends Component {
         this.setState(props);
     };
 
-    submitMaybe = ( event ) => {
+    submitMaybe = (event) => {
         [10, 13].indexOf(event.charCode) >= 0 && this.props.search(this.state.query);
+    };
+
+    setActiveTab = (tab) => {
+        this.setState({ activeTab: tab });
     };
 }
