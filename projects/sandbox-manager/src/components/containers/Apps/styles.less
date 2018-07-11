@@ -82,6 +82,35 @@
     max-height: 76vh;
     overflow: auto;
     width: 100%;
+    padding-top: 0;
+    .app-radio {
+      width: auto !important;
+      position: absolute !important;
+      right: 0;
+      top: 11px;
+      svg {
+        fill: white !important;
+        color: white !important;
+      }
+    }
+    .page-title-wrapper {
+      display: none;
+    }
+    .app-card {
+      .card-title {
+        bottom: -20%;
+      }
+    }
+  }
+  &:not(.modal) {
+    .app-card {
+      &:hover, &.active {
+        .card-title, .card-actions-wrapper {
+          transition: all .5s;
+          bottom: 0;
+        }
+      }
+    }
   }
   .app-card {
     width: 278px;
@@ -90,12 +119,6 @@
     position: relative;
     overflow: hidden;
     margin: 24px 16px 0 16px;
-    &:hover, &.active {
-      .card-title, .card-actions-wrapper {
-        transition: all .5s;
-        bottom: 0;
-      }
-    }
     .explore-app-button-wrapper {
       padding: 9px 0 !important;
     }
@@ -176,7 +199,9 @@
       }
     }
     &.small {
-      min-height: 200px;
+      width: 235px;
+      height: 148px;
+      min-height: 188px;
       &:hover {
         cursor: pointer;
         box-shadow: rgba(0, 0, 0, 0.28) 0 1px 16px, rgba(0, 0, 0, 0.28) 0 8px 16px !important;
@@ -219,4 +244,9 @@
   & > div:nth-child(1) {
     padding: 0 !important;
   }
+}
+
+.launch-scenario-dialog {
+  max-width: 900px !important;
+  width: 80%;
 }

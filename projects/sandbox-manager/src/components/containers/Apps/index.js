@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton, RadioButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
@@ -55,6 +55,7 @@ class Apps extends Component {
                 </CardMedia>
                 <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                     <h3 className='app-name'>{app.authClient.clientName}</h3>
+                    {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
                 {!this.props.modal && <CardActions className='card-actions-wrapper'>
@@ -77,15 +78,15 @@ class Apps extends Component {
                 </Dialog>
                 : null;
 
-        return <Page title={this.props.title ? this.props.title : 'Registered Apps'}>
+        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}>
             <div className='apps-page-wrapper'>
-                <div className='filter-wrapper'>
+                {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
                         <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
                             <ContentAdd/>
                         </FloatingActionButton>
                     </div>
-                </div>
+                </div>}
                 <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
                     {dialog}
                     <div className='screen-content'>

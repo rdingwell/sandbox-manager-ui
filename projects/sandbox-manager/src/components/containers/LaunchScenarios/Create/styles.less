@@ -1,0 +1,87 @@
+.launch-scenario-dialog {
+  .modal-title {
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 0 16px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    font-size: 20px;
+    box-sizing: border-box;
+  }
+  .stepper {
+    margin-top: 50px;
+    padding: 0 16px;
+    .step-label {
+      svg {
+        color: #0E5676 !important;
+        fill: #0E5676 !important;
+      }
+    }
+  }
+  .create-modal-actions {
+    padding: 10px 16px 20px 16px !important;
+    .perv-button-label {
+      svg {
+        position: relative !important;
+        top: 7px !important;
+        left: -7px !important;
+        color: rgba(0, 0, 0, 0.87) !important;
+        fill: rgb(117, 117, 117) !important;
+      }
+    }
+  }
+  .modal-screen-title {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    font-size: 18px;
+    & > * {
+      vertical-align: middle;
+    }
+    svg {
+      position: relative;
+      top: -2px;
+      margin-right: 10px;
+    }
+  }
+  .create-scenario-content-wrapper {
+    min-height: 300px;
+    .persona-selection {
+      text-align: center;
+      padding-top: 72px;
+      font-size: 18px;
+      & > * {
+        vertical-align: top;
+        & > *:nth-child(2) {
+          padding-left: 10px;
+        }
+      }
+      & > div > span {
+        font-size: 18px;
+        padding-bottom: 16px;
+        display: inline-block;
+      }
+      .type-selection {
+        margin-right: 35px;
+        display: inline-block;
+        text-align: left;
+        font-size: 16px;
+      }
+      .selected-values {
+        display: inline-block;
+        text-align: left;
+        margin-left: 35px;
+        font-size: 16px;
+        & > * {
+          display: block;
+          & > * {
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
+}
