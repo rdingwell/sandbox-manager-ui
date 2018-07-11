@@ -66,10 +66,11 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-invites-modal'>
                         <Table className='sandbox-invitations-list'>
-                            <TableHeader className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                            <TableHeader className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}
+                                         style={{ backgroundColor: this.props.muiTheme.palette.primary7Color }}>
                                 <TableRow>
-                                    <TableHeaderColumn>Email</TableHeaderColumn>
-                                    <TableHeaderColumn>Date Sent</TableHeaderColumn>
+                                    <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '12px' }}>Email</TableHeaderColumn>
+                                    <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '12px' }}>Date Sent</TableHeaderColumn>
                                     <TableHeaderColumn/>
                                 </TableRow>
                             </TableHeader>
@@ -92,12 +93,12 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
-                    <TableHeader className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                    <TableHeader className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} style={{ backgroundColor: this.props.muiTheme.palette.primary7Color }}>
                         <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Identifier</TableHeaderColumn>
-                            <TableHeaderColumn>Role</TableHeaderColumn>
-                            <TableHeaderColumn>Signed In</TableHeaderColumn>
+                            <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
+                            <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>Identifier</TableHeaderColumn>
+                            <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>Role</TableHeaderColumn>
+                            <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>Signed In</TableHeaderColumn>
                             <TableHeaderColumn/>
                         </TableRow>
                     </TableHeader>

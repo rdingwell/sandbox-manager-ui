@@ -3,45 +3,25 @@ import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, cre
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
-import { getPatientName } from '../../../../../../lib/utils/fhir';
-import { CircularProgress, RaisedButton, Card, TextField, Dialog, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem } from 'material-ui';
+import { CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
-import Apps from '../Apps';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import FilterList from "material-ui/svg-icons/content/filter-list";
+import Patient from "svg-react-loader?name=Patient!../../../../../../lib/icons/patient.svg";
 import Page from '../../../../../../lib/components/Page';
 import DohMessage from "../../../../../../lib/components/DohMessage";
 import ConfirmModal from "../../../../../../lib/components/ConfirmModal";
 import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import Edit from "./Edit";
+import Create from './Create';
 
 import './styles.less';
-
-const patientIcon = <svg width="100%" height="100%" viewBox="0 0 24 24" style={{ fillRule: 'evenodd', clipRule: 'evenodd', strokeLinejoin: 'round', strokeMiterlimit: '1.41421' }}>
-    <g transform="matrix(0.2,0,0,0.2,2,1.9999)">
-        <circle cx="72.5" cy="45.78" r="9.843"/>
-        <path d="M57.313,44.375L16.25,44.375C10.036,44.375 5,48.783 5,54.219C5,58.002 5,61.289 5,62.938C5,63.559 5.503,64.063 6.125,64.063L57.313,64.063C57.936,
-                                                        64.063 58.438,63.559 58.438,62.938L58.438,45.5C58.438,44.878 57.936,44.375 57.313,44.375Z" style={{ fillRule: 'nonzero' }}/>
-        <path d="M25.813,23.749L34.064,23.749L34.064,32C34.064,32.622 34.567,33.125 35.189,33.125L42.312,33.125C42.934,33.125 43.437,32.622 43.437,32L43.437,
-                                                        23.749L51.687,23.749C52.31,23.749 52.812,23.246 52.812,22.624L52.812,15.501C52.812,14.879 52.31,14.376 51.687,14.376L43.437,14.376L43.437,
-                                                        6.125C43.437,5.503 42.934,5 42.312,5L35.189,5C34.567,5 34.064,5.503 34.064,6.125L34.064,14.376L25.813,14.376C25.191,14.376 24.688,14.879 24.688,
-                                                        15.501L24.688,22.624C24.688,23.246 25.19,23.749 25.813,23.749Z" style={{ fillRule: 'nonzero' }}/>
-        <path d="M64.063,64.063L80.938,64.063C82.493,64.063 83.751,62.805 83.751,61.25C83.751,59.695 82.492,58.437 80.938,58.437L64.063,58.437C62.509,58.437 61.25,
-                                                        59.695 61.25,61.25C61.25,62.805 62.509,64.063 64.063,64.063Z" style={{ fillRule: 'nonzero' }}/>
-        <path d="M86.563,34.25L86.563,66.875L6.125,66.875C5.503,66.875 5,67.378 5,68L5,93.875C5,94.496 5.503,95 6.125,95L12.313,95C12.935,95 13.438,94.496 13.438,
-                                                        93.875L13.438,80.938L86.563,80.938L86.563,93.876C86.563,94.497 87.067,95.001 87.688,95.001L93.876,95.001C94.497,95 95,94.496 95,93.875L95,34.25C95,
-                                                        33.628 94.497,33.125 93.875,33.125L87.687,33.125C87.064,33.125 86.563,33.628 86.563,34.25Z" style={{ fillRule: 'nonzero' }}/>
-    </g>
-    <g transform="matrix(0.666667,0,0,0.727273,0,0)">
-        <rect x="0" y="0" width="36" height="33" style={{ fill: 'none' }}/>
-    </g>
-</svg>;
 
 class LaunchScenarios extends Component {
 
@@ -71,9 +51,8 @@ class LaunchScenarios extends Component {
 
     render () {
         return <Page title='Launch Scenarios'>
-            {this.state.scenarioToEdit &&
-            <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} value={this.state.scenarioToEdit.description} onCancel={() => this.selectScenarioForEditing()}
-                  onConfirm={this.updateScenario} descriptionError={this.state.descriptionError}/>}
+            {this.state.scenarioToEdit && <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} value={this.state.scenarioToEdit.description} onCancel={() => this.selectScenarioForEditing()}
+                                                onConfirm={this.updateScenario} descriptionError={this.state.descriptionError}/>}
             <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={() => {
                 this.props.deleteScenario(this.state.scenarioToDelete);
                 this.setState({ showConfirmModal: false })
@@ -94,14 +73,11 @@ class LaunchScenarios extends Component {
                     </div>
                 </div>
                 <div>
-                    {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'>
-                        <CircularProgress size={80} thickness={5}/>
-                    </div>}
+                    {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                     {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 &&
-                    <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
+                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 && <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
-                {this.getModal()}
+                <Create open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario}/>
             </div>
         </Page>
     }
@@ -128,105 +104,14 @@ class LaunchScenarios extends Component {
         this.setState({ selectedScenario: selection });
     };
 
-    getModal = () => {
-        let actions = this.getBuildActions();
-        let content = this.getBuildContent();
-
-        return <Dialog open={this.state.showModal} modal={false} onRequestClose={this.toggleCreateModal} contentClassName='launch-scenario-dialog' actions={actions}>
-            <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleCreateModal}>
-                <i className="material-icons">close</i>
-            </IconButton>
-            {content}
-        </Dialog>
-    };
-
-    getBuildActions = () => {
-        let actions = [<RaisedButton key={3} label='Cancel' className='launch-scenario-dialog-action' onClick={this.toggleCreateModal}/>];
-        return this.state.selectedApp && ([<RaisedButton key={2} label='Save' secondary className='launch-scenario-dialog-action' onClick={this.createScenario}/>]).concat(actions);
-    };
-
-    createScenario = () => {
-        if (this.state.description.length > 2) {
-            let data = {
-                app: this.state.selectedApp,
-                description: this.state.description,
-                lastLaunchSeconds: Date.now(),
-                patient: {
-                    fhirId: this.state.selectedPatient.id,
-                    name: getPatientName(this.state.selectedPatient),
-                    resource: 'Patient'
-                },
-                sandbox: this.props.sandbox,
-                userPersona: this.state.selectedPersona,
-                createdBy: this.props.user
-            };
-
-            this.props.createScenario(data);
-            this.toggleCreateModal();
-        } else {
-            this.setState({ descriptionError: 'You need to provide description longer than 2 characters!' });
-        }
+    createScenario = (data) => {
+        this.props.createScenario(data);
+        this.toggleCreateModal();
     };
 
     showDeleteScenario = (sc) => {
         this.toggleMenuForItem();
         this.setState({ showConfirmModal: true, scenarioToDelete: sc });
-    };
-
-    getBuildContent = () => {
-        if (!this.state.selectedPatient) {
-            let type = this.state.selectedPersona ? PersonaList.TYPES.patient : PersonaList.TYPES.persona;
-            let title = this.state.selectedPersona ? 'Select a patient' : 'Select a persona';
-            let personaList = this.state.selectedPersona ? this.props.patients : this.props.personas;
-            let pagination = this.state.selectedPersona ? this.props.patientsPagination : this.props.personasPagination;
-            let click = this.state.selectedPersona
-                ? selectedPatient => this.setState({ selectedPatient })
-                : selectedPersona => this.setState({ selectedPersona });
-            let actions = this.state.selectedPersona
-                ? <RaisedButton primary label='skip Patient' onClick={() => this.setState({ selectedPatient: {} })}/>
-                : [];
-
-            let props = {
-                title, type, click, personaList, pagination, actions, modal: true,
-                theme: this.props.muiTheme.palette,
-                lookupPersonasStart: this.props.lookupPersonasStart,
-                search: this.props.fetchPersonas,
-                loading: this.props.personaLoading,
-                next: () => this.props.getPersonasPage(type, pagination, 'next'),
-                prev: () => this.props.getPersonasPage(type, pagination, 'previous')
-            };
-
-            return <PersonaList {...props} additionalPadding/>;
-        } else if (!this.state.selectedApp) {
-            return <Apps title='Select app' modal onCardClick={selectedApp => this.setState({ selectedApp })}/>
-        } else {
-            let titleStyle = {
-                backgroundColor: this.props.muiTheme.palette.primary2Color,
-                color: this.props.muiTheme.palette.alternateTextColor
-            };
-
-            return <div>
-                <div className='screen-title' style={titleStyle}>
-                    <h1 style={titleStyle}>Save Launch Scenario</h1>
-                </div>
-                <div className='inputs'>
-                    <div className='label-value'>
-                        <span>Persona: </span>
-                        <span>{this.state.selectedPersona.personaName}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>Patient: </span>
-                        <span>{this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>App: </span>
-                        <span>{this.state.selectedApp.authClient.clientName}</span>
-                    </div>
-                    <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })}
-                               errorText={this.state.descriptionError}/>
-                </div>
-            </div>
-        }
     };
 
     toggleCreateModal = () => {
@@ -267,7 +152,7 @@ class LaunchScenarios extends Component {
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
                                     {isPatient
-                                        ? <i>{patientIcon}</i>
+                                        ? <i><Patient/></i>
                                         : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
