@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { Badge, CircularProgress, FloatingActionButton, IconButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
+import { Badge, CircularProgress, FloatingActionButton, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
+import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
+import StarIcon from "material-ui/svg-icons/toggle/star-border";
+import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
 import DohMessage from "../../../../../../../lib/components/DohMessage";
 import ConfirmModal from "../../../../../../../lib/components/ConfirmModal";
+import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
 import Page from '../../../../../../../lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
@@ -18,7 +21,7 @@ import moment from 'moment';
 import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
+import { lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
@@ -71,7 +74,8 @@ class PersonaList extends Component {
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
         return <Page title={title}>
-            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} onCancel={() => this.setState({ showConfirmModal: false })} title='Confirm'>
+            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
+                          onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
                     Are you sure you want to delete this {this.props.type.toLowerCase()}?
                 </p>
@@ -97,9 +101,9 @@ class PersonaList extends Component {
                         </FloatingActionButton>}
                     </div>
                 </div>
-                <div style={{position: 'absolute'}}>
+                <div style={{ position: this.props.modal ? 'relative' : 'absolute', width: '100%' }}>
                     {personaList && !this.props.loading
-                        ? <div className='persona-table-wrapper'>
+                        ? <div className={'persona-table-wrapper' + (this.props.modal ? ' modal' : '')}>
                             {personaList}
                         </div>
                         : this.props.loading
@@ -109,7 +113,7 @@ class PersonaList extends Component {
                             : this.state.searchCrit
                                 ? <div className='centered'>No results found</div>
                                 : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`}/>}
-                    {personaList && this.props.pagination && this.getPagination()}
+                    {personaList && this.props.pagination && this.getPagination(true)}
                 </div>
             </div>
         </Page>
@@ -124,80 +128,130 @@ class PersonaList extends Component {
         let itemStyles = { backgroundColor: this.props.theme.canvasColor };
 
         let rows = [];
-        this.props.personaList && this.props.personaList.map((persona, i) => {
-            let style = this.props.theme
-                ? { backgroundColor: persona.gender === 'male' ? this.props.theme.primary2Color : this.props.theme.accent1Color, color: this.props.theme.primary5Color }
-                : undefined;
+        let list = this.getFilteredList();
+        list.map((persona, i) => {
+
+            let style = this.props.theme ? { color: persona.gender === 'male' ? this.props.theme.primary2Color : this.props.theme.accent1Color, WebkitTextStroke: '1px', fontSize: '24px' } : undefined;
+            style.position = 'relative';
             let badge = isPatient
-                ? <Badge badgeStyle={style} badgeContent={persona.gender === 'male' ? <i className="fa fa-mars"/> : <i className="fa fa-venus"/>}/>
+                ? <Badge badgeStyle={style} badgeContent={persona.gender === 'male' ? <i className="fa fa-mars"/> : <i className="fa fa-venus"/>} style={{ padding: 0 }}/>
                 : isPractitioner
-                    ? <Badge badgeStyle={{ color: this.props.theme.primary1Color }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
-                    : <Badge badgeContent=' '/>;
+                    ? <Badge style={{ padding: '0' }} badgeStyle={{ color: this.props.theme.primary1Color, position: 'relative' }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
+                    : persona.resource === 'Practitioner'
+                        ? <Badge style={{ padding: '0' }} badgeStyle={{ color: this.props.theme.accent1Color, position: 'relative' }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
+                        : <Badge style={{ padding: '0' }} badgeStyle={{ width: '28px', height: '28px', position: 'relative', left: '-2px' }}
+                                 badgeContent={<Patient style={{ fill: this.props.theme.primary2Color, width: '28px', height: '28px' }}/>}/>;
             let age = this.getAge(persona.birthDate);
             let isSelected = i === this.state.selected;
-            let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.theme.primary7Color } : {};
+            let contentStyles = isSelected ? { borderBottom: '1px solid ' + this.props.theme.primary7Color } : {};
+            let showMenuForItem = this.state.showMenuForItem === i;
+            let patientRightIconStyle = { padding: 0, width: '40px', height: '40px' };
 
-            rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} onClick={() => this.handleRowSelect(i, persona)}>
+            rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} selected={false}>
                 <TableRowColumn className='left-icon-wrapper'>
                     {badge}
                 </TableRowColumn>
-                <TableRowColumn className='name-wrapper'>
+                <TableRowColumn className='persona-info'>
                     {persona.fhirName || this.getName(persona.name[0] || persona.name)}
                 </TableRowColumn>
                 {!isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
-                    <span>{persona.personaUserId}</span>
+                    {persona.personaUserId}
                 </TableRowColumn>}
-                <TableRowColumn className='left-icon-wrapper'>
-                    {badge}
+                {isPatient && <TableRowColumn className='persona-info'>
+                    {persona.id}
+                </TableRowColumn>}
+                {!this.props.modal && <TableRowColumn className='persona-info'>
+                    {!isPatient && !isPractitioner && persona.password}
+                    {isPatient && age}
+                </TableRowColumn>}
+                <TableRowColumn className='persona-info'>
+                    {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
+                    {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
                 </TableRowColumn>
-                <TableRowColumn className='left-icon-wrapper'>
-                    {badge}
-                </TableRowColumn>
-                {/*<div className='persona-list-details'>*/}
-                {/*{isPatient && <div className='persona-info'>{age ? (age + ' | ') : ''} {persona.birthDate ? (' dob ' + moment(persona.birthDate).format('DD MMM YYYY')) + ' | ' : ''} {persona.id}</div>}*/}
-                {/*</div>*/}
-                {!this.props.modal && <TableRowColumn className='actions-wrapper'>
-                    <IconButton tooltip='Open in Patient Data Manager' onClick={e => this.openInDM(e, persona)}>
-                        <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                    </IconButton>
-                    {!isPatient && !isPractitioner && <IconButton style={{ color: this.props.theme.primary3Color }} tooltip='Delete' onClick={e => this.deletePersona(e, persona)}>
-                        <DeleteIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
+                    {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
+                        <span className='anchor' ref={'anchor' + i}/>
+                        <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {isPatient && <IconButton className='expanded-toggle'>
+                    {isPatient && <IconButton style={patientRightIconStyle}>
+                        <span/>
+                        <StarIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>}
+                    {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
+                        <span/>
+                        <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    </IconButton>}
+                    {isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)} style={patientRightIconStyle}>
+                        <span/>
                         <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
+                    {!isPatient && showMenuForItem &&
+                    <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + i]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }} style={{ backgroundColor: this.props.theme.canvasColor }}
+                             targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenuForItem}>
+                        <Menu desktop autoWidth={false} width='100px'>
+                            {isPatient && <MenuItem className='scenario-menu-item' primaryText='Edit' leftIcon={<LaunchIcon/>} onClick={e => this.openInDM(e, persona)}/>}
+                            <MenuItem className='scenario-menu-item' primaryText='Delete' leftIcon={<DeleteIcon/>} onClick={() => {
+                                this.toggleMenuForItem();
+                                this.deletePersona(persona)
+                            }}/>
+                        </Menu>
+                    </Popover>}
                 </TableRowColumn>}
             </TableRow>);
-            rows.push(<TableRow key={persona.id + '_content'} className='content' style={contentStyles}>
+            !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
-                    {isSelected && CHART}
+                    <div className='chart'>
+                        {isSelected && CHART}
+                    </div>
                 </TableRowColumn>
             </TableRow>)
         });
 
         return this.props.personaList && this.props.personaList.length > 0
-            ? <Table className='persona-table' selectable={false}>
-                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{backgroundColor: this.props.theme.primary7Color}}>
+            ? <Table className='persona-table' onRowSelection={this.handleRowSelect}>
+                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary7Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn>Name</TableHeaderColumn>
-                        <TableHeaderColumn>User Name</TableHeaderColumn>
-                        <TableHeaderColumn>Password</TableHeaderColumn>
-                        <TableHeaderColumn>FHIR Resource</TableHeaderColumn>
-                        <TableHeaderColumn> </TableHeaderColumn>
+                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                            Name
+                        </TableHeaderColumn>
+                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                            {isPatient ? 'Identifier' : 'User Name'}
+                        </TableHeaderColumn>
+                        {!this.props.modal && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                            {isPatient ? 'Age' : 'Password'}
+                        </TableHeaderColumn>}
+                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                            {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
+                        </TableHeaderColumn>
+                        {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
-                <TableBody displayRowCheckbox={false}>
+                <TableBody displayRowCheckbox={false} showRowHover={this.props.modal}>
                     {rows}
                 </TableBody>
             </Table>
             : null;
     };
 
-    deletePersona = (e, persona) => {
+    getFilteredList = () => {
+        let list = this.props.personaList ? this.props.personaList : [];
+        if (this.props.type !== TYPES.patient && this.state.searchCrit) {
+            let criteria = Object.keys(this.state.searchCrit);
+            criteria.map(crit => {
+                list = list.filter(i => i[crit] === this.state.searchCrit[crit]);
+            });
+        }
+        return list;
+    };
+
+    toggleMenuForItem = (e, itemIndex) => {
+        this.setState({ showMenuForItem: itemIndex });
+    };
+
+    deletePersona = (persona) => {
         if (persona && !this.state.personaToDelete) {
             this.setState({ showConfirmModal: true, personaToDelete: persona });
-            e.stopPropagation();
         } else {
             this.props.deletePersona(this.state.personaToDelete);
             this.setState({ showConfirmModal: false, personaToDelete: undefined });
@@ -247,16 +301,17 @@ class PersonaList extends Component {
     };
 
     onFilter = (searchCrit) => {
-        this.props.search(this.props.type, searchCrit);
+        this.props.type === TYPES.patient && this.props.search(this.props.type, searchCrit);
+        this.props.type !== TYPES.patient && this.setState({ searchCrit });
     };
 
-    getPagination = () => {
+    getPagination = (isBottom) => {
         let self = this.props.pagination.link.find(i => i.relation === 'self');
         let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
         let start = currentSkip + 1;
         let end = start + this.props.personaList.length - 1;
 
-        return this.props.pagination && <div className='persona-list-pagination-wrapper'>
+        return this.props.pagination && <div className={'persona-list-pagination-wrapper' + (isBottom ? ' bottom' : '')}>
             <div>
                 <IconButton onClick={() => this.paginate(this.props.prev)} disabled={start === 1 || this.props.loading}>
                     <LeftIcon/>
@@ -278,17 +333,18 @@ class PersonaList extends Component {
         toCall && this.setState({ selected: undefined });
     };
 
-    handleRowSelect = (row, persona) => {
-        if (!this.props.modal) {
+    handleRowSelect = (row) => {
+        row = this.props.modal ? row : row[0] / 2;
+        if (!this.props.modal && this.props.type === TYPES.patient) {
             let selection = getSelection();
             let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
-            let actualClick = (parentNodeClass !== 'persona-info' && parentNodeClass !== 'name-wrapper') || selection.toString().length === 0;
+            let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
             if (!rowSelectionTimer && actualClick) {
                 rowSelectionTimer = setTimeout(() => {
                     rowSelectionTimer = null;
                     let selected = this.state.selected !== row ? row : undefined;
                     selected !== undefined && this.props.patientDetailsFetchStarted();
-                    selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(persona), 500);
+                    selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(this.props.personaList[row]), 500);
                     this.setState({ selected });
                 }, 500)
             } else {
@@ -296,7 +352,7 @@ class PersonaList extends Component {
                 rowSelectionTimer = null;
             }
         } else {
-            this.props.click && this.props.click(persona);
+            this.props.click && this.props.click(this.props.personaList[row]);
         }
     };
 }
@@ -326,7 +382,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchPatientDetails, patientDetailsFetchStarted, doLaunch, deletePersona }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ lookupPersonasStart, fetchPatientDetails, patientDetailsFetchStarted, doLaunch, deletePersona }, dispatch);
 
 let PersonaListWithTheme = connect(mapStateToProps, mapDispatchToProps)(PersonaList);
 

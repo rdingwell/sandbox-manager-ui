@@ -55,14 +55,6 @@ const config = {
                 })
             },
             {
-                test: /\.svg$/,
-                include: [SRC_DIR, LIB_DIR],
-                exclude: [/node_modules/, /externals/, /__storage__/],
-                use: ExtractTextPlugin.extract({
-                    use: ["svg-loader"]
-                })
-            },
-            {
                 test: /\.less$/,
                 include: [SRC_DIR, LIB_DIR],
                 exclude: [/node_modules/, /externals/, /__storage__/],
