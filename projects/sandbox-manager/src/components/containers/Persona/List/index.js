@@ -157,17 +157,20 @@ class PersonaList extends Component {
                 {!isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.personaUserId}
                 </TableRowColumn>}
-                {isPatient && <TableRowColumn className='persona-info'>
+                {isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.id}
                 </TableRowColumn>}
-                {!this.props.modal && <TableRowColumn className='persona-info'>
-                    {!isPatient && !isPractitioner && persona.password}
+                {!this.props.modal && !isPractitioner && <TableRowColumn className='persona-info'>
+                    {!isPatient && persona.password}
                     {isPatient && age}
                 </TableRowColumn>}
-                <TableRowColumn className='persona-info'>
+                {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
                     {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
-                </TableRowColumn>
+                </TableRowColumn>}
+                {isPractitioner && <TableRowColumn className='persona-info' />}
+                {isPractitioner && <TableRowColumn className='persona-info' />}
+                {isPractitioner && <TableRowColumn className='persona-info' />}
                 {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
@@ -215,15 +218,18 @@ class PersonaList extends Component {
                         <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
                             Name
                         </TableHeaderColumn>
-                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
-                        </TableHeaderColumn>
-                        {!this.props.modal && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        </TableHeaderColumn>}
+                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
-                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
-                        </TableHeaderColumn>
+                        </TableHeaderColumn>}
+                        {isPractitioner && <TableHeaderColumn />}
+                        {isPractitioner && <TableHeaderColumn />}
+                        {isPractitioner && <TableHeaderColumn />}
                         {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
