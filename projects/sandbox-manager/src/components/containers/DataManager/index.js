@@ -30,7 +30,7 @@ class DataManager extends Component {
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme} />
                 </Tab>
                 <Tab label="Import" className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')} onActive={() => this.setActiveTab('import')}>
-                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} />
+                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} />
                 </Tab>
                 <Tab label="Export" disabled>
                     <div>
