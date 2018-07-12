@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
-import { Dialog, FlatButton, IconButton, RadioButton, RadioButtonGroup, RaisedButton, Step, StepLabel, Stepper } from "material-ui";
+import { CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RadioButtonGroup, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
+import SearchIcon from "material-ui/svg-icons/action/search";
+import EventIcon from "material-ui/svg-icons/action/event";
+import PatientIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
+import HospitalIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-location_city.svg";
+import DescriptionIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-description.svg";
+import BulbIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/lightbulb.svg";
+import LinkIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-link.svg";
+import FullScreenIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/baseline-fullscreen.svg";
+import InfoIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/baseline-info.svg";
+import ContextIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/context-icon.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
-import { getPatientName } from "../../../../../../../lib/utils/fhir";
+import { getPatientName, getAge } from "../../../../../../../lib/utils/fhir";
 import PersonaList from "../../Persona/List";
 import Apps from '../../Apps';
 import muiThemeable from "material-ui/styles/muiThemeable";
@@ -18,8 +28,20 @@ class Create extends Component {
 
         this.state = {
             selectedApp: null,
+            encounterId: null,
+            patientBanner: null,
+            intent: null,
+            patientId: null,
+            locationId: null,
+            personaType: null,
+            selectedPersona: null,
             currentStep: 0
         };
+    }
+
+    componentDidMount () {
+        this.initPatient();
+        this.initEncounter();
     }
 
     render () {
@@ -57,7 +79,9 @@ class Create extends Component {
     getActions = () => {
         let nextEnabled = this.state.currentStep === 0
             ? !!this.state.selectedApp
-            : false;
+            : this.state.currentStep === 1
+                ? !!this.state.selectedPersona
+                : this.state.currentStep === 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
 
@@ -75,85 +99,239 @@ class Create extends Component {
     };
 
     getContent = () => {
-        let titleStyle = { color: this.props.muiTheme.palette.primary3Color };
+        console.log(this.state.selectedApp);
+        let palette = this.props.muiTheme.palette;
+        let titleStyle = { color: palette.primary3Color };
+        let underlineFocusStyle = { borderColor: palette.primary2Color };
+        let floatingLabelFocusStyle = { color: palette.primary2Color };
+        let iconStyle = { color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px' };
 
         switch (this.state.currentStep) {
             case 0:
                 return <div>
-                    <span className='modal-screen-title' style={titleStyle}><WebIcon style={titleStyle}/> Which app will be launched with this Launch Scenario?</span>
+                    <span className='modal-screen-title' style={titleStyle}><WebIcon style={iconStyle}/> Which app will be launched with this Launch Scenario?</span>
                     <Apps title=' ' modal onCardClick={selectedApp => this.setState({ selectedApp })} selectedApp={this.state.selectedApp}/>
                 </div>;
             case 1:
+                let type = PersonaList.TYPES.persona;
+                let typeFilter = { resource: this.state.personaType };
+                let personaList = this.props.personas;
+                let click = selectedPersona => this.setState({ selectedPersona });
+                let props = {
+                    typeFilter, type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading
+                };
                 return <div>
-                    <span className='modal-screen-title' style={titleStyle}><AccountIcon style={titleStyle}/> Which user will launch the app in this launch scenario?</span>
+                    <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/> Which user will launch the app in this launch scenario?</span>
                     <div className='persona-selection'>
-                        <div className='type-selection'>
-                            <span>User Persona Type</span>
-                            <div>
-                                <RadioButtonGroup name="personaType">
-                                    <RadioButton value="practitioner" label="Practitioner"/>
-                                    <RadioButton value="patient" label="Patient"/>
-                                </RadioButtonGroup>
+                        {((!this.state.personaType && !this.state.selectedPersona) ||
+                            (this.state.personaType && this.state.selectedPersona)) && [
+                            <div key={2} className='type-selection'>
+                                <span>User Persona Type</span>
+                                <div>
+                                    <RadioButtonGroup valueSelected={this.state.personaType} name="personaType" onChange={this.personaType}>
+                                        <RadioButton value="Practitioner" label="Practitioner"/>
+                                        <RadioButton value="Patient" label="Patient"/>
+                                    </RadioButtonGroup>
+                                </div>
+                            </div>,
+                            <div key={1} className='selected-values'>
+                                <span>Selected Persona</span>
+                                <span><AccountIcon style={iconStyle}/> {this.state.selectedPersona ? this.getSelectedName() : '-'}</span>
+                            </div>]}
+                        {this.state.personaType && !this.state.selectedPersona && <PersonaList {...props} noFilter noTitle/>}
+                    </div>
+                </div>;
+            case 2:
+                return <div>
+                    <span className='modal-screen-title' style={titleStyle}><ContextIcon style={iconStyle}/> What additional launch context will be provided to the app?</span>
+                    <div className='context-selection'>
+                        <div className='context-left-column'>
+                            <div className='column-item-wrapper'>
+                                <PatientIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' floatingLabelText='Patient ID'
+                                           onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)}
+                                           errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
+                                <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
+                                    {!this.props.fetchingSinglePatient
+                                        ? <IconButton iconStyle={iconStyle}><SearchIcon style={iconStyle}/></IconButton>
+                                        : <CircularProgress innerStyle={iconStyle} size={25}/>}
+                                </div>
+                                {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
+                                    {this.props.fetchingSinglePatient
+                                        ? 'Loading patient data...'
+                                        : <span>
+                                            {getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}
+                                        </span>}
+                                </div>}
+                            </div>
+                            <div className='column-item-wrapper'>
+                                <EventIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
+                                           onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)}
+                                           errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
+                                <div className={'right-control' + (this.props.fetchingSingleEncounter ? ' loader' : '')}>
+                                    {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={25}/>}
+                                </div>
+                                {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
+                                    {this.props.fetchingSingleEncounter
+                                        ? 'Loading encounter data...'
+                                        : <span>Encounter FHIR Resource Located</span>}
+                                </div>}
+                            </div>
+                            <div className='column-item-wrapper'>
+                                <HospitalIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
+                                           onChange={(_, value) => this.onChange('locationId', value)}/>
+                            </div>
+                            <div className='column-item-wrapper'>
+                                <DescriptionIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' floatingLabelText='Resource'
+                                           onChange={(_, value) => this.onChange('resource', value)}/>
                             </div>
                         </div>
-                        <div className='selected-values'>
-                            <span>Selected Persona</span>
-                            <span><AccountIcon style={titleStyle}/> {this.state.selectedPersona ? 'Persona name' : '-'}</span>
+                        <div className='context-right-column'>
+                            <div className='column-item-wrapper'>
+                                <BulbIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
+                                           onChange={(_, value) => this.onChange('intent', value)}/>
+                            </div>
+                            <div className='column-item-wrapper'>
+                                <LinkIcon className='column-item-icon' style={iconStyle}/>
+                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' floatingLabelText='SMART Style URL'
+                                           onChange={(_, value) => this.onChange('url', value)}/>
+                            </div>
+                            <div className='column-item-wrapper'>
+                                <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                                <div>
+                                    <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }} trackStyle={{ backgroundColor: palette.primary7Color }}
+                                            thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
+                                            onToggle={(_, value) => this.onChange('patientBanner', value)}/>
+                                </div>
+                            </div>
+                            <div className='column-item-wrapper big-and-centered'>
+                                <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                                <div>About SMART Context</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>;
+            case 3:
+                return <div>
+                    <div className='context-selection'>
+                        <div className='context-left-column'>
+                            <div className='summary-item'>
+                                <span className='section-title'>Summary</span>
+                            </div>
+                            <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <WebIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.selectedApp.authClient.clientName}</span>
+                            </div>
+                            <div className='summary-item'>
+                                <span className='section-sub-title'>Launched by</span>
+                            </div>
+                            <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <AccountIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.getSelectedName()}</span>
+                                <div className='summary-item-icon-right'>
+                                    {this.state.selectedPersona.type === 'Patient'
+                                        ? <PatientIcon style={iconStyle}/>
+                                        : <i className="fa fa-user-md fa-2x"/>}
+                                </div>
+                            </div>
+                            <div className='summary-item'>
+                                <span className='section-sub-title'>With the following context:</span>
+                            </div>
+                            {this.props.singlePatient && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <PatientIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{getPatientName(this.props.singlePatient)}</span>
+                            </div>}
+                            {this.state.encounterId && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <EventIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.encounterId}</span>
+                            </div>}
+                            {this.state.locationId && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <HospitalIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.locationId}</span>
+                            </div>}
+                            {this.state.resource && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <DescriptionIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.resource}</span>
+                            </div>}
+                            {this.state.intent && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <BulbIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.intent}</span>
+                            </div>}
+                            {this.state.url && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <LinkIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>{this.state.url}</span>
+                            </div>}
+                            {this.state.patientBanner && <div className='summary-item'>
+                                <div className='summary-item-icon-left'>
+                                    <FullScreenIcon style={iconStyle}/>
+                                </div>
+                                <span className='summary-item-text'>Needs Patient Banner</span>
+                            </div>}
+                        </div>
+                        <div className='context-right-column'>
+                            <div className='summary-item'>
+                                <span className='section-title'>Details</span>
+                            </div>
+                            <div className='summary-item'>
+                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'/>
+                            </div>
+                            <div className='summary-item'>
+                                <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                           floatingLabelText='Description/Instructions'/>
+                            </div>
                         </div>
                     </div>
                 </div>;
         }
-        // if (!this.state.selectedPatient) {
-        //     let type = this.state.selectedPersona ? PersonaList.TYPES.patient : PersonaList.TYPES.persona;
-        //     let title = this.state.selectedPersona ? 'Select a patient' : 'Select a persona';
-        //     let personaList = this.state.selectedPersona ? this.props.patients : this.props.personas;
-        //     let pagination = this.state.selectedPersona ? this.props.patientsPagination : this.props.personasPagination;
-        //     let click = this.state.selectedPersona
-        //         ? selectedPatient => this.setState({ selectedPatient })
-        //         : selectedPersona => this.setState({ selectedPersona });
-        //     let actions = this.state.selectedPersona
-        //         ? <RaisedButton primary label='skip Patient' onClick={() => this.setState({ selectedPatient: {} })}/>
-        //         : [];
-        //
-        //     let props = {
-        //         title, type, click, personaList, pagination, actions, modal: true,
-        //         theme: this.props.muiTheme.palette,
-        //         lookupPersonasStart: this.props.lookupPersonasStart,
-        //         search: this.props.fetchPersonas,
-        //         loading: this.props.personaLoading,
-        //         next: () => this.props.getPersonasPage(type, pagination, 'next'),
-        //         prev: () => this.props.getPersonasPage(type, pagination, 'previous')
-        //     };
-        //
-        //     return <PersonaList {...props} additionalPadding/>;
-        // } else {
-        //     let titleStyle = {
-        //         backgroundColor: this.props.muiTheme.palette.primary2Color,
-        //         color: this.props.muiTheme.palette.alternateTextColor
-        //     };
-        //
-        //     return <div>
-        //         <div className='screen-title' style={titleStyle}>
-        //             <h1 style={titleStyle}>Save Launch Scenario</h1>
-        //         </div>
-        //         <div className='inputs'>
-        //             <div className='label-value'>
-        //                 <span>Persona: </span>
-        //                 <span>{this.state.selectedPersona.personaName}</span>
-        //             </div>
-        //             <div className='label-value'>
-        //                 <span>Patient: </span>
-        //                 <span>{this.state.selectedPatient ? getPatientName(this.state.selectedPatient) : 'NONE'}</span>
-        //             </div>
-        //             <div className='label-value'>
-        //                 <span>App: </span>
-        //                 <span>{this.state.selectedApp.authClient.clientName}</span>
-        //             </div>
-        //             <TextField floatingLabelText='Description' fullWidth onChange={(_e, description) => this.setState({ description })}
-        //                        errorText={this.state.descriptionError}/>
-        //         </div>
-        //     </div>
-        // }
+    };
+
+    onChange = (prop, value) => {
+        let state = {};
+        state[prop] = value;
+        this.setState(state);
+    };
+
+    blur = (input) => {
+        switch (input) {
+            case 'patientId':
+                this.state.patientId && this.props.fetchPatient && this.props.fetchPatient(this.state.patientId);
+                (!this.state.patientId || this.state.patientId.length === 0) && this.initPatient();
+                break;
+            case 'encounterId':
+                this.state.encounterId && this.props.fetchEncounter && this.props.fetchEncounter(this.state.encounterId);
+                (!this.state.encounterId || this.state.encounterId.length === 0) && this.initEncounter();
+                break;
+        }
+    };
+
+    getSelectedName = () => {
+        return this.state.selectedPersona.fhirName || this.getName(this.state.selectedPersona.name[0] || this.state.selectedPersona.name);
+    };
+
+    personaType = (_, personaType) => {
+        this.props.fetchPersonas(PersonaList.TYPES.persona);
+        this.setState({ personaType, selectedPersona: null });
     };
 
     createScenario = () => {
@@ -184,6 +362,16 @@ class Create extends Component {
 
     prev = () => {
         this.setState({ currentStep: this.state.currentStep - 1 })
+    };
+
+    initPatient = () => {
+        this.props.setFetchingSinglePatientFailed(null);
+        this.props.setSinglePatientFetched(null);
+    };
+
+    initEncounter = () => {
+        this.props.setFetchingSingleEncounterError(null);
+        this.props.setSingleEncounter(null);
     };
 }
 

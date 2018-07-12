@@ -54,11 +54,11 @@ class AppDialog extends Component {
 
         let saveEnabled = this.state.app.clientName.length > 2 && this.state.app.launchUri.length > 2 && this.state.app.redirectUris.length > 2;
         let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled} />
+            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled}/>
         ];
 
-        this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete} />);
-        this.props.app && actions.push(<RaisedButton label='Launch' onClick={this.props.doLaunch} />);
+        this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete}/>);
+        this.props.app && actions.push(<RaisedButton label='Launch' onClick={this.props.doLaunch}/>);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
 
@@ -72,33 +72,33 @@ class AppDialog extends Component {
                 <div className='paper-body'>
                     <form>
                         <TextField floatingLabelText='App Name' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart'
-                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)} /><br />
+                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)}/><br/>
                         <div>
                             <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
                             <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
                                           style={{ top: '16px' }}>
-                                <MenuItem value='NONE' primaryText='Public Client' />
-                                <MenuItem value='SECRET_BASIC' primaryText='Confidential Client' />
+                                <MenuItem value='NONE' primaryText='Public Client'/>
+                                <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
                             </DropDownMenu>
                         </div>
                         {clientId}
                         <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth
-                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} />
+                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)}/>
                         <TextField floatingLabelText='App Launch URI' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
-                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html' />
-                        <br />
+                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html'/>
+                        <br/>
                         <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs'
-                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html' />
+                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
                         <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)}
-                                   hintText='eg: launch patient/*.* openid profile' />
+                                   hintText='eg: launch patient/*.* openid profile'/>
                         <span className='subscript'>
                             Note: If you do not provide scope, defaults will be set.
                         </span>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
-                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)} />
+                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
                         {this.props.app &&
                         <span className='subscript'>Space separated list of scopes.</span>}
                         {this.props.app &&
@@ -106,12 +106,14 @@ class AppDialog extends Component {
                         {!this.props.app && <div className='toggle-wrapper'>
                             <Toggle label='Allow offline access' defaultToggled={false}
                                     thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
-                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }} />
-                            <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)} />
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
+                            <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)}
+                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
                         </div>}
-                        < br />
+                        < br/>
                         <div className='image-button-wrapper'>
-                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} />
+                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()}/>
                             <div>
                                 <span className='subscript'>(Display size 300px W X 200px H)</span>
                             </div>
@@ -120,8 +122,8 @@ class AppDialog extends Component {
                             </div>
                         </div>
                         <div className='image-wrapper'>
-                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput} />
-                            <img src={this.state.app.logoUri} />
+                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
+                            <img src={this.state.app.logoUri}/>
                         </div>
                     </form>
                 </div>

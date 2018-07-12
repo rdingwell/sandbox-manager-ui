@@ -1,6 +1,7 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
 import { fetchPersonas } from "./persona";
+import { fetchingPatient, setFetchingSinglePatientFailed, setSinglePatientFetched } from "./patient";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -14,6 +15,27 @@ export function setUpdatingUser (updating) {
     return {
         type: actionTypes.UPDATING_USER,
         payload: { updating }
+    }
+}
+
+export function setFetchSingleEncounter (fetching) {
+    return {
+        type: actionTypes.FETCHING_SINGLE_ENCOUNTER,
+        payload: { fetching }
+    }
+}
+
+export function setSingleEncounter (encounter) {
+    return {
+        type: actionTypes.SET_SINGLE_ENCOUNTER,
+        payload: { encounter }
+    }
+}
+
+export function setFetchingSingleEncounterError (error) {
+    return {
+        type: actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR,
+        payload: { error }
     }
 }
 
@@ -633,26 +655,47 @@ export const fetchSandboxInvites = () => {
 
 export function loadLaunchScenarios () {
     return (dispatch, getState) => {
-        dispatch(setLaunchScenariosLoading(true));
-        let state = getState();
-        if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
-            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + sessionStorage.sandboxId;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-            fetch(url, config)
-                .then(result => {
-                    result.json()
-                        .then(scenarios => {
-                            dispatch(setLaunchScenarios(scenarios));
-                        })
+        if (window.fhirClient) {
+            dispatch(setLaunchScenariosLoading(true));
+            let state = getState();
+            if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
+                let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + sessionStorage.sandboxId;
+                const config = {
+                    headers: {
+                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                    }
+                };
+                fetch(url, config)
+                    .then(result => {
+                        result.json()
+                            .then(scenarios => {
+                                dispatch(setLaunchScenarios(scenarios));
+                            })
+                    })
+                    .catch(e => console.log(e))
+                    .then(() => dispatch(setLaunchScenariosLoading(false)));
+            }
+        } else {
+            goHome();
+        }
+    }
+}
+
+export function fetchEncounter (id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchSingleEncounter(true));
+            window.fhirClient.api.read({type: 'Encounter', id})
+                .done(patient => {
+                    dispatch(setSingleEncounter(patient.data));
+                    dispatch(setFetchSingleEncounter(false));
                 })
-                .catch(e => console.log(e))
-                .then(() => dispatch(setLaunchScenariosLoading(false)));
+                .fail(e => {
+                    dispatch(setFetchingSingleEncounterError(e));
+                    dispatch(setFetchSingleEncounter(false));
+                });
         }
     }
 }
