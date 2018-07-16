@@ -1,80 +1,86 @@
-@media (max-width: 1322px) {
-  .layout-main.open {
-    .apps-screen-wrapper {
-      .screen-content {
-        //screen width - width of two cards - width of side bar - parent padding padding
-        padding-left: ~'calc((100vw - 648px - 256px - 48px - 48px) / 2)';
-        transition: padding-left .2s;
-      }
-    }
-  }
-
-  .apps-screen-wrapper {
-    .screen-content {
-      padding-left: ~'calc((100vw - 972px - 48px - 48px) / 2)';
-      transition: padding-left .2s;
-    }
-  }
-}
-
-@media (min-width: 1323px) and (max-width: 1646px) {
-  .layout-main.open {
-    .apps-screen-wrapper {
-      .screen-content {
-        padding-left: ~'calc((100vw - 972px - 256px - 48px - 48px) / 2)';
-        transition: padding-left .2s;
-      }
-    }
-  }
-
-  .apps-screen-wrapper {
-    .screen-content {
-      padding-left: ~'calc((100vw - 1296px - 48px - 48px) / 2)';
-      transition: padding-left .2s;
-    }
-  }
-}
-
-@media (min-width: 1647px) and (max-width: 1910px) {
-  .layout-main.open {
-    .apps-screen-wrapper {
-      .screen-content {
-        padding-left: ~'calc((100vw - 1296px - 256px - 48px - 48px) / 2)';
-        transition: padding-left .2s;
-      }
-    }
-  }
-
-  .apps-screen-wrapper {
-    .screen-content {
-      padding-left: ~'calc((100vw - 1620px - 48px - 48px) / 2)';
-      transition: padding-left .2s;
-    }
-  }
-}
-
-@media (min-width: 1911px) {
-  .layout-main {
-    .apps-screen-wrapper {
-      .screen-content {
-        padding-left: ~'calc((100vw - 1620px - 256px - 48px - 48px) / 2)';
-        transition: padding-left .2s;
-      }
-    }
-  }
-}
+//@media (max-width: 1322px) {
+//  .layout-main.open {
+//    .apps-screen-wrapper {
+//      .screen-content {
+//        //screen width - width of two cards - width of side bar - parent padding padding
+//        padding-left: ~'calc((100vw - 648px - 256px - 48px - 48px) / 2)';
+//        transition: padding-left .2s;
+//      }
+//    }
+//  }
+//
+//  .apps-screen-wrapper {
+//    .screen-content {
+//      padding-left: ~'calc((100vw - 972px - 48px - 48px) / 2)';
+//      transition: padding-left .2s;
+//    }
+//  }
+//}
+//
+//@media (min-width: 1323px) and (max-width: 1646px) {
+//  .layout-main.open {
+//    .apps-screen-wrapper {
+//      .screen-content {
+//        padding-left: ~'calc((100vw - 972px - 256px - 48px - 48px) / 2)';
+//        transition: padding-left .2s;
+//      }
+//    }
+//  }
+//
+//  .apps-screen-wrapper {
+//    .screen-content {
+//      padding-left: ~'calc((100vw - 1296px - 48px - 48px) / 2)';
+//      transition: padding-left .2s;
+//    }
+//  }
+//}
+//
+//@media (min-width: 1647px) and (max-width: 1910px) {
+//  .layout-main.open {
+//    .apps-screen-wrapper {
+//      .screen-content {
+//        padding-left: ~'calc((100vw - 1296px - 256px - 48px - 48px) / 2)';
+//        transition: padding-left .2s;
+//      }
+//    }
+//  }
+//
+//  .apps-screen-wrapper {
+//    .screen-content {
+//      padding-left: ~'calc((100vw - 1620px - 48px - 48px) / 2)';
+//      transition: padding-left .2s;
+//    }
+//  }
+//}
+//
+//@media (min-width: 1911px) {
+//  .layout-main {
+//    .apps-screen-wrapper {
+//      .screen-content {
+//        padding-left: ~'calc((100vw - 1620px - 256px - 48px - 48px) / 2)';
+//        transition: padding-left .2s;
+//      }
+//    }
+//  }
+//}
 
 .apps-page-wrapper {
   position: relative;
   .filter-wrapper {
     position: absolute;
-    right: 0;
-    top: -9px;
+    top: -30px;
+    .dummy-expander {
+      width: 858px;
+      display: inline-block;
+      @media (max-width: 1280px) {
+        width: 547px;
+      }
+    }
   }
 }
 
 .apps-screen-wrapper {
-  padding-top: 40px;
+  padding-top: 16px;
   .screen-content {
     max-width: 1570px;
   }
@@ -167,11 +173,11 @@
       .app-name {
         font-weight: 400;
         margin-top: 5px;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        font-size: 24px;
+        font-size: 20px;
         text-align: left;
       }
       .app-description {

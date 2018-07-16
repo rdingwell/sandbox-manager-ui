@@ -28,7 +28,6 @@ let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
-let rowSelectionTimer = null;
 const TYPES = {
     patient: 'Patient',
     persona: 'Persona',
@@ -76,7 +75,7 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        return <Page noTitle={this.props.noTitle} title={title}>
+        return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
             <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
@@ -171,9 +170,9 @@ class PersonaList extends Component {
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
                     {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
                 </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
                 {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
@@ -214,25 +213,25 @@ class PersonaList extends Component {
         });
 
         return this.props.personaList && this.props.personaList.length > 0
-            ? <Table className='persona-table' onRowSelection={this.handleRowSelect}>
-                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary7Color }}>
+            ? <Table className={'persona-table' + (isPatient ? ' patient' : '')} onRowSelection={this.handleRowSelect}>
+                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary5Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             Name
                         </TableHeaderColumn>
-                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
-                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
-                        {isPractitioner && <TableHeaderColumn />}
-                        {isPractitioner && <TableHeaderColumn />}
-                        {isPractitioner && <TableHeaderColumn />}
+                        {isPractitioner && <TableHeaderColumn/>}
+                        {isPractitioner && <TableHeaderColumn/>}
+                        {isPractitioner && <TableHeaderColumn/>}
                         {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
@@ -333,17 +332,11 @@ class PersonaList extends Component {
             let selection = getSelection();
             let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
             let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
-            if (!rowSelectionTimer && actualClick) {
-                rowSelectionTimer = setTimeout(() => {
-                    rowSelectionTimer = null;
-                    let selected = this.state.selected !== row ? row : undefined;
-                    selected !== undefined && this.props.patientDetailsFetchStarted();
-                    selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(list[row]), 500);
-                    this.setState({ selected });
-                }, 500)
-            } else {
-                clearTimeout(rowSelectionTimer);
-                rowSelectionTimer = null;
+            if (actualClick) {
+                let selected = this.state.selected !== row ? row : undefined;
+                selected !== undefined && this.props.patientDetailsFetchStarted();
+                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(list[row]), 500);
+                this.setState({ selected });
             }
         } else {
             this.props.click && this.props.click(list[row]);

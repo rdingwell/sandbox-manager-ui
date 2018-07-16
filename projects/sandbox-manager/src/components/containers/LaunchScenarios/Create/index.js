@@ -27,11 +27,16 @@ class Create extends Component {
         super(props);
 
         this.state = {
+            description: '',
+            title: '',
             selectedApp: null,
             encounterId: null,
             patientBanner: null,
+            showPatientSelectorWrapper: false,
+            showPatientSelector: false,
             intent: null,
-            patientId: null,
+            showPersonaSelector: false,
+            patientId: '',
             locationId: null,
             personaType: null,
             selectedPersona: null,
@@ -81,17 +86,19 @@ class Create extends Component {
             ? !!this.state.selectedApp
             : this.state.currentStep === 1
                 ? !!this.state.selectedPersona
-                : this.state.currentStep === 2;
+                : this.state.currentStep === 2
+                    ? true
+                    : this.state.title.length > 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
 
-        let actions = [
-            <FlatButton disabled={!nextEnabled} label="Next" labelPosition="before" style={{ color: nextColor }} icon={<RightIcon/>} onClick={this.next}/>
-        ];
+        let actions = this.state.currentStep !== 3
+            ? [<FlatButton disabled={!nextEnabled} label="NEXT" labelPosition="before" style={{ color: nextColor }} icon={<RightIcon/>} onClick={this.next}/>]
+            : [<RaisedButton disabled={!nextEnabled} label="SAVE" primary onClick={this.createScenario}/>];
 
         if (this.state.currentStep > 0) {
             actions.unshift(
-                <FlatButton label={<span className='perv-button-label'><LeftIcon style={{ color: prevColor }}/> Prev</span>} labelPosition="before" style={{ color: prevColor }} onClick={this.prev}/>
+                <FlatButton label={<span className='perv-button-label'><LeftIcon style={{ color: prevColor }}/> BACK</span>} labelPosition="before" style={{ color: prevColor }} onClick={this.prev}/>
             );
         }
 
@@ -99,7 +106,6 @@ class Create extends Component {
     };
 
     getContent = () => {
-        console.log(this.state.selectedApp);
         let palette = this.props.muiTheme.palette;
         let titleStyle = { color: palette.primary3Color };
         let underlineFocusStyle = { borderColor: palette.primary2Color };
@@ -116,10 +122,19 @@ class Create extends Component {
                 let type = PersonaList.TYPES.persona;
                 let typeFilter = { resource: this.state.personaType };
                 let personaList = this.props.personas;
-                let click = selectedPersona => this.setState({ selectedPersona });
+                let click = selectedPersona => {
+                    this.setState({ showPersonaSelector: false });
+                    setTimeout(() => {
+                        this.setState({ selectedPersona });
+                    }, 300)
+                };
+                let close = () => {
+                    this.setState({ showPersonaSelector: false });
+                    setTimeout(() => this.setState({ personaType: undefined }), 400);
+                };
                 let props = {
                     typeFilter, type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
-                    search: this.props.fetchPersonas, loading: this.props.personaLoading
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close
                 };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/> Which user will launch the app in this launch scenario?</span>
@@ -139,10 +154,18 @@ class Create extends Component {
                                 <span>Selected Persona</span>
                                 <span><AccountIcon style={iconStyle}/> {this.state.selectedPersona ? this.getSelectedName() : '-'}</span>
                             </div>]}
-                        {this.state.personaType && !this.state.selectedPersona && <PersonaList {...props} noFilter noTitle/>}
+                        <div className={'persona-list-wrapper' + (this.state.showPersonaSelector ? ' active' : '')}>
+                            {this.state.personaType && !this.state.selectedPersona && <PersonaList {...props} noFilter titleLeft scrollContent/>}
+                        </div>
                     </div>
                 </div>;
             case 2:
+                type = PersonaList.TYPES.patient;
+                personaList = this.props.patients;
+                props = {
+                    typeFilter, type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close: () => this.togglePatientSearch()
+                };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><ContextIcon style={iconStyle}/> What additional launch context will be provided to the app?</span>
                     <div className='context-selection'>
@@ -150,11 +173,13 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <PatientIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' floatingLabelText='Patient ID'
-                                           onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)}
+                                           onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
                                            errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
                                 <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
                                     {!this.props.fetchingSinglePatient
-                                        ? <IconButton iconStyle={iconStyle}><SearchIcon style={iconStyle}/></IconButton>
+                                        ? <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
+                                            <SearchIcon style={iconStyle}/>
+                                        </IconButton>
                                         : <CircularProgress innerStyle={iconStyle} size={25}/>}
                                 </div>
                                 {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
@@ -213,6 +238,9 @@ class Create extends Component {
                                 <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                                 <div>About SMART Context</div>
                             </div>
+                        </div>
+                        <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
+                            {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent/>}
                         </div>
                     </div>
                 </div>;
@@ -294,11 +322,14 @@ class Create extends Component {
                                 <span className='section-title'>Details</span>
                             </div>
                             <div className='summary-item'>
-                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'/>
+                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'
+                                           onChange={(_, val) => this.onChange('title', val)} value={this.state.title}/>
+                                <span className='subscript'>{this.state.title.length} / 75</span>
                             </div>
                             <div className='summary-item'>
                                 <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                           floatingLabelText='Description/Instructions'/>
+                                           floatingLabelText='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
+                                <span className='subscript'>{this.state.description.length} / 500</span>
                             </div>
                         </div>
                     </div>
@@ -307,9 +338,21 @@ class Create extends Component {
     };
 
     onChange = (prop, value) => {
+        let trimmedProp = this.trimProp(prop, value);
         let state = {};
-        state[prop] = value;
+        state[prop] = trimmedProp;
         this.setState(state);
+    };
+
+    trimProp = (prop, value) => {
+        switch (prop) {
+            case 'title':
+                return value.substr(0, 75);
+            case 'description':
+                return value.substr(0, 500);
+            default:
+                return value;
+        }
     };
 
     blur = (input) => {
@@ -331,29 +374,39 @@ class Create extends Component {
 
     personaType = (_, personaType) => {
         this.props.fetchPersonas(PersonaList.TYPES.persona);
-        this.setState({ personaType, selectedPersona: null });
+        this.setState({ personaType, selectedPersona: null, showPersonaSelector: true });
+    };
+
+    togglePatientSearch = (patient) => {
+        if (patient) {
+            console.log(patient.id);
+            this.setState({ selectedPatient: patient, showPatientSelectorWrapper: false, patientId: patient.id });
+            setTimeout(() => {
+                this.setState({ showPatientSelector: false });
+                this.blur('patientId');
+            }, 400);
+        } else {
+            this.props.fetchPersonas(PersonaList.TYPES.patient);
+            this.setState({ selectedPatient: null, showPatientSelector: true, showPatientSelectorWrapper: true });
+        }
     };
 
     createScenario = () => {
-        if (this.state.description.length > 2) {
-            let data = {
-                app: this.state.selectedApp,
-                description: this.state.description,
-                lastLaunchSeconds: Date.now(),
-                patient: {
-                    fhirId: this.state.selectedPatient.id,
-                    name: getPatientName(this.state.selectedPatient),
-                    resource: 'Patient'
-                },
-                sandbox: this.props.sandbox,
-                userPersona: this.state.selectedPersona,
-                createdBy: this.props.user
-            };
+        let data = {
+            app: this.state.selectedApp,
+            description: this.state.title,
+            lastLaunchSeconds: Date.now(),
+            patient: {
+                fhirId: this.state.selectedPersona.id,
+                name: getPatientName(this.state.selectedPersona),
+                resource: 'Patient'
+            },
+            sandbox: this.props.sandbox,
+            userPersona: this.state.selectedPersona,
+            createdBy: this.props.user
+        };
 
-            this.props.create && this.props.create(data);
-        } else {
-            this.setState({ descriptionError: 'You need to provide description longer than 2 characters!' });
-        }
+        this.props.create && this.props.create(data);
     };
 
     next = () => {
