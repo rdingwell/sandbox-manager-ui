@@ -82,6 +82,7 @@ class Apps extends Component {
             <div className='apps-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
+                        <span className='dummy-expander' />
                         <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
                             <ContentAdd/>
                         </FloatingActionButton>

@@ -11,6 +11,19 @@ export default function (state = initialState, action) {
         case actionTypes.SET_SANDBOX_SELECTING :
             state.selecting = action.payload.selecting;
             break;
+        case actionTypes.FETCHING_SINGLE_ENCOUNTER :
+            state.fetchingSingleEncounter = action.payload.fetching;
+            if(action.payload.fetching) {
+                state.singleEncounter = null;
+                state.singleEncounterLoadingError = null;
+            }
+            break;
+        case actionTypes.SET_SINGLE_ENCOUNTER :
+            state.singleEncounter = action.payload.encounter;
+            break;
+        case actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR :
+            state.singleEncounterLoadingError = action.payload.error;
+            break;
         case actionTypes.FETCH_SANDBOXES_SUCCESS:
             state.sandboxes = action.sandboxes;
             state.loading = false;

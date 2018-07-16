@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
-import { ActionLock, ActionLockOpen } from "material-ui/svg-icons/index";
+import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
@@ -41,7 +41,7 @@ class Index extends Component {
                 let leftAvatar = <Avatar className={avatarClasses} backgroundColor={backgroundColor}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
                     ? <IconButton tooltip='Open endpoint'>
-                        <ActionLockOpen color={this.props.muiTheme.palette.primary3Color}/>
+                        <SocialPublic color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>
                     : <IconButton tooltip='Authorization required'>
                         <ActionLock color={this.props.muiTheme.palette.primary3Color}/>

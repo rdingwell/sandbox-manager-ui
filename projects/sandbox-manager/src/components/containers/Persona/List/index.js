@@ -22,12 +22,12 @@ import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
+import { getAge } from "../../../../../../../lib/utils";
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
-let rowSelectionTimer = null;
 const TYPES = {
     patient: 'Patient',
     persona: 'Persona',
@@ -40,8 +40,10 @@ class PersonaList extends Component {
     constructor (props) {
         super(props);
 
+        let searchCrit = props.typeFilter ? props.typeFilter : '';
+
         this.state = {
-            searchCrit: '',
+            searchCrit,
             creationType: '',
             showConfirmModal: false,
             showCreateModal: false
@@ -73,7 +75,7 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        return <Page title={title}>
+        return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
             <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
@@ -85,7 +87,7 @@ class PersonaList extends Component {
                                personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
             </div>}
             <div className='personas-wrapper'>
-                <div className='filter-wrapper'>
+                {!this.props.noFilter && <div className='filter-wrapper'>
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
@@ -100,7 +102,7 @@ class PersonaList extends Component {
                             <i className='fa fa-user-md fa-lg'/>
                         </FloatingActionButton>}
                     </div>
-                </div>
+                </div>}
                 <div style={{ position: this.props.modal ? 'relative' : 'absolute', width: '100%' }}>
                     {personaList && !this.props.loading
                         ? <div className={'persona-table-wrapper' + (this.props.modal ? ' modal' : '')}>
@@ -141,7 +143,7 @@ class PersonaList extends Component {
                         ? <Badge style={{ padding: '0' }} badgeStyle={{ color: this.props.theme.accent1Color, position: 'relative' }} badgeContent={<i className="fa fa-user-md fa-2x"/>}/>
                         : <Badge style={{ padding: '0' }} badgeStyle={{ width: '28px', height: '28px', position: 'relative', left: '-2px' }}
                                  badgeContent={<Patient style={{ fill: this.props.theme.primary2Color, width: '28px', height: '28px' }}/>}/>;
-            let age = this.getAge(persona.birthDate);
+            let age = getAge(persona.birthDate);
             let isSelected = i === this.state.selected;
             let contentStyles = isSelected ? { borderBottom: '1px solid ' + this.props.theme.primary7Color } : {};
             let showMenuForItem = this.state.showMenuForItem === i;
@@ -168,9 +170,9 @@ class PersonaList extends Component {
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
                     {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
                 </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
-                {isPractitioner && <TableRowColumn className='persona-info' />}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
+                {isPractitioner && <TableRowColumn className='persona-info'/>}
                 {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
@@ -211,25 +213,25 @@ class PersonaList extends Component {
         });
 
         return this.props.personaList && this.props.personaList.length > 0
-            ? <Table className='persona-table' onRowSelection={this.handleRowSelect}>
-                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary7Color }}>
+            ? <Table className={'persona-table' + (isPatient ? ' patient' : '')} onRowSelection={this.handleRowSelect}>
+                <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary5Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             Name
                         </TableHeaderColumn>
-                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
-                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
-                        {isPractitioner && <TableHeaderColumn />}
-                        {isPractitioner && <TableHeaderColumn />}
-                        {isPractitioner && <TableHeaderColumn />}
+                        {isPractitioner && <TableHeaderColumn/>}
+                        {isPractitioner && <TableHeaderColumn/>}
+                        {isPractitioner && <TableHeaderColumn/>}
                         {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
@@ -279,22 +281,6 @@ class PersonaList extends Component {
         }, persona);
     };
 
-    getAge = (birthday) => {
-        let currentDate = moment();
-        let birthDate = moment(Date.parse(birthday));
-
-        let result = "";
-        let years = currentDate.diff(birthDate, 'years');
-        result += years + 'y ';
-        currentDate.subtract({ years });
-        let months = currentDate.diff(birthDate, 'months');
-        result += months + 'm ';
-        currentDate.subtract({ months });
-        let days = currentDate.diff(birthDate, 'days');
-        result += days + 'd';
-        return result;
-    };
-
     getName = (name) => {
         let strName = (name.family || name.family[0]) + ',';
         let i;
@@ -341,24 +327,19 @@ class PersonaList extends Component {
 
     handleRowSelect = (row) => {
         row = this.props.modal ? row : row[0] / 2;
+        let list = this.getFilteredList();
         if (!this.props.modal && this.props.type === TYPES.patient) {
             let selection = getSelection();
             let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
             let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
-            if (!rowSelectionTimer && actualClick) {
-                rowSelectionTimer = setTimeout(() => {
-                    rowSelectionTimer = null;
-                    let selected = this.state.selected !== row ? row : undefined;
-                    selected !== undefined && this.props.patientDetailsFetchStarted();
-                    selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(this.props.personaList[row]), 500);
-                    this.setState({ selected });
-                }, 500)
-            } else {
-                clearTimeout(rowSelectionTimer);
-                rowSelectionTimer = null;
+            if (actualClick) {
+                let selected = this.state.selected !== row ? row : undefined;
+                selected !== undefined && this.props.patientDetailsFetchStarted();
+                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(list[row]), 500);
+                this.setState({ selected });
             }
         } else {
-            this.props.click && this.props.click(this.props.personaList[row]);
+            this.props.click && this.props.click(list[row]);
         }
     };
 }

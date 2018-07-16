@@ -16,6 +16,19 @@ export default function (state = initialState, action) {
             state.fetching = false;
             state.fetchingError = action.payload.error;
             break;
+        case types.FETCHING_SINGLE_PATIENT:
+            state.fetchingSingle = action.payload.fetching;
+            if (action.payload.fetching) {
+                state.fetchingSingleError = null;
+                state.singlePatient = null;
+            }
+            break;
+        case types.SINGLE_PATIENT_DATA:
+            state.singlePatient = action.payload.patient;
+            break;
+        case types.SINGLE_PATIENT_FETCH_FAILED:
+            state.fetchingSingleError = action.payload.error;
+            break;
         case types.SET_PATIENT_DETAILS:
             state.details = action.payload.details;
             break;

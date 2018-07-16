@@ -34,6 +34,27 @@ export function patientDetailsFetchError (error) {
     }
 }
 
+export function fetchingPatient (fetching) {
+    return {
+        type: actionTypes.FETCHING_SINGLE_PATIENT,
+        payload: { fetching }
+    }
+}
+
+export function setSinglePatientFetched (patient) {
+    return {
+        type: actionTypes.SINGLE_PATIENT_DATA,
+        payload: { patient }
+    }
+}
+
+export function setFetchingSinglePatientFailed (error) {
+    return {
+        type: actionTypes.SINGLE_PATIENT_FETCH_FAILED,
+        payload: { error }
+    }
+}
+
 export function setPatientDetails(details) {
     return {
         type: actionTypes.SET_PATIENT_DETAILS,
@@ -65,6 +86,23 @@ export function fetchPatientDetails (patient, type) {
                     dispatch(patientDetailsFetchSuccess());
                 })
                 .catch(error => dispatch(patientDetailsFetchError(error)));
+        }
+    }
+}
+
+export function fetchPatient (id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(fetchingPatient(true));
+            window.fhirClient.api.read({type: 'Patient', id})
+                .done(patient => {
+                    dispatch(setSinglePatientFetched(patient.data));
+                    dispatch(fetchingPatient(false));
+                })
+                .fail(e => {
+                    dispatch(setFetchingSinglePatientFailed(e));
+                    dispatch(fetchingPatient(false));
+                });
         }
     }
 }

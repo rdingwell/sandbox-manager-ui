@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart } from '../../../redux/action-creators';
+import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
+    fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter
+} from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
@@ -24,6 +26,8 @@ import Create from './Create';
 import './styles.less';
 
 class LaunchScenarios extends Component {
+
+    createKey = 0;
 
     constructor (props) {
         super(props);
@@ -77,7 +81,7 @@ class LaunchScenarios extends Component {
                     {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
                     {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 && <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
-                <Create open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario}/>
+                <Create key={this.createKey} open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario} {...this.props}/>
             </div>
         </Page>
     }
@@ -115,13 +119,13 @@ class LaunchScenarios extends Component {
     };
 
     toggleCreateModal = () => {
-        this.props.fetchPersonas(PersonaList.TYPES.patient);
         let showModal = !this.state.showModal;
         let selectedScenario = showModal ? this.state.selectedScenario : undefined;
         showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
         showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
         showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
         this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
+        this.createKey++;
     };
 
     getScenarios = () => {
@@ -257,6 +261,12 @@ const mapStateToProps = state => {
     return {
         user: state.users.oauthUser,
         apps: state.apps.apps,
+        fetchingSingleEncounter: state.sandbox.fetchingSingleEncounter,
+        singleEncounterLoadingError: state.sandbox.singleEncounterLoadingError,
+        singleEncounter: state.sandbox.singleEncounter,
+        fetchingSinglePatient: state.patient.fetchingSingle,
+        fetchingSinglePatientError: state.patient.fetchingSingleError,
+        singlePatient: state.patient.singlePatient,
         creating: state.sandbox.launchScenarioCreating,
         deleting: state.sandbox.launchScenarioDeleting,
         scenariosLoading: state.sandbox.launchScenariosLoading,
@@ -271,7 +281,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(
-    { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart },
+    { setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
+        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter},
     dispatch
 );
 

@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart} from '../../../redux/action-creators';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { Component } from 'react';
+import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart } from '../../../redux/action-creators';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
 import PersonaList from './List';
 import muiThemeable from "material-ui/styles/muiThemeable";
@@ -10,7 +10,7 @@ import './styles.less';
 
 class Persona extends Component {
 
-    constructor(props) {
+    constructor (props) {
         super(props);
 
         let type = getType(props);
@@ -24,29 +24,29 @@ class Persona extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount () {
         let type = this.state.type;
         this.props.fetchPersonas(type);
         this.props.app_setScreen(type === PersonaList.TYPES.patient ? 'patients' : type === PersonaList.TYPES.practitioner ? 'practitioners' : 'personas');
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps (nextProps) {
         let type = getType(nextProps);
-        type !== this.state.type && this.setState({type, createPersona: false});
+        type !== this.state.type && this.setState({ type, createPersona: false });
         (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && this.props.fetchPersonas(type);
     }
 
-    render() {
+    render () {
+        let type = this.state.type;
         let props = {
-            key: this.state.type,
-            type: this.state.type,
+            key: type, type,
             personaList: this.props.currentPersonas,
             pagination: this.props.currentPagination,
             click: this.selectPersonHandler,
             search: this.props.fetchPersonas,
             loading: this.props.loading,
             theme: this.props.muiTheme.palette,
-            create: this.props.createResource,
+            create: type !== PersonaList.TYPES.persona ? this.props.createResource : this.props.createPersona,
             modal: this.props.modal,
             title: this.props.title,
             fetchPersonas: this.props.fetchPersonas,
@@ -59,7 +59,7 @@ class Persona extends Component {
     }
 
     closeDialog = () => {
-        this.setState({selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined});
+        this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined });
     };
 
     createPersona = () => {
@@ -75,11 +75,11 @@ class Persona extends Component {
     selectPersonHandler = (persona) => {
         this.props.doLaunch && this.props.doLaunch(persona);
         this.props.doLaunch && this.closeDialog();
-        !this.props.doLaunch && this.setState({viewPersona: persona});
+        !this.props.doLaunch && this.setState({ viewPersona: persona });
     };
 }
 
-function getType(props) {
+function getType (props) {
     return (props.location && props.location.pathname.indexOf('/patients') >= 0) || (props.type === 'Patient')
         ? PersonaList.TYPES.patient
         : (props.location && props.location.pathname.indexOf('/practitioners') >= 0) || (props.type === 'Practitioner')
@@ -87,7 +87,7 @@ function getType(props) {
             : PersonaList.TYPES.persona;
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps (state, ownProps) {
     let type = getType(ownProps);
 
     let currentPersonas = type === PersonaList.TYPES.patient ? state.persona.patients
