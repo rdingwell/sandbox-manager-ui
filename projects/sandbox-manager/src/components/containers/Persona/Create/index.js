@@ -47,7 +47,7 @@ export default class CreatePersona extends Component {
             </div>
             : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
                            next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
-                           prev={() => this.props.getPrevPersonasPage(this.props.personaType, pagination)} search={this.props.search} />
+                           prev={() => this.props.getPrevPersonasPage(this.props.personaType, pagination)} search={this.props.search}/>
     };
 
     getDefaultContent = () => {
@@ -82,22 +82,32 @@ export default class CreatePersona extends Component {
     };
 
     create = () => {
-        let data = {
-            "active": true,
-            "resourceType": this.props.type,
-            "name": [{ "given": [this.state.name], "family": [this.state.fName], "text": `${this.state.name} ${this.state.fName}` }]
-        };
+        let data = this.state.selectedForCreation
+            ? this.state.selectedForCreation
+            : {
+                "active": true,
+                "resourceType": this.props.type,
+                "name": [{ "given": [this.state.name], "family": [this.state.fName], "text": `${this.state.name} ${this.state.fName}` }]
+            };
         if (this.props.type === PersonaList.TYPES.patient) {
             data.birthDateTime = `${this.state.birthDate}T00:00:00.000Z`;
             data.gender = this.state.gender;
             data.birthDate = this.state.birthDate;
-        } else {
+        } else if (this.props.type === PersonaList.TYPES.practitioner) {
             data.suffix = this.state.suffix;
             data.speciality = this.state.speciality;
             data.role = this.state.role;
+        } else {
+            data.userId = this.state.username;
+            data.password = this.state.password;
         }
 
-        this.props.create && this.props.create(data);
-        this.props.close();
+        if(this.props.type === PersonaList.TYPES.persona) {
+            this.props.create && this.props.create(this.props.personaType, data);
+            this.props.close();
+        } else {
+            this.props.create && this.props.create(data);
+            this.props.close();
+        }
     };
 }

@@ -28,6 +28,7 @@ let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
+let createKey = 1;
 const TYPES = {
     patient: 'Patient',
     persona: 'Persona',
@@ -83,7 +84,7 @@ class PersonaList extends Component {
                 </p>
             </ConfirmModal>
             {!this.props.modal && <div className='create-resource-button'>
-                <CreatePersona open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
+                <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
                                personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
             </div>}
             <div className='personas-wrapper'>
@@ -122,6 +123,7 @@ class PersonaList extends Component {
     }
 
     toggleCreateModal = (type) => {
+        createKey++;
         type && this.props.fetchPersonas(type);
         this.setState({ showCreateModal: !this.state.showCreateModal, creationType: type || '' });
     };
