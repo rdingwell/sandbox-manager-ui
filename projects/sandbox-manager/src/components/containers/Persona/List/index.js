@@ -61,10 +61,15 @@ class PersonaList extends Component {
         chartData[6][1] = nextProps.goalCount;
         chartData[7][1] = nextProps.immunizationCount;
         chartData[8][1] = nextProps.medicationDispenseCount;
-        chartData[9][1] = nextProps.medicationRequestCount;
         chartData[10][1] = nextProps.observationCount;
         chartData[11][1] = nextProps.procedureCount;
         chartData[12][1] = nextProps.procedureRequestCount;
+
+        if (nextProps.medicationOrderCount) {
+            chartData[9] = ['Medication Order', nextProps.medicationOrderCount];
+        } else {
+            chartData[9][1] = nextProps.medicationRequestCount;
+        }
     }
 
     render () {
@@ -360,6 +365,7 @@ const mapStateToProps = state => {
         encounterCount: state.patient.details.Encounter || 0,
         medicationRequestCount: state.patient.details.MedicationRequest || 0,
         medicationDispenseCount: state.patient.details.MedicationDispense || 0,
+        medicationOrderCount: state.patient.details.MedicationOrder || 0,
         allergyCount: state.patient.details.AllergyIntolerance || 0,
         conditionCount: state.patient.details.Condition || 0,
         procedureCount: state.patient.details.Procedure || 0,

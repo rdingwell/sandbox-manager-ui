@@ -554,6 +554,7 @@ export function getDefaultUserForSandbox (sandboxId) {
                         .then(user => {
                             dispatch(setDefaultSandboxUser(user));
                         })
+                        .catch(_ => {})
                 })
                 .catch(e => console.log(e))
                 .then(() => dispatch(setSandboxSelecting(false)));
