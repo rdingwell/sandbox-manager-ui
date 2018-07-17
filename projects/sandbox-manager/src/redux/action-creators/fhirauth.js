@@ -179,6 +179,8 @@ export function fhirauth_setSmart (smart, redirect = null) {
                                             dispatch(saveSandboxManagerUser(data));
                                             let state = getState();
                                             redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                                            redirect && sessionStorage.sandboxId &&
+                                            dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
                                         });
                                 });
                         });

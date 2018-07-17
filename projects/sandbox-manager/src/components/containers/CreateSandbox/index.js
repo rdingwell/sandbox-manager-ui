@@ -32,7 +32,7 @@ class Index extends Component {
             <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={( event ) => this.handleCancel(event)}/>
         ];
 
-        return <Dialog paperClassName='create-sandbox-dialog' modal open={this.props.open} actions={actions} autoScrollBodyContent>
+        return <Dialog paperClassName='create-sandbox-dialog' open={this.props.open} actions={actions} autoScrollBodyContent onRequestClose={this.handleCancel}>
             <div className='create-sandbox-wrapper'>
                 <Paper className='paper-card'>
                     <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>

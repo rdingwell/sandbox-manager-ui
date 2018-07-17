@@ -28,6 +28,7 @@ let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
     ['Goal', 0], ['Immunization', 0], ['Medication Dispense', 0], ['Medication Request', 0], ['Observation', 0], ['Procedure', 0], ['Procedure Request', 0]
 ];
+let createKey = 1;
 const TYPES = {
     patient: 'Patient',
     persona: 'Persona',
@@ -60,10 +61,15 @@ class PersonaList extends Component {
         chartData[6][1] = nextProps.goalCount;
         chartData[7][1] = nextProps.immunizationCount;
         chartData[8][1] = nextProps.medicationDispenseCount;
-        chartData[9][1] = nextProps.medicationRequestCount;
         chartData[10][1] = nextProps.observationCount;
         chartData[11][1] = nextProps.procedureCount;
         chartData[12][1] = nextProps.procedureRequestCount;
+
+        if (nextProps.medicationOrderCount) {
+            chartData[9] = ['Medication Order', nextProps.medicationOrderCount];
+        } else {
+            chartData[9][1] = nextProps.medicationRequestCount;
+        }
     }
 
     render () {
@@ -83,7 +89,7 @@ class PersonaList extends Component {
                 </p>
             </ConfirmModal>
             {!this.props.modal && <div className='create-resource-button'>
-                <CreatePersona open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
+                <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
                                personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
             </div>}
             <div className='personas-wrapper'>
@@ -122,6 +128,7 @@ class PersonaList extends Component {
     }
 
     toggleCreateModal = (type) => {
+        createKey++;
         type && this.props.fetchPersonas(type);
         this.setState({ showCreateModal: !this.state.showCreateModal, creationType: type || '' });
     };
@@ -358,6 +365,7 @@ const mapStateToProps = state => {
         encounterCount: state.patient.details.Encounter || 0,
         medicationRequestCount: state.patient.details.MedicationRequest || 0,
         medicationDispenseCount: state.patient.details.MedicationDispense || 0,
+        medicationOrderCount: state.patient.details.MedicationOrder || 0,
         allergyCount: state.patient.details.AllergyIntolerance || 0,
         conditionCount: state.patient.details.Condition || 0,
         procedureCount: state.patient.details.Procedure || 0,

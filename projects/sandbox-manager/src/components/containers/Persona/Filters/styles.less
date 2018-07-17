@@ -42,9 +42,28 @@
   width: 300px;
   height: 120px;
   padding: 16px;
-  .reverse-slider {
-    position: relative;
-    top: -66px;
+  & > div {
+    & > * {
+      vertical-align: middle;
+      padding: 0 7px;
+    }
+    & > span:first-of-type {
+      display: inline-block;
+      width: 36px;
+    }
+  }
+  .slider {
+    display: inline-block;
+    min-width: 180px;
+    & > div {
+      margin-bottom: 20px !important;
+    }
+  }
+  .age-filter-value {
+    width: 20px !important;
+    hr {
+      width: 20px !important;
+    }
   }
 }
 

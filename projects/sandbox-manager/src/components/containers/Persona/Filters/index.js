@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
 import Search from 'material-ui/svg-icons/action/search';
-import Bubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
 import { Chip, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
+import moment from 'moment';
 
 import './styles.less';
 import PersonaListWithTheme from "../List";
@@ -72,11 +72,28 @@ export default class Filters extends Component {
                 </Chip>
                 {this.state.visibleFilter === 'age' &&
                 <Popover open={true} anchorEl={this.refs['age-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                         targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
+                         targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={this.closeAgeFilter} className='left-margin'>
                     <div className='age-filter-wrapper'>
-                        <Bubble style={{ position: 'absolute', right: `${((99 - this.state.maxAge) * 3) - 5}px` }}/>
-                        <Slider defaultValue={99} step={1} min={0} max={99} onChange={(_, value) => this.sliderChange('maxAge', value)}/>
-                        <Slider defaultValue={0} step={1} min={0} max={98} onChange={(_, value) => this.sliderChange('minAge', value)}/>
+                        <div>
+                            <span>Max</span>
+                            <Slider className='slider' value={this.state.maxAge} step={1} min={1} max={99} onChange={(_, value) => this.sliderChange('maxAge', value)}/>
+                            <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value' onChange={(_, val) => {
+                                let value = parseInt(val);
+                                if (Number.isInteger(value) && value !== this.state.maxAge) {
+                                    this.sliderChange('maxAge', value);
+                                }
+                            }}/>
+                        </div>
+                        <div>
+                            <span>Min</span>
+                            <Slider className='slider' value={this.state.minAge} step={1} min={0} max={98} onChange={(_, value) => this.sliderChange('minAge', value)}/>
+                            <TextField value={this.state.minAge} id='minAge' className='age-filter-value' onChange={(_, val) => {
+                                let value = parseInt(val);
+                                if (Number.isInteger(value) && value !== this.state.minAge) {
+                                    this.sliderChange('minAge', value);
+                                }
+                            }}/>
+                        </div>
                     </div>
                 </Popover>}
             </div>,
@@ -109,13 +126,26 @@ export default class Filters extends Component {
                     <MenuItem className='persona-type-filter-menu-item' primaryText={'Patient'} onClick={() => this.filter('resource', 'Patient')}
                               leftIcon={<Patient style={{ fill: this.props.theme.primary2Color }}/>}/>
                     <MenuItem className='persona-type-filter-menu-item' primaryText={'Practitioner'} onClick={() => this.filter('resource', 'Practitioner')}
-                              leftIcon={<i className='fa fa-user-md fa-lg' style={{color: this.props.theme.accent1Color}}/>}/>
+                              leftIcon={<i className='fa fa-user-md fa-lg' style={{ color: this.props.theme.accent1Color }}/>}/>
                 </Menu>
             </Popover>}
         </div>]
     };
 
+    closeAgeFilter = () => {
+        (this.state.minAge > 0 || this.state.maxAge < 99)
+            ? this.filter('age', this.state.minAge + ' - ' + this.state.maxAge)
+            : this.showFilter();
+    };
+
     sliderChange = (slider, value) => {
+        if (slider === 'maxAge') {
+            value = value >= this.state.minAge ? value : this.state.minAge + 1;
+            value = value > 99 ? 99 : value;
+        } else {
+            value = value <= this.state.maxAge ? value : this.state.maxAge - 1;
+            value = value < 0 ? 0 : value;
+        }
         let state = {};
         state[slider] = value;
         this.setState(state)
@@ -136,11 +166,24 @@ export default class Filters extends Component {
 
         this.setState({ filters });
 
-        this.props.onFilter && this.props.onFilter(filters);
+        let transformedFilter = Object.assign({}, filters);
+        if (transformedFilter.age) {
+            let val = transformedFilter.age;
+            delete transformedFilter.age;
+            let ages = val.split(' - ');
+            transformedFilter.birthdate = { $gt: moment().subtract(ages[1], 'years').format('YYYY'), $lt: moment().subtract(ages[0], 'years').format('YYYY') };
+        }
+
+        this.props.onFilter && this.props.onFilter(transformedFilter);
         this.showFilter();
     };
 
     showFilter = (filterName) => {
-        this.setState({ visibleFilter: filterName });
+        let state = { visibleFilter: filterName };
+        if (filterName === 'age' && !this.state.filters.age) {
+            state.minAge = 0;
+            state.maxAge = 99;
+        }
+        this.setState(state);
     };
 }

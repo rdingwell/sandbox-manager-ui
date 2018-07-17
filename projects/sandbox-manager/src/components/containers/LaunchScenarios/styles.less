@@ -250,7 +250,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         transition: all .3s;
-        transition-delay: .2s;
+        transition-delay: .3s;
       }
     }
     & > * {
@@ -300,24 +300,24 @@
       & > * {
         opacity: 0;
         transition: all .3s;
-        transition-delay: .2s;
       }
       .section-title {
         display: block;
-        font-size: 11px;
+        font-size: 18px;
         margin-bottom: 16px;
         line-height: 16px;
+        font-weight: 700;
+        svg {
+          vertical-align: middle;
+          margin-right: 12px;
+        }
       }
       .app-wrapper {
-        &:before {
-          content: ' ';
-          display: block;
-          border-top: 1px solid #D7D7D7;
-          position: relative;
-          left: -17px;
-          margin-bottom: 16px;
-        }
         width: 240px;
+        margin-top: 23px;
+        .app-card.small {
+          margin-left: 2px;
+        }
       }
       .persona-wrapper, .context-wrapper {
         width: 250px;
@@ -344,6 +344,14 @@
         .section-value {
           font-size: 14px;
           font-weight: 700;
+          & > * {
+            vertical-align: middle;
+          }
+          svg {
+            margin-right: 11px;
+            position: relative;
+            top: -3px;
+          }
         }
       }
     }
