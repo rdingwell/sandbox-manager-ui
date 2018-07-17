@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
+import {
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
     fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
@@ -10,11 +11,14 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
+import WebIcon from "material-ui/svg-icons/av/web";
+import AccountIcon from "material-ui/svg-icons/action/account-box";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Patient from "svg-react-loader?name=Patient!../../../../../../lib/icons/patient.svg";
+import ContextIcon from "svg-react-loader?name=Patient!../../../../../../lib/icons/context-icon.svg";
 import Page from '../../../../../../lib/components/Page';
 import DohMessage from "../../../../../../lib/components/DohMessage";
 import ConfirmModal from "../../../../../../lib/components/ConfirmModal";
@@ -205,36 +209,29 @@ class LaunchScenarios extends Component {
     };
 
     getDetailsContent = (selectedScenario) => {
-        let patient = selectedScenario.patient;
-        let label = selectedScenario.userPersona !== null && selectedScenario.userPersona.resource === 'Practitioner'
-            ? `Launch App as a Practitioner with ${patient.fhirId !== '0' ? '' : 'NO'} Patient Context`
-            : 'Launch an App As a Patient';
-        let lightColor = { color: this.props.muiTheme.palette.primary3Color };
+        let lightColor = { color: this.props.muiTheme.palette.primary3Color, alpha: '.7' };
+        let normalColor = { color: this.props.muiTheme.palette.primary3Color };
         let darkColor = { color: this.props.muiTheme.palette.primary6Color };
+        let iconStyle = { color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px' };
+        let iconStyleLight = { color: this.props.muiTheme.palette.primary3Color, fill: this.props.muiTheme.palette.primary3Color, width: '24px', height: '24px' };
 
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
-                <span className='section-title' style={lightColor}>Persona</span>
-                <span className='persona-name' style={darkColor}>{selectedScenario.userPersona.fhirName}</span>
+                <span className='section-title' style={darkColor}><AccountIcon style={iconStyle}/>Persona</span>
+                <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName}</span>
                 <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId}</span>
             </div>
             <div className='context-wrapper'>
-                <span className='section-title' style={lightColor}>Context</span>
+                <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
                 <div>
-                    <label className='section-label' style={lightColor}>Patient: </label>
-                    <span className='section-value' style={darkColor}>{selectedScenario.patient.name ? selectedScenario.patient.name : '-'}</span>
-                </div>
-                <div>
-                    <label className='section-label' style={lightColor}>Encounter: </label>
-                    <span className='section-value' style={darkColor}>-</span>
-                </div>
-                <div>
-                    <label className='section-label' style={lightColor}>Location: </label>
-                    <span className='section-value' style={darkColor}>-</span>
+                    <span className='section-value' style={lightColor}>
+                        <Patient style={iconStyleLight}/>
+                        {selectedScenario.patient.name ? selectedScenario.patient.name : '-'}
+                    </span>
                 </div>
             </div>
             <div className='app-wrapper'>
-                <span className='section-title' style={lightColor}>App</span>
+                <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
                 <Card className='app-card small'>
                     <CardMedia className='media-wrapper'>
                         <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
@@ -281,8 +278,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(
-    { setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
-        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter},
+    {
+        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
+        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter
+    },
     dispatch
 );
 
