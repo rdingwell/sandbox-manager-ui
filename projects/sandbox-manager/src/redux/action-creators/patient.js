@@ -1,6 +1,28 @@
 import * as actionTypes from "./types";
 
 const DETAILS = {
+    1: [
+        {resourceType: "Observation", patientSearch: "subject"},
+        {resourceType: "Encounter", patientSearch: "patient"},
+        {resourceType: "MedicationOrder", patientSearch: "patient"},
+        {resourceType: "MedicationDispense", patientSearch: "patient"},
+        {resourceType: "AllergyIntolerance", patientSearch: "patient"},
+        {resourceType: "Condition", patientSearch: "patient"},
+        {resourceType: "Procedure", patientSearch: "patient"},
+        {resourceType: "DiagnosticReport", patientSearch: "subject"},
+        {resourceType: "Immunization", patientSearch: "patient"}
+    ],
+    4: [
+        {resourceType: "Observation", patientSearch: "subject"},
+        {resourceType: "Encounter", patientSearch: "patient"},
+        {resourceType: "MedicationOrder", patientSearch: "patient"},
+        {resourceType: "MedicationDispense", patientSearch: "patient"},
+        {resourceType: "AllergyIntolerance", patientSearch: "patient"},
+        {resourceType: "Condition", patientSearch: "patient"},
+        {resourceType: "Procedure", patientSearch: "patient"},
+        {resourceType: "DiagnosticReport", patientSearch: "subject"},
+        {resourceType: "Immunization", patientSearch: "patient"}
+    ],
     5: [
         {resourceType: "Observation", patientSearch: "subject"},
         {resourceType: "Encounter", patientSearch: "patient"},
