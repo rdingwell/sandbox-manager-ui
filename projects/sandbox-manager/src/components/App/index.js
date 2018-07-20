@@ -2,13 +2,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
-import * as glib from '../../../../../lib/utils/';
-import * as lib from '../../lib/';
+import * as glib from 'sandbox-manager-lib/utils/';
+import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
 
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Layout from '../../../../../lib/components/Layout';
+import Layout from 'sandbox-manager-lib/components/Layout';
 
 import Init from '../Init/';
 

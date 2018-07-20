@@ -4,7 +4,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 
 import './styles.less';
-import { parseEntry } from "../../../../../../../lib/utils";
+import { parseEntry } from "sandbox-manager-lib/utils";
 
 export default class ExternalBrowser extends Component {
     constructor (props) {

@@ -3,7 +3,7 @@ import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgre
 import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
 import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
 import muiThemeable from "material-ui/styles/muiThemeable";

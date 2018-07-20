@@ -10,10 +10,10 @@ import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
-import DohMessage from "../../../../../../../lib/components/DohMessage";
-import ConfirmModal from "../../../../../../../lib/components/ConfirmModal";
-import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
-import Page from '../../../../../../../lib/components/Page';
+import DohMessage from "sandbox-manager-lib/components/DohMessage";
+import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
+import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import Page from 'sandbox-manager-lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
 import moment from 'moment';
@@ -22,7 +22,7 @@ import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
-import { getAge } from "../../../../../../../lib/utils";
+import { getAge } from "sandbox-manager-lib/utils";
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Checkbox, RaisedButton, Paper, TextField, DropDownMenu, MenuItem, IconButton, Dialog } from 'material-ui';
 import * as  actions from '../../../redux/action-creators';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { withRouter } from 'react-router';
 import './styles.less';

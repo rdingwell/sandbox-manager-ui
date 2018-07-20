@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { updateSandbox, resetCurrentSandbox, deleteCurrentSandbox } from '../../../../redux/action-creators';
-import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
 import './styles.less';
 import SandboxReset from "../SandboxReset";

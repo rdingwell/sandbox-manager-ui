@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
 import Search from 'material-ui/svg-icons/action/search';
-import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
+import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
 import { Chip, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
 import moment from 'moment';
 

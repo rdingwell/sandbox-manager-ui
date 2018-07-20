@@ -12,6 +12,14 @@ jq ".containerDefinitions[0].memoryReservation=(${AWS_CONTAINER_MEMORY_RESERVE} 
 
 cat ${TEMPLATE_FILE}
 
+echo "Cloning the 'lib' repo"
+cd projects
+git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
+cd sandbox-manager-lib
+npm link
+cd ..
+npm link sandbox-manager-lib
+
 echo "starting prepare_build.sh..."
 
 echo "::: Running NPM INSTALL"

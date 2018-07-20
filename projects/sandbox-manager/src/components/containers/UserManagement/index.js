@@ -10,7 +10,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { inviteNewUser, removeInvitation, fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import './styles.less';
 import { withRouter } from "react-router";
 

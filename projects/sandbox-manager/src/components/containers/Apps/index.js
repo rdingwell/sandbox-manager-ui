@@ -3,17 +3,17 @@ import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, Flat
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
-import Page from '../../../../../../lib/components/Page';
-import ConfirmModal from '../../../../../../lib/components/ConfirmModal';
+import Page from 'sandbox-manager-lib/components/Page';
+import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 
 import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
 import AppDialog from './AppDialog';
 import Personas from '../Persona';
-import DohMessage from "../../../../../../lib/components/DohMessage";
+import DohMessage from "sandbox-manager-lib/components/DohMessage";
 
 import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";

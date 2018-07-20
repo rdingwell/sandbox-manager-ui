@@ -1,5 +1,5 @@
 import * as actionTypes from "./types";
-import { parseNames } from "../../../../../lib/utils/fhir";
+import { parseNames } from "sandbox-manager-lib/utils/fhir";
 
 export function lookupPersonasStart (type) {
     return {
