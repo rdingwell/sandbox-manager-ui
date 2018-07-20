@@ -10,6 +10,17 @@ Welcome to the HSPC Sandbox Manager!
 
 ### How do I get set up? ###
 
+#### Get the lib project into the 'projects' folder ####
+The following code will checkout the lib project into the correct folder
+and link it to npm so that it can be used as a standard node module. 
+
+    cd projects
+    git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
+    cd sandbox-manager-lib
+    npm link
+    cd ../../
+    npm link sandbox-manager-lib
+
 #### Build and Deploy ####
     ./run-local.sh
 
