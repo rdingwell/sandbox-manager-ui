@@ -19,7 +19,9 @@ export default function (state = initialState, action) {
             return Object.assign({}, state, { theme: action.payload });
 
         case types.APP_RESET_STATE:
+            let theme = state.theme;
             state = initialState;
+            state.theme = theme;
             break;
 
         case "persist/REHYDRATE":

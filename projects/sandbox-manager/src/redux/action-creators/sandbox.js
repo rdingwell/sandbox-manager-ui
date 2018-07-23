@@ -641,9 +641,7 @@ export const fetchSandboxInvites = () => {
                     .then(res => {
                         const invitations = [];
                         for (let key in res) {
-                            invitations.push({
-                                ...res[key]
-                            });
+                            invitations.push({ ...res[key] });
                         }
                         dispatch(fetchSandboxInvitesSuccess(invitations));
                     });
