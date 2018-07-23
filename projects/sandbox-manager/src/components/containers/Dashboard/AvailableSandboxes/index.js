@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
-import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress } from 'material-ui';
+import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress, SelectField, MenuItem } from 'material-ui';
 import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { withRouter } from 'react-router';
-import { ActionLock, SocialPublic } from "material-ui/svg-icons/index";
+import { ActionLock, SocialPublic, ContentSort } from "material-ui/svg-icons/index";
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
+const SORT_VALUES = [
+    { val: 'last_used', label: 'Last Used' },
+    { val: 'alphabetical', label: 'Alphabetical' }
+];
+
 class Index extends Component {
+
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            sort: 'last_used',
+            desc: true
+        };
+    }
 
     componentDidMount () {
         sessionStorage.clear();
@@ -24,7 +38,8 @@ class Index extends Component {
     render () {
         let sandboxes = null;
         if (!this.props.loading) {
-            sandboxes = this.props.sandboxes.map((sandbox, index) => {
+            let list = this.sortSandboxes();
+            sandboxes = list.map((sandbox, index) => {
                 let isThree = ['1', '2', '5'].indexOf(sandbox.apiEndpointIndex) === -1;
                 let isFour = sandbox.apiEndpointIndex === '7';
                 let avatarClasses = 'sandbox-avatar';
@@ -53,7 +68,17 @@ class Index extends Component {
         }
 
         return <Paper className='sandboxes-wrapper paper-card'>
-            <h3>My Sandboxes
+            <h3>
+                <div className='sandbox-sort-wrapper'>
+                    <IconButton onClick={() => this.setState({ desc: !this.state.desc })}>
+                        <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary5Color}/>
+                    </IconButton>
+                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary5Color }} underlineStyle={{ display: 'none' }} value={this.state.sort}
+                                 className='select' onChange={(_, sort) => this.setState({ sort: SORT_VALUES[sort].val })}>
+                        <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
+                        <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
+                    </SelectField>
+                </div>
                 <RaisedButton primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
             </h3>
             <div>
@@ -69,6 +94,27 @@ class Index extends Component {
             </div>
         </Paper>;
     }
+
+    sortSandboxes = () => {
+        if (this.state.sort === SORT_VALUES[1].val) {
+            return this.props.sandboxes.sort((a, b) => {
+                let nameA = a.name.toLowerCase();
+                let nameB = b.name.toLowerCase();
+                let val = 0;
+                if (nameA > nameB) {
+                    val = 1;
+                } else if (nameA < nameB) {
+                    val = -1;
+                }
+                if (!this.state.desc) {
+                    val *= -1;
+                }
+                return val;
+            });
+        } else {
+            return this.props.sandboxes;
+        }
+    };
 
     handleCreate = () => {
         this.props.onToggleModal && this.props.onToggleModal();

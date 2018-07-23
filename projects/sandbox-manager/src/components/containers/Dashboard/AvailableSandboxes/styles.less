@@ -19,6 +19,36 @@
 .sandboxes-wrapper {
   margin-bottom: 32px;
   min-height: ~'calc(100vh - 331px)';
+  margin-top: 16px;
+  & > h3 {
+    height: 64px;
+  }
+  .sandbox-sort-wrapper {
+    display: inline-block;
+    line-height: 64px;
+    position: absolute;
+    top: 0;
+    padding-left: 5px;
+    & > * {
+      vertical-align: middle;
+    }
+    & > svg, & > button {
+      width: 24px !important;
+      height: 24px !important;
+    }
+    .rev {
+      transform: rotate(180deg);
+    }
+    .select {
+      div {
+        padding-right: 0 !important;
+      }
+      button {
+        padding: 12px 3px !important;
+        width: 30px !important;
+      }
+    }
+  }
   .sandbox-avatar {
     width: 40px !important;
     height: 40px !important;
@@ -40,7 +70,6 @@
     & > h3 {
       font-size: 20px;
       font-weight: 100;
-      text-transform: uppercase;
       padding-left: 20px;
     }
   }
