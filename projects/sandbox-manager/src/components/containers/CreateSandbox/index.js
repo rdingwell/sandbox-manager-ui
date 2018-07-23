@@ -28,9 +28,11 @@ class Index extends Component {
         let duplicate = this.props.sandboxes.find(i => i.sandboxId === this.state.sandboxId);
 
         let actions = [
-            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate} className='button' primary onClick={this.handleCreateSandbox}/>,
-            <RaisedButton key={2} label='Cancel' className='button' default type='submit' onClick={(event) => this.handleCancel(event)}/>
+            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate} className='button' primary onClick={this.handleCreateSandbox}/>
         ];
+
+        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
 
         return <Dialog paperClassName='create-sandbox-dialog' open={this.props.open} actions={actions} autoScrollBodyContent onRequestClose={this.handleCancel}>
             <div className='create-sandbox-wrapper'>
@@ -43,10 +45,11 @@ class Index extends Component {
                     </h3>
                     <div className='paper-body'>
                         <form>
-                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler}/> <br/>
+                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler}
+                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/> <br/>
                             <div className='subscript'>Must be less than 50 characters. e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
-                                       errorText={duplicate ? 'ID already in use' : undefined}/><br/>
+                                       errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
@@ -63,7 +66,8 @@ class Index extends Component {
                                 <Checkbox label='Import sample applications' className='checkbox' defaultChecked onCheck={this.applyDefaultAppsChangeHandler}/>
                                 <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
-                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}/><br/>
+                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}
+                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>e.g., This sandbox is the QA environment for NewCo.</div>
                         </form>
                     </div>
