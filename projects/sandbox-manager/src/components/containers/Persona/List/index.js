@@ -169,7 +169,7 @@ class PersonaList extends Component {
                 {isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.id}
                 </TableRowColumn>}
-                {!this.props.modal && !isPractitioner && <TableRowColumn className='persona-info'>
+                {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && persona.password}
                     {isPatient && age}
                 </TableRowColumn>}
@@ -230,7 +230,7 @@ class PersonaList extends Component {
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
-                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>

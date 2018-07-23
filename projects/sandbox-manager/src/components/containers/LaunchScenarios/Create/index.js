@@ -235,8 +235,10 @@ class Create extends Component {
                                 </div>
                             </div>
                             <div className='column-item-wrapper big-and-centered'>
-                                <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                                <div>About SMART Context</div>
+                                <a href='http://docs.smarthealthit.org/authorization/scopes-and-launch-context/' target='_blank'>
+                                    <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                                    <div>About SMART Context</div>
+                                </a>
                             </div>
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
