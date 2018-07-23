@@ -1,71 +1,6 @@
-//@media (max-width: 1322px) {
-//  .layout-main.open {
-//    .apps-screen-wrapper {
-//      .screen-content {
-//        //screen width - width of two cards - width of side bar - parent padding padding
-//        padding-left: ~'calc((100vw - 648px - 256px - 48px - 48px) / 2)';
-//        transition: padding-left .2s;
-//      }
-//    }
-//  }
-//
-//  .apps-screen-wrapper {
-//    .screen-content {
-//      padding-left: ~'calc((100vw - 972px - 48px - 48px) / 2)';
-//      transition: padding-left .2s;
-//    }
-//  }
-//}
-//
-//@media (min-width: 1323px) and (max-width: 1646px) {
-//  .layout-main.open {
-//    .apps-screen-wrapper {
-//      .screen-content {
-//        padding-left: ~'calc((100vw - 972px - 256px - 48px - 48px) / 2)';
-//        transition: padding-left .2s;
-//      }
-//    }
-//  }
-//
-//  .apps-screen-wrapper {
-//    .screen-content {
-//      padding-left: ~'calc((100vw - 1296px - 48px - 48px) / 2)';
-//      transition: padding-left .2s;
-//    }
-//  }
-//}
-//
-//@media (min-width: 1647px) and (max-width: 1910px) {
-//  .layout-main.open {
-//    .apps-screen-wrapper {
-//      .screen-content {
-//        padding-left: ~'calc((100vw - 1296px - 256px - 48px - 48px) / 2)';
-//        transition: padding-left .2s;
-//      }
-//    }
-//  }
-//
-//  .apps-screen-wrapper {
-//    .screen-content {
-//      padding-left: ~'calc((100vw - 1620px - 48px - 48px) / 2)';
-//      transition: padding-left .2s;
-//    }
-//  }
-//}
-//
-//@media (min-width: 1911px) {
-//  .layout-main {
-//    .apps-screen-wrapper {
-//      .screen-content {
-//        padding-left: ~'calc((100vw - 1620px - 256px - 48px - 48px) / 2)';
-//        transition: padding-left .2s;
-//      }
-//    }
-//  }
-//}
-
 .apps-page-wrapper {
   position: relative;
+  width: 102%;
   .filter-wrapper {
     position: absolute;
     top: -30px;
@@ -85,7 +20,7 @@
     max-width: 1570px;
   }
   &.modal {
-    max-height: 76vh;
+    max-height: 56vh;
     overflow: auto;
     width: 100%;
     padding-top: 0;
@@ -171,6 +106,7 @@
       box-sizing: border-box;
       transition: all .5s;
       .app-name {
+        max-width: 90%;
         font-weight: 400;
         margin-top: 5px;
         margin-bottom: 14px;
