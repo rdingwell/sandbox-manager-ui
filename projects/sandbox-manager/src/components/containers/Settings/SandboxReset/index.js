@@ -8,7 +8,7 @@ class SandboxReset extends Component {
 
     render () {
         let titleStyle = {
-            backgroundColor: this.props.theme.primary4Color,
+            backgroundColor: this.props.theme.primary2Color,
             color: this.props.theme.alternateTextColor,
             paddingLeft: '10px',
             marginLeft: '0'

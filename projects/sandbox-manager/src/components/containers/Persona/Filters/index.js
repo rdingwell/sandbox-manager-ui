@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
 import Search from 'material-ui/svg-icons/action/search';
 import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
-import { Chip, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
+import { Chip, IconButton, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
 import moment from 'moment';
 
 import './styles.less';
@@ -74,24 +74,28 @@ export default class Filters extends Component {
                 <Popover open={true} anchorEl={this.refs['age-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                          targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={this.closeAgeFilter} className='left-margin'>
                     <div className='age-filter-wrapper'>
+                        <div className='filter-title' style={{ backgroundColor: palette.primary2Color, color: palette.primary5Color }}>
+                            <h3>Age</h3>
+                            <IconButton style={{ color: palette.primary5Color, width: '42px', height: '40px', position: 'absolute', right: '10px', top: '-3px' }} onClick={this.closeAgeFilter}>
+                                <i className="material-icons">close</i>
+                            </IconButton>
+                        </div>
                         <div>
                             <span>Max</span>
-                            <Slider className='slider' value={this.state.maxAge} step={1} min={1} max={99} onChange={(_, value) => this.sliderChange('maxAge', value)}/>
+                            <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.maxAge} step={1} min={1} max={99}
+                                    onChange={(_, value) => this.sliderChange('maxAge', value)}/>
                             <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value' onChange={(_, val) => {
                                 let value = parseInt(val);
-                                if (Number.isInteger(value) && value !== this.state.maxAge) {
-                                    this.sliderChange('maxAge', value);
-                                }
+                                Number.isInteger(value) && value !== this.state.maxAge && this.sliderChange('maxAge', value);
                             }}/>
                         </div>
                         <div>
                             <span>Min</span>
-                            <Slider className='slider' value={this.state.minAge} step={1} min={0} max={98} onChange={(_, value) => this.sliderChange('minAge', value)}/>
+                            <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.minAge} step={1} min={0} max={98}
+                                    onChange={(_, value) => this.sliderChange('minAge', value)}/>
                             <TextField value={this.state.minAge} id='minAge' className='age-filter-value' onChange={(_, val) => {
                                 let value = parseInt(val);
-                                if (Number.isInteger(value) && value !== this.state.minAge) {
-                                    this.sliderChange('minAge', value);
-                                }
+                                Number.isInteger(value) && value !== this.state.minAge && this.sliderChange('minAge', value);
                             }}/>
                         </div>
                     </div>

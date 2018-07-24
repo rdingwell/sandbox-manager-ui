@@ -38,10 +38,26 @@
   }
 }
 
+.filter-title {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  height: 40px;
+  line-height: 40px;
+  font-size: 12px;
+  h3 {
+    margin: 0;
+    padding-left: 16px !important;
+    font-size: 20px;
+  }
+}
+
 .age-filter-wrapper {
   width: 300px;
   height: 120px;
   padding: 16px;
+  padding-top: 40px;
   & > div {
     & > * {
       vertical-align: middle;
@@ -56,6 +72,20 @@
     display: inline-block;
     min-width: 180px;
     & > div {
+      & > div > div {
+        &:first-of-type, &:last-of-type {
+          background-color: #0E5676 !important;
+          border-color: #0E5676 !important;
+          border: none !important;
+          & > div > div > div {
+            background-color: #0E5676 !important;
+            border-color: #0E5676 !important;
+          }
+        }
+        &:nth-of-type(2) {
+          background-color: rgb(117, 117, 117) !important;
+        }
+      }
       margin-bottom: 20px !important;
     }
   }

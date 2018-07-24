@@ -46,6 +46,7 @@ class AppDialog extends Component {
 
     render () {
         let clientId = null;
+        let theme = this.props.muiTheme.palette;
 
         if (this.props.app) {
             clientId = <div className='label-value'>
@@ -62,12 +63,12 @@ class AppDialog extends Component {
             <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled}/>
         ];
 
-        this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete}/>);
+        this.props.app && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
         this.props.app && actions.push(<RaisedButton label='Launch' onClick={this.props.doLaunch}/>);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
-        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
-        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
+        let underlineFocusStyle = { borderColor: theme.primary2Color };
+        let floatingLabelFocusStyle = { color: theme.primary2Color };
 
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
@@ -178,11 +179,11 @@ class AppDialog extends Component {
         let changes = this.state.changes.slice();
         let index = changes.indexOf(prop);
 
-        if(index >= 0) {
+        if (index >= 0) {
             changes.splice(index, 1);
         }
 
-        if(this.props.app && this.state.originalApp[prop] !== val) {
+        if (this.props.app && this.state.originalApp[prop] !== val) {
             changes.push(prop);
         }
 

@@ -91,7 +91,7 @@ class SandboxDetails extends Component {
 
     getModalContent = () => {
         let titleStyle = {
-            backgroundColor: this.props.theme.primary1Color,
+            backgroundColor: this.props.theme.primary2Color,
             color: this.props.theme.alternateTextColor,
             paddingLeft: '10px',
             marginLeft: '0'
@@ -99,23 +99,25 @@ class SandboxDetails extends Component {
 
         let actions = this.state.modalToShow === MODALS.edit
             ? <div className='modal-bottom-actions-wrapper'>
-                <RaisedButton label='Save' secondary onClick={this.updateSandboxHandler}/>
+                <RaisedButton label='Save' primary onClick={this.updateSandboxHandler}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div className='modal-bottom-actions-wrapper'>
-                    <RaisedButton disabled={!this.state.toggleReset} label=' Reset ' secondary onClick={this.resetSandbox}/>
+                    <RaisedButton disabled={!this.state.toggleReset}  label=' Reset ' onClick={this.resetSandbox}
+                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary2Color} />
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
-                    <RaisedButton disabled={!this.state.toggleDelete} label='Delete sandbox' secondary onClick={this.deleteSandbox}/>
+                    <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
+                                  label='Delete sandbox' onClick={this.deleteSandbox}/>
                 </div>;
 
         let content = this.state.modalToShow === MODALS.edit
-            ? <div className='sandbox-edit-modal'>
+            ? <div className='sandbox-edit-modal' key={this.state.modalToShow}>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={this.props.onClose}>
                         <i className="material-icons">close</i>
                     </IconButton>
-                    <h1 style={titleStyle}>RESET SANDBOX</h1>
+                    <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>
                 <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>

@@ -82,7 +82,7 @@ class PersonaList extends Component {
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
         return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
-            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
+            <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
                     Are you sure you want to delete this {this.props.type.toLowerCase()}?

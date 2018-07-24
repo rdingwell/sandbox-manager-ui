@@ -98,7 +98,7 @@ class Apps extends Component {
                     </div>
                 </div>
             </div>
-            {this.state.showConfirmModal && <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
+            {this.state.showConfirmModal && <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
                 <p>
                     Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.authClient.clientName : ''}"?<br/>
                     Deleting this app will result in the deletion of all the launch scenarios connected to it.

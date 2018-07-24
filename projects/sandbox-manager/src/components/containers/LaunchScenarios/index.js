@@ -67,7 +67,7 @@ class LaunchScenarios extends Component {
         return <Page title='Launch Scenarios'>
             {this.state.scenarioToEdit && <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} value={this.state.scenarioToEdit.description} onCancel={() => this.selectScenarioForEditing()}
                                                 onConfirm={this.updateScenario} descriptionError={this.state.descriptionError}/>}
-            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={() => {
+            <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
                 this.props.deleteScenario(this.state.scenarioToDelete);
                 this.setState({ showConfirmModal: false })
             }} onCancel={() => this.setState({ showConfirmModal: false, scenarioToDelete: undefined })} title='Confirm'>
