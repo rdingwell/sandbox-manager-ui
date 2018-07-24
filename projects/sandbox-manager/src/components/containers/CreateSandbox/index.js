@@ -45,10 +45,10 @@ class Index extends Component {
                     </h3>
                     <div className='paper-body'>
                         <form>
-                            <TextField id='name' floatingLabelText='Sandbox Name' value={this.state.name} onChange={this.sandboxNameChangedHandler}
+                            <TextField id='name' floatingLabelText='Sandbox Name*' value={this.state.name} onChange={this.sandboxNameChangedHandler}
                                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/> <br/>
                             <div className='subscript'>Must be less than 50 characters. e.g., NewCo Sandbox</div>
-                            <TextField id='id' floatingLabelText='Sandbox Id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
+                            <TextField id='id' floatingLabelText='Sandbox Id*' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
                                        errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
