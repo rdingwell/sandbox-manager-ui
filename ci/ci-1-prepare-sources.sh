@@ -19,7 +19,7 @@ cd ../projects
 git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
 cd sandbox-manager-lib
 npm link
-cd ../../ci
+cd ../../
 npm link sandbox-manager-lib
 
 echo "::: Running NPM INSTALL"
