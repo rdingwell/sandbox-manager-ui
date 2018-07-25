@@ -24,6 +24,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR :
             state.singleEncounterLoadingError = action.payload.error;
             break;
+        case actionTypes.ADDING_CUSTOM_CONTENT :
+            state.modifyingCustomContext = action.payload.modifying;
+            break;
         case actionTypes.FETCH_SANDBOXES_SUCCESS:
             state.sandboxes = action.sandboxes;
             state.loading = false;

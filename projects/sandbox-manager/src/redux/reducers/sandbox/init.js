@@ -6,6 +6,7 @@ export default {
     launchScenarios : [],
     userInvites : [],
     invitesLoading: false,
+    modifyingCustomContext: false,
     userInvitesLoading: false,
     creatingSandbox: false,
     fetchingSingleEncounter: false,
