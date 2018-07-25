@@ -331,7 +331,7 @@ class Create extends Component {
                             <div className='summary-item'>
                                 <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                            floatingLabelText='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
-                                <span className='subscript'>{this.state.description.length} / 500</span>
+                                <span className='subscript'>{this.state.description.length} / 250</span>
                             </div>
                         </div>
                     </div>
@@ -351,7 +351,7 @@ class Create extends Component {
             case 'title':
                 return value.substr(0, 75);
             case 'description':
-                return value.substr(0, 500);
+                return value.substr(0, 250);
             default:
                 return value;
         }

@@ -29,10 +29,6 @@ export default class SandboxReset extends Component {
                     <li>Remove access for all sandbox members</li>
                 </ul>
                 <p>This is NOT reversible!</p>
-                <p>
-                    Are you sure you want to delete sandbox {this.props.sandbox.name}? This is not reversible and will delete all FHIR data, launch scenarios, registered
-                    app, etc.
-                </p>
                 {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name} onCheck={(_e, del) => this.props.toggleDelete(del)}
                                                  labelStyle={{ color: this.props.theme.primary2Color }} />}
             </div>

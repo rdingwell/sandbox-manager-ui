@@ -103,9 +103,27 @@ export default class CreatePersona extends Component {
             data.gender = this.state.gender;
             data.birthDate = this.state.birthDate;
         } else if (this.props.type === PersonaList.TYPES.practitioner) {
-            data.suffix = this.state.suffix;
-            data.speciality = this.state.speciality;
-            data.role = this.state.role;
+            this.state.suffix && (data.name[0].suffix = [this.state.suffix]);
+            data.practitionerRole = [
+                {
+                    role: {
+                        coding: [
+                            {
+                                display: this.state.role
+                            }
+                        ]
+                    },
+                    specialty: [
+                        {
+                            coding: [
+                                {
+                                    display: this.state.speciality
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
         } else {
             data.userId = this.state.username;
             data.password = this.state.password;

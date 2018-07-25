@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress, SelectField, MenuItem } from 'material-ui';
-import { fetchSandboxes, selectSandbox } from '../../../../redux/action-creators';
+import { fetchSandboxes, selectSandbox, getLoginInfo } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
@@ -29,6 +29,7 @@ class Index extends Component {
     componentDidMount () {
         sessionStorage.clear();
         this.fetchSandboxes();
+        this.props.getLoginInfo();
     }
 
     componentDidUpdate (prevProps) {
@@ -140,7 +141,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchSandboxes, selectSandbox }, dispatch);
+    return bindActionCreators({ fetchSandboxes, selectSandbox, getLoginInfo }, dispatch);
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Index))));

@@ -781,6 +781,33 @@ export function loadInvites () {
     }
 }
 
+export function getLoginInfo () {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        if (state.config.xsettings.data.sandboxManager) {
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+            fetch(url, config)
+                .then(result => {
+                    result.json()
+                        .then(invitations => {
+                            console.log(invitations);
+                        })
+                })
+                .catch(e => console.log(e));
+        } else {
+            goHome();
+        }
+    }
+}
+
 export function doLaunch (app, persona = {}, user) {
     return (dispatch, getState) => {
         let state = getState();

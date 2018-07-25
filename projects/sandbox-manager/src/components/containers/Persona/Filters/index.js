@@ -43,24 +43,25 @@ export default class Filters extends Component {
         let ageTitle = ageActive ? this.state.filters.age : 'Age';
         let ageDeleteCallback = ageActive ? () => this.filter('age') : undefined;
 
-        return [<div key={1}>
-            <span ref='gender-filter'/>
-            <Chip className={'chip' + (genderActive ? ' active' : '')} onClick={() => this.showFilter('gender')} onRequestDelete={genderDeleteCallback}
-                  backgroundColor={genderActive ? palette.primary2Color : undefined} labelColor={genderActive ? palette.alternateTextColor : undefined}>
-                <span className='genderTitle'>{genderTitle}</span>
-                <span className='icon-wrapper'>
+        return [
+            <div key={1}>
+                <span ref='gender-filter'/>
+                <Chip className={'chip' + (genderActive ? ' active' : '')} onClick={() => this.showFilter('gender')} onRequestDelete={genderDeleteCallback}
+                      backgroundColor={genderActive ? palette.primary2Color : undefined} labelColor={genderActive ? palette.alternateTextColor : undefined}>
+                    <span className='genderTitle'>{genderTitle}</span>
+                    <span className='icon-wrapper'>
                         {!genderActive && <DownIcon color={palette.primary3Color}/>}
                 </span>
-            </Chip>
-            {this.state.visibleFilter === 'gender' &&
-            <Popover open={true} anchorEl={this.refs['gender-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
-                <Menu className='gender-filter-menu' width='200px' desktop autoWidth={false}>
-                    <MenuItem className='gender-filter-menu-item' primaryText={'Male'} onClick={() => this.filter('gender', 'male')}/>
-                    <MenuItem className='gender-filter-menu-item' primaryText={'Female'} onClick={() => this.filter('gender', 'female')}/>
-                </Menu>
-            </Popover>}
-        </div>,
+                </Chip>
+                {this.state.visibleFilter === 'gender' &&
+                <Popover open={true} anchorEl={this.refs['gender-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                         targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
+                    <Menu className='gender-filter-menu' width='200px' desktop autoWidth={false}>
+                        <MenuItem className='gender-filter-menu-item' primaryText={'Male'} onClick={() => this.filter('gender', 'male')}/>
+                        <MenuItem className='gender-filter-menu-item' primaryText={'Female'} onClick={() => this.filter('gender', 'female')}/>
+                    </Menu>
+                </Popover>}
+            </div>,
             <div key={2}>
                 <span ref='age-filter'/>
                 <Chip className={'chip' + (ageActive ? ' active' : '')} onClick={() => this.showFilter('age')} onRequestDelete={ageDeleteCallback}
@@ -104,7 +105,8 @@ export default class Filters extends Component {
             <div key={3}>
                 <Search style={{ width: '30px', height: '30px', color: palette.primary3Color, verticalAlign: 'middle' }}/>
                 <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name:contains', value)}/>
-            </div>]
+            </div>
+        ]
     };
 
     getPersonaFilters = () => {
