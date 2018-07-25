@@ -94,7 +94,6 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
             let count = 11;
 
             let state = getState();
-            console.log(type);
             if (type === 'Persona') {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
                 fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {

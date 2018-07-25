@@ -409,8 +409,8 @@ class Create extends Component {
         this.props.singlePatient && (data.patient = this.state.patientId);
         this.state.locationId && (data.location = this.state.locationId);
         this.state.resource && (data.resource = this.state.resource);
+        this.state.url && (data.smartStyleUrl = this.state.url);
         this.state.intent && (data.intent = this.state.intent);
-        this.state.url && (data.url = this.state.url);
 
         this.props.create && this.props.create(data);
     };
