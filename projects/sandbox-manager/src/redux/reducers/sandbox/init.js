@@ -3,7 +3,7 @@ export default {
     selectedSandbox : '',
     sandboxes : [],
     invitations : [],
-    launchScenarios : [],
+    launchScenarios : undefined,
     userInvites : [],
     invitesLoading: false,
     modifyingCustomContext: false,
