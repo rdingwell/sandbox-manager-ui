@@ -278,7 +278,7 @@ class LaunchScenarios extends Component {
                     </span>
                     <span className='section-value' style={lightColor}>
                         <FullScreenIcon style={iconStyleLight}/>
-                        Needs Patient Banner: {selectedScenario.patientBanner ? 'Yes' : 'No'}
+                        Needs Patient Banner: {selectedScenario.needPatientBanner ? 'Yes' : 'No'}
                     </span>
                 </div>
             </div>
