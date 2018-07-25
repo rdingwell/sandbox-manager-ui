@@ -37,6 +37,8 @@ class Users extends Component {
             backgroundColor: this.props.muiTheme.palette.primary2Color,
             color: this.props.muiTheme.palette.alternateTextColor
         };
+        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
 
         return <div className='users-wrapper'>
             <div>
@@ -53,7 +55,8 @@ class Users extends Component {
                         </IconButton>
                     </div>
                     <div className='screen-content-invite-modal'>
-                        <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}/>
+                        <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}
+                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                     </div>
                 </Dialog>}
                 {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onRequestClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
@@ -155,7 +158,7 @@ class Users extends Component {
             return <TableRow key={key} selectable={false}>
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
                 <TableRowColumn>{user.email || ''}</TableRowColumn>
-                <TableRowColumn>{!currentIsAdmin && isAdmin ? 'Admin' : ''}</TableRowColumn>
+                <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
                 <TableRowColumn>{!currentIsAdmin && isAdmin ? 'Admin' : ''}</TableRowColumn>
                 <TableRowColumn>
                     <IconButton onClick={this.toggleMenu}>
@@ -184,6 +187,7 @@ class Users extends Component {
     getInvitations = () => {
         let buttonStyles = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary3Color };
         let style = { width: '55px', height: '55px' };
+        let revokeStyle = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color };
 
         return this.props.invitations.map((invitation, key) => {
             return <TableRow key={key}>
@@ -193,7 +197,7 @@ class Users extends Component {
                     <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
                         <Redo/>
                     </IconButton>
-                    <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.revokeInvitation(invitation.id)} tooltip='Revoke'>
+                    <IconButton iconStyle={revokeStyle} style={style} onClick={() => this.revokeInvitation(invitation.id)} tooltip='Revoke'>
                         <DeleteIcon/>
                     </IconButton>
                 </TableRowColumn>

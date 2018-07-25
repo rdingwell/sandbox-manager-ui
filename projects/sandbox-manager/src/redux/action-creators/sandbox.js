@@ -32,6 +32,13 @@ export function setSingleEncounter (encounter) {
     }
 }
 
+export function modifyingCustomContext (modifying) {
+    return {
+        type: actionTypes.ADDING_CUSTOM_CONTENT,
+        payload: { modifying }
+    }
+}
+
 export function setFetchingSingleEncounterError (error) {
     return {
         type: actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR,
@@ -554,7 +561,8 @@ export function getDefaultUserForSandbox (sandboxId) {
                         .then(user => {
                             dispatch(setDefaultSandboxUser(user));
                         })
-                        .catch(_ => {})
+                        .catch(_ => {
+                        })
                 })
                 .catch(e => console.log(e))
                 .then(() => dispatch(setSandboxSelecting(false)));
@@ -686,7 +694,7 @@ export function fetchEncounter (id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleEncounter(true));
-            window.fhirClient.api.read({type: 'Encounter', id})
+            window.fhirClient.api.read({ type: 'Encounter', id })
                 .done(patient => {
                     dispatch(setSingleEncounter(patient.data));
                     dispatch(setFetchSingleEncounter(false));
@@ -778,6 +786,69 @@ export function loadInvites () {
         } else {
             goHome();
         }
+    }
+}
+
+export function addCustomContext (sc, key, val) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let data = Object.assign({}, sc);
+        data.contextParams = data.contextParams ? data.contextParams : [];
+        data.contextParams.push({ name: key, value: val });
+        dispatch(modifyingCustomContext(true));
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(data)
+        };
+
+        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, config)
+            .then(() => {
+
+            })
+            .catch(e => {
+                console.log(e);
+                dispatch(modifyingCustomContext(false));
+            })
+            .then(() => {
+                dispatch(modifyingCustomContext(false));
+            });
+    }
+}
+
+export function deleteCustomContext (sc, context) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let data = Object.assign({}, sc);
+        data.contextParams.splice(context, 1);
+        dispatch(modifyingCustomContext(true));
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify(data)
+        };
+
+        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, config)
+            .then(() => {
+
+            })
+            .catch(e => {
+                console.log(e);
+                dispatch(modifyingCustomContext(false));
+            })
+            .then(() => {
+                dispatch(modifyingCustomContext(false));
+            });
     }
 }
 

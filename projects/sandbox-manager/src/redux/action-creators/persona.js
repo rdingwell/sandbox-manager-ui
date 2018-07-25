@@ -119,7 +119,6 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
                 })
                     .then(res => {
                         res.json().then(response => {
-                            console.log(response);
                             let resourceResults = [];
 
                             for (let key in response.entry) {

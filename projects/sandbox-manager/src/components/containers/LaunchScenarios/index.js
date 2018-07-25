@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
-    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
-    fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart, addCustomContext,
+    fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem } from 'material-ui';
+import { CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, TextField } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
@@ -44,13 +45,17 @@ class LaunchScenarios extends Component {
 
         this.state = {
             showModal: false,
+            addContext: false,
             showMenuForItem: false,
             showConfirmModal: false,
             descriptionEditing: false,
+            selectedCustomContent: undefined,
             selectedScenario: undefined,
             scenarioToEdit: undefined,
             scenarioToDelete: undefined,
-            description: ''
+            description: '',
+            key: '',
+            val: ''
         }
     }
 
@@ -115,7 +120,7 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ selectedScenario: selection });
+        this.setState({ selectedScenario: selection, addContext: false, key: '', val: '' });
     };
 
     createScenario = (data) => {
@@ -220,6 +225,11 @@ class LaunchScenarios extends Component {
         let darkColor = { color: this.props.muiTheme.palette.primary6Color };
         let iconStyle = { color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px' };
         let iconStyleLight = { color: this.props.muiTheme.palette.primary3Color, fill: this.props.muiTheme.palette.primary3Color, width: '24px', height: '24px' };
+        let disabled = this.props.modifyingCustomContext || (this.state.addContext && (!this.state.key.length || !this.state.val.length));
+        let deleteEnabled = this.state.selectedCustomContent !== undefined;
+        let onClick = this.state.addContext ? this.addContext : deleteEnabled ? this.deleteCustomContext : this.toggleAddContext;
+        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
 
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
@@ -271,7 +281,74 @@ class LaunchScenarios extends Component {
                     </span>
                 </div>
             </div>
+            <div className='custom-context-wrapper'>
+                <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
+                <div className='custom-context-table-wrapper'>
+                    <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled}>
+                        {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
+                    </FloatingActionButton>
+                    <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
+                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                            <TableRow>
+                                <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Key</TableHeaderColumn>
+                                <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Value</TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody displayRowCheckbox={false} className='table-body'>
+                            {this.state.addContext && <TableRow selectable={false}>
+                                <TableRowColumn>
+                                    <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({ key })}
+                                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                </TableRowColumn>
+                                <TableRowColumn>
+                                    <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({ val })}
+                                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                </TableRowColumn>
+                            </TableRow>}
+                            {this.getCustomContext(selectedScenario)}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
         </div>
+    };
+
+    handleContextSelection = (selection) => {
+        setTimeout(() => this.setState({ selectedCustomContent: selection[0] }), selection[0] ? 0 : 100);
+    };
+
+    deleteCustomContext = () => {
+        this.props.deleteCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.selectedCustomContent);
+        this.setState({ selectedCustomContent: undefined });
+    };
+
+    addContext = () => {
+        this.props.addCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.key, this.state.val);
+        this.setState({ addContext: false, key: '', val: '' });
+    };
+
+    getCustomContext = (selectedScenario) => {
+        let contexts = selectedScenario.contextParams || [];
+        return !this.props.modifyingCustomContext
+            ? contexts.map((context, i) => {
+                return <TableRow key={i} selected={this.state.selectedCustomContent === i}>
+                    <TableRowColumn>
+                        {context.name}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {context.value}
+                    </TableRowColumn>
+                </TableRow>
+            })
+            : <TableRow key={1}>
+                <TableRowColumn colSpan={2} style={{ textAlign: 'center' }}>
+                    <CircularProgress/>
+                </TableRowColumn>
+            </TableRow>;
+    };
+
+    toggleAddContext = () => {
+        this.setState({ addContext: !this.state.addContext })
     };
 
     updateScenario = (description) => {
@@ -289,6 +366,7 @@ const mapStateToProps = state => {
         user: state.users.oauthUser,
         apps: state.apps.apps,
         fetchingSingleEncounter: state.sandbox.fetchingSingleEncounter,
+        modifyingCustomContext: state.sandbox.modifyingCustomContext,
         singleEncounterLoadingError: state.sandbox.singleEncounterLoadingError,
         singleEncounter: state.sandbox.singleEncounter,
         fetchingSinglePatient: state.patient.fetchingSingle,
@@ -310,7 +388,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
-        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter
+        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext
     },
     dispatch
 );
