@@ -94,6 +94,7 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
             let count = 11;
 
             let state = getState();
+            console.log(type);
             if (type === 'Persona') {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
                 fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {
@@ -109,7 +110,7 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
                         })
                     })
             } else {
-                let url = `${window.fhirClient.server.serviceUrl}/Patient?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
+                let url = `${window.fhirClient.server.serviceUrl}/${type}?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
                 fetch(url, {
                     headers: {
                         Authorization: 'BEARER ' + window.fhirClient.server.auth.token,

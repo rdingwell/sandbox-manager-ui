@@ -11,6 +11,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_SANDBOX_SELECTING :
             state.selecting = action.payload.selecting;
             break;
+        case actionTypes.FETCHING_LOGIN_INFO:
+            state.fetchingLoginInfo = action.payload.fetching;
+            break;
         case actionTypes.FETCHING_SINGLE_ENCOUNTER :
             state.fetchingSingleEncounter = action.payload.fetching;
             if(action.payload.fetching) {
@@ -48,6 +51,9 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.SELECT_SANDBOX:
             state.selectedSandbox = action.sandboxId;
+            break;
+        case actionTypes.SET_LOGIN_INFO:
+            state.loginInfo = action.payload.loginInfo;
             break;
         case actionTypes.REMOVE_SANDBOX_USER:
             state = removeUser(state, action);
@@ -130,6 +136,7 @@ export default function (state = initialState, action) {
             state.dataImporting = false;
             state.selecting = false;
             state.importResults = undefined;
+            state.launchScenarios = undefined;
             break;
     }
 

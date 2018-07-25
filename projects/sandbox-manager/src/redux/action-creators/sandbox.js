@@ -25,6 +25,20 @@ export function setFetchSingleEncounter (fetching) {
     }
 }
 
+export function setLoginInfo (loginInfo) {
+    return {
+        type: actionTypes.SET_LOGIN_INFO,
+        payload: { loginInfo }
+    }
+}
+
+export function setFetchingLoginInfo (fetching) {
+    return {
+        type: actionTypes.FETCHING_LOGIN_INFO,
+        payload: { fetching }
+    }
+}
+
 export function setSingleEncounter (encounter) {
     return {
         type: actionTypes.SET_SINGLE_ENCOUNTER,
@@ -610,6 +624,7 @@ export const createSandbox = (sandboxDetails) => {
 export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
+        dispatch(getLoginInfo());
         dispatch(fetchSandboxesStart());
         let configuration = state.config.xsettings.data.sandboxManager;
         const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
@@ -855,6 +870,7 @@ export function deleteCustomContext (sc, context) {
 export function getLoginInfo () {
     return (dispatch, getState) => {
         let state = getState();
+        dispatch(setFetchingLoginInfo(true));
 
         if (state.config.xsettings.data.sandboxManager) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
@@ -868,11 +884,15 @@ export function getLoginInfo () {
             fetch(url, config)
                 .then(result => {
                     result.json()
-                        .then(invitations => {
-                            console.log(invitations);
+                        .then(loginInfo => {
+                            dispatch(setLoginInfo(loginInfo));
+                            dispatch(setFetchingLoginInfo(false));
                         })
                 })
-                .catch(e => console.log(e));
+                .catch(e => {
+                    console.log(e);
+                    dispatch(setFetchingLoginInfo(false));
+                });
         } else {
             goHome();
         }

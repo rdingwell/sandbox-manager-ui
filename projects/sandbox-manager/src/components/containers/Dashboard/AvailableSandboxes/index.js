@@ -29,7 +29,6 @@ class Index extends Component {
     componentDidMount () {
         sessionStorage.clear();
         this.fetchSandboxes();
-        this.props.getLoginInfo();
     }
 
     componentDidUpdate (prevProps) {
@@ -113,7 +112,15 @@ class Index extends Component {
                 return val;
             });
         } else {
-            return this.props.sandboxes;
+            return this.props.sandboxes.sort((a, b) => {
+                let timeA = this.props.loginInfo.find(i => i.sandboxId === a.sandboxId) || {accessTimestamp: 0};
+                let timeB = this.props.loginInfo.find(i => i.sandboxId === b.sandboxId) || {accessTimestamp: 0};
+                let val = timeA.accessTimestamp >= timeB.accessTimestamp ? -1 : 1;
+                if (!this.state.desc) {
+                    val *= -1;
+                }
+                return val;
+            });
         }
     };
 
@@ -136,7 +143,8 @@ const mapStateToProps = state => {
     return {
         sandboxes: state.sandbox.sandboxes,
         loading: state.sandbox.loading,
-        creatingSandbox: state.sandbox.creatingSandbox
+        creatingSandbox: state.sandbox.creatingSandbox,
+        loginInfo: state.sandbox.loginInfo
     };
 };
 

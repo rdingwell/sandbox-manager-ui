@@ -8,6 +8,8 @@ export default {
     invitesLoading: false,
     modifyingCustomContext: false,
     userInvitesLoading: false,
+    fetchingLoginInfo: false,
+    loginInfo: [],
     creatingSandbox: false,
     fetchingSingleEncounter: false,
     updatingUser: false,
