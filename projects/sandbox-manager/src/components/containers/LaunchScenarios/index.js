@@ -39,6 +39,7 @@ import './styles.less';
 class LaunchScenarios extends Component {
 
     createKey = 0;
+    buttonClick = false;
 
     constructor (props) {
         super(props);
@@ -253,7 +254,7 @@ class LaunchScenarios extends Component {
                 <div>
                     <span className='section-value' style={lightColor}>
                         <Patient style={iconStyleLight}/>
-                        {selectedScenario.patient.name ? selectedScenario.patient.name : '-'}
+                        {selectedScenario.patient && selectedScenario.patient.name ? selectedScenario.patient.name : '-'}
                     </span>
                     <span className='section-value' style={lightColor}>
                         <EventIcon style={iconStyleLight}/>
@@ -284,7 +285,7 @@ class LaunchScenarios extends Component {
             <div className='custom-context-wrapper'>
                 <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                 <div className='custom-context-table-wrapper'>
-                    <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled}>
+                    <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
                         {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
                     </FloatingActionButton>
                     <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
@@ -313,18 +314,24 @@ class LaunchScenarios extends Component {
         </div>
     };
 
+    clickingOnTheButton = () => {
+        this.buttonClick = true;
+    };
+
     handleContextSelection = (selection) => {
-        setTimeout(() => this.setState({ selectedCustomContent: selection[0] }), selection[0] ? 0 : 100);
+        !this.buttonClick && this.setState({ selectedCustomContent: selection[0] });
     };
 
     deleteCustomContext = () => {
         this.props.deleteCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.selectedCustomContent);
         this.setState({ selectedCustomContent: undefined });
+        this.buttonClick = false;
     };
 
     addContext = () => {
         this.props.addCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.key, this.state.val);
         this.setState({ addContext: false, key: '', val: '' });
+        this.buttonClick = false;
     };
 
     getCustomContext = (selectedScenario) => {
@@ -348,7 +355,8 @@ class LaunchScenarios extends Component {
     };
 
     toggleAddContext = () => {
-        this.setState({ addContext: !this.state.addContext })
+        this.setState({ addContext: !this.state.addContext });
+        this.buttonClick = false;
     };
 
     updateScenario = (description) => {

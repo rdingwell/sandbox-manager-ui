@@ -136,6 +136,7 @@ export default function (state = initialState, action) {
             state.dataImporting = false;
             state.selecting = false;
             state.importResults = undefined;
+            state.launchScenarios = undefined;
             break;
     }
 

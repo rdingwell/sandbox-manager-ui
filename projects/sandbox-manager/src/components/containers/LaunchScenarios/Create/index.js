@@ -396,17 +396,21 @@ class Create extends Component {
     createScenario = () => {
         let data = {
             app: this.state.selectedApp,
-            description: this.state.title,
+            title: this.state.title,
+            description: this.state.description,
             lastLaunchSeconds: Date.now(),
-            patient: {
-                fhirId: this.state.selectedPersona.id,
-                name: getPatientName(this.state.selectedPersona),
-                resource: 'Patient'
-            },
             sandbox: this.props.sandbox,
             userPersona: this.state.selectedPersona,
             createdBy: this.props.user
         };
+        this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
+        this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
+        this.state.encounterId && (data.encounter = this.state.encounterId);
+        this.props.singlePatient && (data.patient = this.state.patientId);
+        this.state.locationId && (data.location = this.state.locationId);
+        this.state.resource && (data.resource = this.state.resource);
+        this.state.intent && (data.intent = this.state.intent);
+        this.state.url && (data.url = this.state.url);
 
         this.props.create && this.props.create(data);
     };
