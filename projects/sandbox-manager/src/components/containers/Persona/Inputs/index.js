@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Paper, TextField } from 'material-ui';
-import { parseNames } from '../../../../../../../lib/utils/fhir';
+import { parseNames } from 'sandbox-manager-lib/utils/fhir';
 
 import './styles.less';
 

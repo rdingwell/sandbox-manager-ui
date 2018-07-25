@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import PersonaList from './List';
 import muiThemeable from "material-ui/styles/muiThemeable";
 

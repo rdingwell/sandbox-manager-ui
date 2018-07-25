@@ -4,7 +4,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import { fetchSandboxInvites } from '../../../../redux/action-creators';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import './styles.less';
 
 class SandboxInvites extends Component {

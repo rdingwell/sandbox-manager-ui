@@ -48,13 +48,8 @@ docs
 # Container definitions
 container-definitions.json
 
-# App custom settings
-projects/frontend/src/assets/data/xsettings.*.json
-!projects/frontend/src/assets/data/xsettings.local.json
-!projects/frontend/src/assets/data/xsettings.development.json
-!projects/frontend/src/assets/data/xsettings.test.json
-!projects/frontend/src/assets/data/xsettings.uat.json
-!projects/frontend/src/assets/data/xsettings.production.json
+# Included projects
+projects/sandbox-manager-lib
 
 # App custom docker files
 projects/frontend/docker/*

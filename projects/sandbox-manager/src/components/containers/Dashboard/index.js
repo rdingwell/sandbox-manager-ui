@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import AvailableSandboxes from './AvailableSandboxes';
 import CreateSandbox from '../CreateSandbox';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { app_setScreen, fetchSandboxes, loadTerms, loadInvites } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './styles.less';
-import Footer from "../../../../../../lib/components/Navigation/Footer";
+import Footer from "sandbox-manager-lib/components/Navigation/Footer";
+import Page from 'sandbox-manager-lib/components/Page';
 
 class Dashboard extends Component {
     constructor (props) {
@@ -27,11 +28,11 @@ class Dashboard extends Component {
             ? <CreateSandbox onCancel={this.toggle} open={this.state.open} />
             : null;
 
-        return <div className='dashboard-wrapper'>
+        return <Page title='My Sandboxes' className='dashboard-wrapper'>
             {dialog}
             <AvailableSandboxes onToggleModal={this.toggle} />
             <Footer loadTerms={this.props.loadTerms} terms={this.props.terms} />
-        </div>;
+        </Page>;
     }
 
     toggle = () => {

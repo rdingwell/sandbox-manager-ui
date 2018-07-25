@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { afterFhirAuth } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { bindActionCreators } from 'redux';
 
 class AfterAuth extends Component {

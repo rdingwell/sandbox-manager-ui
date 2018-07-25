@@ -51,18 +51,24 @@ export default class CreatePersona extends Component {
     };
 
     getDefaultContent = () => {
+        let underlineFocusStyle = { borderColor: this.props.theme.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.theme.primary2Color };
+
         return <Paper className='paper-card'>
             <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.props.close}>
                 <i className="material-icons">close</i>
             </IconButton>
             <h3>Create {this.props.type.toLowerCase()}</h3>
             <div className='paper-body'>
-                <TextField floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
-                <TextField floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
+                <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                            floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
+                <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                            floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
 
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
-                    <TextField floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                onChange={(_, birthDate) => this.setState({ birthDate })}/>
                     <h4>Gender</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
@@ -72,10 +78,13 @@ export default class CreatePersona extends Component {
                 </div>}
                 {this.props.type === PersonaList.TYPES.practitioner &&
                 <div>
-                    <TextField floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
-                    <TextField floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
+                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
+                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
                                onChange={(_, speciality) => this.setState({ speciality })}/>
-                    <TextField floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
+                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
                 </div>}
             </div>
         </Paper>
@@ -94,9 +103,27 @@ export default class CreatePersona extends Component {
             data.gender = this.state.gender;
             data.birthDate = this.state.birthDate;
         } else if (this.props.type === PersonaList.TYPES.practitioner) {
-            data.suffix = this.state.suffix;
-            data.speciality = this.state.speciality;
-            data.role = this.state.role;
+            this.state.suffix && (data.name[0].suffix = [this.state.suffix]);
+            data.practitionerRole = [
+                {
+                    role: {
+                        coding: [
+                            {
+                                display: this.state.role
+                            }
+                        ]
+                    },
+                    specialty: [
+                        {
+                            coding: [
+                                {
+                                    display: this.state.speciality
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
         } else {
             data.userId = this.state.username;
             data.password = this.state.password;

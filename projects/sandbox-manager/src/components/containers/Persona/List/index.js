@@ -10,10 +10,10 @@ import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
-import DohMessage from "../../../../../../../lib/components/DohMessage";
-import ConfirmModal from "../../../../../../../lib/components/ConfirmModal";
-import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
-import Page from '../../../../../../../lib/components/Page';
+import DohMessage from "sandbox-manager-lib/components/DohMessage";
+import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
+import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import Page from 'sandbox-manager-lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
 import moment from 'moment';
@@ -22,7 +22,7 @@ import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
-import { getAge } from "../../../../../../../lib/utils";
+import { getAge } from "sandbox-manager-lib/utils";
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
@@ -82,7 +82,7 @@ class PersonaList extends Component {
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
         return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
-            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
+            <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
                     Are you sure you want to delete this {this.props.type.toLowerCase()}?
@@ -97,7 +97,7 @@ class PersonaList extends Component {
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
-                        {personaList && this.props.pagination && this.getPagination()}
+                        {personaList && this.props.pagination && this.getPagination(false, isPractitioner)}
                         {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal()}>
                             <ContentAdd/>
                         </FloatingActionButton>}
@@ -139,7 +139,6 @@ class PersonaList extends Component {
         let rows = [];
         let list = this.getFilteredList();
         list.map((persona, i) => {
-
             let style = this.props.theme ? { color: persona.gender === 'male' ? this.props.theme.primary2Color : this.props.theme.accent1Color, WebkitTextStroke: '1px', fontSize: '24px' } : undefined;
             style.position = 'relative';
             let badge = isPatient
@@ -169,7 +168,7 @@ class PersonaList extends Component {
                 {isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.id}
                 </TableRowColumn>}
-                {!this.props.modal && !isPractitioner && <TableRowColumn className='persona-info'>
+                {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && persona.password}
                     {isPatient && age}
                 </TableRowColumn>}
@@ -177,9 +176,13 @@ class PersonaList extends Component {
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
                     {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
                 </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info'/>}
-                {isPractitioner && <TableRowColumn className='persona-info'/>}
-                {isPractitioner && <TableRowColumn className='persona-info'/>}
+                {isPractitioner && <TableRowColumn className='persona-info'>{persona.id}</TableRowColumn>}
+                {isPractitioner && <TableRowColumn className='persona-info'>
+                    {persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display}
+                </TableRowColumn>}
+                {isPractitioner && <TableRowColumn className='persona-info'>
+                    {persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display}
+                </TableRowColumn>}
                 {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
@@ -224,21 +227,19 @@ class PersonaList extends Component {
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary5Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
-                            Name
-                        </TableHeaderColumn>
+                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
+                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
+                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Speciality</TableHeaderColumn>}
+                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Role</TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
-                        {!this.props.modal && !isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
+                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
-                        {isPractitioner && <TableHeaderColumn/>}
-                        {isPractitioner && <TableHeaderColumn/>}
-                        {isPractitioner && <TableHeaderColumn/>}
                         {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
@@ -304,13 +305,13 @@ class PersonaList extends Component {
         this.props.type !== TYPES.patient && this.setState({ searchCrit });
     };
 
-    getPagination = (isBottom) => {
+    getPagination = (isBottom, isPractitioner) => {
         let self = this.props.pagination.link.find(i => i.relation === 'self');
         let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
         let start = currentSkip + 1;
         let end = start + this.props.personaList.length - 1;
 
-        return this.props.pagination && <div className={'persona-list-pagination-wrapper' + (isBottom ? ' bottom' : '')}>
+        return this.props.pagination && <div className={'persona-list-pagination-wrapper' + (isBottom ? ' bottom' : '') + (isPractitioner ? ' pract' : '')}>
             <div>
                 <IconButton onClick={() => this.paginate(this.props.prev)} disabled={start === 1 || this.props.loading}>
                     <LeftIcon/>

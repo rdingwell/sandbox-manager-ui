@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SandboxDetails from './SandboxDetails';
 import { app_setScreen } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { bindActionCreators } from "redux";
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { Tab, Tabs } from 'material-ui';

@@ -5,16 +5,16 @@ import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import EventIcon from "material-ui/svg-icons/action/event";
-import PatientIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
-import HospitalIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-location_city.svg";
-import DescriptionIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-description.svg";
-import BulbIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/lightbulb.svg";
-import LinkIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/round-link.svg";
-import FullScreenIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/baseline-fullscreen.svg";
-import InfoIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/baseline-info.svg";
-import ContextIcon from "svg-react-loader?name=Patient!../../../../../../../lib/icons/context-icon.svg";
+import PatientIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
+import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
+import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
+import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
+import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
+import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
+import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
-import { getPatientName, getAge } from "../../../../../../../lib/utils/fhir";
+import { getPatientName, getAge } from "sandbox-manager-lib/utils/fhir";
 import PersonaList from "../../Persona/List";
 import Apps from '../../Apps';
 import muiThemeable from "material-ui/styles/muiThemeable";
@@ -235,8 +235,10 @@ class Create extends Component {
                                 </div>
                             </div>
                             <div className='column-item-wrapper big-and-centered'>
-                                <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                                <div>About SMART Context</div>
+                                <a href='http://docs.smarthealthit.org/authorization/scopes-and-launch-context/' target='_blank'>
+                                    <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                                    <div>About SMART Context</div>
+                                </a>
                             </div>
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
@@ -274,48 +276,48 @@ class Create extends Component {
                             <div className='summary-item'>
                                 <span className='section-sub-title'>With the following context:</span>
                             </div>
-                            {this.props.singlePatient && <div className='summary-item'>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <PatientIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{getPatientName(this.props.singlePatient)}</span>
-                            </div>}
-                            {this.state.encounterId && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.props.singlePatient ? getPatientName(this.props.singlePatient) : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <EventIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.encounterId}</span>
-                            </div>}
-                            {this.state.locationId && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.state.encounterId ? this.state.encounterId : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <HospitalIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.locationId}</span>
-                            </div>}
-                            {this.state.resource && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.state.locationId ? this.state.locationId : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <DescriptionIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.resource}</span>
-                            </div>}
-                            {this.state.intent && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.state.resource ? this.state.resource : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <BulbIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.intent}</span>
-                            </div>}
-                            {this.state.url && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.state.intent ? this.state.intent : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <LinkIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.url}</span>
-                            </div>}
-                            {this.state.patientBanner && <div className='summary-item'>
+                                <span className='summary-item-text'>{this.state.url ? this.state.url : '-'}</span>
+                            </div>
+                            <div className='summary-item'>
                                 <div className='summary-item-icon-left'>
                                     <FullScreenIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>Needs Patient Banner</span>
-                            </div>}
+                                <span className='summary-item-text'>Needs Patient Banner: {this.state.patientBanner ? 'Yes' : 'No'}</span>
+                            </div>
                         </div>
                         <div className='context-right-column'>
                             <div className='summary-item'>
@@ -329,7 +331,7 @@ class Create extends Component {
                             <div className='summary-item'>
                                 <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                            floatingLabelText='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
-                                <span className='subscript'>{this.state.description.length} / 500</span>
+                                <span className='subscript'>{this.state.description.length} / 250</span>
                             </div>
                         </div>
                     </div>
@@ -349,7 +351,7 @@ class Create extends Component {
             case 'title':
                 return value.substr(0, 75);
             case 'description':
-                return value.substr(0, 500);
+                return value.substr(0, 250);
             default:
                 return value;
         }

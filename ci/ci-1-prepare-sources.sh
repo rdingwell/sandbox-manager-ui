@@ -17,4 +17,12 @@ echo "starting prepare_build.sh..."
 echo "::: Running NPM INSTALL"
 npm install
 
+echo "Cloning the 'lib' repo"
+cd ../projects
+git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
+cd sandbox-manager-lib
+npm link
+cd ../../ci
+npm link sandbox-manager-lib
+
 echo "finished prepare_build.sh"

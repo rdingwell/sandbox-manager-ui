@@ -25,7 +25,9 @@ class AppDialog extends Component {
         this.state = {
             value: 'PublicClient',
             modalOpen: false,
-            app
+            changes: [],
+            app,
+            originalApp: Object.assign({}, app)
         }
     }
 
@@ -44,6 +46,7 @@ class AppDialog extends Component {
 
     render () {
         let clientId = null;
+        let theme = this.props.muiTheme.palette;
 
         if (this.props.app) {
             clientId = <div className='label-value'>
@@ -51,16 +54,21 @@ class AppDialog extends Component {
                 <span>{this.props.app.authClient.clientId}</span>
             </div>;
         }
+        let sApp = this.state.app;
 
-        let saveEnabled = this.state.app.clientName.length > 2 && this.state.app.launchUri.length > 2 && this.state.app.redirectUris.length > 2;
+        let saveEnabled = this.props.app
+            ? this.state.changes.length > 0
+            : sApp.clientName.length > 2 && sApp.launchUri.length > 2 && sApp.redirectUris.length > 2;
         let actions = [
             <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled}/>
         ];
 
-        this.props.app && actions.push(<RaisedButton secondary label='Delete' onClick={this.delete}/>);
+        this.props.app && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
         this.props.app && actions.push(<RaisedButton label='Launch' onClick={this.props.doLaunch}/>);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
+        let underlineFocusStyle = { borderColor: theme.primary2Color };
+        let floatingLabelFocusStyle = { color: theme.primary2Color };
 
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
@@ -71,8 +79,8 @@ class AppDialog extends Component {
                 <h3>Registered App Details</h3>
                 <div className='paper-body'>
                     <form>
-                        <TextField floatingLabelText='App Name' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart'
-                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)}/><br/>
+                        <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart'
+                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                         <div>
                             <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
                             <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
@@ -83,21 +91,23 @@ class AppDialog extends Component {
                         </div>
                         {clientId}
                         <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth
-                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)}/>
-                        <TextField floatingLabelText='App Launch URI' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
-                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html'/>
+                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                        <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
+                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <br/>
-                        <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs'
+                        <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs*' underlineFocusStyle={underlineFocusStyle}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle}
                                    onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
                         <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)}
-                                   hintText='eg: launch patient/*.* openid profile'/>
+                                   hintText='eg: launch patient/*.* openid profile' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <span className='subscript'>
                             Note: If you do not provide scope, defaults will be set.
                         </span>
-                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
+                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
                         {this.props.app &&
                         <span className='subscript'>Space separated list of scopes.</span>}
@@ -153,7 +163,9 @@ class AppDialog extends Component {
                 let app = Object.assign({}, this.state.app);
                 app.logoUri = e.target.result;
                 app.logoFile = input.files[0];
-                this.setState({ app })
+                let changes = this.state.changes.slice();
+                changes.indexOf('logo') === -1 && changes.push('image');
+                this.setState({ app, changes })
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -164,7 +176,18 @@ class AppDialog extends Component {
         let app = this.state.app || this.props.app || {};
         app[prop] = val;
 
-        this.setState({ app });
+        let changes = this.state.changes.slice();
+        let index = changes.indexOf(prop);
+
+        if (index >= 0) {
+            changes.splice(index, 1);
+        }
+
+        if (this.props.app && this.state.originalApp[prop] !== val) {
+            changes.push(prop);
+        }
+
+        this.setState({ app, changes });
     };
 
     save = () => {

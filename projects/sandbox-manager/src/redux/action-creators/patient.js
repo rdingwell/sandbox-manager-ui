@@ -118,7 +118,6 @@ export function fetchPatientDetails (patient) {
             let promises = [];
             let state = getState();
             let sandbox = state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId);
-            console.log(sandbox.apiEndpointIndex);
             let details = DETAILS[sandbox.apiEndpointIndex] || DETAILS[7];
 
             details.map(d => {

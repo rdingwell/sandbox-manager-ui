@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './Modal.less';
-import Aux from '../../../../../../lib/hoc/Aux/Aux';
+import Aux from 'sandbox-manager-lib/hoc/Aux/Aux';
 import Backdrop from '../Backdrop/Backdrop';
 
 class Modal extends Component {

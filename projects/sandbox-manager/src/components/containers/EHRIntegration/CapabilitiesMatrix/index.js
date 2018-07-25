@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Paper } from 'material-ui';
 import { app_setScreen } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { bindActionCreators } from 'redux';
 
 const matrixLocation = 'http://docs.smarthealthit.org/fhir-support/';

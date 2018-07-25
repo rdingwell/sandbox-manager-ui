@@ -3,7 +3,7 @@ import { init } from '../../../redux/action-creators';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { CircularProgress } from 'material-ui';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
 import './styles.less';
 

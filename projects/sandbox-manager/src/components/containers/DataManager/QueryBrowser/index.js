@@ -4,7 +4,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import CodeIcon from 'material-ui/svg-icons/action/code';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
-import { parseEntry } from '../../../../../../../lib/utils';
+import { parseEntry } from 'sandbox-manager-lib/utils';
 import ReactJson from 'react-json-view';
 import './styles.less';
 

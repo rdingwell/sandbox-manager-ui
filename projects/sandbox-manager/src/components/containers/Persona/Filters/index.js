@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
 import Search from 'material-ui/svg-icons/action/search';
-import Patient from "svg-react-loader?name=Patient!../../../../../../../lib/icons/patient.svg";
-import { Chip, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
+import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import { Chip, IconButton, Menu, MenuItem, Popover, Slider, TextField } from 'material-ui';
 import moment from 'moment';
 
 import './styles.less';
@@ -43,24 +43,25 @@ export default class Filters extends Component {
         let ageTitle = ageActive ? this.state.filters.age : 'Age';
         let ageDeleteCallback = ageActive ? () => this.filter('age') : undefined;
 
-        return [<div key={1}>
-            <span ref='gender-filter'/>
-            <Chip className={'chip' + (genderActive ? ' active' : '')} onClick={() => this.showFilter('gender')} onRequestDelete={genderDeleteCallback}
-                  backgroundColor={genderActive ? palette.primary2Color : undefined} labelColor={genderActive ? palette.alternateTextColor : undefined}>
-                <span className='genderTitle'>{genderTitle}</span>
-                <span className='icon-wrapper'>
+        return [
+            <div key={1}>
+                <span ref='gender-filter'/>
+                <Chip className={'chip' + (genderActive ? ' active' : '')} onClick={() => this.showFilter('gender')} onRequestDelete={genderDeleteCallback}
+                      backgroundColor={genderActive ? palette.primary2Color : undefined} labelColor={genderActive ? palette.alternateTextColor : undefined}>
+                    <span className='genderTitle'>{genderTitle}</span>
+                    <span className='icon-wrapper'>
                         {!genderActive && <DownIcon color={palette.primary3Color}/>}
                 </span>
-            </Chip>
-            {this.state.visibleFilter === 'gender' &&
-            <Popover open={true} anchorEl={this.refs['gender-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
-                <Menu className='gender-filter-menu' width='200px' desktop autoWidth={false}>
-                    <MenuItem className='gender-filter-menu-item' primaryText={'Male'} onClick={() => this.filter('gender', 'male')}/>
-                    <MenuItem className='gender-filter-menu-item' primaryText={'Female'} onClick={() => this.filter('gender', 'female')}/>
-                </Menu>
-            </Popover>}
-        </div>,
+                </Chip>
+                {this.state.visibleFilter === 'gender' &&
+                <Popover open={true} anchorEl={this.refs['gender-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                         targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
+                    <Menu className='gender-filter-menu' width='200px' desktop autoWidth={false}>
+                        <MenuItem className='gender-filter-menu-item' primaryText={'Male'} onClick={() => this.filter('gender', 'male')}/>
+                        <MenuItem className='gender-filter-menu-item' primaryText={'Female'} onClick={() => this.filter('gender', 'female')}/>
+                    </Menu>
+                </Popover>}
+            </div>,
             <div key={2}>
                 <span ref='age-filter'/>
                 <Chip className={'chip' + (ageActive ? ' active' : '')} onClick={() => this.showFilter('age')} onRequestDelete={ageDeleteCallback}
@@ -74,24 +75,28 @@ export default class Filters extends Component {
                 <Popover open={true} anchorEl={this.refs['age-filter']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                          targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={this.closeAgeFilter} className='left-margin'>
                     <div className='age-filter-wrapper'>
+                        <div className='filter-title' style={{ backgroundColor: palette.primary2Color, color: palette.primary5Color }}>
+                            <h3>Age</h3>
+                            <IconButton style={{ color: palette.primary5Color, width: '42px', height: '40px', position: 'absolute', right: '10px', top: '-3px' }} onClick={this.closeAgeFilter}>
+                                <i className="material-icons">close</i>
+                            </IconButton>
+                        </div>
                         <div>
                             <span>Max</span>
-                            <Slider className='slider' value={this.state.maxAge} step={1} min={1} max={99} onChange={(_, value) => this.sliderChange('maxAge', value)}/>
+                            <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.maxAge} step={1} min={1} max={99}
+                                    onChange={(_, value) => this.sliderChange('maxAge', value)}/>
                             <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value' onChange={(_, val) => {
                                 let value = parseInt(val);
-                                if (Number.isInteger(value) && value !== this.state.maxAge) {
-                                    this.sliderChange('maxAge', value);
-                                }
+                                Number.isInteger(value) && value !== this.state.maxAge && this.sliderChange('maxAge', value);
                             }}/>
                         </div>
                         <div>
                             <span>Min</span>
-                            <Slider className='slider' value={this.state.minAge} step={1} min={0} max={98} onChange={(_, value) => this.sliderChange('minAge', value)}/>
+                            <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.minAge} step={1} min={0} max={98}
+                                    onChange={(_, value) => this.sliderChange('minAge', value)}/>
                             <TextField value={this.state.minAge} id='minAge' className='age-filter-value' onChange={(_, val) => {
                                 let value = parseInt(val);
-                                if (Number.isInteger(value) && value !== this.state.minAge) {
-                                    this.sliderChange('minAge', value);
-                                }
+                                Number.isInteger(value) && value !== this.state.minAge && this.sliderChange('minAge', value);
                             }}/>
                         </div>
                     </div>
@@ -100,7 +105,8 @@ export default class Filters extends Component {
             <div key={3}>
                 <Search style={{ width: '30px', height: '30px', color: palette.primary3Color, verticalAlign: 'middle' }}/>
                 <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name:contains', value)}/>
-            </div>]
+            </div>
+        ]
     };
 
     getPersonaFilters = () => {
@@ -166,12 +172,14 @@ export default class Filters extends Component {
 
         this.setState({ filters });
 
-        let transformedFilter = Object.assign({}, filters);
-        if (transformedFilter.age) {
-            let val = transformedFilter.age;
-            delete transformedFilter.age;
-            let ages = val.split(' - ');
-            transformedFilter.birthdate = { $gt: moment().subtract(ages[1], 'years').format('YYYY'), $lt: moment().subtract(ages[0], 'years').format('YYYY') };
+        let transformedFilter = '';
+        if (filters.age) {
+            let ages = filters.age.split(' - ');
+            transformedFilter = `birthdate=>${moment().subtract(ages[1], 'years').format('YYYY')}&birthdate=<${moment().subtract(ages[0], 'years').format('YYYY')}`;
+        }
+        if (filters.gender) {
+            transformedFilter += (filters.age ? '&' : '');
+            transformedFilter += `gender=${filters.gender}`;
         }
 
         this.props.onFilter && this.props.onFilter(transformedFilter);

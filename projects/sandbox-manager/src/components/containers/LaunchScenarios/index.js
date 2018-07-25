@@ -5,23 +5,29 @@ import {
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import withErrorHandler from '../../../../../../lib/hoc/withErrorHandler';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
+import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
+import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
+import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
+import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
+import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
+import EventIcon from "material-ui/svg-icons/action/event";
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import FilterList from "material-ui/svg-icons/content/filter-list";
-import Patient from "svg-react-loader?name=Patient!../../../../../../lib/icons/patient.svg";
-import ContextIcon from "svg-react-loader?name=Patient!../../../../../../lib/icons/context-icon.svg";
-import Page from '../../../../../../lib/components/Page';
-import DohMessage from "../../../../../../lib/components/DohMessage";
-import ConfirmModal from "../../../../../../lib/components/ConfirmModal";
+import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
+import Page from 'sandbox-manager-lib/components/Page';
+import DohMessage from "sandbox-manager-lib/components/DohMessage";
+import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
 import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import Edit from "./Edit";
@@ -61,7 +67,7 @@ class LaunchScenarios extends Component {
         return <Page title='Launch Scenarios'>
             {this.state.scenarioToEdit && <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} value={this.state.scenarioToEdit.description} onCancel={() => this.selectScenarioForEditing()}
                                                 onConfirm={this.updateScenario} descriptionError={this.state.descriptionError}/>}
-            <ConfirmModal open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={() => {
+            <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
                 this.props.deleteScenario(this.state.scenarioToDelete);
                 this.setState({ showConfirmModal: false })
             }} onCancel={() => this.setState({ showConfirmModal: false, scenarioToDelete: undefined })} title='Confirm'>
@@ -220,6 +226,17 @@ class LaunchScenarios extends Component {
                 <span className='section-title' style={darkColor}><AccountIcon style={iconStyle}/>Persona</span>
                 <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName}</span>
                 <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId}</span>
+                <div className='app-wrapper'>
+                    <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
+                    <Card className='app-card small'>
+                        <CardMedia className='media-wrapper'>
+                            <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                        </CardMedia>
+                        <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
+                            <span className='app-name'>{selectedScenario.app.authClient.clientName}</span>
+                        </div>
+                    </Card>
+                </div>
             </div>
             <div className='context-wrapper'>
                 <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
@@ -228,18 +245,31 @@ class LaunchScenarios extends Component {
                         <Patient style={iconStyleLight}/>
                         {selectedScenario.patient.name ? selectedScenario.patient.name : '-'}
                     </span>
+                    <span className='section-value' style={lightColor}>
+                        <EventIcon style={iconStyleLight}/>
+                        {selectedScenario.encounterId ? selectedScenario.encounterId : '-'}
+                    </span>
+                    <span className='section-value' style={lightColor}>
+                        <HospitalIcon style={iconStyleLight}/>
+                        {selectedScenario.locationId ? selectedScenario.locationId : '-'}
+                    </span>
+                    <span className='section-value' style={lightColor}>
+                        <DescriptionIcon style={iconStyleLight}/>
+                        {selectedScenario.resource ? selectedScenario.resource : '-'}
+                    </span>
+                    <span className='section-value' style={lightColor}>
+                        <BulbIcon style={iconStyleLight}/>
+                        {selectedScenario.intent ? selectedScenario.intent : '-'}
+                    </span>
+                    <span className='section-value' style={lightColor}>
+                        <LinkIcon style={iconStyleLight}/>
+                        {selectedScenario.url ? selectedScenario.url : '-'}
+                    </span>
+                    <span className='section-value' style={lightColor}>
+                        <FullScreenIcon style={iconStyleLight}/>
+                        Needs Patient Banner: {selectedScenario.patientBanner ? 'Yes' : 'No'}
+                    </span>
                 </div>
-            </div>
-            <div className='app-wrapper'>
-                <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
-                <Card className='app-card small'>
-                    <CardMedia className='media-wrapper'>
-                        <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
-                    </CardMedia>
-                    <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                        <span className='app-name'>{selectedScenario.app.authClient.clientName}</span>
-                    </div>
-                </Card>
             </div>
         </div>
     };

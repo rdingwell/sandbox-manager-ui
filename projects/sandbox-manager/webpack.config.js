@@ -12,7 +12,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || 3001;
 const SRC_DIR = path.resolve(__dirname, "src");
 const DIST_DIR = path.resolve(__dirname, "build/www");
-const LIB_DIR = path.resolve(__dirname, "../../lib");
+const LIB_DIR = path.resolve(__dirname, "../sandbox-manager-lib");
 const APP_VERSION = JSON.stringify(pkg.version);
 const ENV = process.env.NODE_ENV || "production";
 

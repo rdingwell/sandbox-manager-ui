@@ -2,13 +2,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
-import * as glib from '../../../../../lib/utils/';
-import * as lib from '../../lib/';
+import * as glib from 'sandbox-manager-lib/utils/';
+import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
 
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Layout from '../../../../../lib/components/Layout';
+import Layout from 'sandbox-manager-lib/components/Layout';
+import CreateSandbox from '../containers/CreateSandbox';
 
 import Init from '../Init/';
 
@@ -29,7 +30,7 @@ class App extends React.Component {
     render () {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
             <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
-                    signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite}>
+                    signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox}>
                 {!this.props.selecting && <div className='app-root' ref={this.refStage()}>
                     <Init {...this.props} />
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
