@@ -87,7 +87,7 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
     }
 }
 
-export function fetchPersonas (type = "Patient", searchCrit = {}) {
+export function fetchPersonas (type = "Patient", searchCrit = null) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
@@ -109,27 +109,37 @@ export function fetchPersonas (type = "Patient", searchCrit = {}) {
                         })
                     })
             } else {
-                let searchParams = { type, count: count };
-                searchParams.query = searchCrit;
-                searchParams.query['$sort'] = [['family', 'asc']];
+                let url = `http://localhost:8076/SampleOne/data/Patient?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
+                fetch(url, {
+                    headers: {
+                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(res => {
+                        res.json().then(response => {
+                            console.log(response);
+                            let resourceResults = [];
 
-                window.fhirClient.api.search(searchParams)
-                    .then(response => {
-                        let resourceResults = [];
+                            for (let key in response.entry) {
+                                response.entry[key].resource.fullUrl = response.entry[key].fullUrl;
+                                resourceResults.push(response.entry[key].resource);
+                            }
+                            let paginationData = {
+                                total: response.total,
+                                link: response.link
+                            };
 
-                        for (let key in response.data.entry) {
-                            response.data.entry[key].resource.fullUrl = response.data.entry[key].fullUrl;
-                            resourceResults.push(response.data.entry[key].resource);
-                        }
-                        let paginationData = {
-                            total: response.data.total,
-                            link: response.data.link
-                        };
-
-                        dispatch(setPersonas(type, resourceResults, paginationData));
-                    }).fail(error => {
-                    dispatch(lookupPersonasFail(error));
-                });
+                            dispatch(setPersonas(type, resourceResults, paginationData));
+                        })
+                            .catch(e => {
+                                dispatch(lookupPersonasFail(e));
+                            })
+                    })
+                    .catch(e => {
+                        dispatch(lookupPersonasFail(e));
+                    });
             }
         }
     };

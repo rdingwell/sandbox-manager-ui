@@ -172,12 +172,14 @@ export default class Filters extends Component {
 
         this.setState({ filters });
 
-        let transformedFilter = Object.assign({}, filters);
-        if (transformedFilter.age) {
-            let val = transformedFilter.age;
-            delete transformedFilter.age;
-            let ages = val.split(' - ');
-            transformedFilter.birthdate = { $gt: moment().subtract(ages[1], 'years').format('YYYY'), $lt: moment().subtract(ages[0], 'years').format('YYYY') };
+        let transformedFilter = '';
+        if (filters.age) {
+            let ages = filters.age.split(' - ');
+            transformedFilter = `birthdate=>${moment().subtract(ages[1], 'years').format('YYYY')}&birthdate=<${moment().subtract(ages[0], 'years').format('YYYY')}`;
+        }
+        if (filters.gender) {
+            transformedFilter += (filters.age ? '&' : '');
+            transformedFilter += `gender=${filters.gender}`;
         }
 
         this.props.onFilter && this.props.onFilter(transformedFilter);
