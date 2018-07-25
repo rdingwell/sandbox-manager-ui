@@ -177,7 +177,7 @@ class LaunchScenarios extends Component {
                                 </span>
                             </div>
                             <div className='title-wrapper'>
-                                <span className='launch-scenario-title'>{sc.description}</span>
+                                <span className='launch-scenario-title'>{sc.title || sc.description}</span>
                                 <span className='launch-scenario-app-name'>{sc.app.authClient.clientName}</span>
                             </div>
                             <div className='actions-wrapper'>
@@ -254,15 +254,15 @@ class LaunchScenarios extends Component {
                 <div>
                     <span className='section-value' style={lightColor}>
                         <Patient style={iconStyleLight}/>
-                        {selectedScenario.patient && selectedScenario.patient.name ? selectedScenario.patient.name : '-'}
+                        {selectedScenario.patientName ? selectedScenario.patientName : '-'}
                     </span>
                     <span className='section-value' style={lightColor}>
                         <EventIcon style={iconStyleLight}/>
-                        {selectedScenario.encounterId ? selectedScenario.encounterId : '-'}
+                        {selectedScenario.encounter ? selectedScenario.encounter : '-'}
                     </span>
                     <span className='section-value' style={lightColor}>
                         <HospitalIcon style={iconStyleLight}/>
-                        {selectedScenario.locationId ? selectedScenario.locationId : '-'}
+                        {selectedScenario.location ? selectedScenario.location : '-'}
                     </span>
                     <span className='section-value' style={lightColor}>
                         <DescriptionIcon style={iconStyleLight}/>
@@ -274,11 +274,11 @@ class LaunchScenarios extends Component {
                     </span>
                     <span className='section-value' style={lightColor}>
                         <LinkIcon style={iconStyleLight}/>
-                        {selectedScenario.url ? selectedScenario.url : '-'}
+                        {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
                     </span>
                     <span className='section-value' style={lightColor}>
                         <FullScreenIcon style={iconStyleLight}/>
-                        Needs Patient Banner: {selectedScenario.patientBanner ? 'Yes' : 'No'}
+                        Needs Patient Banner: {selectedScenario.needPatientBanner ? 'Yes' : 'No'}
                     </span>
                 </div>
             </div>
