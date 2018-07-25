@@ -177,7 +177,7 @@ class LaunchScenarios extends Component {
                                 </span>
                             </div>
                             <div className='title-wrapper'>
-                                <span className='launch-scenario-title'>{sc.title}</span>
+                                <span className='launch-scenario-title'>{sc.title || sc.description}</span>
                                 <span className='launch-scenario-app-name'>{sc.app.authClient.clientName}</span>
                             </div>
                             <div className='actions-wrapper'>
