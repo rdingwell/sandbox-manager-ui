@@ -109,7 +109,7 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
                         })
                     })
             } else {
-                let url = `http://localhost:8076/SampleOne/data/Patient?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
+                let url = `${window.fhirClient.server.serviceUrl}/Patient?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
                 fetch(url, {
                     headers: {
                         Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
