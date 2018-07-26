@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart, addCustomContext,
-    fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart, addCustomContext, fetchLocation,
+    fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
+    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -425,10 +426,19 @@ const mapStateToProps = state => {
         apps: state.apps.apps,
         fetchingSingleEncounter: state.sandbox.fetchingSingleEncounter,
         modifyingCustomContext: state.sandbox.modifyingCustomContext,
+
         singleEncounterLoadingError: state.sandbox.singleEncounterLoadingError,
-        singleEncounter: state.sandbox.singleEncounter,
-        fetchingSinglePatient: state.patient.fetchingSingle,
+        singleLocationLoadingError: state.sandbox.singleLocationLoadingError,
+        singleIntentLoadingError: state.sandbox.singleIntentLoadingError,
+        singleResourceLoadingError: state.sandbox.singleResourceLoadingError,
         fetchingSinglePatientError: state.patient.fetchingSingleError,
+
+        singleEncounter: state.sandbox.singleEncounter,
+        singleLocation: state.sandbox.singleLocation,
+        singleResource: state.sandbox.singleResource,
+        singleIntent: state.sandbox.singleIntent,
+
+        fetchingSinglePatient: state.patient.fetchingSingle,
         singlePatient: state.patient.singlePatient,
         creating: state.sandbox.launchScenarioCreating,
         deleting: state.sandbox.launchScenarioDeleting,
@@ -446,7 +456,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
-        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext
+        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext, fetchLocation, setFetchingSingleLocationError,
+        setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
     },
     dispatch
 );

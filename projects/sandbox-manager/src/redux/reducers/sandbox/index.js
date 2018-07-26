@@ -14,9 +14,10 @@ export default function (state = initialState, action) {
         case actionTypes.FETCHING_LOGIN_INFO:
             state.fetchingLoginInfo = action.payload.fetching;
             break;
+
         case actionTypes.FETCHING_SINGLE_ENCOUNTER :
             state.fetchingSingleEncounter = action.payload.fetching;
-            if(action.payload.fetching) {
+            if (action.payload.fetching) {
                 state.singleEncounter = null;
                 state.singleEncounterLoadingError = null;
             }
@@ -26,6 +27,48 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR :
             state.singleEncounterLoadingError = action.payload.error;
+            break;
+
+        case actionTypes.FETCHING_SINGLE_INTENT :
+            state.fetchingSingleIntent = action.payload.fetching;
+            if (action.payload.fetching) {
+                state.singleIntent = null;
+                state.singleIntentLoadingError = null;
+            }
+            break;
+        case actionTypes.SET_SINGLE_INTENT :
+            state.singleIntent = action.payload.intent;
+            break;
+        case actionTypes.SET_SINGLE_INTENT_LOAD_ERROR :
+            state.singleIntentLoadingError = action.payload.error;
+            break;
+
+        case actionTypes.FETCHING_SINGLE_RESOURCE :
+            state.fetchingSingleResource = action.payload.fetching;
+            if (action.payload.fetching) {
+                state.singleResource = null;
+                state.singleResourceLoadingError = null;
+            }
+            break;
+        case actionTypes.SET_SINGLE_RESOURCE :
+            state.singleResource = action.payload.resource;
+            break;
+        case actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR :
+            state.singleResourceLoadingError = action.payload.error;
+            break;
+
+        case actionTypes.FETCHING_SINGLE_LOCATION :
+            state.fetchingSingleLocation = action.payload.fetching;
+            if (action.payload.fetching) {
+                state.singleLocation = null;
+                state.singleLocationLoadingError = null;
+            }
+            break;
+        case actionTypes.SET_SINGLE_LOCATION :
+            state.singleLocation = action.payload.location;
+            break;
+        case actionTypes.SET_SINGLE_LOCATION_LOAD_ERROR :
+            state.singleLocationLoadingError = action.payload.error;
             break;
         case actionTypes.ADDING_CUSTOM_CONTENT :
             state.modifyingCustomContext = action.payload.modifying;
@@ -37,7 +80,7 @@ export default function (state = initialState, action) {
         case actionTypes.FETCH_SANDBOXES_FAIL:
             state.loading = false;
             break;
-            case actionTypes.SET_USER_INVITING:
+        case actionTypes.SET_USER_INVITING:
             state.inviting = action.payload.inviting;
             break;
         case actionTypes.DELETE_SANDBOX :
@@ -144,7 +187,7 @@ export default function (state = initialState, action) {
 };
 
 const updateSandbox = (state, action) => {
-    const sandbox = {...state.sandboxes.filter((s) => s.sandboxId === sessionStorage.sandboxId)[0]};
+    const sandbox = { ...state.sandboxes.filter((s) => s.sandboxId === sessionStorage.sandboxId)[0] };
     sandbox.name = action.sandboxDetails.name;
     sandbox.description = action.sandboxDetails.description;
     sandbox.allowOpenAccess = action.sandboxDetails.allowOpenAccess;
@@ -163,8 +206,8 @@ const updateSandbox = (state, action) => {
 };
 
 const removeUser = (state, action) => {
-    const cloneState = {...state};
-    const sandbox = {...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[0]};
+    const cloneState = { ...state };
+    const sandbox = { ...cloneState.sandboxes.filter(s => s.sandboxId === sessionStorage.sandboxId)[0] };
     if (sandbox.userRoles) {
         const remainingUsers = sandbox.userRoles.slice().filter(role => role.user.sbmUserId !== action.userId);
 

@@ -18,9 +18,9 @@ export function setUpdatingUser (updating) {
     }
 }
 
-export function setFetchSingleEncounter (fetching) {
+export function setFetchSingleLocation (fetching) {
     return {
-        type: actionTypes.FETCHING_SINGLE_ENCOUNTER,
+        type: actionTypes.FETCHING_SINGLE_LOCATION,
         payload: { fetching }
     }
 }
@@ -39,10 +39,73 @@ export function setFetchingLoginInfo (fetching) {
     }
 }
 
+export function setFetchSingleEncounter (fetching) {
+    return {
+        type: actionTypes.FETCHING_SINGLE_ENCOUNTER,
+        payload: { fetching }
+    }
+}
+
 export function setSingleEncounter (encounter) {
     return {
         type: actionTypes.SET_SINGLE_ENCOUNTER,
         payload: { encounter }
+    }
+}
+
+export function setFetchingSingleEncounterError (error) {
+    return {
+        type: actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR,
+        payload: { error }
+    }
+}
+
+export function setFetchSingleIntent (fetching) {
+    return {
+        type: actionTypes.FETCHING_SINGLE_INTENT,
+        payload: { fetching }
+    }
+}
+
+export function setSingleIntent (intent) {
+    return {
+        type: actionTypes.SET_SINGLE_INTENT,
+        payload: { intent }
+    }
+}
+
+export function setFetchingSingleIntentError (error) {
+    return {
+        type: actionTypes.SET_SINGLE_INTENT_LOAD_ERROR,
+        payload: { error }
+    }
+}
+
+export function setFetchSingleResource (fetching) {
+    return {
+        type: actionTypes.FETCHING_SINGLE_RESOURCE,
+        payload: { fetching }
+    }
+}
+
+export function setSingleResource (resource) {
+    return {
+        type: actionTypes.SET_SINGLE_RESOURCE,
+        payload: { resource }
+    }
+}
+
+export function setFetchingSingleResourceError (error) {
+    return {
+        type: actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR,
+        payload: { error }
+    }
+}
+
+export function setSingleLocation (location) {
+    return {
+        type: actionTypes.SET_SINGLE_LOCATION,
+        payload: { location }
     }
 }
 
@@ -53,9 +116,9 @@ export function modifyingCustomContext (modifying) {
     }
 }
 
-export function setFetchingSingleEncounterError (error) {
+export function setFetchingSingleLocationError (error) {
     return {
-        type: actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR,
+        type: actionTypes.SET_SINGLE_LOCATION_LOAD_ERROR,
         payload: { error }
     }
 }
@@ -732,6 +795,84 @@ export function fetchEncounter (id) {
                     dispatch(setFetchingSingleEncounterError(e));
                     dispatch(setFetchSingleEncounter(false));
                 });
+        }
+    }
+}
+
+export function fetchLocation (id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchSingleLocation(true));
+            window.fhirClient.api.read({ type: 'Location', id })
+                .done(patient => {
+                    dispatch(setSingleLocation(patient.data));
+                    dispatch(setFetchSingleLocation(false));
+                })
+                .fail(e => {
+                    dispatch(setFetchingSingleLocationError(e));
+                    dispatch(setFetchSingleLocation(false));
+                });
+        }
+    }
+}
+
+export function fetchIntent (id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchSingleIntent(true));
+            window.fhirClient.api.read({ type: 'Intent', id })
+                .done(patient => {
+                    dispatch(setSingleIntent(patient.data));
+                    dispatch(setFetchSingleIntent(false));
+                })
+                .fail(e => {
+                    dispatch(setFetchingSingleIntentError(e));
+                    dispatch(setFetchSingleIntent(false));
+                });
+        }
+    }
+}
+
+export function fetchResource (res) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchSingleResource(true));
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    'Content-Type': 'application/json'
+                }
+            };
+            let url = `${window.fhirClient.server.serviceUrl}/${res}`;
+
+            fetch(url, config)
+                .then(result => result.json()
+                    .then(res => {
+                        if(!res.issue) {
+                            dispatch(setSingleResource(res));
+                            dispatch(setFetchSingleResource(false));
+                        } else {
+                            dispatch(setFetchingSingleResourceError(res));
+                            dispatch(setFetchSingleResource(false));
+                        }
+                    })
+                    .catch(e => {
+                        dispatch(setFetchingSingleResourceError(e));
+                        dispatch(setFetchSingleResource(false));
+                    }))
+                .catch(e => {
+                    dispatch(setFetchingSingleResourceError(e));
+                    dispatch(setFetchSingleResource(false));
+                })
+            // window.fhirClient.api.read({ type: 'Resource', id })
+            //     .done(patient => {
+            //         dispatch(setSingleResource(patient.data));
+            //         dispatch(setFetchSingleResource(false));
+            //     })
+            //     .fail(e => {
+            //         dispatch(setFetchingSingleResourceError(e));
+            //         dispatch(setFetchSingleResource(false));
+            //     });
         }
     }
 }
