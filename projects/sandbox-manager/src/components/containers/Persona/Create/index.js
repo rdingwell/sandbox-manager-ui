@@ -32,6 +32,10 @@ export default class CreatePersona extends Component {
         return <div>
             <Dialog bodyClassName='create-persona-dialog' open={this.props.open} onRequestClose={this.props.close}
                     actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
+                {this.props.type === PersonaList.TYPES.persona && <IconButton style={{ color: this.state.selectedForCreation ? this.props.theme.primary5Color : this.props.theme.primary3Color }}
+                                                                              className="close-button" onClick={this.props.close}>
+                    <i className="material-icons">close</i>
+                </IconButton>}
                 {this.props.type !== PersonaList.TYPES.persona && this.getDefaultContent()}
                 {this.props.type === PersonaList.TYPES.persona && this.getPersonaContent()}
             </Dialog>
@@ -44,7 +48,7 @@ export default class CreatePersona extends Component {
         return this.state.selectedForCreation
             ? <div className='persona-inputs'>
                 <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
-                theme={this.props.theme}/>
+                               theme={this.props.theme}/>
             </div>
             : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
                            next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
@@ -61,15 +65,15 @@ export default class CreatePersona extends Component {
             </IconButton>
             <h3>Create {this.props.type.toLowerCase()}</h3>
             <div className='paper-body'>
-                <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                            floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
-                <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                            floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
+                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                           floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
+                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                           floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
 
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
-                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                               floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                onChange={(_, birthDate) => this.setState({ birthDate })}/>
                     <h4>Gender</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
@@ -79,13 +83,13 @@ export default class CreatePersona extends Component {
                 </div>}
                 {this.props.type === PersonaList.TYPES.practitioner &&
                 <div>
-                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
-                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                               floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                               floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
                                onChange={(_, speciality) => this.setState({ speciality })}/>
-                    <TextField  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                               floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
                 </div>}
             </div>
         </Paper>
@@ -130,7 +134,7 @@ export default class CreatePersona extends Component {
             data.password = this.state.password;
         }
 
-        if(this.props.type === PersonaList.TYPES.persona) {
+        if (this.props.type === PersonaList.TYPES.persona) {
             this.props.create && this.props.create(this.props.personaType, data);
             this.props.close();
         } else {

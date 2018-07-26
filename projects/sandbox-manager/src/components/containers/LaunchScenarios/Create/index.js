@@ -5,6 +5,8 @@ import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import EventIcon from "material-ui/svg-icons/action/event";
+import CheckIcon from "material-ui/svg-icons/navigation/check";
+import CloseIcon from "material-ui/svg-icons/navigation/close";
 import PatientIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
 import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
 import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
@@ -40,13 +42,16 @@ class Create extends Component {
             locationId: null,
             personaType: null,
             selectedPersona: null,
-            currentStep: 0
+            currentStep: 2
         };
     }
 
     componentDidMount () {
         this.initPatient();
         this.initEncounter();
+        this.initLocation();
+        this.initResource();
+        this.initIntent();
     }
 
     render () {
@@ -87,7 +92,8 @@ class Create extends Component {
             : this.state.currentStep === 1
                 ? !!this.state.selectedPersona
                 : this.state.currentStep === 2
-                    ? true
+                    ? !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError
+                    && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError
                     : this.state.title.length > 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
@@ -106,11 +112,14 @@ class Create extends Component {
     };
 
     getContent = () => {
+        console.log(this.props.singleResource);
         let palette = this.props.muiTheme.palette;
         let titleStyle = { color: palette.primary3Color };
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
         let iconStyle = { color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px' };
+        let rightIconGreenStyle = { color: palette.primary1Color, fill: palette.primary1Color, width: '16px', height: '16px' };
+        let rightIconRedStyle = { color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative' };
 
         switch (this.state.currentStep) {
             case 0:
@@ -189,6 +198,10 @@ class Create extends Component {
                                             {getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}
                                         </span>}
                                 </div>}
+                                <div className='subscript right'>
+                                    {this.props.singlePatient && <CheckIcon style={rightIconGreenStyle}/>}
+                                    {this.props.fetchingSinglePatientError && <CloseIcon style={rightIconRedStyle}/>}
+                                </div>
                             </div>
                             <div className='column-item-wrapper'>
                                 <EventIcon className='column-item-icon' style={iconStyle}/>
@@ -203,23 +216,57 @@ class Create extends Component {
                                         ? 'Loading encounter data...'
                                         : <span>Encounter FHIR Resource Located</span>}
                                 </div>}
+                                <div className='subscript right'>
+                                    {this.props.singleEncounter && <CheckIcon style={rightIconGreenStyle}/>}
+                                    {this.props.singleEncounterLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                                </div>
                             </div>
                             <div className='column-item-wrapper'>
                                 <HospitalIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
-                                           onChange={(_, value) => this.onChange('locationId', value)}/>
+                                           onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)}
+                                           errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
+                                {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
+                                    {this.props.fetchingSingleLocation
+                                        ? 'Loading location data...'
+                                        : <span>Location FHIR Resource Located</span>}
+                                </div>}
+                                <div className='subscript right'>
+                                    {this.props.singleLocation && <CheckIcon style={rightIconGreenStyle}/>}
+                                    {this.props.singleLocationLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                                </div>
                             </div>
                             <div className='column-item-wrapper'>
                                 <DescriptionIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' floatingLabelText='Resource'
-                                           onChange={(_, value) => this.onChange('resource', value)}/>
+                                           onBlur={() => this.blur('resourceId')} onChange={(_, value) => this.onChange('resource', value)}
+                                           errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                                {(this.props.singleResource || this.props.fetchingSingleResource) && <div className='subscript'>
+                                    {this.props.fetchingSingleResource
+                                        ? 'Loading resource data...'
+                                        : <span>FHIR Resource Located</span>}
+                                </div>}
+                                <div className='subscript right'>
+                                    {this.props.singleResource && <CheckIcon style={rightIconGreenStyle}/>}
+                                    {this.props.singleResourceLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                                </div>
                             </div>
                         </div>
                         <div className='context-right-column'>
                             <div className='column-item-wrapper'>
                                 <BulbIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
-                                           onChange={(_, value) => this.onChange('intent', value)}/>
+                                           onBlur={() => this.blur('intentId')} onChange={(_, value) => this.onChange('intent', value)}
+                                           errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
+                                {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
+                                    {this.props.fetchingSingleIntent
+                                        ? 'Loading intent data...'
+                                        : <span>Intent FHIR Resource Located</span>}
+                                </div>}
+                                <div className='subscript right'>
+                                    {this.props.singleIntent && <CheckIcon style={rightIconGreenStyle}/>}
+                                    {this.props.singleIntentLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                                </div>
                             </div>
                             <div className='column-item-wrapper'>
                                 <LinkIcon className='column-item-icon' style={iconStyle}/>
@@ -358,6 +405,7 @@ class Create extends Component {
     };
 
     blur = (input) => {
+        console.log(this.state.resource);
         switch (input) {
             case 'patientId':
                 this.state.patientId && this.props.fetchPatient && this.props.fetchPatient(this.state.patientId);
@@ -366,6 +414,18 @@ class Create extends Component {
             case 'encounterId':
                 this.state.encounterId && this.props.fetchEncounter && this.props.fetchEncounter(this.state.encounterId);
                 (!this.state.encounterId || this.state.encounterId.length === 0) && this.initEncounter();
+                break;
+            case 'locationId':
+                this.state.locationId && this.props.fetchLocation && this.props.fetchLocation(this.state.locationId);
+                (!this.state.locationId || this.state.locationId.length === 0) && this.initLocation();
+                break;
+            case 'resourceId':
+                this.state.resource && this.props.fetchResource && this.props.fetchResource(this.state.resource);
+                (!this.state.resource || this.state.resource.length === 0) && this.initResource();
+                break;
+            case 'intentId':
+                this.state.intent && this.props.fetchIntent && this.props.fetchIntent(this.state.intent);
+                (!this.state.intent || this.state.intent.length === 0) && this.initIntent();
                 break;
         }
     };
@@ -381,7 +441,6 @@ class Create extends Component {
 
     togglePatientSearch = (patient) => {
         if (patient) {
-            console.log(patient.id);
             this.setState({ selectedPatient: patient, showPatientSelectorWrapper: false, patientId: patient.id });
             setTimeout(() => {
                 this.setState({ showPatientSelector: false });
@@ -431,6 +490,21 @@ class Create extends Component {
     initEncounter = () => {
         this.props.setFetchingSingleEncounterError(null);
         this.props.setSingleEncounter(null);
+    };
+
+    initLocation = () => {
+        this.props.setFetchingSingleLocationError(null);
+        this.props.setSingleLocation(null);
+    };
+
+    initResource = () => {
+        this.props.setFetchingSingleResourceError(null);
+        this.props.setSingleResource(null);
+    };
+
+    initIntent = () => {
+        this.props.setFetchingSingleIntentError(null);
+        this.props.setSingleIntent(null);
     };
 }
 

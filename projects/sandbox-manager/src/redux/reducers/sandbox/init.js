@@ -11,12 +11,26 @@ export default {
     fetchingLoginInfo: false,
     loginInfo: [],
     creatingSandbox: false,
-    fetchingSingleEncounter: false,
     updatingUser: false,
     selecting: false,
     deleting: false,
+
+    fetchingSingleEncounter: false,
     singleEncounter: false,
     singleEncounterLoadingError: false,
+
+    fetchingSingleLocation: false,
+    singleLocation: false,
+    singleLocationLoadingError: false,
+
+    fetchingSingleIntent: false,
+    singleIntent: false,
+    singleIntentLoadingError: false,
+
+    fetchingSingleResource: false,
+    singleResource: false,
+    singleResourceLoadingError: false,
+
     inviting: false,
     resetting: false,
     createSandboxError: '',
