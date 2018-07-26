@@ -453,19 +453,9 @@ export const selectSandbox = (sandbox) => {
             let sandboxId = sandbox.sandboxId;
             fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
                 .then(() => {
-                    let tryChange = () => {
-                        state = getState();
-                        let config = state.config.xsettings.data.sandboxManager;
-                        if (config) {
-                            dispatch(authorizeSandbox(sandbox));
-                            dispatch(setDefaultUrl(sandboxId));
-                            dispatch(selectSandboxById(sandboxId));
-                        } else {
-                            setTimeout(() => tryChange(), 200);
-                        }
-                    };
-
-                    setTimeout(() => tryChange(), 200);
+                    dispatch(authorizeSandbox(sandbox));
+                    dispatch(setDefaultUrl(sandboxId));
+                    dispatch(selectSandboxById(sandboxId));
                 });
         }
     };
@@ -668,8 +658,6 @@ export function authorizeSandbox (sandbox) {
         if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
             const state = getState();
-
-            // state['sandbox']['sandboxApiEndpointIndex'] = sandbox.apiEndpointIndex;
             authorize(window.location, state, sandbox.sandboxId);
         }
     }
@@ -848,7 +836,7 @@ export function fetchResource (res) {
             fetch(url, config)
                 .then(result => result.json()
                     .then(res => {
-                        if(!res.issue) {
+                        if (!res.issue) {
                             dispatch(setSingleResource(res));
                             dispatch(setFetchSingleResource(false));
                         } else {
