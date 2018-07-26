@@ -899,7 +899,7 @@ export function getLoginInfo () {
     }
 }
 
-export function doLaunch (app, persona = {}, user) {
+export function doLaunch (app, persona, user) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -909,8 +909,8 @@ export function doLaunch (app, persona = {}, user) {
         window.localStorage[key] = "requested-launch";
 
         let params = {};
-        if (persona.fhirId || persona.id) {
-            params = { patient: persona.fhirId || persona.id };
+        if (persona) {
+            params = { patient: persona };
         }
 
         params["need_patient_banner"] = false;
@@ -921,7 +921,7 @@ export function doLaunch (app, persona = {}, user) {
         config.headers["Content-Type"] = "application/json";
         let launchDetails = {
             userPersona: Object.assign({}, user),
-            patientContext: persona.id
+            patientContext: persona
         };
 
         try {
