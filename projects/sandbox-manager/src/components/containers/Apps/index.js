@@ -35,7 +35,7 @@ class Apps extends Component {
     componentDidMount () {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
-        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
+        this.props.selecting && this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
         this.props.fetchPersonas(PersonaList.TYPES.patient);
     }
 
@@ -164,6 +164,7 @@ const mapStateToProps = state => {
     return {
         apps: state.apps.apps,
         appLoading: state.apps.loading,
+        selecting: state.sandbox.selecting,
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting,
         defaultUser: state.sandbox.defaultUser,
