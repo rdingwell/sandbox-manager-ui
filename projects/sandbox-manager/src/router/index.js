@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import App from '../components/App/';
 import Apps from '../components/containers/Apps';
@@ -28,6 +28,9 @@ export default <Router>
             <Route path='/:sandboxId/user-management' component={UserManagement} />
             <Route path='/:sandboxId/integration' component={EHRIntegration} />
             <Route path='/:sandboxId/settings' component={Settings} />
+            <Route exact path="/:sandboxId" render={({ match }) => (
+                <Redirect to={`/${match.params.sandboxId}/apps`} />
+            )} />
             <Route path='/dashboard' component={Dashboard} />
             <Route path='/start' component={Start} />
             <Route path='/after-auth' component={AfterAuth} />
