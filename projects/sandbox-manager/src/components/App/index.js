@@ -20,9 +20,6 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
-        console.log('Path name: ' + window.location.pathname);
-        console.log('Path name split: ' + window.location.pathname.split('/').length);
-
         let check = !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
