@@ -485,7 +485,8 @@ export function updateLaunchScenario (scenario, description) {
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        scenario.description = description;
+        description && (scenario.description = description);
+        !description && (scenario.lastLaunchSeconds = new Date().getTime());
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
@@ -493,7 +494,10 @@ export function updateLaunchScenario (scenario, description) {
             },
             body: JSON.stringify(scenario)
         };
-        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, Object.assign({ method: "PUT" }, config))
+        let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
+        !description && (url += '/launched');
+
+        fetch(url, Object.assign({ method: "PUT" }, config))
             .then(result => {
                 result.json()
                     .then(r => {

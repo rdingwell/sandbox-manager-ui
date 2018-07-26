@@ -135,6 +135,7 @@ class LaunchScenarios extends Component {
     launchScenario = (e, sc) => {
         this.preventDefault(e);
         sc.app && this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
+        sc.app && this.props.updateLaunchScenario(sc);
         !sc.app && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
     };
 
@@ -250,7 +251,7 @@ class LaunchScenarios extends Component {
             return this.props.scenarios.sort((a, b) => {
                 let timeA = a.lastLaunchSeconds || 0;
                 let timeB = b.lastLaunchSeconds || 0;
-                let val = timeA >= timeB ? -1 : 1;
+                let val = timeA >= timeB ? 1 : -1;
                 if (this.state.desc) {
                     val *= -1;
                 }
