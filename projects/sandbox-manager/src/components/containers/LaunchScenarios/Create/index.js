@@ -112,7 +112,6 @@ class Create extends Component {
     };
 
     getContent = () => {
-        console.log(this.props.singleResource);
         let palette = this.props.muiTheme.palette;
         let titleStyle = { color: palette.primary3Color };
         let underlineFocusStyle = { borderColor: palette.primary2Color };
@@ -405,7 +404,6 @@ class Create extends Component {
     };
 
     blur = (input) => {
-        console.log(this.state.resource);
         switch (input) {
             case 'patientId':
                 this.state.patientId && this.props.fetchPatient && this.props.fetchPatient(this.state.patientId);
