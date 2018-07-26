@@ -104,7 +104,7 @@ export default class Filters extends Component {
             </div>,
             <div key={3}>
                 <Search style={{ width: '30px', height: '30px', color: palette.primary3Color, verticalAlign: 'middle' }}/>
-                <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name:contains', value)}/>
+                <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name', value)}/>
             </div>
         ]
     };
@@ -180,6 +180,10 @@ export default class Filters extends Component {
         if (filters.gender) {
             transformedFilter += (filters.age ? '&' : '');
             transformedFilter += `gender=${filters.gender}`;
+        }
+        if (filters.name) {
+            transformedFilter += (transformedFilter.length > 0 ? '&' : '');
+            transformedFilter += `name=${filters.name}`;
         }
 
         this.props.onFilter && this.props.onFilter(transformedFilter);

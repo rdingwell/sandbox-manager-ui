@@ -6,13 +6,13 @@ import LaunchIcon from "material-ui/svg-icons/action/launch";
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 
-import { app_setScreen, doLaunch, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox } from '../../../redux/action-creators';
+import { lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
 import AppDialog from './AppDialog';
-import Personas from '../Persona';
+import PersonaList from "../Persona/List";
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
 
 import './styles.less';
@@ -36,6 +36,7 @@ class Apps extends Component {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
+        this.props.fetchPersonas(PersonaList.TYPES.patient)
     }
 
     componentWillReceiveProps (nextProps) {
@@ -67,13 +68,18 @@ class Apps extends Component {
             </Card>
         ));
 
+        let props = {
+            type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.muiTheme.palette, lookupPersonasStart: this.props.lookupPersonasStart,
+            search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.handleAppLaunch
+        };
+
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
                          muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
-                ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch}>
-                    {this.props.defaultUser && <Personas title='Select a patient' modal muiTheme={this.props.muiTheme} type='Patient' doLaunch={this.doLaunch}/>}
+                ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog'>
+                    {this.props.defaultUser && <PersonaList {...props} titleLeft scrollContent/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>
                 : null;
@@ -132,7 +138,7 @@ class Apps extends Component {
     };
 
     doLaunch = (persona) => {
-        this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona);
+        this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona.id);
         this.closeAll();
     };
 
@@ -160,13 +166,14 @@ const mapStateToProps = state => {
         appLoading: state.apps.loading,
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting,
-        defaultUser: state.sandbox.defaultUser
+        defaultUser: state.sandbox.defaultUser,
+        personas: state.persona.patients,
+        personaLoading: state.persona.loading
     };
 };
 
-
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox }, dispatch);
+    return bindActionCreators({ fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart }, dispatch);
 };
 
 
