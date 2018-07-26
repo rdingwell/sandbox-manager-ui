@@ -6,7 +6,11 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn, TextField } from 'material-ui';
+import {
+    CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
+    TextField, SelectField
+} from 'material-ui';
+import { ContentSort } from "material-ui/svg-icons/index";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
@@ -36,6 +40,11 @@ import Create from './Create';
 
 import './styles.less';
 
+const SORT_VALUES = [
+    { val: 'last_used', label: 'Last Used' },
+    { val: 'alphabetical', label: 'Alphabetical' }
+];
+
 class LaunchScenarios extends Component {
 
     createKey = 0;
@@ -45,6 +54,7 @@ class LaunchScenarios extends Component {
         super(props);
 
         this.state = {
+            desc: true,
             showModal: false,
             addContext: false,
             showMenuForItem: false,
@@ -56,7 +66,8 @@ class LaunchScenarios extends Component {
             scenarioToDelete: undefined,
             description: '',
             key: '',
-            val: ''
+            val: '',
+            sort: SORT_VALUES[0].val
         }
     }
 
@@ -83,6 +94,14 @@ class LaunchScenarios extends Component {
             </ConfirmModal>
             <div className='launch-scenarios-wrapper'>
                 <div className='filter-wrapper'>
+                    <IconButton onClick={() => this.setState({ desc: !this.state.desc })} className='sort-button'>
+                        <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>
+                    </IconButton>
+                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary6Color }} underlineStyle={{ display: 'none' }} value={this.state.sort}
+                                 className='sort-select' onChange={(_, sort) => this.setState({ sort: SORT_VALUES[sort].val })}>
+                        <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
+                        <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
+                    </SelectField>
                     <FilterList color={this.props.muiTheme.palette.primary3Color}/>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>}
@@ -145,8 +164,9 @@ class LaunchScenarios extends Component {
     };
 
     getScenarios = () => {
+        let sorted = this.sortScenarios();
         return <div className='scenarios-list'>
-            {this.props.scenarios.map((sc, index) => {
+            {sorted.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
                     let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
@@ -210,6 +230,35 @@ class LaunchScenarios extends Component {
         </div>
     };
 
+    sortScenarios = () => {
+        if (this.state.sort === SORT_VALUES[1].val) {
+            return this.props.scenarios.sort((a, b) => {
+                let nameA = (a.title || a.description).toLowerCase();
+                let nameB = (b.title || b.description).toLowerCase();
+                let val = 0;
+                if (nameA > nameB) {
+                    val = 1;
+                } else if (nameA < nameB) {
+                    val = -1;
+                }
+                if (!this.state.desc) {
+                    val *= -1;
+                }
+                return val;
+            });
+        } else {
+            return this.props.scenarios.sort((a, b) => {
+                let timeA = a.lastLaunchSeconds || 0;
+                let timeB = b.lastLaunchSeconds || 0;
+                let val = timeA >= timeB ? -1 : 1;
+                if (this.state.desc) {
+                    val *= -1;
+                }
+                return val;
+            });
+        }
+    };
+
     preventDefault = (e) => {
         e && e.preventDefault && e.preventDefault();
         e && e.stopPropagation && e.stopPropagation();
@@ -235,8 +284,8 @@ class LaunchScenarios extends Component {
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
                 <span className='section-title' style={darkColor}><AccountIcon style={iconStyle}/>Persona</span>
-                <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName}</span>
-                <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId}</span>
+                <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName || '-'}</span>
+                <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId || '-'}</span>
                 <div className='app-wrapper'>
                     <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
                     <Card className='app-card small'>
@@ -291,8 +340,8 @@ class LaunchScenarios extends Component {
                     <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
                         <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                             <TableRow>
-                                <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Key</TableHeaderColumn>
-                                <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Value</TableHeaderColumn>
+                                <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Key</TableHeaderColumn>
+                                <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Value</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody displayRowCheckbox={false} className='table-body'>

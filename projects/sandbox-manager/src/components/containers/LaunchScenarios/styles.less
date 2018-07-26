@@ -111,6 +111,30 @@
 
   .filter-wrapper {
     margin: 16px 0;
+    .rev {
+      transform: rotate(180deg);
+    }
+    .sort-button {
+      padding-left: 0!important;
+      padding-right: 0!important;
+      left: -12px;
+    }
+    .sort-select {
+      width: 140px !important;
+      margin: 0 !important;
+      left: -7px;
+      & > div:nth-child(2) > div > div:nth-child(2) {
+        padding-right: 10px !important;
+      }
+      button {
+        fill: #3D3D3D !important;
+        padding-left: 0 !important;
+        text-align: left !important;
+        padding-right: 0 !important;
+        width: 26px !important;
+        right: 16px !important;
+      }
+    }
     & > * {
       display: inline-block;
       vertical-align: middle;
@@ -381,6 +405,7 @@
         }
         .persona-id {
           line-height: 30px;
+          min-height: 30px;
         }
         .section-label {
           width: 100px;
