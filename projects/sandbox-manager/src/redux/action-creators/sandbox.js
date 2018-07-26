@@ -705,7 +705,7 @@ export const fetchSandboxes = (toSelect) => {
                             });
                         }
                         dispatch(fetchSandboxesSuccess(sandboxes));
-                        dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect)));
+                        setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
                     })
             })
             .catch(err => {
