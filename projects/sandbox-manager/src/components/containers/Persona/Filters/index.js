@@ -43,6 +43,9 @@ export default class Filters extends Component {
         let ageTitle = ageActive ? this.state.filters.age : 'Age';
         let ageDeleteCallback = ageActive ? () => this.filter('age') : undefined;
 
+        let underlineFocusStyle = { borderColor: this.props.theme.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.theme.primary2Color };
+
         return [
             <div key={1}>
                 <span ref='gender-filter'/>
@@ -85,26 +88,31 @@ export default class Filters extends Component {
                             <span>Max</span>
                             <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.maxAge} step={1} min={1} max={99}
                                     onChange={(_, value) => this.sliderChange('maxAge', value)}/>
-                            <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value' onChange={(_, val) => {
-                                let value = parseInt(val);
-                                Number.isInteger(value) && value !== this.state.maxAge && this.sliderChange('maxAge', value);
-                            }}/>
+                            <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value'
+                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                       onChange={(_, val) => {
+                                           let value = parseInt(val);
+                                           Number.isInteger(value) && value !== this.state.maxAge && this.sliderChange('maxAge', value);
+                                       }}/>
                         </div>
                         <div>
                             <span>Min</span>
                             <Slider sliderStyle={{ color: palette.primary2Color }} className='slider' value={this.state.minAge} step={1} min={0} max={98}
                                     onChange={(_, value) => this.sliderChange('minAge', value)}/>
-                            <TextField value={this.state.minAge} id='minAge' className='age-filter-value' onChange={(_, val) => {
-                                let value = parseInt(val);
-                                Number.isInteger(value) && value !== this.state.minAge && this.sliderChange('minAge', value);
-                            }}/>
+                            <TextField value={this.state.minAge} id='minAge' className='age-filter-value'
+                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                       onChange={(_, val) => {
+                                           let value = parseInt(val);
+                                           Number.isInteger(value) && value !== this.state.minAge && this.sliderChange('minAge', value);
+                                       }}/>
                         </div>
                     </div>
                 </Popover>}
             </div>,
             <div key={3}>
                 <Search style={{ width: '30px', height: '30px', color: palette.primary3Color, verticalAlign: 'middle' }}/>
-                <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name:contains', value)}/>
+                <TextField id='name-filter' hintText='Search by name' onChange={(_, value) => this.delayFiltering('name', value)}
+                           underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
             </div>
         ]
     };
@@ -180,6 +188,13 @@ export default class Filters extends Component {
         if (filters.gender) {
             transformedFilter += (filters.age ? '&' : '');
             transformedFilter += `gender=${filters.gender}`;
+        }
+        if (filters.name) {
+            transformedFilter += (transformedFilter.length > 0 ? '&' : '');
+            transformedFilter += `name=${filters.name}`;
+        }
+        if (filter === 'resource' && value) {
+            transformedFilter = { resource: value };
         }
 
         this.props.onFilter && this.props.onFilter(transformedFilter);

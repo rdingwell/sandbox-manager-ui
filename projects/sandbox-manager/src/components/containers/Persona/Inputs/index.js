@@ -16,6 +16,9 @@ export default class PersonaInputs extends Component {
     }
 
     render () {
+        let underlineFocusStyle = { borderColor: this.props.theme.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.theme.primary2Color };
+
         return <Paper className='paper-card persona-inputs-wrapper'>
             <h3>Persona information</h3>
             <div className='actions'>
@@ -29,13 +32,15 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>User Id</span>
                     <div>
-                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId)} />
+                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId)}
+                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <span className='additional-info'>Your persona userId will be {this.state.userId}{this.state.userId && `@${this.props.sandbox}`}</span>
                     </div>
                 </div>
                 <div className='persona-info-row high'>
                     <span>Password</span>
-                    <TextField fullWidth id='password' onChange={(_, password) => this.update('password', password)} value={this.state.password} />
+                    <TextField fullWidth id='password' onChange={(_, password) => this.update('password', password)} value={this.state.password}
+                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
                 <div className='persona-info-row'>
                     <span>FHIR Resource URL</span>

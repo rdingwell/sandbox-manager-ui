@@ -390,9 +390,19 @@ export const selectSandbox = (sandbox) => {
             let sandboxId = sandbox.sandboxId;
             fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
                 .then(() => {
-                    dispatch(authorizeSandbox(sandbox));
-                    dispatch(setDefaultUrl(sandboxId));
-                    dispatch(selectSandboxById(sandboxId));
+                    let tryChange = () => {
+                        state = getState();
+                        let config = state.config.xsettings.data.sandboxManager;
+                        if (config) {
+                            dispatch(authorizeSandbox(sandbox));
+                            dispatch(setDefaultUrl(sandboxId));
+                            dispatch(selectSandboxById(sandboxId));
+                        } else {
+                            setTimeout(() => tryChange(), 200);
+                        }
+                    };
+
+                    setTimeout(() => tryChange(), 200);
                 });
         }
     };
