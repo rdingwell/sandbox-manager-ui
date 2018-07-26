@@ -42,7 +42,7 @@ class Create extends Component {
             locationId: null,
             personaType: null,
             selectedPersona: null,
-            currentStep: 2
+            currentStep: 0
         };
     }
 
