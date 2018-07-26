@@ -50,6 +50,21 @@ export function deletePersona (persona) {
     }
 }
 
+export function deletePractitioner (practitioner) {
+    return dispatch => {
+        let url = `${window.fhirClient.server.serviceUrl}/Practitioner/${practitioner}`;
+        fetch(url, {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'DELETE'
+        })
+            .then(() => dispatch(fetchPersonas('Practitioner')));
+    }
+}
+
 export function getPersonasPage (type = "Patient", pagination, direction) {
     return dispatch => {
         if (window.fhirClient) {
