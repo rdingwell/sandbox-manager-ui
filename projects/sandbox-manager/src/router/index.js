@@ -28,13 +28,13 @@ export default <Router>
             <Route path='/:sandboxId/user-management' component={UserManagement} />
             <Route path='/:sandboxId/integration' component={EHRIntegration} />
             <Route path='/:sandboxId/settings' component={Settings} />
+            <Route exact path='/after-auth' component={AfterAuth} />
+            <Route path='/dashboard' component={Dashboard} />
+            <Route path='/start' component={Start} />
+            <Route path='/:sandboxId/create-sandbox' component={CreateSandbox} />
             <Route exact path="/:sandboxId" render={({ match }) => (
                 <Redirect to={`/${match.params.sandboxId}/apps`} />
             )} />
-            <Route path='/dashboard' component={Dashboard} />
-            <Route path='/start' component={Start} />
-            <Route path='/after-auth' component={AfterAuth} />
-            <Route path='/:sandboxId/create-sandbox' component={CreateSandbox} />
             <Route path='/' component={Start} />
         </Switch>
     </App>
