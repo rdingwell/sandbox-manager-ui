@@ -78,7 +78,7 @@ class Apps extends Component {
                          muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
-                ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog'>
+                ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog' autoScrollBodyContent>
                     {this.props.defaultUser && <PersonaList {...props} titleLeft scrollContent/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>

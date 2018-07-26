@@ -19,8 +19,7 @@ export default class Edit extends Component {
 
     render () {
         let actions = [
-            <RaisedButton key={1} label='Save' secondary onClick={() => this.props.onConfirm(this.state.value)}/>,
-            <RaisedButton key={2} label='Cancel' primary onClick={this.props.onCancel} className='cancel-button'/>
+            <RaisedButton key={1} label='Save' primary onClick={() => this.props.onConfirm(this.state.value)}/>
         ];
 
         let titleStyle = {
@@ -30,7 +29,10 @@ export default class Edit extends Component {
             marginLeft: '0'
         };
 
-        return <Dialog className='edit-launch-scenario-modal' modal={false} open={this.props.open} onRequestClose={this.props.onCancel} actions={actions}>
+        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
+        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
+
+        return <Dialog className='edit-launch-scenario-modal' actionsContainerClassName='edit-launch-actions' modal={false} open={this.props.open} onRequestClose={this.props.onCancel} actions={actions}>
             <div className='screen-title' style={titleStyle}>
                 <IconButton className="close-button" onClick={this.props.onCancel}>
                     <i className="material-icons">close</i>
@@ -38,7 +40,8 @@ export default class Edit extends Component {
                 <h1 style={titleStyle}>Edit launch scenario</h1>
             </div>
             <div className='screen-content edit-scenario-dialog-content'>
-                <TextField id='description' floatingLabelText='Description' value={this.state.value} fullWidth onChange={(_, value) => this.setState({ value })} errorText={this.props.descriptionError}/>
+                <TextField id='description' floatingLabelText='Description' value={this.state.value} fullWidth onChange={(_, value) => this.setState({ value })} errorText={this.props.descriptionError}
+                           underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
             </div>
         </Dialog>
     }
