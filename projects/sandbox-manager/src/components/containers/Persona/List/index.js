@@ -21,7 +21,7 @@ import moment from 'moment';
 import './styles.less';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
+import { deletePractitioner, lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona } from "../../../../redux/action-creators";
 import { getAge } from "sandbox-manager-lib/utils";
 
 let chartData = [
@@ -183,7 +183,7 @@ class PersonaList extends Component {
                 {isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display}
                 </TableRowColumn>}
-                {!this.props.modal && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
+                {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
                         <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
@@ -269,7 +269,8 @@ class PersonaList extends Component {
         if (persona && !this.state.personaToDelete) {
             this.setState({ showConfirmModal: true, personaToDelete: persona });
         } else {
-            this.props.deletePersona(this.state.personaToDelete);
+            this.props.type === TYPES.persona && this.props.deletePersona(this.state.personaToDelete);
+            this.props.type !== TYPES.persona && this.props.deletePractitioner(this.state.personaToDelete.id);
             this.setState({ showConfirmModal: false, personaToDelete: undefined });
         }
     };
@@ -378,7 +379,7 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ lookupPersonasStart, fetchPatientDetails, patientDetailsFetchStarted, doLaunch, deletePersona }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ deletePractitioner, lookupPersonasStart, fetchPatientDetails, patientDetailsFetchStarted, doLaunch, deletePersona }, dispatch);
 
 let PersonaListWithTheme = connect(mapStateToProps, mapDispatchToProps)(PersonaList);
 
