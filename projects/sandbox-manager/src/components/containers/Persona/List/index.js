@@ -102,7 +102,7 @@ class PersonaList extends Component {
                             <ContentAdd/>
                         </FloatingActionButton>}
                         {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.patient)} style={{ marginRight: '16px' }}>
-                            <i className='fa fa-bed fa-lg'/>
+                            <Patient style={{width: '26px', fill: this.props.theme.primary5Color }}/>
                         </FloatingActionButton>}
                         {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.practitioner)}>
                             <i className='fa fa-user-md fa-lg'/>

@@ -43,7 +43,8 @@ export default class CreatePersona extends Component {
 
         return this.state.selectedForCreation
             ? <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}/>
+                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
+                theme={this.props.theme}/>
             </div>
             : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
                            next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
