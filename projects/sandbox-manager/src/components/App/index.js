@@ -17,10 +17,18 @@ import './style.less';
 import { CircularProgress, Dialog } from "material-ui";
 
 class App extends React.Component {
+    constructor (props) {
+        super(props);
+
+        let check = !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length > 2;
+        check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
+        check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
+
+        this.state = {};
+    }
+
     componentDidMount () {
         window.addEventListener('resize', this.onResize);
-
-        !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length > 2 && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
     }
 
     componentWillUnmount () {
