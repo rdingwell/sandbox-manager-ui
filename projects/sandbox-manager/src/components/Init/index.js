@@ -3,6 +3,15 @@ import * as React from "react";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 export default class InitLoader extends React.Component {
+    constructor (props) {
+        super(props);
+
+        // Initialize the app
+        this.init();
+
+        this.state = {};
+    }
+
     componentDidMount () {
         if (this.props.location.pathname !== "/launchApp") {
             window.FHIR.oauth2.ready(
@@ -15,11 +24,10 @@ export default class InitLoader extends React.Component {
                 }
             );
 
+            console.log('Currently selecting a sandbox: ' + this.props.sandbox.selecting);
+
             let smart = this.props.fhir.smart.data.server ? FHIR.client(this.props.fhir.smart.data.server) : null;
             smart && this.props.fhirauth_setSmart(smart, this.props.history);
-
-            // Initialize the app
-            this.init();
         }
     }
 

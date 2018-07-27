@@ -6,6 +6,7 @@ import { fetchingPatient, setFetchingSinglePatientFailed, setSinglePatientFetche
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export const selectSandboxById = (sandboxId) => {
+    console.log('Set sandbox id');
     localStorage.setItem('sandboxId', sandboxId);
     sessionStorage['sandboxId'] = sandboxId;
     return { type: actionTypes.SELECT_SANDBOX }
@@ -433,8 +434,7 @@ export const updateSandbox = (sandboxDetails) => {
 
 export const selectSandbox = (sandbox) => {
     return (dispatch, getState) => {
-        sandbox && dispatch(setSandboxSelecting(true));
-        !sandbox && dispatch(setSandboxSelecting(false));
+        dispatch(setSandboxSelecting(!!sandbox));
         let state = getState();
 
         let queryParams = "?userId=" + encodeURIComponent(state.users.oauthUser.sbmUserId);
@@ -1097,6 +1097,7 @@ const getConfig = (_state) => {
 };
 
 const setDefaultUrl = (sandboxId) => {
+    console.log('Set default url');
     return {
         type: actionTypes.SET_FHIR_SERVER_URL,
         sandboxId: sandboxId

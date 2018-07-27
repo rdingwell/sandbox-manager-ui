@@ -11,6 +11,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_SANDBOX_SELECTING :
             state.selecting = action.payload.selecting;
             break;
+        case actionTypes.FHIR_SET_SMART:
+            state.selecting = false;
+            break;
         case actionTypes.FETCHING_LOGIN_INFO:
             state.fetchingLoginInfo = action.payload.fetching;
             break;
@@ -177,7 +180,6 @@ export default function (state = initialState, action) {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             state.dataImporting = false;
-            state.selecting = false;
             state.importResults = undefined;
             state.launchScenarios = undefined;
             break;

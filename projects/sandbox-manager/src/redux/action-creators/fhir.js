@@ -40,6 +40,7 @@ export function fhir_setCustomSearchResults (results) {
 export function fhir_SetSmart (payload) {
     return dispatch => {
         if (payload.status === 'ready') {
+            console.log('Set client in fhir_SetSmart');
             window.fhirClient = FHIR.client({
                 serviceUrl: payload.data.server.serviceUrl, // Overwrite response.iss with internal Fhir Api data store
                 credentials: 'include',

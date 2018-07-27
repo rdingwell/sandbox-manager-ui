@@ -35,7 +35,7 @@ class Apps extends Component {
     componentDidMount () {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
-        this.props.selecting && this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
         this.props.fetchPersonas(PersonaList.TYPES.patient);
     }
 
