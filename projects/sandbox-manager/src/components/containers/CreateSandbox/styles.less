@@ -17,8 +17,12 @@
       height: 68px !important;
     }
     .paper-body {
-      height: ~'calc(100% - 77px)';
+      height: ~'calc(100% - 68px)';
       overflow: auto;
+      box-sizing: border-box;
+      form {
+        padding-bottom: 10px;
+      }
       .checkboxes {
         & > * {
           margin: 0;
