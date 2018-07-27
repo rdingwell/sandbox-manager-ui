@@ -38,6 +38,8 @@ class App extends React.Component {
     }
 
     render () {
+        let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
+        let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
             <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
                     signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox}>
@@ -47,10 +49,8 @@ class App extends React.Component {
                         {this.props.children}
                     </div>
                 </div>}
-                {this.props.selecting && <Dialog className='loader-wrapper' modal open={this.props.selecting}>
-                    <p>
-                        Loading sandbox data
-                    </p>
+                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader}>
+                    <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
             </Layout>
@@ -74,7 +74,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting }
+    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting, resetting: state.sandbox.resetting, deleting: state.sandbox.deleting }
 };
 const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
 

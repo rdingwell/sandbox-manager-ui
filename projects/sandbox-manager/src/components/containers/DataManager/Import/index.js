@@ -23,6 +23,8 @@ export default class Import extends Component {
     render () {
         let palette = this.props.muiTheme.palette;
         let data = this.state.activeTab === 'data';
+        let underlineFocusStyle = { borderColor: palette.primary2Color };
+        let floatingLabelFocusStyle = { color: palette.primary2Color };
 
         return <div className='import-wrapper'>
             <Tabs className='import-tabs' contentContainerClassName='import-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}>
@@ -30,7 +32,7 @@ export default class Import extends Component {
                      onActive={() => this.setActiveTab('data')}>
                     <div>
                         <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({ input })}
-                                   floatingLabelText='JSON' hintText='Paste you json here'/>
+                                   floatingLabelText='JSON' hintText='Paste you json here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                     </div>
                     <div className='import-button'>
                         <RaisedButton label='Import' disabled={this.state.input.length === 0} primary onClick={this.import}/>

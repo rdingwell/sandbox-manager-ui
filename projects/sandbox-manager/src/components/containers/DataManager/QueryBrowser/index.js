@@ -40,6 +40,8 @@ export default class QueryBrowser extends Component {
     render () {
         let palette = this.props.muiTheme.palette;
         let json = this.state.activeTab === 'json';
+        let underlineFocusStyle = { borderColor: palette.primary2Color };
+        let floatingLabelFocusStyle = { color: palette.primary2Color };
 
         return <div className='query-browser-wrapper'>
             <Dialog paperClassName='query-result-dialog' open={this.state.showDialog} onRequestClose={this.toggle}>
@@ -52,7 +54,7 @@ export default class QueryBrowser extends Component {
                     </IconButton>
                     <div className='paper-body'>
                         <div className='result-wrapper'>
-                            {this.state.selectedEntry && <ReactJson src={this.state.selectedEntry}/>}
+                            {this.state.selectedEntry && <ReactJson src={this.state.selectedEntry} name={false}/>}
                         </div>
                     </div>
                 </Paper>
@@ -60,7 +62,8 @@ export default class QueryBrowser extends Component {
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
                     <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => this.setState({ query })}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.search(this.state.query)}/>
+                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.search(this.state.query)}
+                                  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
                 {this.state.query.length > 0 &&
                 <FloatingActionButton onClick={this.clearQuery} className='clear-query-button' mini secondary>
