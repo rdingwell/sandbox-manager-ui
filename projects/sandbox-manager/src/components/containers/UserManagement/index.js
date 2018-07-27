@@ -84,7 +84,8 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {this.state.userToRemove && <Dialog modal={false} open={this.state.open} onRequestClose={this.handleClose} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                                                    actions={[<RaisedButton label="Remove" secondary keyboardFocused onClick={this.deleteSandboxUserHandler}/>]}>
+                                                    actions={<RaisedButton label="Remove" labelColor={this.props.muiTheme.palette.primary5Color} backgroundColor={this.props.muiTheme.palette.primary4Color}
+                                                                           keyboardFocused onClick={this.deleteSandboxUserHandler}/>}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>Remove User from Sandbox</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -92,7 +93,7 @@ class Users extends Component {
                         </IconButton>
                     </div>
                     <div className='screen-content-delete-modal'>
-                        Are you sure you want to remove {this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove).user.email}?
+                        Are you sure you want to remove {(this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove) || { user: { email: '"not found"' } }).user.email}?
                     </div>
                 </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
