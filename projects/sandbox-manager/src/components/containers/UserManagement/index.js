@@ -159,13 +159,13 @@ class Users extends Component {
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
                 <TableRowColumn>{user.email || ''}</TableRowColumn>
                 <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
-                <TableRowColumn>{!currentIsAdmin && isAdmin ? 'Admin' : ''}</TableRowColumn>
+                <TableRowColumn>Last signed in: {}</TableRowColumn>
                 <TableRowColumn>
-                    <IconButton onClick={this.toggleMenu}>
-                        <span className='anchor' ref={'anchor'}/>
+                    <IconButton onClick={() => this.toggleMenu(key)}>
+                        <span className='anchor' ref={'anchor_' + key}/>
                         <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
-                        {this.state.showMenu &&
-                        <Popover open={this.state.showMenu} anchorEl={this.refs.anchor} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                        {this.state.showMenu && key === this.state.menuItem &&
+                        <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
                                 <MenuItem disabled={!canDelete} className='scenario-menu-item' primaryText={isAdmin ? 'Revoke admin' : 'Make admin'}
@@ -215,8 +215,8 @@ class Users extends Component {
         this.handleClose();
     };
 
-    toggleMenu = () => {
-        this.setState({ showMenu: !this.state.showMenu });
+    toggleMenu = (menuItem) => {
+        this.setState({ showMenu: !this.state.showMenu, menuItem });
     };
 
     toggleAdmin = (userId, toggle) => {
