@@ -54,37 +54,30 @@ class SandboxDetails extends Component {
                 </div>
             </CardHeader>
             <CardText>
-                {!this.props.resetting && !this.props.deleting
-                    ? <div>
-                        <div className='label-value'>
-                            <span>Sandbox Name: </span>
-                            <span>{this.props.sandboxName}</span>
-                        </div>
-                        <div className='label-value'>
-                            <span>Sandbox Description: </span>
-                            <span>{this.props.sandboxDescription || 'no description available'}</span>
-                        </div>
-                        <Checkbox disabled label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}/>
-                        {this.props.sandboxAllowOpenAccess && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL'/>}
-                        <div className='label-value'>
-                            <span>Sandbox ID: </span>
-                            <span>{this.props.sandboxId}</span>
-                        </div>
-                        <div className='label-value'>
-                            <span>Sandbox URL: </span>
-                            <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
-                        </div>
-                        <div className='label-value'>
-                            <span>Sandbox FHIR Version: </span>
-                            <span>{this.props.sandboxVersion.name}</span>
-                        </div>
+                <div>
+                    <div className='label-value'>
+                        <span>Sandbox Name: </span>
+                        <span>{this.props.sandboxName}</span>
                     </div>
-                    : <div className='loader-wrapper'>
-                        <p>
-                            {this.props.deleting ? 'Deleting' : 'Resetting'} sandbox
-                        </p>
-                        <CircularProgress size={80} thickness={5}/>
-                    </div>}
+                    <div className='label-value'>
+                        <span>Sandbox Description: </span>
+                        <span>{this.props.sandboxDescription || 'no description available'}</span>
+                    </div>
+                    <Checkbox disabled label='Allow Open FHIR Endpoint' checked={this.state.allowOpen}/>
+                    {this.props.sandboxAllowOpenAccess && <TextField disabled fullWidth defaultValue={this.props.serviceUrl.replace('/data', '/open')} floatingLabelText='Open FHIR Server URL'/>}
+                    <div className='label-value'>
+                        <span>Sandbox ID: </span>
+                        <span>{this.props.sandboxId}</span>
+                    </div>
+                    <div className='label-value'>
+                        <span>Sandbox URL: </span>
+                        <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
+                    </div>
+                    <div className='label-value'>
+                        <span>Sandbox FHIR Version: </span>
+                        <span>{this.props.sandboxVersion.name}</span>
+                    </div>
+                </div>
             </CardText>
         </Card>;
     }
@@ -103,8 +96,8 @@ class SandboxDetails extends Component {
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div className='modal-bottom-actions-wrapper'>
-                    <RaisedButton disabled={!this.state.toggleReset}  label=' Reset ' onClick={this.resetSandbox}
-                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary2Color} />
+                    <RaisedButton disabled={!this.state.toggleReset} label=' Reset ' onClick={this.resetSandbox}
+                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary2Color}/>
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
