@@ -156,7 +156,7 @@ class Users extends Component {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
-            let canRemoveUser = canDelete && (isAdmin || user.sbmUserId === this.props.user.sbmUserId);
+            let canRemoveUser = canDelete && (currentIsAdmin || user.sbmUserId === this.props.user.sbmUserId);
 
             return <TableRow key={key} selectable={false}>
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
@@ -171,7 +171,7 @@ class Users extends Component {
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
-                                <MenuItem disabled={!canDelete || !isAdmin} className='scenario-menu-item' primaryText={isAdmin ? 'Revoke admin' : 'Make admin'}
+                                <MenuItem disabled={!canDelete || !currentIsAdmin} className='scenario-menu-item' primaryText={isAdmin ? 'Revoke admin' : 'Make admin'}
                                           onClick={() => this.toggleAdmin(key, isAdmin)}/>
                                 <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user'
                                           onClick={() => this.handleOpen(user.sbmUserId)}/>

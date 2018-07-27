@@ -212,6 +212,7 @@ class PersonaList extends Component {
                         </Menu>
                     </Popover>}
                 </TableRowColumn>}
+                {this.props.modal || isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} />}
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
