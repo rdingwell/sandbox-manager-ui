@@ -20,12 +20,11 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
-        console.log('Path name: ' + window.location.pathname);
-        console.log('Path name split: ' + window.location.pathname.split('/').length);
-
         let check = !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
+
+        console.log('App constructor called!');
 
         this.state = {};
     }
@@ -42,8 +41,8 @@ class App extends React.Component {
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
             <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
                     signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox}>
-                {!this.props.selecting && <div className='app-root' ref={this.refStage()}>
-                    <Init {...this.props} />
+                <Init {...this.props} />
+                {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
                         {this.props.children}
                     </div>

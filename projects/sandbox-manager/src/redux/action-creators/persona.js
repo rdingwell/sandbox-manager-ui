@@ -124,6 +124,8 @@ export function fetchPersonas (type = "Patient", searchCrit = null) {
                         })
                     })
             } else {
+                console.log('Get patients for the sandbox!');
+                console.log(state.fhir.smart);
                 let url = `${window.fhirClient.server.serviceUrl}/${type}?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
                 fetch(url, {
                     headers: {
