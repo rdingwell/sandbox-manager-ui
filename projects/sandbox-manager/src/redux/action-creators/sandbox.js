@@ -456,6 +456,7 @@ export const selectSandbox = (sandbox) => {
                     dispatch(authorizeSandbox(sandbox));
                     dispatch(setDefaultUrl(sandboxId));
                     dispatch(selectSandboxById(sandboxId));
+                    dispatch(setCreatingSandbox(false));
                 });
         }
     };
@@ -679,9 +680,6 @@ export const createSandbox = (sandboxDetails) => {
             })
             .catch(err => {
                 dispatch(createSandboxFail(err));
-            })
-            .then(() => {
-                dispatch(setCreatingSandbox(false));
             });
     };
 };
@@ -922,7 +920,7 @@ export function loadInvites () {
         let state = getState();
 
         dispatch(setInvitesLoading(true));
-        if (state.config.xsettings.data.sandboxManager) {
+        if (state.config.xsettings.data.sandboxManager && window.fhirClient) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=PENDING`;
             const config = {
                 headers: {

@@ -114,6 +114,7 @@ export function authorize (url, state, sandboxId) {
         from: url.pathname ? url.pathname : '/'
     }, function (err) {
         console.log(err);
+        goHome();
     });
 }
 
@@ -134,12 +135,11 @@ export function afterFhirAuth (url) {
                 // token is invalid... we need to slow down the call a bit to prevent random
                 // 400 errors
                 setTimeout(() => {
-                    window.FHIR.oauth2.ready(params, function (newSmart) {
+                    window.FHIR.oauth2.ready(function (newSmart) {
                         dispatch(fhirauth_setSmart(newSmart));
                     });
                 }, 1000);
             } catch (e) {
-                console.log(e);
                 goHome();
             }
         }
@@ -234,7 +234,7 @@ export function setServerUrl () {
 }
 
 
-export function goHome() {
+export function goHome () {
     sessionStorage && sessionStorage.clear && sessionStorage.clear();
     localStorage && localStorage.clear && localStorage.clear();
 
