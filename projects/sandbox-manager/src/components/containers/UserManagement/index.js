@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Dialog, RaisedButton, IconButton, CircularProgress, TableRowColumn, TableRow, TableBody, Table, TableHeader, TableHeaderColumn, Popover, Menu, MenuItem, FloatingActionButton, TextField
+    Dialog, RaisedButton, IconButton, CircularProgress, TableRowColumn, TableRow, TableBody, Table, TableHeader, TableHeaderColumn, Popover, Menu, MenuItem, FloatingActionButton, TextField, Snackbar
 } from 'material-ui';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
@@ -10,6 +10,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { inviteNewUser, removeInvitation, fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import momtn from 'moment';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import './styles.less';
 import { withRouter } from "react-router";
@@ -24,6 +25,7 @@ class Users extends Component {
         this.state = {
             userToRemove: '',
             email: '',
+            action: '',
             open: false
         };
     }
@@ -33,12 +35,14 @@ class Users extends Component {
     }
 
     render () {
+        let palette = this.props.muiTheme.palette;
         let titleStyle = {
-            backgroundColor: this.props.muiTheme.palette.primary2Color,
-            color: this.props.muiTheme.palette.alternateTextColor
+            backgroundColor: palette.primary2Color,
+            color: palette.alternateTextColor
         };
-        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
-        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
+        let underlineFocusStyle = { borderColor: palette.primary2Color };
+        let floatingLabelFocusStyle = { color: palette.primary2Color };
+        let sending = this.state.action === 'sending';
 
         return <div className='users-wrapper'>
             <div>
@@ -117,6 +121,8 @@ class Users extends Component {
                     <CircularProgress size={80} thickness={5}/>
                 </div>}
             </div>
+            <Snackbar open={this.props.inviting} message={sending ? 'Sending invitation to user...' : 'Deleting user invitation...'} autoHideDuration={30000}
+                      bodyStyle={{margin: '0 auto', backgroundColor: sending ? palette.primary2Color : palette.primary4Color}}/>
         </div>;
     }
 
@@ -157,12 +163,16 @@ class Users extends Component {
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
             let canRemoveUser = canDelete && (currentIsAdmin || user.sbmUserId === this.props.user.sbmUserId);
+            let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === this.props.user.sbmUserId) || {}).accessTimestamp;
+            lastLogin = lastLogin
+                ? new moment(lastLogin).format('YYYY-MM-DD HH:MM')
+                : 'unknown';
 
             return <TableRow key={key} selectable={false}>
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
                 <TableRowColumn>{user.email || ''}</TableRowColumn>
                 <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
-                <TableRowColumn>Last signed in: {}</TableRowColumn>
+                <TableRowColumn>Last signed in: {lastLogin}</TableRowColumn>
                 <TableRowColumn>
                     <IconButton onClick={() => this.toggleMenu(key)}>
                         <span className='anchor' ref={'anchor_' + key}/>
@@ -211,11 +221,13 @@ class Users extends Component {
     resendEmail = (email) => {
         EMAIL_REGEX.test(String(email).toLowerCase()) && this.props.inviteNewUser(email);
         this.handleClose();
+        this.setState({action: 'sending'});
     };
 
     revokeInvitation = (id) => {
         this.props.removeInvitation(id);
         this.handleClose();
+        this.setState({action: 'rejecting'});
     };
 
     toggleMenu = (menuItem) => {
@@ -239,7 +251,7 @@ class Users extends Component {
     handleSendInvite = () => {
         if (EMAIL_REGEX.test(String(this.state.email).toLowerCase())) {
             this.props.inviteNewUser(this.state.email);
-            this.setState({ email: '' });
+            this.setState({ email: '', action: 'sending' });
             this.handleClose();
         } else {
             this.setState({ emailError: 'Please enter a valid email address!' });
@@ -259,7 +271,8 @@ const mapStateToProps = state => {
         inviting: state.sandbox.inviting,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
         user: state.users.user,
-        updatingUser: state.sandbox.updatingUser
+        updatingUser: state.sandbox.updatingUser,
+        loginInfo: state.sandbox.loginInfo
     }
 };
 

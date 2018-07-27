@@ -1008,13 +1008,17 @@ export function deleteCustomContext (sc, context) {
     }
 }
 
-export function getLoginInfo () {
+export function getLoginInfo (sandbox) {
     return (dispatch, getState) => {
         let state = getState();
         dispatch(setFetchingLoginInfo(true));
 
+        let crit = sandbox
+            ? `sandboxId=${sessionStorage.sandboxId}`
+            : `sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
         if (state.config.xsettings.data.sandboxManager) {
-            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?${crit}`;
             const config = {
                 headers: {
                     Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
