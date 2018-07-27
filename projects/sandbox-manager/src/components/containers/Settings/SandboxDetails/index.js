@@ -114,14 +114,14 @@ class SandboxDetails extends Component {
         let content = this.state.modalToShow === MODALS.edit
             ? <div className='sandbox-edit-modal' key={this.state.modalToShow}>
                 <div className='screen-title' style={titleStyle}>
-                    <IconButton className="close-button" onClick={this.props.onClose}>
+                    <IconButton className="close-button" onClick={() => this.toggleModal()}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>
                 <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
-                <Checkbox label='Allow Open FHIR Endpoint' checked={this.state.allowOpen} onCheck={this.handleOpenFhirCheckboxChange}/>
+                <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div>
