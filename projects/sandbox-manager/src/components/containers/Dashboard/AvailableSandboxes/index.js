@@ -113,8 +113,8 @@ class Index extends Component {
             });
         } else {
             return this.props.sandboxes.sort((a, b) => {
-                let timeA = this.props.loginInfo.find(i => i.sandboxId === a.sandboxId) || {accessTimestamp: 0};
-                let timeB = this.props.loginInfo.find(i => i.sandboxId === b.sandboxId) || {accessTimestamp: 0};
+                let timeA = (this.props.loginInfo || []).find(i => i.sandboxId === a.sandboxId) || {accessTimestamp: 0};
+                let timeB = (this.props.loginInfo || []).find(i => i.sandboxId === b.sandboxId) || {accessTimestamp: 0};
                 let val = timeA.accessTimestamp >= timeB.accessTimestamp ? -1 : 1;
                 if (!this.state.desc) {
                     val *= -1;
