@@ -10,6 +10,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import { inviteNewUser, removeInvitation, fetchSandboxInvites, removeUser, toggleUserAdminRights } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import momtn from 'moment';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import './styles.less';
 import { withRouter } from "react-router";
@@ -157,12 +158,16 @@ class Users extends Component {
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
             let canRemoveUser = canDelete && (currentIsAdmin || user.sbmUserId === this.props.user.sbmUserId);
+            let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === this.props.user.sbmUserId) || {}).accessTimestamp;
+            lastLogin = lastLogin
+                ? new moment(lastLogin).format('YYYY-MM-DD HH:MM')
+                : 'unknown';
 
             return <TableRow key={key} selectable={false}>
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
                 <TableRowColumn>{user.email || ''}</TableRowColumn>
                 <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
-                <TableRowColumn>Last signed in: {}</TableRowColumn>
+                <TableRowColumn>Last signed in: {lastLogin}</TableRowColumn>
                 <TableRowColumn>
                     <IconButton onClick={() => this.toggleMenu(key)}>
                         <span className='anchor' ref={'anchor_' + key}/>
@@ -259,7 +264,8 @@ const mapStateToProps = state => {
         inviting: state.sandbox.inviting,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
         user: state.users.user,
-        updatingUser: state.sandbox.updatingUser
+        updatingUser: state.sandbox.updatingUser,
+        loginInfo: state.sandbox.loginInfo
     }
 };
 

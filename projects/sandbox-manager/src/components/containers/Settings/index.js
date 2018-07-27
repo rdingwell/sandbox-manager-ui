@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SandboxDetails from './SandboxDetails';
-import { app_setScreen } from '../../../redux/action-creators';
+import { app_setScreen, getLoginInfo } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { bindActionCreators } from "redux";
@@ -22,6 +22,14 @@ class Settings extends Component {
 
     componentWillMount () {
         this.props.app_setScreen('settings');
+        let counter = 0;
+        let startLoading = () => {
+            window.fhirClient && this.props.getLoginInfo(true);
+            !window.fhirClient && counter < 7 && setTimeout(startLoading, 200);
+            counter++;
+        };
+
+        startLoading();
     }
 
     render () {
@@ -51,6 +59,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, getLoginInfo }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Settings)));
