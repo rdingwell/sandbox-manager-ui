@@ -32,6 +32,7 @@ export default function (state = initialState, action) {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             state.customSearchResults = null;
+            state.executing = false;
             break;
     }
 

@@ -37,6 +37,10 @@ export default class QueryBrowser extends Component {
         this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
     }
 
+    componentWillReceiveProps (nextProps) {
+        nextProps.results && nextProps.results.issue && this.setState({activeTab: 'json'});
+    }
+
     render () {
         let palette = this.props.muiTheme.palette;
         let json = this.state.activeTab === 'json';
@@ -73,9 +77,10 @@ export default class QueryBrowser extends Component {
                     <SearchIcon/>
                 </FloatingActionButton>
             </div>
-            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}>
+            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
+                  value={this.state.activeTab}>
                 <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('summary')} disabled={this.props.executing}>
+                     onActive={() => this.setActiveTab('summary')} value='summary'>
                     {this.props.results && this.props.results.entry && <span className='query-size'>
                         <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
                         <span> of <span className='number'>{this.props.results.total}</span></span>
@@ -99,7 +104,7 @@ export default class QueryBrowser extends Component {
                     </div>
                 </Tab>
                 <Tab label={<span><CodeIcon style={{ color: json ? palette.primary5Color : palette.primary3Color }}/> JSON</span>} className={'json tab' + (json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('json')} disabled={this.props.executing}>
+                     onActive={() => this.setActiveTab('json')} value='json'>
                     {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>

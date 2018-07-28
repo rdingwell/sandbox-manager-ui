@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, RaisedButton, Tabs, Tab } from 'material-ui';
+import { TextField, RaisedButton, Tabs, Tab, CircularProgress, List } from 'material-ui';
 import ReactJson from 'react-json-view';
 import CodeIcon from 'material-ui/svg-icons/action/code';
 import ListIcon from 'material-ui/svg-icons/action/list';
@@ -30,17 +30,20 @@ export default class Import extends Component {
             <Tabs className='import-tabs' contentContainerClassName='import-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}>
                 <Tab label={<span><ListIcon style={{ color: data ? palette.primary5Color : palette.primary3Color }}/> Data</span>} className={'data tab' + (data ? ' active' : '')}
                      onActive={() => this.setActiveTab('data')}>
-                    <div>
-                        <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({ input })}
-                                   floatingLabelText='JSON' hintText='Paste you json here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-                    </div>
+                    {this.props.dataImporting ?
+                        <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>
+                        : <div>
+                            <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({ input })}
+                                       floatingLabelText='JSON' hintText='Paste you json here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                        </div>}
                     <div className='import-button'>
-                        <RaisedButton label='Import' disabled={this.state.input.length === 0} primary onClick={this.import}/>
+                        <RaisedButton label='Import' disabled={this.state.input.length === 0 || this.props.dataImporting} primary onClick={this.import}/>
                     </div>
                 </Tab>
                 <Tab label={<span><CodeIcon style={{ color: !data ? palette.primary5Color : palette.primary3Color }}/> Results</span>} className={'result tab' + (!data ? ' active' : '')}
                      onActive={() => this.setActiveTab('result')} ref='results'>
                     {this.props.results && <ReactJson src={this.props.results}/>}
+                    {this.props.dataImporting && <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>
             </Tabs>
         </div>;
