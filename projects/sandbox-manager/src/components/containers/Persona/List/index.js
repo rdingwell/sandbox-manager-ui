@@ -217,7 +217,10 @@ class PersonaList extends Component {
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
                     <div className='chart'>
-                        {isSelected && CHART}
+                        {isSelected && !this.props.fetchingDetails && CHART}
+                        {isSelected && this.props.fetchingDetails && <div className='loader-wrapper' style={{height: '300px', paddingTop: '75px'}}>
+                            <CircularProgress size={80} thickness={5} style={{verticalAlign: 'middle'}}/>
+                        </div>}
                     </div>
                 </TableRowColumn>
             </TableRow>)
@@ -353,7 +356,6 @@ class PersonaList extends Component {
         }
     };
 }
-
 
 const mapStateToProps = state => {
     return {
