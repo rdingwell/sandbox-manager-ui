@@ -23,12 +23,16 @@ export default function (state = initialState, action) {
         case types.APP_RESET_STATE:
             state = initialState;
             break;
+        case types.FHIR_SET_CUSTOM_SEARCH_EXECUTING:
+            state.executing = action.payload.executing;
+            break;
         case types.FHIR_SET_CUSTOM_SEARCH_RESULTS:
             state.customSearchResults = action.payload.results;
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             state.customSearchResults = null;
+            state.executing = false;
             break;
     }
 

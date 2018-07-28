@@ -21,6 +21,9 @@ export default (state = initialState, action) => {
             let apps = action.payload.apps || [];
             state.apps = apps;
             break;
+        case types.SET_CREATED_APP:
+            state.createdApp = action.payload.app;
+            break;
         case types.SET_SANDBOX_SELECTING:
             action.payload.selecting && (state.apps = []);
             break;

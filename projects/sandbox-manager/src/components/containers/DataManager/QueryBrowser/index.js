@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FloatingActionButton, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab } from 'material-ui';
+import { FloatingActionButton, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab, CircularProgress } from 'material-ui';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import CodeIcon from 'material-ui/svg-icons/action/code';
 import ListIcon from 'material-ui/svg-icons/action/list';
@@ -35,6 +35,10 @@ export default class QueryBrowser extends Component {
 
     componentWillUnmount () {
         this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
+    }
+
+    componentWillReceiveProps (nextProps) {
+        nextProps.results && nextProps.results.issue && this.setState({activeTab: 'json'});
     }
 
     render () {
@@ -73,32 +77,36 @@ export default class QueryBrowser extends Component {
                     <SearchIcon/>
                 </FloatingActionButton>
             </div>
-            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}>
+            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
+                  value={this.state.activeTab}>
                 <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('summary')}>
+                     onActive={() => this.setActiveTab('summary')} value='summary'>
                     {this.props.results && this.props.results.entry && <span className='query-size'>
                         <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
                         <span> of <span className='number'>{this.props.results.total}</span></span>
                     </span>}
                     <div className='query-result-wrapper'>
-                        <List>
-                            {this.props.results && this.props.results.entry && this.props.results.entry.map((e, i) => {
-                                let entry = parseEntry(e);
-                                return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
-                                    {entry.props.map((item, index) => {
-                                        return <div className='result-item' key={index}>
-                                            <span>{item.label}: </span>
-                                            <span>{item.value}</span>
-                                        </div>
-                                    })}
-                                </ListItem>
-                            })}
-                        </List>
+                        {this.props.executing ?
+                            <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>
+                            : <List>
+                                {this.props.results && this.props.results.entry && this.props.results.entry.map((e, i) => {
+                                    let entry = parseEntry(e);
+                                    return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
+                                        {entry.props.map((item, index) => {
+                                            return <div className='result-item' key={index}>
+                                                <span>{item.label}: </span>
+                                                <span>{item.value}</span>
+                                            </div>
+                                        })}
+                                    </ListItem>
+                                })}
+                            </List>}
                     </div>
                 </Tab>
                 <Tab label={<span><CodeIcon style={{ color: json ? palette.primary5Color : palette.primary3Color }}/> JSON</span>} className={'json tab' + (json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('json')}>
+                     onActive={() => this.setActiveTab('json')} value='json'>
                     {this.props.results && <ReactJson src={this.props.results} name={false}/>}
+                    {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>
             </Tabs>
         </div>;

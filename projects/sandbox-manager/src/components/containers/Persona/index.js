@@ -44,7 +44,6 @@ class Persona extends Component {
             pagination: this.props.currentPagination,
             click: this.selectPersonHandler,
             search: this.props.fetchPersonas,
-            loading: this.props.loading,
             theme: this.props.muiTheme.palette,
             create: type !== PersonaList.TYPES.persona ? this.props.createResource : this.props.createPersona,
             modal: this.props.modal,
@@ -104,7 +103,6 @@ function mapStateToProps (state, ownProps) {
         patientsPagination: state.persona.patientsPagination,
         patients: state.persona.patients,
         practitioners: state.persona.practitioners,
-        loading: state.persona.loading,
         creatingPersona: state.persona.createing
     };
 }

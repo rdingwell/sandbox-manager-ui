@@ -27,10 +27,12 @@ class DataManager extends Component {
         return <div className='data-manager-wrapper'>
             <Tabs className='data-tabs' contentContainerClassName='data-tabs-container' inkBarStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}>
                 <Tab label="Browser" className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')} onActive={() => this.setActiveTab('browser')}>
-                    <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme} />
+                    <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme}
+                    executing={this.props.executing}/>
                 </Tab>
                 <Tab label="Import" className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')} onActive={() => this.setActiveTab('import')}>
-                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} />
+                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme}
+                            dataImporting={this.props.dataImporting}/>
                 </Tab>
                 <Tab label="Export" disabled>
                     <div>
@@ -54,7 +56,9 @@ const mapStateToProps = state => {
 
     return {
         results: state.fhir.customSearchResults,
-        importResults: state.sandbox.importResults
+        importResults: state.sandbox.importResults,
+        dataImporting: state.sandbox.dataImporting,
+        executing: state.fhir.executing
     };
 };
 

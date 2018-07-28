@@ -172,7 +172,7 @@ class Create extends Component {
                 personaList = this.props.patients;
                 props = {
                     typeFilter, type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
-                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close: () => this.togglePatientSearch()
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.closePatientSearch
                 };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><ContextIcon style={iconStyle}/> What additional launch context will be provided to the app?</span>
@@ -288,7 +288,7 @@ class Create extends Component {
                             </div>
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
-                            {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent/>}
+                            {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent autoScrollBodyContent={true}/>}
                         </div>
                     </div>
                 </div>;
@@ -448,6 +448,13 @@ class Create extends Component {
             this.props.fetchPersonas(PersonaList.TYPES.patient);
             this.setState({ selectedPatient: null, showPatientSelector: true, showPatientSelectorWrapper: true });
         }
+    };
+
+    closePatientSearch = () => {
+        this.setState({ showPatientSelectorWrapper: false });
+        setTimeout(() => {
+            this.setState({ showPatientSelector: false });
+        }, 400);
     };
 
     createScenario = () => {

@@ -24,6 +24,10 @@ export function setApp (app) {
     return { type: types.SET_APP, payload: { app } }
 }
 
+export function setCreatedApp (app) {
+    return { type: types.SET_CREATED_APP, payload: { app } }
+}
+
 export function createApp (app) {
     return (dispatch, getState) => {
         let state = getState();
@@ -78,14 +82,19 @@ export function createApp (app) {
                             formData.append("file", app.logoFile);
                             url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
                             fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                                .then(() => dispatch(appCreating(false)));
+                                .then(() => {
+                                    setTimeout(() => {
+                                        dispatch(loadSandboxApps());
+                                        dispatch(setCreatedApp(createdApp));
+                                    }, 550);
+                                });
                         }
                     });
             })
             .catch(e => {
                 console.log(e);
-            })
-            .then(() => dispatch(appCreating(false)));
+                setTimeout(() => dispatch(appCreating(false)), 550);
+            });
     }
 }
 
@@ -94,6 +103,7 @@ export function updateApp (newValues, originalApp) {
         let state = getState();
 
         dispatch(appCreating(true));
+        dispatch(setCreatedApp());
 
         let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/app/${originalApp.id}`;
         const config = {
@@ -125,7 +135,12 @@ export function updateApp (newValues, originalApp) {
                         formData.append("file", newValues.logoFile);
                         url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
                         fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                            .then(() => dispatch(appCreating(false)));
+                            .then(() => {
+                                setTimeout(() => {
+                                    dispatch(loadSandboxApps());
+                                    dispatch(appCreating(false));
+                                }, 550);
+                            });
                     }
                 });
             })
@@ -152,7 +167,9 @@ export function deleteApp (app) {
 
         fetch(url, Object.assign({ method: "DELETE" }, config))
             .catch(e => console.log(e))
-            .then(() => dispatch(appDeleting(false)))
+            .then(() => {
+                dispatch(loadSandboxApps());
+            })
     }
 }
 
@@ -205,11 +222,15 @@ export function loadSandboxApps () {
                         .then(apps => {
                             dispatch(setSandboxApps(apps));
                             dispatch(setSandboxAppsLoading(false));
+                            dispatch(appDeleting(false));
+                            dispatch(appCreating(false));
                         })
                 })
                 .catch(e => {
                     console.log(e);
                     dispatch(setSandboxAppsLoading(false));
+                    dispatch(appDeleting(false));
+                    dispatch(appCreating(false));
                 });
         }
     }
