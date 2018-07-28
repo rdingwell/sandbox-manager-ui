@@ -81,6 +81,8 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
+        console.log('Loading personas: ' + this.props.loading);
+
         return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
@@ -115,7 +117,7 @@ class PersonaList extends Component {
                             {personaList}
                         </div>
                         : this.props.loading
-                            ? <div className='loader-wrapper'>
+                            ? <div className='loader-wrapper' style={{height: '370px'}}>
                                 <CircularProgress size={80} thickness={5}/>
                             </div>
                             : this.state.searchCrit
@@ -178,10 +180,10 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>{persona.id}</TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>
-                    {persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display}
+                    {(persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display) || ''}
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>
-                    {persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display}
+                    {(persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display) || ''}
                 </TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
@@ -212,7 +214,7 @@ class PersonaList extends Component {
                         </Menu>
                     </Popover>}
                 </TableRowColumn>}
-                {this.props.modal || isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} />}
+                {(this.props.modal || isPractitioner) && <TableRowColumn className={isPatient ? 'actions-row' : ' '} />}
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
@@ -366,6 +368,7 @@ const mapStateToProps = state => {
         practitionersPagination: state.persona.practitionersPagination,
         personasPagination: state.persona.personasPagination,
         fetchingDetails: state.patient.fetching,
+        loading: state.persona.loading,
         observationCount: state.patient.details.Observation || 0,
         encounterCount: state.patient.details.Encounter || 0,
         medicationRequestCount: state.patient.details.MedicationRequest || 0,
