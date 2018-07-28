@@ -26,6 +26,13 @@ export function fhir_SetParsedPatientDemographics (data) {
     };
 }
 
+export function fhir_setCustomSearchExecuting (executing) {
+    return {
+        type: types.FHIR_SET_CUSTOM_SEARCH_EXECUTING,
+        payload: { executing },
+    };
+}
+
 export function fhir_SetSampleData () {
     return { type: types.FHIR_SET_SAMPLE_DATA };
 }
@@ -66,12 +73,17 @@ export function customSearch (query, endpoint) {
         };
 
         dispatch(fhir_setCustomSearchResults(null));
+        dispatch(fhir_setCustomSearchExecuting(true));
 
         endpoint = endpoint ? endpoint : window.fhirClient.server.serviceUrl;
         fetch(`${endpoint}/${query}`, config)
             .then(e => e.json().then(results => {
                 dispatch(fhir_setCustomSearchResults(results));
+                dispatch(fhir_setCustomSearchExecuting(false));
             }))
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log(error);
+                dispatch(fhir_setCustomSearchExecuting(false));
+            });
     }
 }
