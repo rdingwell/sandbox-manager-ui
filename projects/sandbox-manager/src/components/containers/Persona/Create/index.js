@@ -24,10 +24,10 @@ export default class CreatePersona extends Component {
 
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
-            ? this.state.name.length > 2 && this.state.fName.length > 2 && this.state.birthDate.length === 10 && this.state.gender.length > 2
+            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1
             : this.props.type === PersonaList.TYPES.practitioner
-                ? this.state.name.length > 2 && this.state.fName.length > 2
-                : this.state.username && this.state.username.length > 2 && this.state.password && this.state.password.length > 2;
+                ? this.state.name.length >= 1 && this.state.fName.length >= 1
+                : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1;
 
         return <div>
             <Dialog bodyClassName='create-persona-dialog' open={this.props.open} onRequestClose={this.props.close}
@@ -66,15 +66,15 @@ export default class CreatePersona extends Component {
             <h3>Create {this.props.type.toLowerCase()}</h3>
             <div className='paper-body'>
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                           floatingLabelText='First/middle name' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
+                           floatingLabelText='First/middle name*' fullWidth value={this.state.name} onChange={(_, name) => this.setState({ name })}/>
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                           floatingLabelText='Family name' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
+                           floatingLabelText='Family name*' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({ fName })}/>
 
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
-                               onChange={(_, birthDate) => this.setState({ birthDate })}/>
+                               onChange={(_, birthDate) => this.setState({ birthDate })} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
                     <h4>Gender</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
                         <RadioButton value="male" label="Male"/>
@@ -93,6 +93,12 @@ export default class CreatePersona extends Component {
                 </div>}
             </div>
         </Paper>
+    };
+
+    checkBirthDate = () => {
+        let isValid = moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid();
+        let birthDateError = isValid || this.state.birthDate.length === 0 ? undefined : 'Invalid birth date. Needs to be in format: YYYY-MM-DD';
+        this.setState({ birthDateError });
     };
 
     create = () => {
