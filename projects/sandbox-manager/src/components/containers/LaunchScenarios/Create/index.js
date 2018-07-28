@@ -288,7 +288,7 @@ class Create extends Component {
                             </div>
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
-                            {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent/>}
+                            {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent autoScrollBodyContent={true}/>}
                         </div>
                     </div>
                 </div>;

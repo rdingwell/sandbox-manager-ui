@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton, RadioButton } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton, RadioButton, Paper } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
@@ -28,6 +28,7 @@ class Apps extends Component {
             appToLaunch: undefined,
             registerDialogVisible: false,
             showConfirmModal: false,
+            createApp: undefined,
             appIsLoading: false
         };
     }
@@ -40,8 +41,9 @@ class Apps extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        ((this.props.appCreating && !nextProps.appCreating) || (this.props.appDeleting && !nextProps.appDeleting)) && this.props.loadSandboxApps();
-        this.state.selectedApp && !nextProps.appLoading && this.setState({ appIsLoading: false, selectedApp: nextProps.apps.find(i => i.id === this.state.selectedApp.id) });
+        // ((this.props.appCreating && !nextProps.appCreating) || (this.props.appDeleting && !nextProps.appDeleting)) && this.props.loadSandboxApps();
+        this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({ appIsLoading: false });
+        this.props.appCreating && !nextProps.appCreating && this.setState({ createdApp: nextProps.createdApp });
     }
 
     render () {
@@ -72,23 +74,37 @@ class Apps extends Component {
             type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.muiTheme.palette, lookupPersonasStart: this.props.lookupPersonasStart,
             search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.handleAppLaunch
         };
+        let app = this.state.selectedApp ? this.props.apps.find(i => i.id === this.state.selectedApp.id) : undefined;
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
-                         muiTheme={this.props.muiTheme} app={this.state.selectedApp} open={!!this.state.selectedApp || this.state.registerDialogVisible}
+                         muiTheme={this.props.muiTheme} app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
                 ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog' autoScrollBodyContent>
                     {this.props.defaultUser && <PersonaList {...props} titleLeft scrollContent/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>
-                : null;
+                : this.state.createdApp
+                    ? <Dialog modal={false} open={!!this.state.createdApp} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
+                        <Paper className='paper-card'>
+                            <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.closeAll}>
+                                <i className="material-icons">close</i>
+                            </IconButton>
+                            <h3>Registered App Details</h3>
+                            <div className='paper-body'>
+                                App Client Id <br/>
+                                ID: <span className='client-id'>{this.state.createdApp.authClient.clientId}</span>
+                            </div>
+                        </Paper>
+                    </Dialog>
+                    : null;
 
         return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}>
             <div className='apps-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
-                        <span className='dummy-expander' />
+                        <span className='dummy-expander'/>
                         <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
                             <ContentAdd/>
                         </FloatingActionButton>
@@ -125,7 +141,6 @@ class Apps extends Component {
     delete = () => {
         this.props.deleteApp(this.state.selectedApp);
         this.closeAll();
-        setTimeout(this.props.loadSandboxApps, 2000);
     };
 
     appSubmit = (app) => {
@@ -143,7 +158,7 @@ class Apps extends Component {
     };
 
     closeAll = () => {
-        this.setState({ selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false });
+        this.setState({ selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false, createdApp: undefined });
     };
 
     handleAppSelect = (event, app) => {
@@ -163,6 +178,7 @@ class Apps extends Component {
 const mapStateToProps = state => {
     return {
         apps: state.apps.apps,
+        createdApp: state.apps.createdApp,
         appLoading: state.apps.loading,
         selecting: state.sandbox.selecting,
         appCreating: state.apps.creating,
