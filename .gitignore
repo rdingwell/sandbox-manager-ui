@@ -44,6 +44,7 @@ __storage__
 build
 docs
 .idea/
+projects/sandbox-manager-lib/.idea/
 
 # Container definitions
 container-definitions.json
