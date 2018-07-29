@@ -18,7 +18,8 @@ export default class Filters extends Component {
         this.state = {
             filters: {},
             maxAge: 99,
-            minAge: 0
+            minAge: 0,
+            ageChanged: false
         }
     }
 
@@ -147,7 +148,7 @@ export default class Filters extends Component {
     };
 
     closeAgeFilter = () => {
-        (this.state.minAge > 0 || this.state.maxAge < 99)
+        this.state.ageChanged
             ? this.filter('age', this.state.minAge + ' - ' + this.state.maxAge)
             : this.showFilter();
     };
@@ -160,7 +161,7 @@ export default class Filters extends Component {
             value = value <= this.state.maxAge ? value : this.state.maxAge - 1;
             value = value < 0 ? 0 : value;
         }
-        let state = {};
+        let state = { ageChanged: true };
         state[slider] = value;
         this.setState(state)
     };
@@ -202,7 +203,7 @@ export default class Filters extends Component {
     };
 
     showFilter = (filterName) => {
-        let state = { visibleFilter: filterName };
+        let state = { visibleFilter: filterName, ageChanged: false };
         if (filterName === 'age' && !this.state.filters.age) {
             state.minAge = 0;
             state.maxAge = 99;
