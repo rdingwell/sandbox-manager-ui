@@ -16,8 +16,6 @@ export function config_LoadXsettings () {
             payload: { status: "loading", data: {} },
         });
 
-        console.log('Started loading settings!');
-
         return fetch(XSETTINGS_SOURCE)
             .then(res => res.json()
                 .then(data => {
@@ -28,7 +26,6 @@ export function config_LoadXsettings () {
                             data: data || {},
                         },
                     });
-                    console.log('Ended loading settings!');
                 }))
             .catch((reason) => {
                 process.env.NODE_ENV !== "test" && console.error(reason);

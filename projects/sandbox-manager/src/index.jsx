@@ -17,7 +17,6 @@ window.Highcharts = require('highcharts');
 
 configStore()
     .then(store => {
-        console.log('Rehydrated and ready to start!');
         let provider = <Provider store={store}>
             {Router}
         </Provider>;

@@ -24,8 +24,6 @@ export default class InitLoader extends React.Component {
                 }
             );
 
-            console.log('Currently selecting a sandbox: ' + this.props.sandbox.selecting);
-
             let smart = this.props.fhir.smart.data.server ? FHIR.client(this.props.fhir.smart.data.server) : null;
             smart && this.props.fhirauth_setSmart(smart, this.props.history);
         }

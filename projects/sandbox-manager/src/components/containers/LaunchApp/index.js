@@ -10,14 +10,11 @@ export default class LaunchApp extends Component {
         }
         onStorage();
         window.addEventListener('storage', onStorage, false);
-        console.log('mounted!');
 
         function onStorage () {
-            console.log('storage!');
             if (launched || window.localStorage[key] === 'requested-launch') {
                 return;
             }
-            console.log('launch started!');
             launched = true;
             let details = JSON.parse(window.localStorage[key]);
             window.localStorage.removeItem(key);

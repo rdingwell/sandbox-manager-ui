@@ -81,8 +81,6 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        console.log('Loading personas: ' + this.props.loading);
-
         return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
@@ -121,7 +119,7 @@ class PersonaList extends Component {
                                 <CircularProgress size={80} thickness={5}/>
                             </div>
                             : this.state.searchCrit
-                                ? <div className='centered'>No results found</div>
+                                ? <div style={{ textAlign: 'center', paddingTop: '50px' }}>No results found</div>
                                 : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`}/>}
                     {personaList && this.props.pagination && this.getPagination(true)}
                 </div>
@@ -309,7 +307,7 @@ class PersonaList extends Component {
 
     onFilter = (searchCrit) => {
         this.props.type === TYPES.patient && this.props.search(this.props.type, searchCrit);
-        this.props.type !== TYPES.patient && this.setState({ searchCrit });
+        this.setState({ searchCrit });
     };
 
     getPagination = (isBottom, isPractitioner) => {

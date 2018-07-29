@@ -24,8 +24,6 @@ class App extends React.Component {
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
 
-        console.log('App constructor called!');
-
         this.state = {};
     }
 
