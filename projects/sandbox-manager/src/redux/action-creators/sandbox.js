@@ -1044,7 +1044,7 @@ export function getLoginInfo (sandbox) {
     }
 }
 
-export function doLaunch (app, persona, user) {
+export function doLaunch (app, persona, user, noUser) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -1061,16 +1061,16 @@ export function doLaunch (app, persona, user) {
         params["need_patient_banner"] = false;
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let config = getConfig(state);
-        config.body = JSON.stringify({ username: user.personaUserId, password: user.password });
+        user && !noUser && (config.body = JSON.stringify({ username: user.personaUserId, password: user.password }));
         config.method = "POST";
         config.headers["Content-Type"] = "application/json";
         let launchDetails = {
-            userPersona: Object.assign({}, user),
             patientContext: persona
         };
+        user && !noUser && (launchDetails.userPersona = Object.assign({}, user));
 
         try {
-            fetch(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", config)
+            user && !noUser && fetch(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", config)
                 .then(function (response) {
                     response.json()
                         .then(data => {
@@ -1078,9 +1078,9 @@ export function doLaunch (app, persona, user) {
                             const date = new Date();
                             date.setTime(date.getTime() + (3 * 60 * 1000));
                             document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
-                            registerAppContext(app, params, launchDetails, key);
                         });
                 });
+            registerAppContext(app, params, launchDetails, key);
         } catch (e) {
             console.log(e);
             appWindow.close();

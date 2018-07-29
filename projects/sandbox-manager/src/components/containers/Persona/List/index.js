@@ -104,7 +104,7 @@ class PersonaList extends Component {
                             <ContentAdd/>
                         </FloatingActionButton>}
                         {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.patient)} style={{ marginRight: '16px' }}>
-                            <Patient style={{width: '26px', fill: this.props.theme.primary5Color }}/>
+                            <Patient style={{ width: '26px', fill: this.props.theme.primary5Color }}/>
                         </FloatingActionButton>}
                         {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.practitioner)}>
                             <i className='fa fa-user-md fa-lg'/>
@@ -117,7 +117,7 @@ class PersonaList extends Component {
                             {personaList}
                         </div>
                         : this.props.loading
-                            ? <div className='loader-wrapper' style={{height: '370px'}}>
+                            ? <div className='loader-wrapper' style={{ height: '370px' }}>
                                 <CircularProgress size={80} thickness={5}/>
                             </div>
                             : this.state.searchCrit
@@ -180,10 +180,10 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>{persona.id}</TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>
-                    {(persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display) || ''}
+                    {(persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display) || ''}
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>
-                    {(persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display) || ''}
+                    {(persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display) || ''}
                 </TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
@@ -214,14 +214,14 @@ class PersonaList extends Component {
                         </Menu>
                     </Popover>}
                 </TableRowColumn>}
-                {(this.props.modal || isPractitioner) && <TableRowColumn className={isPatient ? 'actions-row' : ' '} />}
+                {(this.props.modal || isPractitioner) && <TableRowColumn className={isPatient ? 'actions-row' : ' '}/>}
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
                     <div className='chart'>
                         {isSelected && !this.props.fetchingDetails && CHART}
-                        {isSelected && this.props.fetchingDetails && <div className='loader-wrapper' style={{height: '300px', paddingTop: '75px'}}>
-                            <CircularProgress size={80} thickness={5} style={{verticalAlign: 'middle'}}/>
+                        {isSelected && this.props.fetchingDetails && <div className='loader-wrapper' style={{ height: '300px', paddingTop: '75px' }}>
+                            <CircularProgress size={80} thickness={5} style={{ verticalAlign: 'middle' }}/>
                         </div>}
                     </div>
                 </TableRowColumn>
@@ -293,7 +293,7 @@ class PersonaList extends Component {
             "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
             "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
             "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
-        }, persona);
+        }, persona.id, undefined, true);
     };
 
     getName = (name) => {
@@ -345,7 +345,8 @@ class PersonaList extends Component {
         let list = this.getFilteredList();
         if (!this.props.modal && this.props.type === TYPES.patient) {
             let selection = getSelection();
-            let parentNodeClass = selection.baseNode && selection.baseNode.parentNode && selection.baseNode.parentNode.classList && selection.baseNode.parentNode.classList.value;
+            let node = selection.baseNode || selection.anchorNode;
+            let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
             let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
             if (actualClick) {
                 let selected = this.state.selected !== row ? row : undefined;
@@ -369,6 +370,7 @@ const mapStateToProps = state => {
         personasPagination: state.persona.personasPagination,
         fetchingDetails: state.patient.fetching,
         loading: state.persona.loading,
+        loggedInUser: state.users.user,
         observationCount: state.patient.details.Observation || 0,
         encounterCount: state.patient.details.Encounter || 0,
         medicationRequestCount: state.patient.details.MedicationRequest || 0,
