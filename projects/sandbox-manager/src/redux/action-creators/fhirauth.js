@@ -107,7 +107,6 @@ export function authorize (url, state, sandboxId) {
         }
     }
 
-    console.log('Start auth process');
     window.FHIR.oauth2.authorize({
         client: client,
         server: serviceUrl,
@@ -154,7 +153,6 @@ export function fhirauth_setSmart (smart, redirect = null) {
         dispatch(setFhirClient(smart));
         fhirClient = smart;
         window.fhirClient = smart;
-        console.log('Set client in fhirauth_setSmart');
         queryFhirVersion(dispatch, fhirClient, state);
         const config = {
             headers: {

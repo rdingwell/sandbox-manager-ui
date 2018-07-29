@@ -141,6 +141,7 @@ class Users extends Component {
     getRows = () => {
         let users = {};
         let currentIsAdmin = false;
+        let adminCount = 0;
         this.props.sandbox.userRoles.map(r => {
             users[r.user.id] = users[r.user.id] || {
                 name: r.user.name,
@@ -149,14 +150,12 @@ class Users extends Component {
                 roles: []
             };
             r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN' && (currentIsAdmin = true);
+            r.role === 'ADMIN' && (adminCount++);
             users[r.user.id].roles.push(r.role);
         });
 
         let keys = Object.keys(users);
-        let canDelete = false;
-        if (keys.length > 1) {
-            canDelete = true;
-        }
+        let canDelete = keys.length > 1 && adminCount > 1;
 
         return keys.map(key => {
             let user = users[key];
@@ -182,7 +181,7 @@ class Users extends Component {
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
                                 <MenuItem disabled={!canDelete || !currentIsAdmin} className='scenario-menu-item' primaryText={isAdmin ? 'Revoke admin' : 'Make admin'}
-                                          onClick={() => this.toggleAdmin(key, isAdmin)}/>
+                                          onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>
                                 <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user'
                                           onClick={() => this.handleOpen(user.sbmUserId)}/>
                             </Menu>
