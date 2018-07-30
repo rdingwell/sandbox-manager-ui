@@ -45,7 +45,7 @@ export function createApp (app) {
         let scope = app.scope.length > 2
             ? app.scope.split(' ')
             : app.patientScoped
-                ? ["launch", "patient/*.*", "profile", "openid", "offline_access"]
+                ? ["launch", "patient/*.*", "profile", "openid"]
                 : ["launch", "user/*.*", "profile", "openid"];
 
         let newApp = {
@@ -64,9 +64,8 @@ export function createApp (app) {
                 clientName: app.clientName,
                 launchUri: app.launchUri,
                 redirectUris: app.redirectUris.split(','),
-                grantTypes: ["authorization_code", "refresh_token"],
+                grantTypes: ["authorization_code"],
                 tokenEndpointAuthMethod: app.tokenEndpointAuthMethod,
-                requireAuthTime: false,
                 accessTokenValiditySeconds: 3600,
                 idTokenValiditySeconds: 3600,
                 refreshTokenValiditySeconds: 31557600
@@ -118,7 +117,7 @@ export function updateApp (newValues, originalApp) {
             launchUri: newValues.launchUri,
             briefDescription: newValues.briefDescription,
             samplePatients: newValues.samplePatients,
-            clientJSON: JSON.stringify(Object.assign({}, JSON.parse(originalApp.clientJSON), {
+            clientJSON: JSON.stringify(Object.assign({}, newValues.clientJSON, {
                 clientName: newValues.clientName,
                 launchUri: newValues.launchUri,
                 redirectUris: newValues.redirectUris.split(','),
@@ -141,6 +140,9 @@ export function updateApp (newValues, originalApp) {
                                     dispatch(appCreating(false));
                                 }, 550);
                             });
+                    } else {
+                        dispatch(loadSandboxApps());
+                        dispatch(appCreating(false));
                     }
                 });
             })

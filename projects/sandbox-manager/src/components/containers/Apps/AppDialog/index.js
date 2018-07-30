@@ -19,6 +19,7 @@ class AppDialog extends Component {
             logoUri: props.app && props.app.logoUri || '',
             briefDescription: props.app && props.app.briefDescription || '',
             tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
+            clientJSON: props.app ? props.app.clientJSON : {},
             patientScoped: true
         };
 
@@ -38,7 +39,7 @@ class AppDialog extends Component {
             let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
             let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
 
-            let app = Object.assign({}, this.state.app, { scope, redirectUris });
+            let app = Object.assign({}, this.state.app, { scope, redirectUris, clientJSON });
 
             this.setState({ app });
         }
