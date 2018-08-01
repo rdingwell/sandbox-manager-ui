@@ -171,7 +171,7 @@ class Users extends Component {
                 <TableRowColumn>{user.name || ''}</TableRowColumn>
                 <TableRowColumn>{user.email || ''}</TableRowColumn>
                 <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
-                <TableRowColumn>Last signed in: {lastLogin}</TableRowColumn>
+                <TableRowColumn>{lastLogin}</TableRowColumn>
                 <TableRowColumn>
                     <IconButton onClick={() => this.toggleMenu(key)}>
                         <span className='anchor' ref={'anchor_' + key}/>
