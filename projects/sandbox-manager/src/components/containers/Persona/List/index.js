@@ -174,7 +174,7 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
-                    {isPatient && moment(persona.birthDate).format('DD MMM YYYY')}
+                    {isPatient && persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A'}
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>{persona.id}</TableRowColumn>}
                 {isPractitioner && <TableRowColumn className='persona-info'>
@@ -212,7 +212,7 @@ class PersonaList extends Component {
                         </Menu>
                     </Popover>}
                 </TableRowColumn>}
-                {(this.props.modal || isPractitioner) && <TableRowColumn className={isPatient ? 'actions-row' : ' '}/>}
+                {isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}/>}
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
