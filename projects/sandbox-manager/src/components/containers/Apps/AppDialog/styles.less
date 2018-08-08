@@ -4,6 +4,7 @@
   position: relative;
   top: -35px;
 }
+
 .image-wrapper {
   width: 210px;
   height: 150px;
@@ -20,13 +21,19 @@
     height: 150px;
   }
 }
+
 .app-dialog {
+  .remove-image-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
   .paper-body {
-  height: ~'calc(100% - 68px)';
+    height: ~'calc(100% - 68px)';
   }
   .paper-card {
     h3 {
-      @media(max-width: 75em) {
+      @media (max-width: 75em) {
         height: 34px;
       }
       height: 68px;

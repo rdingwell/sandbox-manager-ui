@@ -71,7 +71,7 @@ class SandboxDetails extends Component {
                     </div>
                     <div className='label-value'>
                         <span>Sandbox URL: </span>
-                        <span>{`${window.location.origin}/${this.props.sandboxName}`}</span>
+                        <span>{`${window.location.origin}/${this.props.sandboxId}`}</span>
                     </div>
                     <div className='label-value'>
                         <span>Sandbox FHIR Version: </span>

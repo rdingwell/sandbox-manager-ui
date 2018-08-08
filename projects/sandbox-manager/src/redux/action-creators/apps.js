@@ -144,6 +144,8 @@ export function updateApp (newValues, originalApp) {
                                 }, 550);
                             });
                     } else {
+                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
+                        fetch(url, { method: 'DELETE', headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } });
                         dispatch(loadSandboxApps());
                         dispatch(appCreating(false));
                     }

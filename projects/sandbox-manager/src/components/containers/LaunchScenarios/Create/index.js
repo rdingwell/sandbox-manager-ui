@@ -255,7 +255,7 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <BulbIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
-                                           onBlur={() => this.blur('intentId')} onChange={(_, value) => this.onChange('intent', value)}
+                                           onChange={(_, value) => this.onChange('intent', value)}
                                            errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
                                 {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
                                     {this.props.fetchingSingleIntent

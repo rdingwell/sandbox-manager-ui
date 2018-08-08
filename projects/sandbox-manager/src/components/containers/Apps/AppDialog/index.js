@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton } from 'material-ui';
+import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
 import './styles.less';
+import CheckIcon from "material-ui/svg-icons/navigation/check";
+import DeleteIcon from "material-ui/svg-icons/action/delete";
+import ContentAdd from "material-ui/svg-icons/content/add";
 
 class AppDialog extends Component {
     constructor (props) {
@@ -133,8 +136,14 @@ class AppDialog extends Component {
                             </div>
                         </div>
                         <div className='image-wrapper'>
+                            {this.state.app.logoUri && <FloatingActionButton onClick={() => this.onChange('logoUri')} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
+                                <DeleteIcon/>
+                            </FloatingActionButton>}
                             <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
-                            <img src={this.state.app.logoUri}/>
+                            {this.state.app.logoUri
+                                ? <img src={this.state.app.logoUri}/>
+                                : <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                            }
                         </div>
                     </form>
                 </div>
@@ -193,8 +202,7 @@ class AppDialog extends Component {
 
     save = () => {
         this.props.onSubmit && this.props.onSubmit(this.state.app);
-    }
-
+    };
 }
 
 export default AppDialog;
