@@ -87,6 +87,9 @@ export function createApp (app) {
                                         dispatch(setCreatedApp(createdApp));
                                     }, 550);
                                 });
+                        } else {
+                            dispatch(loadSandboxApps());
+                            dispatch(appCreating(false));
                         }
                     });
             })
