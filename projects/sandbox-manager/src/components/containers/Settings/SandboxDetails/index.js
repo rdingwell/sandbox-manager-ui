@@ -97,7 +97,7 @@ class SandboxDetails extends Component {
             : this.state.modalToShow === MODALS.reset
                 ? <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton disabled={!this.state.toggleReset} label=' Reset ' onClick={this.resetSandbox}
-                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary2Color}/>
+                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color}/>
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
@@ -114,7 +114,8 @@ class SandboxDetails extends Component {
                 </div>
                 <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
                 <TextField value={this.state.description} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
-                <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}/>
+                <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}
+                          iconStyle={{ fill: this.props.theme.primary2Color }}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div>
