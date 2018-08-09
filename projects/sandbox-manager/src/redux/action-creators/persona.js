@@ -102,11 +102,10 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
     }
 }
 
-export function fetchPersonas (type = "Patient", searchCrit = null) {
+export function fetchPersonas (type = "Patient", searchCrit = null, count = 10) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
-            let count = 11;
 
             let state = getState();
             if (type === 'Persona') {
