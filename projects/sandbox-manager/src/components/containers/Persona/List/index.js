@@ -92,7 +92,7 @@ class PersonaList extends Component {
                 <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
                                personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
             </div>}
-            <div className='personas-wrapper'>
+            <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')}>
                 {!this.props.noFilter && <div className='filter-wrapper'>
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
@@ -115,13 +115,13 @@ class PersonaList extends Component {
                             {personaList}
                         </div>
                         : this.props.loading
-                            ? <div className='loader-wrapper' style={{ height: '370px' }}>
-                                <CircularProgress size={80} thickness={5}/>
+                            ? <div className='loader-wrapper' style={{ height: !this.props.modal ? '370px' : '190px', paddingTop: !this.props.modal ? '200px' : '100px' }}>
+                                <CircularProgress size={this.props.modal ? 80 : 40} thickness={5}/>
                             </div>
                             : this.state.searchCrit
                                 ? <div style={{ textAlign: 'center', paddingTop: '50px' }}>No results found</div>
                                 : <DohMessage message={`No ${defaultTitle.toLowerCase()} in sandbox.`}/>}
-                    {personaList && this.props.pagination && this.getPagination(true)}
+                    {personaList && this.props.pagination && !this.props.modal && this.getPagination(true)}
                 </div>
             </div>
         </Page>

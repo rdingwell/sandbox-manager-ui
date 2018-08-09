@@ -5,8 +5,10 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
-
-import { lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox } from '../../../redux/action-creators';
+import {
+    lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp,
+    getDefaultUserForSandbox, getPersonasPage
+} from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
@@ -37,7 +39,7 @@ class Apps extends Component {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
-        this.props.fetchPersonas(PersonaList.TYPES.patient);
+        this.props.fetchPersonas(PersonaList.TYPES.patient, null, 5);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -72,7 +74,8 @@ class Apps extends Component {
 
         let props = {
             type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.muiTheme.palette, lookupPersonasStart: this.props.lookupPersonasStart,
-            search: this.search, loading: this.props.personaLoading, close: this.handleAppLaunch
+            search: this.search, loading: this.props.personaLoading, close: this.handleAppLaunch, pagination: this.props.pagination,
+            next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
         let app = this.state.selectedApp ? this.props.apps.find(i => i.id === this.state.selectedApp.id) : undefined;
 
@@ -132,8 +135,8 @@ class Apps extends Component {
     search = (type, crit) => {
         this.state.appToLaunch && this.state.appToLaunch.samplePatients && console.log(this.state.appToLaunch.samplePatients);
         this.state.appToLaunch && this.state.appToLaunch.samplePatients
-            ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit)
-            : this.props.fetchPersonas(type, crit);
+            ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 5)
+            : this.props.fetchPersonas(type, crit, 5);
     };
 
     toggleConfirmation = () => {
@@ -178,8 +181,8 @@ class Apps extends Component {
     handleAppLaunch = (event, app) => {
         event && event.preventDefault();
         event && event.stopPropagation();
-        app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1]);
-        (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient);
+        app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 5);
+        (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 5);
         this.setState({ appToLaunch: app, registerDialogVisible: false });
     };
 }
@@ -194,12 +197,17 @@ const mapStateToProps = state => {
         appDeleting: state.apps.deleting,
         defaultUser: state.sandbox.defaultUser,
         personas: state.persona.patients,
-        personaLoading: state.persona.loading
+        personaLoading: state.persona.loading,
+        pagination: state.persona.patientsPagination
     };
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart }, dispatch);
+    return bindActionCreators({
+        fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart,
+        getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
+        getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
+    }, dispatch);
 };
 
 

@@ -47,7 +47,6 @@ class Users extends Component {
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <RaisedButton label='INVITE USER' primary onClick={this.showInviteModal}/>
                     <RaisedButton label='MANAGE INVITES' backgroundColor={this.props.muiTheme.palette.primary2Color} labelColor='#FFF' onClick={this.showInvitationsModal}/>
                 </div>
                 {this.state.inviteModal && <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
