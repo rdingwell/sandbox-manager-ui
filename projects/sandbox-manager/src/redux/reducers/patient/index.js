@@ -37,6 +37,8 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.patient : state;
+            state.fetchingSingle = false;
+            state.fetchingSingleError = undefined;
             break;
     }
 

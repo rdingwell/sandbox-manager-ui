@@ -14,6 +14,10 @@ export default class Edit extends Component {
         }
     }
 
+    componentDidMount() {
+        this.setState({titleError: undefined});
+    }
+
     componentWillReceiveProps (nextProps) {
         nextProps.scenario.description !== this.state.description && this.setState({ description: nextProps.scenario.description });
         nextProps.scenario.title !== this.state.title && this.setState({ title: nextProps.scenario.title });
@@ -21,7 +25,7 @@ export default class Edit extends Component {
 
     render () {
         let actions = [
-            <RaisedButton key={1} label='Save' primary onClick={() => this.props.onConfirm(this.state)}/>
+            <RaisedButton key={1} label='Save' primary onClick={this.onConfirm}/>
         ];
 
         let titleStyle = {
@@ -45,7 +49,7 @@ export default class Edit extends Component {
             <div className='screen-content edit-scenario-dialog-content'>
                 <div className='summary-item'>
                     <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'
-                               onChange={(_, title) => this.setState({ title: title.substr(0, 75) })} errorText={this.props.titleError} value={this.state.title}/>
+                               onChange={(_, title) => this.setState({ title: title.substr(0, 75) })} errorText={this.state.titleError} value={this.state.title}/>
                     <span className='subscript'>{this.state.title.length} / 75</span>
                 </div>
                 <div className='summary-item'>
@@ -57,5 +61,13 @@ export default class Edit extends Component {
             </div>
         </Dialog>
     }
+
+    onConfirm = () => {
+        if(this.state.title.length === 0) {
+            this.setState({titleError: 'You have to specify a title.'})
+        } else {
+            this.props.onConfirm(this.state);
+        }
+    };
 }
 
