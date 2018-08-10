@@ -551,12 +551,7 @@ export function updateLaunchScenario (scenario, description) {
         !description && (url += '/launched');
 
         fetch(url, Object.assign({ method: "PUT" }, config))
-            .then(result => {
-                result.json()
-                    .then(r => {
-                        console.log(r);
-                    });
-            })
+            .then(() => {})
             .catch(e => {
                 console.log(e);
             })
