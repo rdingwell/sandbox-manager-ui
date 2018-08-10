@@ -532,14 +532,15 @@ export function createScenario (data) {
     }
 }
 
-export function updateLaunchScenario (scenario, description) {
+export function updateLaunchScenario (scenario, description, title) {
     return (dispatch, getState) => {
         dispatch(setScenarioCreating(true));
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
         description && (scenario.description = description);
-        !description && (scenario.lastLaunchSeconds = new Date().getTime());
+        title && (scenario.title = title);
+        !description && !title && (scenario.lastLaunchSeconds = new Date().getTime());
         const config = {
             headers: {
                 Authorization: 'BEARER ' + window.fhirClient.server.auth.token,

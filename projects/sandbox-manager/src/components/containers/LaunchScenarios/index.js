@@ -83,7 +83,7 @@ class LaunchScenarios extends Component {
 
     render () {
         return <Page title='Launch Scenarios'>
-            {this.state.scenarioToEdit && <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} value={this.state.scenarioToEdit.description} onCancel={() => this.selectScenarioForEditing()}
+            {this.state.scenarioToEdit && <Edit open={!!this.state.scenarioToEdit} muiTheme={this.props.muiTheme} scenario={this.state.scenarioToEdit} onCancel={() => this.selectScenarioForEditing()}
                                                 onConfirm={this.updateScenario} descriptionError={this.state.descriptionError}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
                 this.props.deleteScenario(this.state.scenarioToDelete);
@@ -98,7 +98,8 @@ class LaunchScenarios extends Component {
                     <IconButton onClick={() => this.setState({ desc: !this.state.desc })} className='sort-button'>
                         <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>
-                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary6Color }} underlineStyle={{ display: 'none' }} value={this.state.sort}
+                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary6Color }} underlineStyle={{ display: 'none' }}
+                                 value={this.state.sort}
                                  className='sort-select' onChange={(_, sort) => this.setState({ sort: SORT_VALUES[sort].val })}>
                         <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
@@ -115,7 +116,8 @@ class LaunchScenarios extends Component {
                 <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                     {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 && <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
+                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 &&
+                    <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
                 <Create key={this.createKey} open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario} {...this.props}/>
             </div>
@@ -300,66 +302,74 @@ class LaunchScenarios extends Component {
                     </Card>
                 </div>
             </div>
-            <div className='context-wrapper'>
-                <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
-                <div>
+            <div className='right-side-wrapper'>
+                <div className='context-wrapper'>
+                    <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
+                    <div>
                     <span className='section-value' style={lightColor}>
                         <Patient style={iconStyleLight}/>
                         {selectedScenario.patientName ? selectedScenario.patientName : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <EventIcon style={iconStyleLight}/>
-                        {selectedScenario.encounter ? selectedScenario.encounter : '-'}
+                            {selectedScenario.encounter ? selectedScenario.encounter : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <HospitalIcon style={iconStyleLight}/>
-                        {selectedScenario.location ? selectedScenario.location : '-'}
+                            {selectedScenario.location ? selectedScenario.location : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <DescriptionIcon style={iconStyleLight}/>
-                        {selectedScenario.resource ? selectedScenario.resource : '-'}
+                            {selectedScenario.resource ? selectedScenario.resource : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <BulbIcon style={iconStyleLight}/>
-                        {selectedScenario.intent ? selectedScenario.intent : '-'}
+                            {selectedScenario.intent ? selectedScenario.intent : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <LinkIcon style={iconStyleLight}/>
-                        {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
+                            {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
                     </span>
-                    <span className='section-value' style={lightColor}>
+                        <span className='section-value' style={lightColor}>
                         <FullScreenIcon style={iconStyleLight}/>
                         Needs Patient Banner: {selectedScenario.needPatientBanner ? 'Yes' : 'No'}
                     </span>
+                    </div>
                 </div>
-            </div>
-            <div className='custom-context-wrapper'>
-                <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
-                <div className='custom-context-table-wrapper'>
-                    <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
-                        {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
-                    </FloatingActionButton>
-                    <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
-                        <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
-                            <TableRow>
-                                <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Key</TableHeaderColumn>
-                                <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Value</TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody displayRowCheckbox={false} className='table-body'>
-                            {this.state.addContext && <TableRow selectable={false}>
-                                <TableRowColumn>
-                                    <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({ key })}
-                                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-                                </TableRowColumn>
-                                <TableRowColumn>
-                                    <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({ val })}
-                                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-                                </TableRowColumn>
-                            </TableRow>}
-                            {this.getCustomContext(selectedScenario)}
-                        </TableBody>
-                    </Table>
+                <div className='custom-context-wrapper'>
+                    <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
+                    <div className='custom-context-table-wrapper'>
+                        <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
+                            {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
+                        </FloatingActionButton>
+                        <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
+                            <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                                <TableRow>
+                                    <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Key</TableHeaderColumn>
+                                    <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Value</TableHeaderColumn>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody displayRowCheckbox={false} className='table-body'>
+                                {this.state.addContext && <TableRow selectable={false}>
+                                    <TableRowColumn>
+                                        <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({ key })}
+                                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                    </TableRowColumn>
+                                    <TableRowColumn>
+                                        <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({ val })}
+                                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                    </TableRowColumn>
+                                </TableRow>}
+                                {this.getCustomContext(selectedScenario)}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </div>
+                <div className='description-wrapper'>
+                    <span className='section-title' style={darkColor}><DescriptionIcon style={iconStyle}/>Description</span>
+                    <div className='description'>
+                        {selectedScenario.description}
+                    </div>
                 </div>
             </div>
         </div>
@@ -410,13 +420,11 @@ class LaunchScenarios extends Component {
         this.buttonClick = false;
     };
 
-    updateScenario = (description) => {
-        if (description.length > 2) {
-            description !== this.state.scenarioToEdit.description && this.props.updateLaunchScenario(this.state.scenarioToEdit, description);
-            this.selectScenarioForEditing();
-        } else {
-            this.setState({ descriptionError: 'You need to provide description longer than 2 characters!' });
-        }
+    updateScenario = (state) => {
+        let description = state.description !== this.state.scenarioToEdit.description ? state.description : undefined;
+        let title = state.title !== this.state.scenarioToEdit.title ? state.title : undefined;
+        this.props.updateLaunchScenario(this.state.scenarioToEdit, description, title);
+        this.selectScenarioForEditing();
     };
 }
 
@@ -455,9 +463,33 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart,
-        setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext, fetchLocation, setFetchingSingleLocationError,
-        setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
+        setFetchingSinglePatientFailed,
+        fetchPatient,
+        app_setScreen,
+        loadLaunchScenarios,
+        fetchPersonas,
+        getPersonasPage,
+        createScenario,
+        deleteScenario,
+        doLaunch,
+        updateLaunchScenario,
+        lookupPersonasStart,
+        setSinglePatientFetched,
+        setFetchSingleEncounter,
+        setSingleEncounter,
+        setFetchingSingleEncounterError,
+        fetchEncounter,
+        addCustomContext,
+        deleteCustomContext,
+        fetchLocation,
+        setFetchingSingleLocationError,
+        setSingleLocation,
+        setSingleIntent,
+        setFetchingSingleIntentError,
+        setSingleResource,
+        setFetchingSingleResourceError,
+        fetchResource,
+        fetchIntent
     },
     dispatch
 );
