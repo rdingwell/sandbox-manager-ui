@@ -59,7 +59,8 @@ class Create extends Component {
         let titleStyle = { backgroundColor: palette.primary2Color, color: palette.primary5Color };
         let actions = this.getActions();
 
-        return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions} actionsContainerClassName='create-modal-actions'>
+        return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
+                       actionsContainerClassName='create-modal-actions'>
             <h3 className='modal-title' style={titleStyle}>BUILD LAUNCH SCENARIO</h3>
             <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
                 <i className="material-icons">close</i>
@@ -117,6 +118,7 @@ class Create extends Component {
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
         let iconStyle = { color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px' };
+        let iconStyleSmaller = { color: palette.primary3Color, fill: palette.primary3Color, width: '18px', height: '18px' };
         let rightIconGreenStyle = { color: palette.primary1Color, fill: palette.primary1Color, width: '16px', height: '16px' };
         let rightIconRedStyle = { color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative' };
 
@@ -184,11 +186,9 @@ class Create extends Component {
                                            onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
                                            errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
                                 <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
-                                    {!this.props.fetchingSinglePatient
-                                        ? <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
-                                            <SearchIcon style={iconStyle}/>
-                                        </IconButton>
-                                        : <CircularProgress innerStyle={iconStyle} size={25}/>}
+                                    <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
+                                        <SearchIcon style={iconStyle}/>
+                                    </IconButton>
                                 </div>
                                 {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
                                     {this.props.fetchingSinglePatient
@@ -198,6 +198,7 @@ class Create extends Component {
                                         </span>}
                                 </div>}
                                 <div className='subscript right'>
+                                    {this.props.fetchingSinglePatient && <CircularProgress innerStyle={iconStyleSmaller} size={18}/>}
                                     {this.props.singlePatient && <CheckIcon style={rightIconGreenStyle}/>}
                                     {this.props.fetchingSinglePatientError && <CloseIcon style={rightIconRedStyle}/>}
                                 </div>
@@ -207,15 +208,13 @@ class Create extends Component {
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
                                            onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)}
                                            errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
-                                <div className={'right-control' + (this.props.fetchingSingleEncounter ? ' loader' : '')}>
-                                    {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={25}/>}
-                                </div>
                                 {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
                                     {this.props.fetchingSingleEncounter
                                         ? 'Loading encounter data...'
                                         : <span>Encounter FHIR Resource Located</span>}
                                 </div>}
                                 <div className='subscript right'>
+                                    {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={18}/>}
                                     {this.props.singleEncounter && <CheckIcon style={rightIconGreenStyle}/>}
                                     {this.props.singleEncounterLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                                 </div>
@@ -231,6 +230,7 @@ class Create extends Component {
                                         : <span>Location FHIR Resource Located</span>}
                                 </div>}
                                 <div className='subscript right'>
+                                    {this.props.fetchingSingleLocation && <CircularProgress innerStyle={iconStyle} size={18}/>}
                                     {this.props.singleLocation && <CheckIcon style={rightIconGreenStyle}/>}
                                     {this.props.singleLocationLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                                 </div>
@@ -246,6 +246,7 @@ class Create extends Component {
                                         : <span>FHIR Resource Located</span>}
                                 </div>}
                                 <div className='subscript right'>
+                                    {this.props.fetchingSingleResource && <CircularProgress innerStyle={iconStyle} size={18}/>}
                                     {this.props.singleResource && <CheckIcon style={rightIconGreenStyle}/>}
                                     {this.props.singleResourceLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                                 </div>
@@ -275,7 +276,8 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                                 <div>
-                                    <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }} trackStyle={{ backgroundColor: palette.primary7Color }}
+                                    <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }}
+                                            trackStyle={{ backgroundColor: palette.primary7Color }}
                                             thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                             onToggle={(_, value) => this.onChange('patientBanner', value)}/>
                                 </div>
