@@ -180,6 +180,12 @@ export default function (state = initialState, action) {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             state.dataImporting = false;
+            state.launchScenarioDeleting = false;
+            state.launchScenarioCreating = false;
+            state.creatingSandbox = false;
+            state.deleting = false;
+            state.resetting = false;
+            state.createSandboxError = undefined;
             state.importResults = undefined;
             state.launchScenarios = undefined;
             break;
