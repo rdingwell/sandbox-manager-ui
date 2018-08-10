@@ -197,7 +197,7 @@
       top: 0;
     }
     &.active {
-      height: 408px;
+      height: 470px;
       margin: 21px 0;
       transform: scale(1.03);
       transition: all .3s;
@@ -342,6 +342,19 @@
         bottom: 0;
         .app-card.small {
           margin-left: 2px;
+        }
+      }
+      .right-side-wrapper {
+        display: inline-block;
+        max-width: 70%;
+        box-sizing: border-box;
+        overflow: hidden;
+        .description-wrapper {
+          margin-top: 20px;
+          .description {
+            line-height: 20px;
+            white-space: normal;
+          }
         }
       }
       .persona-wrapper, .context-wrapper, .custom-context-wrapper {
