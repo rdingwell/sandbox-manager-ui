@@ -1,7 +1,8 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router';
-import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router';
+import {getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
+import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
@@ -14,10 +15,10 @@ import CreateSandbox from '../containers/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
-import { CircularProgress, Dialog } from "material-ui";
+import {CircularProgress, Dialog, FloatingActionButton, IconButton} from "material-ui";
 
 class App extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let check = !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
@@ -41,15 +42,15 @@ class App extends React.Component {
         this.state = {};
     }
 
-    componentDidMount () {
+    componentDidMount() {
         window.addEventListener('resize', this.onResize);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         window.removeEventListener('resize', this.onResize);
     }
 
-    render () {
+    render() {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
         return this.props.ui && <MuiThemeProvider muiTheme={getMuiTheme(this.props.ui.theme)}>
@@ -57,9 +58,15 @@ class App extends React.Component {
                     signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
-                    <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
+                    <div className='stage' style={{marginBottom: this.props.ui.footerHeight}}>
                         {this.props.children}
                     </div>
+                </div>}
+                {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
+                    <IconButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} tooltip='Give us feedback' tooltipPosition='top-left'
+                                iconStyle={{color: 'white'}} style={{backgroundColor: 'rgb(27, 159, 125)', borderRadius: '25px'}}>
+                        <FeedbackIcon/>
+                    </IconButton>
                 </div>}
                 {showLoader && <Dialog className='loader-wrapper' modal open={showLoader}>
                     <p>{loaderText}</p>
@@ -86,10 +93,10 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting, resetting: state.sandbox.resetting, deleting: state.sandbox.deleting }
+    return {...state, ...lib, ...glib, selecting: state.sandbox.selecting, resetting: state.sandbox.resetting, deleting: state.sandbox.deleting}
 };
-const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({...actionCreators}, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);
-export { connectedComponent };
+export {connectedComponent};
 export default withRouter(connectedComponent);
