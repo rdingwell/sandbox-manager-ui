@@ -188,7 +188,6 @@ export function createPersona (type, persona) {
                 body: JSON.stringify(payload)
             })
                 .then(e => {
-                    e.json().then(i => console.log(i));
                     dispatch(creatingPersonaEnd());
                 });
         }

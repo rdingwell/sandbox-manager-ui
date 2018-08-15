@@ -137,7 +137,7 @@ class LaunchScenarios extends Component {
 
     launchScenario = (e, sc) => {
         this.preventDefault(e);
-        sc.app && this.props.doLaunch(sc.app, sc.patient, sc.userPersona);
+        sc.app && this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc);
         sc.app && this.props.updateLaunchScenario(sc);
         !sc.app && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
     };

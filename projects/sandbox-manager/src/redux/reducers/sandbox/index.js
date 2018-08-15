@@ -179,6 +179,7 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
+            state.defaultUser = undefined;
             state.dataImporting = false;
             state.launchScenarioDeleting = false;
             state.launchScenarioCreating = false;

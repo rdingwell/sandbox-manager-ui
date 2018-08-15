@@ -549,7 +549,7 @@ export function updateLaunchScenario (scenario, description, title) {
             body: JSON.stringify(scenario)
         };
         let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
-        !description && (url += '/launched');
+        !description && !title && (url += '/launched');
 
         fetch(url, Object.assign({ method: "PUT" }, config))
             .then(() => {})
@@ -639,6 +639,7 @@ export function getDefaultUserForSandbox (sandboxId) {
                             dispatch(setDefaultSandboxUser(user));
                         })
                         .catch(_ => {
+                            dispatch(setDefaultSandboxUser(undefined));
                         })
                 })
                 .catch(e => console.log(e))
@@ -1039,7 +1040,7 @@ export function getLoginInfo (sandbox) {
     }
 }
 
-export function doLaunch (app, persona, user, noUser) {
+export function doLaunch (app, persona, user, noUser, scenario) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -1053,7 +1054,7 @@ export function doLaunch (app, persona, user, noUser) {
             params = { patient: persona };
         }
 
-        params["need_patient_banner"] = false;
+        params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let config = getConfig(state);
         user && !noUser && (config.body = JSON.stringify({ username: user.personaUserId, password: user.password }));
