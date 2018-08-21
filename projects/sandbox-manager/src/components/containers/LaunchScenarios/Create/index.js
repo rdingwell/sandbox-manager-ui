@@ -28,20 +28,23 @@ class Create extends Component {
     constructor (props) {
         super(props);
 
+        console.log(props);
+
         this.state = {
-            description: '',
-            title: '',
-            selectedApp: null,
-            encounterId: null,
-            patientBanner: null,
+            description: props.description || '',
+            title: props.title || '',
+            selectedApp: props.app || null,
+            encounterId: props.encounter || null,
+            patientBanner: props.needPatientBanner === 'T' || null,
             showPatientSelectorWrapper: false,
             showPatientSelector: false,
-            intent: null,
+            intent: props.intent || null,
             showPersonaSelector: false,
-            patientId: '',
-            locationId: null,
-            personaType: null,
-            selectedPersona: null,
+            patientId: props.patient || '',
+            locationId: props.location || null,
+            personaType: (props.userPersona && props.userPersona.resource) || null,
+            selectedPersona: props.userPersona || null,
+            url: props.smartStyleUrl || '',
             currentStep: 0
         };
     }
@@ -52,6 +55,10 @@ class Create extends Component {
         this.initLocation();
         this.initResource();
         this.initIntent();
+
+        this.props.patient && this.blur('patientId');
+        this.props.encounter && this.blur('encounterId');
+        this.props.location && this.blur('locationId');
     }
 
     render () {
@@ -206,7 +213,7 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <EventIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
-                                           onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)}
+                                           onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)} value={this.state.encounterId}
                                            errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
                                 {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
                                     {this.props.fetchingSingleEncounter
@@ -222,7 +229,7 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <HospitalIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
-                                           onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)}
+                                           onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)} value={this.state.locationId}
                                            errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
                                 {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
                                     {this.props.fetchingSingleLocation
@@ -256,7 +263,7 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <BulbIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
-                                           onChange={(_, value) => this.onChange('intent', value)}
+                                           onChange={(_, value) => this.onChange('intent', value)} value={this.state.intent}
                                            errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
                                 {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
                                     {this.props.fetchingSingleIntent
@@ -271,13 +278,13 @@ class Create extends Component {
                             <div className='column-item-wrapper'>
                                 <LinkIcon className='column-item-icon' style={iconStyle}/>
                                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' floatingLabelText='SMART Style URL'
-                                           onChange={(_, value) => this.onChange('url', value)}/>
+                                           onChange={(_, value) => this.onChange('url', value)} value={this.state.url}/>
                             </div>
                             <div className='column-item-wrapper'>
                                 <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                                 <div>
                                     <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }}
-                                            trackStyle={{ backgroundColor: palette.primary7Color }}
+                                            trackStyle={{ backgroundColor: palette.primary7Color }} toggled={this.state.patientBanner}
                                             thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                             onToggle={(_, value) => this.onChange('patientBanner', value)}/>
                                 </div>
