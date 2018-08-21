@@ -52,9 +52,7 @@ export function createApp (app) {
             launchUri: app.launchUri,
             // logo: app.logoUri,
             redirectUris: app.redirectUris.split(','),
-            authClient: {
-                clientName: app.clientName
-            },
+            clientName: app.clientName,
             createdBy: state.users.oauthUser,
             sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
             briefDescription: app.briefDescription,
