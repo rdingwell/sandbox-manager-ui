@@ -666,11 +666,25 @@ export const createSandbox = (sandboxDetails) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(setCreatingSandbox(true));
         let config = getConfig(state);
+        let clonedSandbox = {};
+        if (sandboxDetails.dataSet  === "NONE") {
+            clonedSandbox.sandboxId = "MasterEmpty";
+        } else if (sandboxDetails.apiEndpointIndex  === "6") {
+            clonedSandbox.sandboxId = "MasterStu3Smart";
+        } else if (sandboxDetails.apiEndpointIndex  === "7") {
+            clonedSandbox.sandboxId = "MasterR4Smart";
+        } else if (sandboxDetails.apiEndpointIndex  === "5") {
+            clonedSandbox.sandboxId = "MasterDstu2Smart";
+        }
+        let cloneBody = {
+            "clonedSandbox": clonedSandbox,
+            "newSandbox": sandboxDetails
+        };
 
-        config.body = JSON.stringify(sandboxDetails);
+        config.body = JSON.stringify(cloneBody);
         config.method = "POST";
         config.headers["Content-Type"] = "application/json";
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox', config)
+        fetch(configuration.sandboxManagerApiUrl + '/sandbox/clone', config)
             .then(() => {
                 dispatch(fetchSandboxes(sandboxDetails.sandboxId));
             })
@@ -1126,7 +1140,7 @@ function callRegisterContext (appToLaunch, params, issuer, launchDetails, key) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            client_id: appToLaunch.authClient.clientId,
+            client_id: appToLaunch.clientId,
             parameters: params
         })
     };

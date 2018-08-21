@@ -14,7 +14,7 @@ class AppDialog extends Component {
         let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
 
         let app = {
-            clientName: props.app ? props.app.authClient.clientName : '',
+            clientName: props.app ? props.app.clientName : '',
             launchUri: props.app ? props.app.launchUri : '',
             samplePatients: props.app && props.app.samplePatients ? props.app.samplePatients : '',
             redirectUris: redirectUris ? redirectUris : '',
@@ -55,7 +55,7 @@ class AppDialog extends Component {
         if (this.props.app) {
             clientId = <div className='label-value'>
                 <span>Client Id: </span>
-                <span>{this.props.app.authClient.clientId}</span>
+                <span>{this.props.app.clientId}</span>
             </div>;
         }
         let sApp = this.state.app;

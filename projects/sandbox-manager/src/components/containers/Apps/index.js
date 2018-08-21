@@ -50,7 +50,7 @@ class Apps extends Component {
 
     render () {
         let appsList = this.props.apps ? this.props.apps.slice() : [];
-        appsList.sort((a, b) => a.authClient.clientName.localeCompare(b.authClient.clientName));
+        appsList.sort((a, b) => a.clientName.localeCompare(b.clientName));
 
         let apps = appsList.map((app, index) => (
             <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
@@ -59,7 +59,7 @@ class Apps extends Component {
                     <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>
                 <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                    <h3 className='app-name'>{app.authClient.clientName}</h3>
+                    <h3 className='app-name'>{app.clientName}</h3>
                     {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
@@ -80,7 +80,7 @@ class Apps extends Component {
         let app = this.state.selectedApp ? this.props.apps.find(i => i.id === this.state.selectedApp.id) : undefined;
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
-            ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.authClient.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
+            ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
                          muiTheme={this.props.muiTheme} app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
@@ -97,7 +97,7 @@ class Apps extends Component {
                             <h3>Registered App Details</h3>
                             <div className='paper-body'>
                                 App Client Id <br/>
-                                ID: <span className='client-id'>{this.state.createdApp.authClient.clientId}</span>
+                                ID: <span className='client-id'>{this.state.createdApp.clientId}</span>
                             </div>
                         </Paper>
                     </Dialog>
@@ -125,7 +125,7 @@ class Apps extends Component {
             </div>
             {this.state.showConfirmModal && <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
                 <p>
-                    Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.authClient.clientName : ''}"?<br/>
+                    Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.clientName : ''}"?<br/>
                     Deleting this app will result in the deletion of all the launch scenarios connected to it.
                 </p>
             </ConfirmModal>}

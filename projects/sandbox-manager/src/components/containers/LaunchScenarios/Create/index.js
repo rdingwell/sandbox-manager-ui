@@ -305,7 +305,7 @@ class Create extends Component {
                                 <div className='summary-item-icon-left'>
                                     <WebIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.selectedApp.authClient.clientName}</span>
+                                <span className='summary-item-text'>{this.state.selectedApp.clientName}</span>
                             </div>
                             <div className='summary-item'>
                                 <span className='section-sub-title'>Launched by</span>

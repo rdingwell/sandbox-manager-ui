@@ -188,7 +188,7 @@ class LaunchScenarios extends Component {
                     let details = <div key={1} className='expanded-content'>
                         {this.getDetailsContent(sc)}
                     </div>;
-                    let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.authClient.clientId) &&
+                    let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.clientId) &&
                         (!this.state.typeFilter || this.state.typeFilter === sc.userPersona.resource);
                     let showMenuForItem = this.state.showMenuForItem === index;
                     if (filter) {
@@ -202,7 +202,7 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.title || sc.description}</span>
-                                <span className='launch-scenario-app-name'>{sc.app.authClient.clientName}</span>
+                                <span className='launch-scenario-app-name'>{sc.app.clientName}</span>
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
@@ -297,7 +297,7 @@ class LaunchScenarios extends Component {
                             <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                         </CardMedia>
                         <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                            <span className='app-name'>{selectedScenario.app.authClient.clientName}</span>
+                            <span className='app-name'>{selectedScenario.app.clientName}</span>
                         </div>
                     </Card>
                 </div>
