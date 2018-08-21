@@ -23,15 +23,19 @@ class AppDialog extends Component {
             briefDescription: props.app && props.app.briefDescription || '',
             tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
             clientJSON: props.app ? props.app.clientJSON : {},
-            patientScoped: true
+            patientScoped: true,
+            copyType: props.app ? props.app.copyType : 'MASTER',
         };
+
+        let isReplica = app.copyType === 'REPLICA';
 
         this.state = {
             value: 'PublicClient',
             modalOpen: false,
             changes: [],
             app,
-            originalApp: Object.assign({}, app)
+            originalApp: Object.assign({}, app),
+            isReplica
         }
     }
 
@@ -82,36 +86,36 @@ class AppDialog extends Component {
                 <h3>Registered App Details</h3>
                 <div className='paper-body'>
                     <form>
-                        <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart'
+                        <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}
                                    onChange={(_e, newVal) => this.onChange('clientName', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                         <div>
                             <div style={{color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)'}}>Client Type</div>
                             <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
-                                          style={{top: '16px'}}>
+                                          style={{top: '16px'}} disabled={this.state.isReplica}>
                                 <MenuItem value='NONE' primaryText='Public Client'/>
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
                             </DropDownMenu>
                         </div>
                         {clientId}
-                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth
+                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica}
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
                                    hintText='e.g.: https://mydomain.com/growth-chart/launch.html' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                   onBlur={this.launchBlur}/>
+                                   onBlur={this.launchBlur} disabled={this.state.isReplica}/>
                         <br/>
                         <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs*' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
                                    onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
-                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)}
+                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} disabled={this.state.isReplica}
                                    hintText='eg: launch patient/*.* openid profile' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <span className='subscript'>
                             Note: If you do not provide scope, defaults will be set.
                         </span>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
                         {this.props.app &&
                         <span className='subscript'>Space separated list of scopes.</span>}
@@ -127,7 +131,7 @@ class AppDialog extends Component {
                         </div>}
                         < br/>
                         <div className='image-button-wrapper'>
-                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()}/>
+                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}/>
                             <div>
                                 <span className='subscript'>(Display size 300px W X 200px H)</span>
                             </div>
@@ -137,7 +141,8 @@ class AppDialog extends Component {
                         </div>
                         <div className='image-wrapper'>
                             {this.state.app.logoUri &&
-                            <FloatingActionButton onClick={() => this.onChange('logoUri')} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
+                            <FloatingActionButton onClick={() => this.onChange('logoUri')} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}
+                                                  disabled={this.state.isReplica}>
                                 <DeleteIcon/>
                             </FloatingActionButton>}
                             <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>

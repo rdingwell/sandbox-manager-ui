@@ -667,14 +667,21 @@ export const createSandbox = (sandboxDetails) => {
         dispatch(setCreatingSandbox(true));
         let config = getConfig(state);
         let clonedSandbox = {};
-        if (sandboxDetails.dataSet  === "NONE") {
-            clonedSandbox.sandboxId = "MasterEmpty";
+        if (sandboxDetails.apiEndpointIndex  === "5") {
+            clonedSandbox.sandboxId = "MasterDstu2Smart";
+            if (sandboxDetails.dataSet  === "NONE") {
+                clonedSandbox.sandboxId = "MasterDstu2Empty";
+            }
         } else if (sandboxDetails.apiEndpointIndex  === "6") {
             clonedSandbox.sandboxId = "MasterStu3Smart";
+            if (sandboxDetails.dataSet  === "NONE") {
+                clonedSandbox.sandboxId = "MasterStu3Empty";
+            }
         } else if (sandboxDetails.apiEndpointIndex  === "7") {
             clonedSandbox.sandboxId = "MasterR4Smart";
-        } else if (sandboxDetails.apiEndpointIndex  === "5") {
-            clonedSandbox.sandboxId = "MasterDstu2Smart";
+            if (sandboxDetails.dataSet  === "NONE") {
+                clonedSandbox.sandboxId = "MasterR4Empty";
+            }
         }
         let cloneBody = {
             "clonedSandbox": clonedSandbox,
