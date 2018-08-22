@@ -52,9 +52,7 @@ export function createApp (app) {
             launchUri: app.launchUri,
             // logo: app.logoUri,
             redirectUris: app.redirectUris.split(','),
-            authClient: {
-                clientName: app.clientName
-            },
+            clientName: app.clientName,
             createdBy: state.users.oauthUser,
             sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
             briefDescription: app.briefDescription,
@@ -83,11 +81,12 @@ export function createApp (app) {
                             fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
                                 .then(() => {
                                     setTimeout(() => {
-                                        dispatch(loadSandboxApps());
                                         dispatch(setCreatedApp(createdApp));
+                                        dispatch(loadSandboxApps());
                                     }, 550);
                                 });
                         } else {
+                            dispatch(setCreatedApp(createdApp));
                             dispatch(loadSandboxApps());
                             dispatch(appCreating(false));
                         }

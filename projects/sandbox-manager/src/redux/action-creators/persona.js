@@ -66,7 +66,7 @@ export function deletePractitioner (practitioner) {
 }
 
 export function getPersonasPage (type = "Patient", pagination, direction) {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
             let next = pagination.link.find(i => i.relation === direction);
@@ -80,6 +80,8 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
             })
                 .then(res => {
                     res.json().then(personas => {
+                        let pagination = undefined;
+                        let list = personas;
                         if (personas.entry) {
                             let resourceResults = [];
 
@@ -92,17 +94,20 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
                                 link: personas.link
                             };
 
-                            dispatch(setPersonas(type, resourceResults, paginationData));
-                        } else {
-                            dispatch(setPersonas(type, personas));
+                            list = resourceResults;
+                            pagination = paginationData;
                         }
+                        let state = getState();
+                        let current = state.persona[type.toLocaleLowerCase() + 's'] || [];
+                        list = current.concat(list);
+                        dispatch(setPersonas(type, list, pagination));
                     })
                 })
         }
     }
 }
 
-export function fetchPersonas (type = "Patient", searchCrit = null, count = 10) {
+export function fetchPersonas (type = "Patient", searchCrit = null, count = 17) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));

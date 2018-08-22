@@ -86,3 +86,9 @@ export function customSearch (query, endpoint) {
             });
     }
 }
+
+export function clearSearchResults() {
+    return dispatch => {
+        dispatch(fhir_setCustomSearchResults());
+    }
+}

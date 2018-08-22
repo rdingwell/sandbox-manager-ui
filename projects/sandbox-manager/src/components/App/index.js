@@ -15,7 +15,7 @@ import CreateSandbox from '../containers/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
-import {CircularProgress, Dialog, FloatingActionButton, IconButton} from "material-ui";
+import {CircularProgress, Dialog, FloatingActionButton, IconButton, RaisedButton} from "material-ui";
 
 class App extends React.Component {
     constructor(props) {
@@ -63,10 +63,9 @@ class App extends React.Component {
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <IconButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} tooltip='Give us feedback' tooltipPosition='top-left'
-                                iconStyle={{color: 'white'}} style={{backgroundColor: 'rgb(27, 159, 125)', borderRadius: '25px'}}>
-                        <FeedbackIcon/>
-                    </IconButton>
+                    <RaisedButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
+                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><FeedbackIcon style={{color: 'white', marginTop: '5px'}}/>
+                    </RaisedButton>
                 </div>}
                 {showLoader && <Dialog className='loader-wrapper' modal open={showLoader}>
                     <p>{loaderText}</p>
