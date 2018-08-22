@@ -81,11 +81,12 @@ export function createApp (app) {
                             fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
                                 .then(() => {
                                     setTimeout(() => {
-                                        dispatch(loadSandboxApps());
                                         dispatch(setCreatedApp(createdApp));
+                                        dispatch(loadSandboxApps());
                                     }, 550);
                                 });
                         } else {
+                            dispatch(setCreatedApp(createdApp));
                             dispatch(loadSandboxApps());
                             dispatch(appCreating(false));
                         }
