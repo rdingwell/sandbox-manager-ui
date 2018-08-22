@@ -39,7 +39,7 @@ class Apps extends Component {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
-        this.props.fetchPersonas(PersonaList.TYPES.patient, null, 5);
+        this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -74,7 +74,7 @@ class Apps extends Component {
 
         let props = {
             type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.muiTheme.palette, lookupPersonasStart: this.props.lookupPersonasStart,
-            search: this.search, loading: this.props.personaLoading, close: this.handleAppLaunch, pagination: this.props.pagination,
+            search: this.search, loading: this.props.personaLoading, close: this.handleAppLaunch, pagination: this.props.pagination, fetchPersonas: this.props.fetchPersonas,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
         let app = this.state.selectedApp ? this.props.apps.find(i => i.id === this.state.selectedApp.id) : undefined;
@@ -135,8 +135,8 @@ class Apps extends Component {
     search = (type, crit) => {
         this.state.appToLaunch && this.state.appToLaunch.samplePatients && console.log(this.state.appToLaunch.samplePatients);
         this.state.appToLaunch && this.state.appToLaunch.samplePatients
-            ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 5)
-            : this.props.fetchPersonas(type, crit, 5);
+            ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 15)
+            : this.props.fetchPersonas(type, crit, 15);
     };
 
     toggleConfirmation = () => {
@@ -181,8 +181,8 @@ class Apps extends Component {
     handleAppLaunch = (event, app) => {
         event && event.preventDefault();
         event && event.stopPropagation();
-        app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 5);
-        (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 5);
+        app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
+        (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
         this.setState({ appToLaunch: app, registerDialogVisible: false });
     };
 }

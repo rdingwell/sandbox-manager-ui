@@ -28,20 +28,18 @@ class Create extends Component {
     constructor (props) {
         super(props);
 
-        console.log(props);
-
         this.state = {
             description: props.description || '',
             title: props.title || '',
             selectedApp: props.app || null,
-            encounterId: props.encounter || null,
+            encounterId: props.encounter || '',
             patientBanner: props.needPatientBanner === 'T' || null,
             showPatientSelectorWrapper: false,
             showPatientSelector: false,
-            intent: props.intent || null,
+            intent: props.intent || '',
             showPersonaSelector: false,
             patientId: props.patient || '',
-            locationId: props.location || null,
+            locationId: props.locationId || '',
             personaType: (props.userPersona && props.userPersona.resource) || null,
             selectedPersona: props.userPersona || null,
             url: props.smartStyleUrl || '',
@@ -58,7 +56,7 @@ class Create extends Component {
 
         this.props.patient && this.blur('patientId');
         this.props.encounter && this.blur('encounterId');
-        this.props.location && this.blur('locationId');
+        this.props.locationId && this.blur('locationId');
     }
 
     render () {
@@ -151,7 +149,8 @@ class Create extends Component {
                 };
                 let props = {
                     typeFilter, type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
-                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close, pagination: this.props.patientsPagination,
+                    next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/> Which user will launch the app in this launch scenario?</span>
@@ -181,7 +180,8 @@ class Create extends Component {
                 personaList = this.props.patients;
                 props = {
                     typeFilter, type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
-                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.closePatientSearch
+                    search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.closePatientSearch, pagination: this.props.patientsPagination,
+                    next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><ContextIcon style={iconStyle}/> What additional launch context will be provided to the app?</span>

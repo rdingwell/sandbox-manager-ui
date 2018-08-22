@@ -40,11 +40,18 @@ class AppDialog extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // console.log('Next props:');
+        // console.log(nextProps);
         if ((this.props.app && !this.props.app.clientJSON && nextProps.app.clientJSON) ||
             (this.props.app && this.props.app.clientJSON && nextProps.app.clientJSON && this.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
             let clientJSON = nextProps.app && nextProps.app.clientJSON && JSON.parse(nextProps.app.clientJSON);
             let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
             let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
+
+            // console.log('Client json:');
+            // console.log(clientJSON);
+            // console.log('URIs:');
+            // console.log(redirectUris);
 
             let app = Object.assign({}, this.state.app, {scope, redirectUris, clientJSON});
 

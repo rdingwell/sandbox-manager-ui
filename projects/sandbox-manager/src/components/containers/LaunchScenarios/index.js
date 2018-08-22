@@ -489,7 +489,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setSingleResource,
         setFetchingSingleResourceError,
         fetchResource,
-        fetchIntent
+        fetchIntent,
+        getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
+        getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },
     dispatch
 );

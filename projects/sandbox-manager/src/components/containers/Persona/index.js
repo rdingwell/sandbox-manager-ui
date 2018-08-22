@@ -26,14 +26,14 @@ class Persona extends Component {
 
     componentDidMount () {
         let type = this.state.type;
-        this.props.fetchPersonas(type);
+        type === PersonaList.TYPES.persona && this.props.fetchPersonas(type);
         this.props.app_setScreen(type === PersonaList.TYPES.patient ? 'patients' : type === PersonaList.TYPES.practitioner ? 'practitioners' : 'personas');
     }
 
     componentWillReceiveProps (nextProps) {
         let type = getType(nextProps);
         type !== this.state.type && this.setState({ type, createPersona: false });
-        (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && this.props.fetchPersonas(type);
+        (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && type === PersonaList.TYPES.persona && this.props.fetchPersonas(type);
     }
 
     render () {
