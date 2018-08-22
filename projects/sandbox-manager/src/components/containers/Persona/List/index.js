@@ -215,15 +215,15 @@ class PersonaList extends Component {
                 {isPractitioner && <TableRowColumn className='persona-info'>
                     {(persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display) || ''}
                 </TableRowColumn>}
-                {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}>
+                {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} style={{textAlign: 'right'}}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
                         <MoreIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
                     </IconButton>}
-                    {isPatient && <IconButton style={patientRightIconStyle}>
-                        <span/>
-                        <StarIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
-                    </IconButton>}
+                    {/*{isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.updateFavorite(e, persona)}>*/}
+                        {/*<span/>*/}
+                        {/*<StarIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>*/}
+                    {/*</IconButton>}*/}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
@@ -309,6 +309,37 @@ class PersonaList extends Component {
             this.props.type !== TYPES.persona && this.props.deletePractitioner(this.state.personaToDelete.id);
             this.setState({showConfirmModal: false, personaToDelete: undefined});
         }
+    };
+
+    updateFavorite = (e, persona) => {
+        debugger;
+        e.stopPropagation();
+        if (persona.meta.tag !== undefined) {
+            if (persona.meta.tag[0].code === "favorite") {
+                persona.meta.tag[0].code = "not-favorite"
+            } else {
+                persona.meta.tag[0].code = "favorite";
+            }
+
+        } else {
+            persona.meta.tag = [{"code": "favorite"}]
+        }
+
+        let url = `${window.fhirClient.server.serviceUrl}/Patient/${persona.id}`;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: 'PUT',
+            body: JSON.stringify(persona)
+        };
+
+        fetch(url, config)
+            .then((persona) => {
+
+            })
     };
 
     openInDM = (e, persona) => {
