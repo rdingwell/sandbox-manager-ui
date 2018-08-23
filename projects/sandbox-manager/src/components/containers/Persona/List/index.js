@@ -57,7 +57,8 @@ class PersonaList extends Component {
         if (this.props.type !== TYPES.persona) {
             let element = this.props.modal ? document.getElementsByClassName('page-content-wrapper')[1] : document.getElementsByClassName('stage')[0];
             element.addEventListener('scroll', this.scroll);
-            this.props.fetchPersonas && this.props.fetchPersonas(this.props.type, null, canFit);
+            let crit = this.props.idRestrictions ? this.props.idRestrictions.split('?')[1] : null;
+            this.props.fetchPersonas && this.props.fetchPersonas(this.props.type, crit, canFit);
         }
     }
 
@@ -371,34 +372,6 @@ class PersonaList extends Component {
     onFilter = (searchCrit) => {
         this.props.type === TYPES.patient && this.props.search(this.props.type, searchCrit);
         this.setState({searchCrit});
-    };
-
-    getPagination = (isBottom, isPractitioner) => {
-        let self = this.props.pagination.link.find(i => i.relation === 'self');
-        let currentSkip = self.url.indexOf('_getpagesoffset=') >= 0 ? parseInt(self.url.split('_getpagesoffset=')[1].split('&')[0]) : 0;
-        let start = currentSkip + 1;
-        let end = start + this.props.personaList.length - 1;
-
-        return this.props.pagination && <div className={'persona-list-pagination-wrapper' + (isBottom ? ' bottom' : '') + (isPractitioner ? ' pract' : '')}>
-            <div>
-                <IconButton onClick={() => this.paginate(this.props.prev)} disabled={start === 1 || this.props.loading}>
-                    <LeftIcon/>
-                </IconButton>
-            </div>
-            <div>
-                <span>Showing {start} to {end} of {this.props.pagination.total}</span>
-            </div>
-            <div>
-                <IconButton onClick={() => this.paginate(this.props.next)} disabled={end + 1 >= this.props.pagination.total || this.props.loading}>
-                    <RightIcon/>
-                </IconButton>
-            </div>
-        </div>
-    };
-
-    paginate = toCall => {
-        toCall && toCall();
-        toCall && this.setState({selected: undefined});
     };
 
     handleRowSelect = (row) => {
