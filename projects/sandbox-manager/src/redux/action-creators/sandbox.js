@@ -520,7 +520,11 @@ export function createScenario (data) {
             },
             body: JSON.stringify(data)
         };
-        fetch(configuration.sandboxManagerApiUrl + '/launchScenario/', Object.assign({ method: "POST" }, config))
+        let url = configuration.sandboxManagerApiUrl + '/launchScenario/';
+        data.id && (url += data.id);
+        let method = data.id ? "PUT" : "POST";
+
+        fetch(url, Object.assign({ method }, config))
             .then(result => {
             })
             .catch(e => {

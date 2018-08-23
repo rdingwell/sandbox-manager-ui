@@ -126,7 +126,7 @@ class LaunchScenarios extends Component {
 
     selectScenarioForEditing = (scenarioToEdit) => {
         this.toggleMenuForItem();
-        this.setState({scenarioToEdit});
+        this.setState({scenarioToEdit, showModal: false});
     };
 
     onFilter = (type, appId) => {

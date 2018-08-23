@@ -29,6 +29,7 @@ class Create extends Component {
         super(props);
 
         this.state = {
+            id: props.id,
             description: props.description || '',
             title: props.title || '',
             selectedApp: props.app || null,
@@ -476,6 +477,7 @@ class Create extends Component {
             userPersona: this.state.selectedPersona,
             createdBy: this.props.user
         };
+        this.state.id && (data.id = this.state.id);
         this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
         this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
         this.state.encounterId && (data.encounter = this.state.encounterId);
@@ -486,6 +488,8 @@ class Create extends Component {
         this.state.intent && (data.intent = this.state.intent);
 
         this.props.create && this.props.create(data);
+
+        data.id && this.props.close && this.props.close();
     };
 
     next = () => {
