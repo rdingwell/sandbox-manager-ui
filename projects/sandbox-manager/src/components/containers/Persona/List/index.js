@@ -192,7 +192,7 @@ class PersonaList extends Component {
                 <TableRowColumn className='left-icon-wrapper'>
                     {badge}
                 </TableRowColumn>
-                <TableRowColumn className='persona-info'>
+                <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>
                     {persona.fhirName || this.getName(persona.name[0] || persona.name)}
                 </TableRowColumn>
                 {!isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
@@ -209,13 +209,7 @@ class PersonaList extends Component {
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
                     {isPatient && persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A'}
                 </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info'>{persona.id}</TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info'>
-                    {(persona.practitionerRole && persona.practitionerRole[0].specialty && persona.practitionerRole[0].specialty[0].coding[0].display) || ''}
-                </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className='persona-info'>
-                    {(persona.practitionerRole && persona.practitionerRole[0].role && persona.practitionerRole[0].role.coding[0].display) || ''}
-                </TableRowColumn>}
+                {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} style={{textAlign: 'right'}}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
@@ -245,7 +239,6 @@ class PersonaList extends Component {
                         </Menu>
                     </Popover>}
                 </TableRowColumn>}
-                {isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '}/>}
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
@@ -266,8 +259,6 @@ class PersonaList extends Component {
                         <TableHeaderColumn> </TableHeaderColumn>
                         <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>Name</TableHeaderColumn>
                         {isPractitioner && <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>FHIR id</TableHeaderColumn>}
-                        {isPractitioner && <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>Speciality</TableHeaderColumn>}
-                        {isPractitioner && <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>Role</TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
@@ -277,7 +268,6 @@ class PersonaList extends Component {
                         {!isPractitioner && <TableHeaderColumn style={{color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px'}}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
-                        {!this.props.modal && <TableHeaderColumn className={isPatient ? 'actions-row' : ' '}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false} showRowHover={this.props.modal}>

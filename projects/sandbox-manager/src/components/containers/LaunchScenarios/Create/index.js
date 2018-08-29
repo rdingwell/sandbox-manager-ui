@@ -4,6 +4,7 @@ import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
 import SearchIcon from "material-ui/svg-icons/action/search";
+import DeleteIcon from "material-ui/svg-icons/action/delete";
 import EventIcon from "material-ui/svg-icons/action/event";
 import CheckIcon from "material-ui/svg-icons/navigation/check";
 import CloseIcon from "material-ui/svg-icons/navigation/close";
@@ -67,7 +68,7 @@ class Create extends Component {
 
         return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
                        actionsContainerClassName='create-modal-actions'>
-            <h3 className='modal-title' style={titleStyle}>BUILD LAUNCH SCENARIO</h3>
+            <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'UPDATE LAUNCH SCENARIO' : 'BUILD LAUNCH SCENARIO'}</h3>
             <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
                 <i className="material-icons">close</i>
             </IconButton>
@@ -169,7 +170,12 @@ class Create extends Component {
                             </div>,
                             <div key={1} className='selected-values'>
                                 <span>Selected Persona</span>
-                                <span><AccountIcon style={iconStyle}/> {this.state.selectedPersona ? this.getSelectedName() : '-'}</span>
+                                <span>
+                                    <AccountIcon style={iconStyle}/> {this.state.selectedPersona ? this.getSelectedName() : '-'}
+                                    {this.state.selectedPersona && <IconButton onClick={() => this.setState({ selectedPersona: null, personaType: null })} style={{ position: 'relative', top: '-2px' }}>
+                                        <DeleteIcon color={palette.primary4Color}/>
+                                    </IconButton>}
+                                </span>
                             </div>]}
                         <div className={'persona-list-wrapper' + (this.state.showPersonaSelector ? ' active' : '')}>
                             {this.state.personaType && !this.state.selectedPersona && <PersonaList {...props} noFilter titleLeft scrollContent/>}
@@ -493,7 +499,10 @@ class Create extends Component {
     };
 
     next = () => {
-        this.setState({ currentStep: this.state.currentStep + 1 })
+        let currentStep = this.state.currentStep + 1;
+        let state = { currentStep };
+        currentStep === 3 && (state.title = `Launch ${this.state.selectedApp.clientName} with ${this.getSelectedName()}`);
+        this.setState(state)
     };
 
     prev = () => {
