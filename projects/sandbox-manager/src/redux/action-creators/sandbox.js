@@ -1,7 +1,8 @@
 import * as actionTypes from './types';
-import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
+import { authorize, goHome, init, saveSandboxApiEndpointIndex } from './fhirauth';
 import { fetchPersonas } from "./persona";
 import { fetchingPatient, setFetchingSinglePatientFailed, setSinglePatientFetched } from "./patient";
+import { resetState } from "./app";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -556,7 +557,8 @@ export function updateLaunchScenario (scenario, description, title) {
         !description && !title && (url += '/launched');
 
         fetch(url, Object.assign({ method: "PUT" }, config))
-            .then(() => {})
+            .then(() => {
+            })
             .catch(e => {
                 console.log(e);
             })
@@ -671,19 +673,19 @@ export const createSandbox = (sandboxDetails) => {
         dispatch(setCreatingSandbox(true));
         let config = getConfig(state);
         let clonedSandbox = {};
-        if (sandboxDetails.apiEndpointIndex  === "5") {
+        if (sandboxDetails.apiEndpointIndex === "5") {
             clonedSandbox.sandboxId = "MasterDstu2Smart";
-            if (sandboxDetails.dataSet  === "NONE") {
+            if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterDstu2Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex  === "6") {
+        } else if (sandboxDetails.apiEndpointIndex === "6") {
             clonedSandbox.sandboxId = "MasterStu3Smart";
-            if (sandboxDetails.dataSet  === "NONE") {
+            if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterStu3Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex  === "7") {
+        } else if (sandboxDetails.apiEndpointIndex === "7") {
             clonedSandbox.sandboxId = "MasterR4Smart";
-            if (sandboxDetails.dataSet  === "NONE") {
+            if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterR4Empty";
             }
         }
@@ -715,17 +717,25 @@ export const fetchSandboxes = (toSelect) => {
 
         fetch(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
             .then(res => {
-                res && res.json()
-                    .then(data => {
-                        const sandboxes = [];
-                        for (let key in data) {
-                            sandboxes.push({
-                                ...data[key], id: key
-                            });
-                        }
-                        dispatch(fetchSandboxesSuccess(sandboxes));
-                        setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
-                    })
+                if (res.status === 401) {
+                    sessionStorage.clear();
+                    localStorage.clear();
+
+                    dispatch(resetState());
+                    window.location.href = window.location.origin;
+                } else {
+                    res && res.json()
+                        .then(data => {
+                            const sandboxes = [];
+                            for (let key in data) {
+                                sandboxes.push({
+                                    ...data[key], id: key
+                                });
+                            }
+                            dispatch(fetchSandboxesSuccess(sandboxes));
+                            setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                        })
+                }
             })
             .catch(err => {
                 console.log(err);
