@@ -137,56 +137,31 @@ class Create extends Component {
                 </div>;
             case 1:
                 let type = PersonaList.TYPES.persona;
-                let typeFilter = { resource: this.state.personaType };
                 let personaList = this.props.personas;
                 let click = selectedPersona => {
-                    this.setState({ showPersonaSelector: false });
-                    setTimeout(() => {
-                        this.setState({ selectedPersona });
-                    }, 300)
+                    selectedPersona && this.setState({ selectedPersona });
                 };
                 let close = () => {
                     this.setState({ showPersonaSelector: false });
                     setTimeout(() => this.setState({ personaType: undefined }), 400);
                 };
                 let props = {
-                    typeFilter, type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
+                    type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart, selected: this.state.selectedPersona,
                     search: this.props.fetchPersonas, loading: this.props.personaLoading, close, pagination: this.props.patientsPagination,
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/> Which user will launch the app in this launch scenario?</span>
                     <div className='persona-selection'>
-                        {((!this.state.personaType && !this.state.selectedPersona) ||
-                            (this.state.personaType && this.state.selectedPersona)) && [
-                            <div key={2} className='type-selection'>
-                                <span>User Persona Type</span>
-                                <div>
-                                    <RadioButtonGroup valueSelected={this.state.personaType} name="personaType" onChange={this.personaType}>
-                                        <RadioButton value="Practitioner" label="Practitioner"/>
-                                        <RadioButton value="Patient" label="Patient"/>
-                                    </RadioButtonGroup>
-                                </div>
-                            </div>,
-                            <div key={1} className='selected-values'>
-                                <span>Selected Persona</span>
-                                <span>
-                                    <AccountIcon style={iconStyle}/> {this.state.selectedPersona ? this.getSelectedName() : '-'}
-                                    {this.state.selectedPersona && <IconButton onClick={() => this.setState({ selectedPersona: null, personaType: null })} style={{ position: 'relative', top: '-2px' }}>
-                                        <DeleteIcon color={palette.primary4Color}/>
-                                    </IconButton>}
-                                </span>
-                            </div>]}
-                        <div className={'persona-list-wrapper' + (this.state.showPersonaSelector ? ' active' : '')}>
-                            {this.state.personaType && !this.state.selectedPersona && <PersonaList {...props} noFilter titleLeft scrollContent/>}
-                        </div>
+                        {this.state.selectedPersona && <span className='selected-text'><b>Selected:</b> {this.getSelectedName()}</span>}
+                        <PersonaList {...props} noTitle scrollContent/>
                     </div>
                 </div>;
             case 2:
                 type = PersonaList.TYPES.patient;
                 personaList = this.props.patients;
                 props = {
-                    typeFilter, type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
+                    type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
                     search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.closePatientSearch, pagination: this.props.patientsPagination,
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
@@ -501,7 +476,10 @@ class Create extends Component {
     next = () => {
         let currentStep = this.state.currentStep + 1;
         let state = { currentStep };
-        if (currentStep === 3) {
+        if (currentStep === 1) {
+            this.props.fetchPersonas(PersonaList.TYPES.persona);
+        }
+        else if (currentStep === 3) {
             let title = `Launch ${this.state.selectedApp.clientName}`;
             title += (this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '');
             title += ` as ${this.getSelectedName()}`;
