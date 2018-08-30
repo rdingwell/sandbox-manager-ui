@@ -501,7 +501,12 @@ class Create extends Component {
     next = () => {
         let currentStep = this.state.currentStep + 1;
         let state = { currentStep };
-        currentStep === 3 && (state.title = `Launch ${this.state.selectedApp.clientName} with ${this.getSelectedName()}`);
+        if (currentStep === 3) {
+            let title = `Launch ${this.state.selectedApp.clientName}`;
+            title += (this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '');
+            title += ` as ${this.getSelectedName()}`;
+            state.title = title;
+        }
         this.setState(state)
     };
 
