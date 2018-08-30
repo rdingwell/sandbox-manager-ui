@@ -121,7 +121,7 @@ class Users extends Component {
                 </div>}
             </div>
             <Snackbar open={this.props.inviting} message={sending ? 'Sending invitation to user...' : 'Deleting user invitation...'} autoHideDuration={30000}
-                      bodyStyle={{margin: '0 auto', backgroundColor: sending ? palette.primary2Color : palette.primary4Color}}/>
+                      bodyStyle={{ margin: '0 auto', backgroundColor: sending ? palette.primary2Color : palette.primary4Color }}/>
         </div>;
     }
 
@@ -179,8 +179,10 @@ class Users extends Component {
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
-                                <MenuItem disabled={!canDelete || !currentIsAdmin} className='scenario-menu-item' primaryText={isAdmin ? 'Revoke admin' : 'Make admin'}
-                                          onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>
+                                {isAdmin && <MenuItem className='scenario-menu-item' primaryText='Revoke admin'
+                                                                    onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
+                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin'
+                                                                          onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user'
                                           onClick={() => this.handleOpen(user.sbmUserId)}/>
                             </Menu>
@@ -219,13 +221,13 @@ class Users extends Component {
     resendEmail = (email) => {
         EMAIL_REGEX.test(String(email).toLowerCase()) && this.props.inviteNewUser(email);
         this.handleClose();
-        this.setState({action: 'sending'});
+        this.setState({ action: 'sending' });
     };
 
     revokeInvitation = (id) => {
         this.props.removeInvitation(id);
         this.handleClose();
-        this.setState({action: 'rejecting'});
+        this.setState({ action: 'rejecting' });
     };
 
     toggleMenu = (menuItem) => {

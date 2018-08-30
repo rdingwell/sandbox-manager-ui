@@ -1,4 +1,9 @@
 .launch-scenario-dialog {
+  .selected-text {
+    position: relative;
+    top: 40px;
+    left: -160px;
+  }
   .subscript.right {
     position: absolute;
     right: 35px;
@@ -76,12 +81,20 @@
     min-height: 300px;
     .persona-selection {
       text-align: center;
-      padding-top: 72px;
+      padding-top: 10px;
       font-size: 18px;
+      .personas-wrapper.modal {
+        text-align: left;
+      }
+      .persona-table-wrapper.modal {
+        max-height: 30vh;
+        overflow-y: auto;
+      }
       & > * {
+        min-width: 200px;
         vertical-align: top;
         & > *:nth-child(2) {
-          padding-left: 10px;
+          padding: 0 10px;
         }
       }
       & > div > span {

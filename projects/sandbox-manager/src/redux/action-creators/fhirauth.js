@@ -1,5 +1,7 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
+import { fetchSandboxes } from "./sandbox";
+import { resetState } from "./app";
 
 let fhirClient = null;
 
@@ -166,6 +168,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                     sessionStorage.clear();
                     localStorage.clear();
 
+                    dispatch(resetState());
                     dispatch(init());
                 } else {
                     response.json()
@@ -181,6 +184,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                                             redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
                                             redirect && sessionStorage.sandboxId &&
                                             dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
+                                            dispatch(fetchSandboxes());
                                         });
                                 });
                         });

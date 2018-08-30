@@ -133,7 +133,6 @@ class Apps extends Component {
     }
 
     search = (type, crit) => {
-        this.state.appToLaunch && this.state.appToLaunch.samplePatients && console.log(this.state.appToLaunch.samplePatients);
         this.state.appToLaunch && this.state.appToLaunch.samplePatients
             ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 15)
             : this.props.fetchPersonas(type, crit, 15);
