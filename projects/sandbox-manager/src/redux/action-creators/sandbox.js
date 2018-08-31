@@ -796,45 +796,7 @@ export const fetchUserNotifications = () => {
             .then(result => {
                 result.json()
                     .then(res => {
-                        dispatch(setNotifications([{
-                            "id": 1,
-                            "createdTimestamp": 1535146460000,
-                            "user": {
-                                "id": 1,
-                                "createdTimestamp": 1489617608000
-                            },
-                            "newsItem": {
-                                "id": 4,
-                                "createdTimestamp": 1535054075000,
-                                "title": "CQF Ruler \"$submit-data\" Operation",
-                                "description": "HSPC STU3 FHIR server now supports the \"$submit-data\" operation",
-                                "link": "https://healthservices.atlassian.net/wiki/spaces/HSPC/blog/2018/08/23/371949585/CQF+Ruler+submit-data+Operation+Now+Supported+in+STU3",
-                                "expiration_date": null,
-                                "active": 0,
-                                "type": null
-                            },
-                            "seen": false,
-                            "hidden": false
-                        },{
-                            "id": 1,
-                            "createdTimestamp": 1535146460000,
-                            "user": {
-                                "id": 1,
-                                "createdTimestamp": 1489617608000
-                            },
-                            "newsItem": {
-                                "id": 4,
-                                "createdTimestamp": 1535054075000,
-                                "title": "CQF Ruler \"$submit-data\" Operation",
-                                "description": "HSPC STU3 FHIR server now supports the \"$submit-data\" operation",
-                                "link": "https://healthservices.atlassian.net/wiki/spaces/HSPC/blog/2018/08/23/371949585/CQF+Ruler+submit-data+Operation+Now+Supported+in+STU3",
-                                "expiration_date": null,
-                                "active": 0,
-                                "type": null
-                            },
-                            "seen": false,
-                            "hidden": false
-                        }]));
+                        dispatch(setNotifications(res));
                         dispatch(setNotificationLoading(false));
                     });
             })
