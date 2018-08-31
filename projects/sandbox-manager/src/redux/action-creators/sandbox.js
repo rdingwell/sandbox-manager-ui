@@ -26,6 +26,20 @@ export function setFetchSingleLocation (fetching) {
     }
 }
 
+export function setNotificationLoading (loading) {
+    return {
+        type: actionTypes.SET_NOTIFICATIONS_LOADING,
+        payload: { loading }
+    }
+}
+
+export function setNotifications (notifications) {
+    return {
+        type: actionTypes.SET_NOTIFICATIONS,
+        payload: { notifications }
+    }
+}
+
 export function setLoginInfo (loginInfo) {
     return {
         type: actionTypes.SET_LOGIN_INFO,
@@ -745,6 +759,7 @@ export const fetchSandboxes = (toSelect) => {
 };
 
 export const fetchSandboxInvites = () => {
+    console.log('Fetching invites');
     return (dispatch, getState) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -766,6 +781,84 @@ export const fetchSandboxInvites = () => {
             .catch(err => {
                 dispatch(fetchSandboxInvitesFail(err));
             })
+    };
+};
+
+export const fetchUserNotifications = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(setNotificationLoading(true));
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        fetch(configuration.sandboxManagerApiUrl + '/notification' + queryParams, getConfig())
+            .then(result => {
+                result.json()
+                    .then(res => {
+                        dispatch(setNotifications(res));
+                        dispatch(setNotificationLoading(false));
+                    });
+            })
+            .catch(err => {
+                dispatch(setNotificationLoading(false));
+                console.log(err);
+            })
+    };
+};
+
+export const hideNotification = (notification) => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        notification.hidden = true;
+
+        let config = {
+            method: 'POST',
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(notification)
+        };
+
+        fetch(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, config)
+            .then(() => {
+            }).catch(err => {
+            console.log(err);
+        });
+    };
+};
+
+export const markAllNotificationsSeen = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        let config = {
+            method: 'POST',
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        };
+
+        fetch(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, config)
+            .then(() => {
+                dispatch(fetchUserNotifications());
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(fetchUserNotifications());
+            });
     };
 };
 

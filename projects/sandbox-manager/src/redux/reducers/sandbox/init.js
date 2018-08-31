@@ -31,6 +31,7 @@ export default {
     singleResource: false,
     singleResourceLoadingError: false,
 
+    notifications: [],
     inviting: false,
     resetting: false,
     createSandboxError: '',
