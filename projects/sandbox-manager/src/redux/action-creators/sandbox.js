@@ -26,6 +26,20 @@ export function setFetchSingleLocation (fetching) {
     }
 }
 
+export function setNotificationLoading (loading) {
+    return {
+        type: actionTypes.SET_NOTIFICATIONS_LOADING,
+        payload: { loading }
+    }
+}
+
+export function setNotifications (notifications) {
+    return {
+        type: actionTypes.SET_NOTIFICATIONS,
+        payload: { notifications }
+    }
+}
+
 export function setLoginInfo (loginInfo) {
     return {
         type: actionTypes.SET_LOGIN_INFO,
@@ -745,6 +759,7 @@ export const fetchSandboxes = (toSelect) => {
 };
 
 export const fetchSandboxInvites = () => {
+    console.log('Fetching invites');
     return (dispatch, getState) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -766,6 +781,103 @@ export const fetchSandboxInvites = () => {
             .catch(err => {
                 dispatch(fetchSandboxInvitesFail(err));
             })
+    };
+};
+
+export const fetchUserNotifications = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(setNotificationLoading(true));
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        fetch(configuration.sandboxManagerApiUrl + '/notification' + queryParams, getConfig())
+            .then(result => {
+                result.json()
+                    .then(res => {
+                        dispatch(setNotifications([{
+                            "id": 1,
+                            "createdTimestamp": 1535146460000,
+                            "user": {
+                                "id": 1,
+                                "createdTimestamp": 1489617608000
+                            },
+                            "newsItem": {
+                                "id": 4,
+                                "createdTimestamp": 1535054075000,
+                                "title": "CQF Ruler \"$submit-data\" Operation",
+                                "description": "HSPC STU3 FHIR server now supports the \"$submit-data\" operation",
+                                "link": "https://healthservices.atlassian.net/wiki/spaces/HSPC/blog/2018/08/23/371949585/CQF+Ruler+submit-data+Operation+Now+Supported+in+STU3",
+                                "expiration_date": null,
+                                "active": 0,
+                                "type": null
+                            },
+                            "seen": false,
+                            "hidden": false
+                        }]));
+                        dispatch(setNotificationLoading(false));
+                    });
+            })
+            .catch(err => {
+                dispatch(setNotificationLoading(false));
+                console.log(err);
+            })
+    };
+};
+
+export const hideNotification = (notification) => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        notification.hidden = true;
+
+        let config = {
+            method: 'POST',
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(notification)
+        };
+
+        fetch(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, config)
+            .then(() => {
+            }).catch(err => {
+            console.log(err);
+        });
+    };
+};
+
+export const markAllNotificationsSeen = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
+
+        let config = {
+            method: 'POST',
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
+        };
+
+        fetch(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, config)
+            .then(() => {
+                dispatch(fetchUserNotifications());
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(fetchUserNotifications());
+            });
     };
 };
 

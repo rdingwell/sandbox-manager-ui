@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AvailableSandboxes from './AvailableSandboxes';
 import CreateSandbox from '../CreateSandbox';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { app_setScreen, fetchSandboxes, loadTerms, loadInvites } from '../../../redux/action-creators';
+import { app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './styles.less';
@@ -21,6 +21,7 @@ class Dashboard extends Component {
     componentDidMount () {
         this.props.app_setScreen('dashboard');
         this.props.loadInvites();
+        this.props.fetchUserNotifications();
     }
 
     render () {
@@ -40,6 +41,6 @@ class Dashboard extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications }, dispatch);
 
 export default connect(undefined, mapDispatchToProps)(withErrorHandler(Dashboard));

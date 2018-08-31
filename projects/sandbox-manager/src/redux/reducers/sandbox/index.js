@@ -146,6 +146,9 @@ export default function (state = initialState, action) {
         case actionTypes.LOOKUP_SANDBOX_BY_ID_SUCCESS:
             state.lookupSandbox = action.sandbox;
             break;
+        case actionTypes.SET_NOTIFICATIONS:
+            state.notifications = action.payload.notifications;
+            break;
         case actionTypes.LOOKUP_SANDBOX_BY_ID_FAIL:
             state.lookingForSandbox = false;
             state.lookingForSandboxError = action.error;
