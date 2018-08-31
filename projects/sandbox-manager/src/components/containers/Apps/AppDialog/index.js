@@ -24,6 +24,7 @@ class AppDialog extends Component {
             tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
             clientJSON: props.app ? props.app.clientJSON : {},
             patientScoped: true,
+            offlineAccess: false,
             copyType: props.app ? props.app.copyType : 'MASTER',
         };
 
@@ -129,10 +130,10 @@ class AppDialog extends Component {
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
-                            <Toggle label='Allow offline access' defaultToggled={false}
+                            <Toggle label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}
                                     thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
                                     trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
-                            <Toggle label='Patient Scoped App' defaultToggled={true} onChange={(_e, _k, value) => this.onChange('patientScoped', value)}
+                            <Toggle label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}
                                     thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
                                     trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
                         </div>}

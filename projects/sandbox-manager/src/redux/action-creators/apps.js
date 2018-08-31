@@ -47,6 +47,22 @@ export function createApp (app) {
             : app.patientScoped
                 ? ["launch", "patient/*.*", "profile", "openid"]
                 : ["launch", "user/*.*", "profile", "openid"];
+        let clientJSON = {
+            scope,
+            clientName: app.clientName,
+            launchUri: app.launchUri,
+            redirectUris: app.redirectUris.split(','),
+            grantTypes: ["authorization_code"],
+            tokenEndpointAuthMethod: app.tokenEndpointAuthMethod,
+            accessTokenValiditySeconds: 3600,
+            idTokenValiditySeconds: 3600,
+            refreshTokenValiditySeconds: 31557600
+        };
+        if (app.offlineAccess) {
+            clientJSON.scope.push("offline_access");
+            clientJSON.grantTypes.push("refresh_token");
+            clientJSON.requireAuthTime = false;
+        }
 
         let newApp = {
             launchUri: app.launchUri,
@@ -57,17 +73,7 @@ export function createApp (app) {
             sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
             briefDescription: app.briefDescription,
             samplePatients: app.samplePatients,
-            clientJSON: JSON.stringify({
-                scope,
-                clientName: app.clientName,
-                launchUri: app.launchUri,
-                redirectUris: app.redirectUris.split(','),
-                grantTypes: ["authorization_code"],
-                tokenEndpointAuthMethod: app.tokenEndpointAuthMethod,
-                accessTokenValiditySeconds: 3600,
-                idTokenValiditySeconds: 3600,
-                refreshTokenValiditySeconds: 31557600
-            })
+            clientJSON: JSON.stringify(clientJSON)
         };
 
         fetch(url, Object.assign({ method: "POST", body: JSON.stringify(newApp) }, config))
