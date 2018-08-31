@@ -796,14 +796,15 @@ export const fetchUserNotifications = () => {
             .then(result => {
                 result.json()
                     .then(res => {
-                        dispatch(setNotifications(res));
+                        dispatch(setNotifications([]));
                         dispatch(setNotificationLoading(false));
                     });
             })
             .catch(err => {
+                dispatch(setNotifications([]));
                 dispatch(setNotificationLoading(false));
                 console.log(err);
-            })
+            });
     };
 };
 
