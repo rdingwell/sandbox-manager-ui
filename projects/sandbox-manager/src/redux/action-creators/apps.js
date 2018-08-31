@@ -125,6 +125,7 @@ export function updateApp (newValues, originalApp) {
             launchUri: newValues.launchUri,
             briefDescription: newValues.briefDescription,
             samplePatients: newValues.samplePatients,
+            logoUri: newValues.logoFile ? newValues.clientJSON.logoUri : null,
             clientJSON: JSON.stringify(Object.assign({}, newValues.clientJSON, {
                 clientName: newValues.clientName,
                 launchUri: newValues.launchUri,
