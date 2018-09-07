@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, lookupPersonasStart, addCustomContext, fetchLocation,
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext, fetchLocation,
     fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
 } from '../../../redux/action-creators';
@@ -9,7 +9,7 @@ import {bindActionCreators} from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
-    TextField, SelectField
+    TextField, SelectField, Toggle
 } from 'material-ui';
 import {ContentSort} from "material-ui/svg-icons/index";
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -275,6 +275,7 @@ class LaunchScenarios extends Component {
 
     getDetailsContent = (selectedScenario) => {
         let lightColor = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7'};
+        let needsBanner = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7', width: '58%'};
         let normalColor = {color: this.props.muiTheme.palette.primary3Color};
         let darkColor = {color: this.props.muiTheme.palette.primary6Color};
         let iconStyle = {color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px'};
@@ -308,7 +309,7 @@ class LaunchScenarios extends Component {
                     <div>
                     <span className='section-value' style={lightColor}>
                         <Patient style={iconStyleLight}/>
-                        {selectedScenario.patientName ? selectedScenario.patientName : '-'}
+                        <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline"}} onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>
                     </span>
                         <span className='section-value' style={lightColor}>
                         <EventIcon style={iconStyleLight}/>
@@ -332,7 +333,10 @@ class LaunchScenarios extends Component {
                     </span>
                         <span className='section-value' style={lightColor}>
                         <FullScreenIcon style={iconStyleLight}/>
-                        Needs Patient Banner: {selectedScenario.needPatientBanner ? 'Yes' : 'No'}
+                        <Toggle className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} labelStyle={needsBanner} thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary7Color }} toggled={selectedScenario.needPatientBanner==='T'}
+                                thumbSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5' }}
+                                onToggle={e => {this.toggleNeedsPatientBanner(e, selectedScenario)}}/>
                     </span>
                     </div>
                 </div>
@@ -395,6 +399,11 @@ class LaunchScenarios extends Component {
         this.buttonClick = false;
     };
 
+    toggleNeedsPatientBanner = (e, selectedScenario) => {
+        selectedScenario.needPatientBanner = selectedScenario.needPatientBanner === 'T' ? 'F': 'T';
+        this.props.updateNeedPatientBanner(this.props.scenarios[this.state.selectedScenario]);
+    };
+
     getCustomContext = (selectedScenario) => {
         let contexts = selectedScenario.contextParams || [];
         return !this.props.modifyingCustomContext
@@ -425,6 +434,21 @@ class LaunchScenarios extends Component {
         let title = state.title !== this.state.scenarioToEdit.title ? state.title : undefined;
         this.props.updateLaunchScenario(this.state.scenarioToEdit, description, title);
         this.selectScenarioForEditing();
+    };
+
+    openInDM = (e, patient) => {
+        // e.stopPropagation();
+        this.props.doLaunch({
+            "authClient": {
+                "clientName": "Patient Data Manager",
+                "clientId": "patient_data_manager",
+                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
+            },
+            "appUri": "https://patient-data-manager.hspconsortium.org/",
+            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
+            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
+            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+        }, patient, undefined, true);
     };
 }
 
@@ -473,6 +497,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         deleteScenario,
         doLaunch,
         updateLaunchScenario,
+        updateNeedPatientBanner,
         lookupPersonasStart,
         setSinglePatientFetched,
         setFetchSingleEncounter,

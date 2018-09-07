@@ -582,6 +582,32 @@ export function updateLaunchScenario (scenario, description, title) {
     }
 }
 
+export function updateNeedPatientBanner (scenario) {
+    return (dispatch, getState) => {
+        let state = getState();
+
+        let configuration = state.config.xsettings.data.sandboxManager;
+        const config = {
+            headers: {
+                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scenario)
+        };
+        let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
+
+        fetch(url, Object.assign({ method: "PUT" }, config))
+            .then(() => {
+            })
+            .catch(e => {
+                console.log(e);
+            })
+            .then(() => {
+                dispatch(modifyingCustomContext(false));
+            });
+    }
+}
+
 export const inviteNewUser = (email) => {
     return (dispatch, getState) => {
         let state = getState();
