@@ -166,7 +166,7 @@ class Users extends Component {
                 lastLogin = new Date(lastLogin);
                 let myDateString = lastLogin.getFullYear() + '-' + ('0' + (lastLogin.getMonth()+1)).slice(-2) + '-'
                     + ('0' + lastLogin.getDate()).slice(-2);
-                lastLogin = myDateString + ' ' + lastLogin.getHours() + ':' + lastLogin.getMinutes();
+                lastLogin = myDateString + ' ' + ('0' + (lastLogin.getHours()+1)).slice(-2) + ':' + ('0' + (lastLogin.getMinutes()+1)).slice(-2);
             } else {
                 lastLogin = 'unknown';
             }
