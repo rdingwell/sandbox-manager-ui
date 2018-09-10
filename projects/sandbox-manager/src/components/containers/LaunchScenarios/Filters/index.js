@@ -36,7 +36,7 @@ export default class Filters extends Component {
                          targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={() => this.showFilter()} className='left-margin'>
                     <Menu className='app-filter-menu' width='200px' desktop autoWidth={false}>
                         {this.props.apps.map((app, i) =>
-                            <MenuItem className='app-filter-menu-item' primaryText={app.clientName} key={i} onClick={() => this.filter(app.authClient.clientId)}
+                            <MenuItem className='app-filter-menu-item' primaryText={app.clientName} key={i} onClick={() => this.filter(app.clientId)}
                                       style={this.props.appliedIdFilter === app.clientId ? { backgroundColor: palette.primary5Color } : undefined}/>
                         )}
                     </Menu>
