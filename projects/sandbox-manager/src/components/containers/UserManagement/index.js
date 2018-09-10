@@ -161,10 +161,15 @@ class Users extends Component {
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
             let canRemoveUser = canDelete && (currentIsAdmin || user.sbmUserId === this.props.user.sbmUserId);
-            let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === this.props.user.sbmUserId) || {}).accessTimestamp;
-            lastLogin = lastLogin
-                ? new moment(lastLogin).format('YYYY-MM-DD HH:MM')
-                : 'unknown';
+            let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === user.sbmUserId) || {}).accessTimestamp;
+            if (lastLogin !== undefined) {
+                lastLogin = new Date(lastLogin);
+                let myDateString = lastLogin.getFullYear() + '-' + ('0' + (lastLogin.getMonth()+1)).slice(-2) + '-'
+                    + ('0' + lastLogin.getDate()).slice(-2);
+                lastLogin = myDateString + ' ' + ('0' + (lastLogin.getHours())).slice(-2) + ':' + ('0' + (lastLogin.getMinutes())).slice(-2);
+            } else {
+                lastLogin = 'unknown';
+            }
 
             return <TableRow key={key} selectable={false}>
                 <TableRowColumn>{user.name || ''}</TableRowColumn>

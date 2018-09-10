@@ -252,8 +252,8 @@ class LaunchScenarios extends Component {
             });
         } else {
             return this.props.scenarios.sort((a, b) => {
-                let timeA = a.lastLaunchSeconds || 0;
-                let timeB = b.lastLaunchSeconds || 0;
+                let timeA = a.lastLaunchSeconds || a.createdTimestamp;
+                let timeB = b.lastLaunchSeconds || b.createdTimestamp;
                 let val = timeA >= timeB ? 1 : -1;
                 if (this.state.desc) {
                     val *= -1;
