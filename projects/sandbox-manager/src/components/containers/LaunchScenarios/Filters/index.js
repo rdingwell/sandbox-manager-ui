@@ -17,7 +17,7 @@ export default class Filters extends Component {
         let deleteCallbackTypeFilter = this.props.appliedTypeFilter ? () => this.filterByType() : undefined;
         let palette = this.props.muiTheme.palette;
         let title = this.props.appliedIdFilter
-            ? this.props.apps.find(a => a.authClient.clientId === this.props.appliedIdFilter).authClient.clientName
+            ? this.props.apps.find(a => a.clientId === this.props.appliedIdFilter).clientName
             : 'App';
         let typeFilterTitle = this.props.appliedTypeFilter ? this.props.appliedTypeFilter : 'Type';
 
