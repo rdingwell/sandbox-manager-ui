@@ -1,6 +1,6 @@
 {
   "name": "sandbox-manager",
-  "version": "0.2.10",
+  "version": "0.2.10-SNAPSHOT",
   "description": "Dashboard part of the wakeforset app.",
   "main": "src/index.js",
   "scripts": {
