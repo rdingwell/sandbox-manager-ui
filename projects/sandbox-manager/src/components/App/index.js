@@ -30,7 +30,7 @@ class App extends React.Component {
                 let smart = FHIR.client(this.props.fhir.smart.data.server);
                 let split = smart.server.serviceUrl.split('/');
                 let isCorrectServer = split ? split.indexOf(sessionStorage.sandboxId) >= 0 : true;
-                if (!isCorrectServer && this.props.history.location.search.indexOf('?code=') === -1) {
+                if (sessionStorage.sandboxId && !isCorrectServer && this.props.history.location.search.indexOf('?code=') === -1) {
                     let newSmart = Object.assign({}, smart);
                     window.fhirClient = smart;
                     newSmart.server.serviceUrl = smart.server.serviceUrl.replace(split[3], sessionStorage.sandboxId);
