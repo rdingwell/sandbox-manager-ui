@@ -26,13 +26,13 @@ class Dashboard extends Component {
 
     render () {
         let dialog = this.state.open
-            ? <CreateSandbox onCancel={this.toggle} open={this.state.open} />
+            ? <CreateSandbox onCancel={this.toggle} open={this.state.open}/>
             : null;
 
         return <Page title='My Sandboxes' className='dashboard-wrapper'>
             {dialog}
-            <AvailableSandboxes onToggleModal={this.toggle} />
-            <Footer loadTerms={this.props.loadTerms} terms={this.props.terms} />
+            <AvailableSandboxes onToggleModal={this.toggle}/>
+            <Footer loadTerms={this.props.loadTerms} terms={this.props.terms}/>
         </Page>;
     }
 
@@ -41,6 +41,11 @@ class Dashboard extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        terms: state.app.terms
+    }
+};
 const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications }, dispatch);
 
-export default connect(undefined, mapDispatchToProps)(withErrorHandler(Dashboard));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Dashboard));
