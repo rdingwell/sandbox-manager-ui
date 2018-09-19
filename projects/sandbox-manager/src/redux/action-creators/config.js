@@ -33,7 +33,6 @@ export function config_LoadXsettings () {
                     type: types.CONFIG_SET_XSETTINGS,
                     payload: { ...Object.assign({}, initialState.xsettings, { status: "error" }) },
                 });
-            })
-            ;
+            });
     };
 }

@@ -12,6 +12,10 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.config : state;
+            state.xsettings.status === "loading" && (state.xsettings = {
+                status: "",
+                data: {}
+            });
             break;
     }
 

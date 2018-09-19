@@ -47,9 +47,23 @@ export function setLoginInfo (loginInfo) {
     }
 }
 
+export function setUserLoginInfo (loginInfo) {
+    return {
+        type: actionTypes.SET_USER_LOGIN_INFO,
+        payload: { loginInfo }
+    }
+}
+
 export function setFetchingLoginInfo (fetching) {
     return {
         type: actionTypes.FETCHING_LOGIN_INFO,
+        payload: { fetching }
+    }
+}
+
+export function setFetchingUserLoginInfo (fetching) {
+    return {
+        type: actionTypes.FETCHING_USER_LOGIN_INFO,
         payload: { fetching }
     }
 }
@@ -1159,17 +1173,13 @@ export function deleteCustomContext (sc, context) {
     }
 }
 
-export function getLoginInfo (sandbox) {
+export function getLoginInfo () {
     return (dispatch, getState) => {
         let state = getState();
         dispatch(setFetchingLoginInfo(true));
 
-        let crit = sandbox
-            ? `sandboxId=${sessionStorage.sandboxId}`
-            : `sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
-
         if (state.config.xsettings.data.sandboxManager) {
-            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?${crit}`;
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
             const config = {
                 headers: {
                     Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
@@ -1188,6 +1198,38 @@ export function getLoginInfo (sandbox) {
                 .catch(e => {
                     console.log(e);
                     dispatch(setFetchingLoginInfo(false));
+                });
+        } else {
+            goHome();
+        }
+    }
+}
+
+export function getUserLoginInfo () {
+    return (dispatch, getState) => {
+        let state = getState();
+        dispatch(setFetchingUserLoginInfo(true));
+
+        if (state.config.xsettings.data.sandboxManager) {
+            let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sandboxId=${sessionStorage.sandboxId}`;
+            const config = {
+                headers: {
+                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                }
+            };
+            fetch(url, config)
+                .then(result => {
+                    result.json()
+                        .then(loginInfo => {
+                            dispatch(setUserLoginInfo(loginInfo));
+                            dispatch(setFetchingUserLoginInfo(false));
+                        })
+                })
+                .catch(e => {
+                    console.log(e);
+                    dispatch(setFetchingUserLoginInfo(false));
                 });
         } else {
             goHome();
