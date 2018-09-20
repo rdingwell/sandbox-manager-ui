@@ -258,7 +258,7 @@ class PersonaList extends Component {
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
                         <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
-                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, paddingLeft: '10px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
+                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             {isPatient ? 'Identifier' : 'User Name'}
                         </TableHeaderColumn>}
