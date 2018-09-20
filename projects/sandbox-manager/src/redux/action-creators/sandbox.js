@@ -470,7 +470,7 @@ export const selectSandbox = (sandbox) => {
         let configuration = state.config.xsettings.data.sandboxManager;
 
         const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-        document.cookie = `${configuration.personaCookieName}=; expires=${new Date(Date.UTC(0))}; domain=${domain}; path=/`;
+        document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
 
         const config = {
             headers: {
