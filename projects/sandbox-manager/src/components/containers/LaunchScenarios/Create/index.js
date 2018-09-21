@@ -68,7 +68,7 @@ class Create extends Component {
 
         return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
                        actionsContainerClassName='create-modal-actions'>
-            <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'UPDATE LAUNCH SCENARIO' : 'BUILD LAUNCH SCENARIO'}</h3>
+            <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
             <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
                 <i className="material-icons">close</i>
             </IconButton>
