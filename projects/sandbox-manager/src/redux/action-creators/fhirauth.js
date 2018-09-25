@@ -90,7 +90,7 @@ export function authorize (url, state, sandboxId) {
     let serviceUrl = config.defaultServiceUrl;
 
     const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-    document.cookie = `${config.personaCookieName}=''; expires=${new Date(Date.UTC(0))}; domain=${domain}; path=/`;
+    document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
 
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
@@ -165,11 +165,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
         fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
             .then(response => {
                 if (response.status === 401) {
-                    sessionStorage.clear();
-                    localStorage.clear();
-
-                    dispatch(resetState());
-                    dispatch(init());
+                    goHome();
                 } else {
                     response.json()
                         .then(data => {
@@ -251,8 +247,7 @@ export function goHome () {
         d.setDate(d.getDate() - 1);
         let expires = ";expires=" + d;
         let name = cookiename;
-        let value = "";
-        document.cookie = name + "=" + value + expires + "; path=/acc/html";
+        document.cookie = name + "=" + expires + "; path=/acc/html";
     }
 
     window.location = window.location.origin;

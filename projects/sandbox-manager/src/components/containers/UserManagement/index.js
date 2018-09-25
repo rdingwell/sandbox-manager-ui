@@ -277,7 +277,7 @@ const mapStateToProps = state => {
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
         user: state.users.user,
         updatingUser: state.sandbox.updatingUser,
-        loginInfo: state.sandbox.loginInfo
+        loginInfo: state.sandbox.userLoginInfo || []
     }
 };
 

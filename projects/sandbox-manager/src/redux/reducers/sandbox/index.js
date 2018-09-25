@@ -17,6 +17,9 @@ export default function (state = initialState, action) {
         case actionTypes.FETCHING_LOGIN_INFO:
             state.fetchingLoginInfo = action.payload.fetching;
             break;
+        case actionTypes.FETCHING_USER_LOGIN_INFO:
+            state.fetchingUserLoginInfo = action.payload.fetching;
+            break;
 
         case actionTypes.FETCHING_SINGLE_ENCOUNTER :
             state.fetchingSingleEncounter = action.payload.fetching;
@@ -100,6 +103,9 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.SET_LOGIN_INFO:
             state.loginInfo = action.payload.loginInfo;
+            break;
+        case actionTypes.SET_USER_LOGIN_INFO:
+            state.userLoginInfo = action.payload.loginInfo;
             break;
         case actionTypes.REMOVE_SANDBOX_USER:
             state = removeUser(state, action);
