@@ -105,7 +105,7 @@ export function createApp (app) {
     }
 }
 
-export function updateApp (newValues, originalApp) {
+export function updateApp (newValues, originalApp, changes) {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -125,7 +125,7 @@ export function updateApp (newValues, originalApp) {
             launchUri: newValues.launchUri,
             briefDescription: newValues.briefDescription,
             samplePatients: newValues.samplePatients,
-            logoUri: newValues.logoFile ? newValues.clientJSON.logoUri : null,
+            logoUri: newValues.clientJSON.logoUri ? newValues.clientJSON.logoUri : null,
             clientJSON: JSON.stringify(Object.assign({}, newValues.clientJSON, {
                 clientName: newValues.clientName,
                 launchUri: newValues.launchUri,
@@ -135,33 +135,52 @@ export function updateApp (newValues, originalApp) {
             }))
         });
 
-        fetch(url, Object.assign({ method: "PUT", body: JSON.stringify(newApp) }, config))
-            .then(e => {
-                e.json().then(() => {
-                    if (newValues.logoFile) {
-                        let formData = new FormData();
-                        formData.append("file", newValues.logoFile);
-                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                        fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                            .then(() => {
-                                setTimeout(() => {
-                                    dispatch(loadSandboxApps());
-                                    dispatch(appCreating(false));
-                                }, 550);
-                            });
-                    } else {
-                        url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                        fetch(url, { method: 'DELETE', headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } });
+
+        let updateImage = () => {
+            if (newValues.logoFile) {
+                let formData = new FormData();
+                formData.append("file", newValues.logoFile);
+                url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
+                fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
+                    .then(() => {
+                        setTimeout(() => {
+                            dispatch(loadSandboxApps());
+                        }, 550);
+                    });
+            } else if (!newValues.logoFile) {
+                url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
+                fetch(url, { method: 'DELETE', headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
+                    .then(() => {
                         dispatch(loadSandboxApps());
-                        dispatch(appCreating(false));
+                    });
+            } else {
+                dispatch(loadSandboxApps());
+            }
+        };
+
+        if (changes.length && !(changes.length === 1 && changes[0] === 'image')) {
+            fetch(url, Object.assign({ method: "PUT", body: JSON.stringify(newApp) }, config))
+                .then(() => {
+                    if (changes.indexOf('image') >= 0) {
+                        updateImage();
+                    } else {
+                        dispatch(loadSandboxApps());
                     }
+                })
+                .catch(e => {
+                    console.log(e);
+                    dispatch(loadSandboxApps());
                 });
-            })
-            .catch(e => {
-                console.log(e);
-                dispatch(appCreating(false));
-            });
+        } else if (changes.indexOf('image') >= 0) {
+            updateImage();
+        } else {
+            setTimeout(() => {
+                dispatch(loadSandboxApps());
+            }, 2500);
+        }
     }
+
+
 }
 
 export function deleteApp (app) {

@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton} from 'material-ui';
+import React, { Component } from 'react';
+import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
 import './styles.less';
 import CheckIcon from "material-ui/svg-icons/navigation/check";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import ContentAdd from "material-ui/svg-icons/content/add";
 
 class AppDialog extends Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
 
         let clientJSON = props.app && props.app.clientJSON && JSON.parse(props.app.clientJSON);
@@ -40,27 +40,20 @@ class AppDialog extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        // console.log('Next props:');
-        // console.log(nextProps);
+    componentWillReceiveProps (nextProps) {
         if ((this.props.app && !this.props.app.clientJSON && nextProps.app.clientJSON) ||
             (this.props.app && this.props.app.clientJSON && nextProps.app.clientJSON && this.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
             let clientJSON = nextProps.app && nextProps.app.clientJSON && JSON.parse(nextProps.app.clientJSON);
             let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
             let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
 
-            // console.log('Client json:');
-            // console.log(clientJSON);
-            // console.log('URIs:');
-            // console.log(redirectUris);
+            let app = Object.assign({}, this.state.app, { scope, redirectUris, clientJSON });
 
-            let app = Object.assign({}, this.state.app, {scope, redirectUris, clientJSON});
-
-            this.setState({app});
+            this.setState({ app });
         }
     }
 
-    render() {
+    render () {
         let clientId = null;
         let theme = this.props.muiTheme.palette;
 
@@ -82,13 +75,13 @@ class AppDialog extends Component {
         this.props.app && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
-        let underlineFocusStyle = {borderColor: theme.primary2Color};
-        let floatingLabelFocusStyle = {color: theme.primary2Color};
+        let underlineFocusStyle = { borderColor: theme.primary2Color };
+        let floatingLabelFocusStyle = { color: theme.primary2Color };
 
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
             <Paper className='paper-card'>
-                <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.handleClose}>
+                <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
                 <h3>Registered App Details</h3>
@@ -97,9 +90,9 @@ class AppDialog extends Component {
                         <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}
                                    onChange={(_e, newVal) => this.onChange('clientName', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                         <div>
-                            <div style={{color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)'}}>Client Type</div>
+                            <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
                             <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
-                                          style={{top: '16px'}} disabled={this.state.isReplica}>
+                                          style={{ top: '16px' }} disabled={this.state.isReplica}>
                                 <MenuItem value='NONE' primaryText='Public Client'/>
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
                             </DropDownMenu>
@@ -131,11 +124,11 @@ class AppDialog extends Component {
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
                             <Toggle label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}
-                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
-                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
+                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
                             <Toggle label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}
-                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
-                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
+                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
                         </div>}
                         < br/>
                         <div className='image-button-wrapper'>
@@ -153,10 +146,10 @@ class AppDialog extends Component {
                                                   disabled={this.state.isReplica}>
                                 <DeleteIcon/>
                             </FloatingActionButton>}
-                            <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
+                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
                             {this.state.app.logoUri
                                 ? <img src={this.state.app.logoUri}/>
-                                : <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                                : <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                             }
                         </div>
                     </form>
@@ -173,22 +166,22 @@ class AppDialog extends Component {
             let url = protocol + '//' + host;
             let app = Object.assign({}, this.state.app);
             app.redirectUris = url + '/';
-            this.setState({app});
+            this.setState({ app });
         }
         else {
             let pathArray = this.state.app.launchUri.split('/');
             let app = Object.assign({}, this.state.app);
             app.redirectUris = pathArray[0] + '/';
-            this.setState({app});
+            this.setState({ app });
         }
     };
 
     handleLaunch = () => {
-        this.setState({modalOpen: true});
+        this.setState({ modalOpen: true });
     };
 
     handleClose = () => {
-        this.setState({modalOpen: false});
+        this.setState({ modalOpen: false });
         this.props.onClose();
     };
 
@@ -207,7 +200,7 @@ class AppDialog extends Component {
                 app.logoFile = input.files[0];
                 let changes = this.state.changes.slice();
                 changes.indexOf('logo') === -1 && changes.push('image');
-                this.setState({app, changes})
+                this.setState({ app, changes })
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -227,13 +220,14 @@ class AppDialog extends Component {
 
         if (this.props.app && this.state.originalApp[prop] !== val) {
             changes.push(prop);
+            prop === 'logoUri' && changes.push('image');
         }
 
-        this.setState({app, changes});
+        this.setState({ app, changes });
     };
 
     save = () => {
-        this.props.onSubmit && this.props.onSubmit(this.state.app);
+        this.props.onSubmit && this.props.onSubmit(this.state.app, this.state.changes);
     };
 }
 
