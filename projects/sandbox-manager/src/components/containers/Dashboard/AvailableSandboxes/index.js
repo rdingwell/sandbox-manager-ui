@@ -28,7 +28,7 @@ class Index extends Component {
 
     componentDidMount () {
         sessionStorage.clear();
-        this.fetchSandboxes();
+        // this.fetchSandboxes();
     }
 
     componentDidUpdate (prevProps) {
