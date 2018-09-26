@@ -152,8 +152,8 @@ class Apps extends Component {
         this.closeAll();
     };
 
-    appSubmit = (app) => {
-        this.state.selectedApp ? this.props.updateApp(app, this.state.selectedApp) : this.props.createApp(app);
+    appSubmit = (app, changes) => {
+        this.state.selectedApp ? this.props.updateApp(app, this.state.selectedApp, changes) : this.props.createApp(app);
         this.closeAll();
     };
 

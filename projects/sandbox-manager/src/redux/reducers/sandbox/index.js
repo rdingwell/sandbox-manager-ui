@@ -198,6 +198,7 @@ export default function (state = initialState, action) {
             state.creatingSandbox = false;
             state.deleting = false;
             state.resetting = false;
+            state.loading = true;
             state.createSandboxError = undefined;
             state.singleResource = undefined;
             state.singleResourceLoadingError = undefined;
@@ -208,6 +209,7 @@ export default function (state = initialState, action) {
             state.importResults = undefined;
             state.launchScenarios = undefined;
             state.notifications = [];
+            state.sandboxes = [];
             break;
     }
 
