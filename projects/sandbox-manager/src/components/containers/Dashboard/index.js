@@ -31,7 +31,9 @@ class Dashboard extends Component {
 
         return <Page title='My Sandboxes' className='dashboard-wrapper'>
             {dialog}
-            <AvailableSandboxes onToggleModal={this.toggle}/>
+            <div className='sandboxes-min-height'>
+                <AvailableSandboxes onToggleModal={this.toggle}/>
+            </div>
             <Footer loadTerms={this.props.loadTerms} terms={this.props.terms}/>
         </Page>;
     }
