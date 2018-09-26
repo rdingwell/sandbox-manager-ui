@@ -20,7 +20,7 @@ export default class PersonaInputs extends Component {
         let floatingLabelFocusStyle = { color: this.props.theme.primary2Color };
 
         return <Paper className='paper-card persona-inputs-wrapper'>
-            <h3>Persona information</h3>
+            <h3>Persona Information</h3>
             <div className='actions'>
                 {this.props.actions}
             </div>
