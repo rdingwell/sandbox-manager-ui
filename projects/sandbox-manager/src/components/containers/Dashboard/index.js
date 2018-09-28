@@ -20,6 +20,7 @@ class Dashboard extends Component {
 
     componentDidMount () {
         this.props.app_setScreen('dashboard');
+        this.props.fetchSandboxes();
         this.props.loadInvites();
         this.props.fetchUserNotifications();
     }
