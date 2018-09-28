@@ -1248,7 +1248,22 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         window.localStorage[key] = "requested-launch";
 
         let params = {};
-        if (persona) {
+        if (scenario) {
+            params = { patient: persona };
+            if (scenario.encounter) params.encounter = scenario.encounter;
+            if (scenario.location) params.location = scenario.location;
+            if (scenario.resource) params.resource = scenario.resource;
+            if (scenario.smartStyleUrl) params.smartStyleUrl = scenario.smartStyleUrl;
+            if (scenario.intent) params.intent = scenario.intent;
+            if (scenario.contextParams) {
+                for (let i=0; i<scenario.contextParams.length; i++) {
+                    let name = scenario.contextParams[i]['name'];
+                    let value = scenario.contextParams[i]['value'];
+                    params[name]= value;
+                }
+            }
+
+        } else if (persona) {
             params = { patient: persona };
         }
 
