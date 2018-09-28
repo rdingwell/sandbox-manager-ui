@@ -118,8 +118,8 @@ class SandboxDetails extends Component {
                     </IconButton>
                     <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>
-                <TextField value={this.state.name} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
-                <TextField value={this.state.description} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
+                <TextField value={this.state.name || this.props.sandboxName} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
+                <TextField value={this.state.description || this.props.sandboxDescription} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
                 <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}
                           iconStyle={{fill: this.props.theme.primary2Color}}/>
             </div>
