@@ -39,7 +39,7 @@ class Apps extends Component {
         this.props.app_setScreen('apps');
         this.props.loadSandboxApps();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
-        this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
+        // this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -133,6 +133,7 @@ class Apps extends Component {
     }
 
     search = (type, crit) => {
+        console.log('search');
         this.state.appToLaunch && this.state.appToLaunch.samplePatients
             ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 15)
             : this.props.fetchPersonas(type, crit, 15);
