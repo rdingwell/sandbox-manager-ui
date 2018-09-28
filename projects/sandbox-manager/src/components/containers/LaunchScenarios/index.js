@@ -79,7 +79,7 @@ class LaunchScenarios extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        ((this.props.creating && !nextProps.creating) || (this.props.deleting && !nextProps.deleting)) && this.props.loadLaunchScenarios();
+        this.props.deleting && !nextProps.deleting && this.props.loadLaunchScenarios();
     }
 
     render() {
@@ -116,8 +116,8 @@ class LaunchScenarios extends Component {
                 </div>
                 <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 &&
+                    {!this.props.scenariosLoading && !this.props.deleting && !this.props.creating && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
+                    {!this.props.scenariosLoading && !this.props.deleting && !this.props.creating && this.props.scenarios && this.props.scenarios.length === 0 &&
                     <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
                 <Create key={this.createKey} open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario} {...this.props}/>

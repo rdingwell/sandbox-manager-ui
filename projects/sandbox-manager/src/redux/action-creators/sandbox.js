@@ -560,6 +560,7 @@ export function createScenario (data) {
                 console.log(e);
             })
             .then(() => {
+                dispatch(loadLaunchScenarios());
                 dispatch(setScenarioCreating(false));
             });
     }

@@ -207,7 +207,7 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
-                    {isPatient && persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A'}
+                    {isPatient && (persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A')}
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} style={{ textAlign: 'right' }}>
