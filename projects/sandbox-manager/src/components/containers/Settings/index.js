@@ -20,20 +20,13 @@ class Settings extends Component {
         };
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
+        this.props.getUserLoginInfo();
     }
 
     componentWillMount () {
         this.props.app_setScreen('settings');
-        let counter = 0;
-        let startLoading = () => {
-            window.fhirClient && this.props.getUserLoginInfo();
-            !window.fhirClient && counter < 7 && setTimeout(startLoading, 200);
-            counter++;
-        };
-
-        startLoading();
     }
 
     render () {
@@ -58,8 +51,11 @@ class Settings extends Component {
 
 
 const mapStateToProps = state => {
+    let configLoaded = state.config.xsettings.status === "ready";
     return {
-        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
+        sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
+        configLoaded,
+        rehydrated: state.config.rehydrated
     };
 };
 
