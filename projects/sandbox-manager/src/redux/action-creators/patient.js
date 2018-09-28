@@ -134,7 +134,6 @@ export function fetchPatientDetails (patient) {
                     data.map(d => {
                         details[d.config.type] = d.data ? d.data.total : 0;
                     });
-                    console.log(details);
                     dispatch(setPatientDetails(details));
                     dispatch(patientDetailsFetchSuccess());
                 })

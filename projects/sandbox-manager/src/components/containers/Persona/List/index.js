@@ -4,10 +4,7 @@ import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
-import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
-import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
@@ -223,7 +220,7 @@ class PersonaList extends Component {
                         <span/>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)} style={patientRightIconStyle}>
+                    {isPatient && <IconButton onClick={e => this.handleRowSelect([i*2], e)} style={patientRightIconStyle}>
                         <span/>
                         <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
@@ -304,7 +301,6 @@ class PersonaList extends Component {
     };
 
     updateFavorite = (e, persona) => {
-        debugger;
         e.stopPropagation();
         if (persona.meta.tag !== undefined) {
             if (persona.meta.tag[0].code === "favorite") {
@@ -365,7 +361,9 @@ class PersonaList extends Component {
         this.setState({ searchCrit });
     };
 
-    handleRowSelect = (row) => {
+    handleRowSelect = (row, event) => {
+        event && event.stopPropagation();
+        event && event.preventDefault();
         row = this.props.modal ? row : row[0] / 2;
         let list = this.getFilteredList();
         if (!this.props.modal && this.props.type === TYPES.patient) {
@@ -373,10 +371,10 @@ class PersonaList extends Component {
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
             let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
-            if (actualClick) {
+            if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();
-                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(list[row]), 500);
+                selected !== undefined && setTimeout(() => list[row] && this.props.fetchPatientDetails(list[row]), 500);
                 this.setState({ selected });
             }
         } else {
