@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -21,6 +21,7 @@ class DataManager extends Component {
 
     componentDidMount () {
         this.props.app_setScreen('data-manager');
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     render () {
@@ -62,6 +63,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, getDefaultUserForSandbox }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext, fetchLocation,
     fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
-    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
+    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -75,6 +75,7 @@ class LaunchScenarios extends Component {
     componentDidMount() {
         this.props.app_setScreen('launch');
         this.props.loadLaunchScenarios();
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -515,6 +516,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setFetchingSingleResourceError,
         fetchResource,
         fetchIntent,
+        getDefaultUserForSandbox,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },

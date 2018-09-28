@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SandboxDetails from './SandboxDetails';
-import { app_setScreen, getUserLoginInfo } from '../../../redux/action-creators';
+import { app_setScreen, getUserLoginInfo, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { bindActionCreators } from "redux";
@@ -18,6 +18,10 @@ class Settings extends Component {
         this.state = {
             activeTab: 'details'
         };
+    }
+
+    componentDidMount() {
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     componentWillMount () {
@@ -59,6 +63,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, getUserLoginInfo }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, getUserLoginInfo, getDefaultUserForSandbox }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Settings)));
