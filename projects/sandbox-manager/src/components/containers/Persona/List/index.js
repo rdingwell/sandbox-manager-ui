@@ -48,19 +48,14 @@ class PersonaList extends Component {
         };
     }
 
-    componentWillMount () {
+    componentDidMount () {
         let canFit = this.calcCanFit();
 
         if (this.props.type !== TYPES.persona) {
-            let crit = this.props.idRestrictions ? this.props.idRestrictions.split('?')[1] : null;
-            this.props.fetchPersonas && this.props.fetchPersonas(this.props.type, crit, canFit);
-        }
-    }
-
-    componentDidMount () {
-        if (this.props.type !== TYPES.persona) {
             let element = this.props.modal ? document.getElementsByClassName('page-content-wrapper')[1] : document.getElementsByClassName('stage')[0];
             element.addEventListener('scroll', this.scroll);
+            let crit = this.props.idRestrictions ? this.props.idRestrictions.split('?')[1] : null;
+            this.props.fetchPersonas && this.props.fetchPersonas(this.props.type, crit, canFit);
         }
     }
 

@@ -1,7 +1,7 @@
 import * as actionTypes from './types';
 import { authorize, goHome, init, saveSandboxApiEndpointIndex } from './fhirauth';
 import { fetchPersonas } from "./persona";
-import { fetchingPatient, setFetchingSinglePatientFailed, setSinglePatientFetched } from "./patient";
+import { fetchingPatient, patientDetailsFetchError, patientDetailsFetchStarted, patientDetailsFetchSuccess, setFetchingSinglePatientFailed, setPatientDetails, setSinglePatientFetched } from "./patient";
 import { resetState } from "./app";
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -16,6 +16,13 @@ export function setUpdatingUser (updating) {
     return {
         type: actionTypes.UPDATING_USER,
         payload: { updating }
+    }
+}
+
+export function setSandboxExportStatus (status) {
+    return {
+        type: actionTypes.SET_SANDBOX_EXPORT_STATUS,
+        payload: { status }
     }
 }
 
@@ -1235,6 +1242,79 @@ export function getUserLoginInfo () {
         } else {
             goHome();
         }
+    }
+}
+
+export function loadExportResources () {
+    return (dispatch, getState) => {
+        let state = getState();
+        let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
+            ? state.sandbox.sandboxApiEndpointIndexes.find(i => i.index === state.sandbox.sandboxApiEndpointIndex)
+            : undefined;
+
+        dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details: undefined, content: undefined }));
+        if (sandboxVersion) {
+            fetch(`/data/export-resources_${sandboxVersion.fhirTag}.json`)
+                .then(data => {
+                    data.json()
+                        .then(resourceList => {
+                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
+                            dispatch(getTotalItemsToExport(resourceList));
+                        })
+                });
+        } else {
+            dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
+        }
+    }
+}
+
+export function getTotalItemsToExport (resourceList) {
+    return (dispatch, getState) => {
+        let promises = [];
+        let content = {};
+        let details = {};
+
+        resourceList.map(resource => {
+            let params = { type: resource, count: 50 };
+
+            promises.push(window.fhirClient.api.search(params));
+        });
+
+        let getNext = function (data, type) {
+            window.fhirClient.api.nextPage({ bundle: data })
+                .then(d => {
+                    if (d.data) {
+                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                        content[type] = content[type].concat(d.data.entry);
+                        hasNext && getNext(d.data, type);
+
+                        //We need to check if we have the total amount of items in the DB
+                        //for longer list FHIR does not return the total on the first search
+                        //and we need to update the data when the total is first returned
+                        !details[type].total && (details[type].total = d.data.total);
+                        !hasNext && (details[type].loading = false);
+                    }
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                });
+        };
+
+        Promise.all(promises)
+            .then(data => {
+                data.map(d => {
+                    if (d.data && d.data.entry && d.data.entry.length) {
+                        let hasNext = !!d.data.link[1];
+
+                        details[d.config.type] = {
+                            total: d.data.total,
+                            loading: hasNext
+                        };
+
+                        content[d.config.type] = d.data.entry;
+                        hasNext && getNext(d.data, d.config.type);
+                    }
+                });
+                dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+            })
     }
 }
 

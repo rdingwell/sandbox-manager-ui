@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, createTransform } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import config from "./reducers/config/";
 import fhir from "./reducers/fhir/";
@@ -15,7 +15,19 @@ import patient from "./reducers/patient";
 
 const persistConfig = {
     key: 'root',
-    storage
+    storage,
+    transforms: [
+        createTransform(
+            (inboundState, key) => {
+                if (key !== 'sandbox') return inboundState;
+                else return {
+                    ...inboundState,
+                    exportStatus: undefined
+                }
+            },
+            undefined
+        ),
+    ]
 };
 const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, persona, app, patient });
 

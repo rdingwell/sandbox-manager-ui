@@ -108,6 +108,22 @@ const config = {
                     to: DIST_DIR + "/data/xsettings.json"
                 },
                 {
+                    from: SRC_DIR + "/assets/config/export-resources_1_0_2.json",
+                    to: DIST_DIR + "/data/export-resources_1_0_2.json"
+                },
+                {
+                    from: SRC_DIR + "/assets/config/export-resources_1_8_0.json",
+                    to: DIST_DIR + "/data/export-resources_1_8_0.json"
+                },
+                {
+                    from: SRC_DIR + "/assets/config/export-resources_3_0_1.json",
+                    to: DIST_DIR + "/data/export-resources_3_0_1.json"
+                },
+                {
+                    from: SRC_DIR + "/assets/config/export-resources_3_2_0.json",
+                    to: DIST_DIR + "/data/export-resources_3_2_0.json"
+                },
+                {
                     from: SRC_DIR + "/assets/img/favicon.ico",
                     to: DIST_DIR
                 },
