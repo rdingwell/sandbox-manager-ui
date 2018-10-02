@@ -36,7 +36,6 @@ import DohMessage from "sandbox-manager-lib/components/DohMessage";
 import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
 import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
-import Edit from "./Edit";
 import Create from './Create';
 
 import './styles.less';
