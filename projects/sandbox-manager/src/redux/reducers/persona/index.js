@@ -42,6 +42,10 @@ export default (state = initialState, action) => {
         case actionTypes.APP_RESET_STATE:
             state = initialState;
             break;
+        case actionTypes.RESET_PERSONAS:
+            state = initialState;
+            state.loading = true;
+            break;
         case actionTypes.SET_SANDBOX_SELECTING:
             if (action.payload.selecting) {
                 state = initialState;

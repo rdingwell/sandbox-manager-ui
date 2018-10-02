@@ -51,7 +51,7 @@ class PersonaList extends Component {
     componentDidMount () {
         let canFit = this.calcCanFit();
 
-        if (this.props.type !== TYPES.persona) {
+        if (this.props.type !== TYPES.persona && !this.props.idRestrictions) {
             let element = this.props.modal ? document.getElementsByClassName('page-content-wrapper')[1] : document.getElementsByClassName('stage')[0];
             element.addEventListener('scroll', this.scroll);
             let crit = this.props.idRestrictions ? this.props.idRestrictions.split('?')[1] : null;
@@ -212,10 +212,6 @@ class PersonaList extends Component {
                         <span className='anchor' ref={'anchor' + i}/>
                         <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {/*{isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.updateFavorite(e, persona)}>*/}
-                    {/*<span/>*/}
-                    {/*<StarIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>*/}
-                    {/*</IconButton>}*/}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
@@ -235,7 +231,7 @@ class PersonaList extends Component {
                             }}/>
                         </Menu>
                     </Popover>}
-                </TableRowColumn>}
+                </TableRowColumn>}все някое
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>

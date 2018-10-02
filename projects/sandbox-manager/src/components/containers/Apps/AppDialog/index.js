@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
-import './styles.less';
-import CheckIcon from "material-ui/svg-icons/navigation/check";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import ContentAdd from "material-ui/svg-icons/content/add";
+import './styles.less';
 
 class AppDialog extends Component {
     constructor (props) {
