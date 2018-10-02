@@ -34,6 +34,12 @@ export function setPersonas (type, personas, pagination) {
     };
 }
 
+export function resetPersonas() {
+    return {
+        type: actionTypes.RESET_PERSONAS
+    }
+}
+
 export function deletePersona (persona) {
     return (dispatch, getState) => {
         let state = getState();

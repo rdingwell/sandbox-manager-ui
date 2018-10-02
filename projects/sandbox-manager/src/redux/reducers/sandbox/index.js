@@ -186,6 +186,9 @@ export default function (state = initialState, action) {
         case actionTypes.APP_RESET_STATE:
             state = initialState;
             break;
+        case actionTypes.SET_SANDBOX_EXPORT_STATUS:
+            state.exportStatus = action.payload.status;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.sandbox : state;
             state.defaultUser = undefined;
@@ -199,6 +202,7 @@ export default function (state = initialState, action) {
             state.deleting = false;
             state.resetting = false;
             state.loading = true;
+            state.exportStatus = initialState.exportStatus;
             state.createSandboxError = undefined;
             state.singleResource = undefined;
             state.singleResourceLoadingError = undefined;

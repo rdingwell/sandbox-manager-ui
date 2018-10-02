@@ -33,6 +33,14 @@ export default {
     singleResource: false,
     singleResourceLoadingError: false,
 
+    exportStatus: {
+        loading: false,
+        error: false,
+        resourceList: [],
+        details: undefined,
+        content: undefined
+    },
+
     notifications: [],
     inviting: false,
     resetting: false,

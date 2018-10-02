@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext, fetchLocation,
     fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
-    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent
+    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -36,7 +36,6 @@ import DohMessage from "sandbox-manager-lib/components/DohMessage";
 import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
 import Filters from './Filters';
 import muiThemeable from "material-ui/styles/muiThemeable";
-import Edit from "./Edit";
 import Create from './Create';
 
 import './styles.less';
@@ -75,10 +74,11 @@ class LaunchScenarios extends Component {
     componentDidMount() {
         this.props.app_setScreen('launch');
         this.props.loadLaunchScenarios();
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     componentWillReceiveProps(nextProps) {
-        ((this.props.creating && !nextProps.creating) || (this.props.deleting && !nextProps.deleting)) && this.props.loadLaunchScenarios();
+        this.props.deleting && !nextProps.deleting && this.props.loadLaunchScenarios();
     }
 
     render() {
@@ -115,8 +115,8 @@ class LaunchScenarios extends Component {
                 </div>
                 <div>
                     {(this.props.scenariosLoading || this.props.creating || this.props.deleting) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
-                    {!this.props.scenariosLoading && !this.props.deleting && this.props.scenarios && this.props.scenarios.length === 0 &&
+                    {!this.props.scenariosLoading && !this.props.deleting && !this.props.creating && this.props.scenarios && this.props.scenarios.length > 0 && this.getScenarios()}
+                    {!this.props.scenariosLoading && !this.props.deleting && !this.props.creating && this.props.scenarios && this.props.scenarios.length === 0 &&
                     <DohMessage message='No launch scenarios in sandbox.' topMargin/>}
                 </div>
                 <Create key={this.createKey} open={this.state.showModal} close={this.toggleCreateModal} create={this.createScenario} {...this.props}/>
@@ -515,6 +515,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setFetchingSingleResourceError,
         fetchResource,
         fetchIntent,
+        getDefaultUserForSandbox,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RadioButtonGroup, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
+import { CircularProgress, Dialog, FlatButton, IconButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
 import SearchIcon from "material-ui/svg-icons/action/search";
-import DeleteIcon from "material-ui/svg-icons/action/delete";
 import EventIcon from "material-ui/svg-icons/action/event";
 import CheckIcon from "material-ui/svg-icons/navigation/check";
 import CloseIcon from "material-ui/svg-icons/navigation/close";
@@ -38,6 +37,7 @@ class Create extends Component {
             patientBanner: props.needPatientBanner === 'T' || null,
             showPatientSelectorWrapper: false,
             showPatientSelector: false,
+            titleIsClean: true,
             intent: props.intent || '',
             showPersonaSelector: false,
             patientId: props.patient || '',
@@ -380,6 +380,9 @@ class Create extends Component {
         let trimmedProp = this.trimProp(prop, value);
         let state = {};
         state[prop] = trimmedProp;
+        if (prop === 'title' && value !== this.state.title) {
+            state.titleIsClean = false
+        }
         this.setState(state);
     };
 
@@ -478,8 +481,7 @@ class Create extends Component {
         let state = { currentStep };
         if (currentStep === 1) {
             this.props.fetchPersonas(PersonaList.TYPES.persona);
-        }
-        else if (this.state.title.length === 0 && currentStep === 3) {
+        } else if (this.state.titleIsClean && currentStep === 3 && !this.state.id) {
             let title = `Launch ${this.state.selectedApp.clientName}`;
             title += (this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '');
             title += ` as ${this.getSelectedName()}`;

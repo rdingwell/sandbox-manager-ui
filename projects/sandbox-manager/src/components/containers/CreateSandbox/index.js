@@ -25,7 +25,7 @@ class Index extends Component {
     }
 
     render () {
-        let duplicate = this.props.sandboxes.find(i => i.sandboxId === this.state.sandboxId);
+        let duplicate = this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase());
 
         let actions = [
             <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate} className='button' primary onClick={this.handleCreateSandbox}/>

@@ -4,10 +4,7 @@ import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
 import DeleteIcon from "material-ui/svg-icons/action/delete";
-import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
-import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
-import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import FilterList from "material-ui/svg-icons/content/filter-list";
 import Filters from '../Filters';
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
@@ -54,7 +51,7 @@ class PersonaList extends Component {
     componentDidMount () {
         let canFit = this.calcCanFit();
 
-        if (this.props.type !== TYPES.persona) {
+        if (this.props.type !== TYPES.persona && !this.props.idRestrictions) {
             let element = this.props.modal ? document.getElementsByClassName('page-content-wrapper')[1] : document.getElementsByClassName('stage')[0];
             element.addEventListener('scroll', this.scroll);
             let crit = this.props.idRestrictions ? this.props.idRestrictions.split('?')[1] : null;
@@ -207,7 +204,7 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {!isPractitioner && <TableRowColumn className='persona-info'>
                     {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
-                    {isPatient && persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A'}
+                    {isPatient && (persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A')}
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} style={{ textAlign: 'right' }}>
@@ -215,15 +212,11 @@ class PersonaList extends Component {
                         <span className='anchor' ref={'anchor' + i}/>
                         <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {/*{isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.updateFavorite(e, persona)}>*/}
-                    {/*<span/>*/}
-                    {/*<StarIcon color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>*/}
-                    {/*</IconButton>}*/}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)} style={patientRightIconStyle}>
+                    {isPatient && <IconButton onClick={e => this.handleRowSelect([i*2], e)} style={patientRightIconStyle}>
                         <span/>
                         <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
@@ -238,7 +231,7 @@ class PersonaList extends Component {
                             }}/>
                         </Menu>
                     </Popover>}
-                </TableRowColumn>}
+                </TableRowColumn>}все някое
             </TableRow>);
             !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
@@ -304,7 +297,6 @@ class PersonaList extends Component {
     };
 
     updateFavorite = (e, persona) => {
-        debugger;
         e.stopPropagation();
         if (persona.meta.tag !== undefined) {
             if (persona.meta.tag[0].code === "favorite") {
@@ -365,7 +357,9 @@ class PersonaList extends Component {
         this.setState({ searchCrit });
     };
 
-    handleRowSelect = (row) => {
+    handleRowSelect = (row, event) => {
+        event && event.stopPropagation();
+        event && event.preventDefault();
         row = this.props.modal ? row : row[0] / 2;
         let list = this.getFilteredList();
         if (!this.props.modal && this.props.type === TYPES.patient) {
@@ -373,10 +367,10 @@ class PersonaList extends Component {
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
             let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
-            if (actualClick) {
+            if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();
-                selected !== undefined && setTimeout(() => this.props.fetchPatientDetails(list[row]), 500);
+                selected !== undefined && setTimeout(() => list[row] && this.props.fetchPatientDetails(list[row]), 500);
                 this.setState({ selected });
             }
         } else {

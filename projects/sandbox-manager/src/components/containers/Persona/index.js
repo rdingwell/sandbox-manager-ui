@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart } from '../../../redux/action-creators';
+import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart, getDefaultUserForSandbox } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
@@ -28,6 +28,7 @@ class Persona extends Component {
         let type = this.state.type;
         type === PersonaList.TYPES.persona && this.props.fetchPersonas(type);
         this.props.app_setScreen(type === PersonaList.TYPES.patient ? 'patients' : type === PersonaList.TYPES.practitioner ? 'practitioners' : 'personas');
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     componentWillReceiveProps (nextProps) {
@@ -108,7 +109,7 @@ function mapStateToProps (state, ownProps) {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    fetchPersonas, deletePersona, app_setScreen, createPersona, createResource, lookupPersonasStart,
+    fetchPersonas, deletePersona, app_setScreen, createPersona, createResource, lookupPersonasStart, getDefaultUserForSandbox,
     getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
     getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
 }, dispatch);

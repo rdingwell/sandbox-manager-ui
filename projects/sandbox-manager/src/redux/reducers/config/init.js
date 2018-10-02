@@ -3,5 +3,6 @@ export default {
         status: "",
         data: {}
     },
-    language: "en"
+    language: "en",
+    rehydrated: false
 };
