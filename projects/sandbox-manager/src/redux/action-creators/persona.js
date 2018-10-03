@@ -1,5 +1,6 @@
 import * as actionTypes from "./types";
 import { parseNames } from "sandbox-manager-lib/utils/fhir";
+import API from '../../lib/api';
 
 export function lookupPersonasStart (type) {
     return {
@@ -34,7 +35,7 @@ export function setPersonas (type, personas, pagination) {
     };
 }
 
-export function resetPersonas() {
+export function resetPersonas () {
     return {
         type: actionTypes.RESET_PERSONAS
     }
@@ -44,29 +45,16 @@ export function deletePersona (persona) {
     return (dispatch, getState) => {
         let state = getState();
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/userPersona/" + persona.id;
-        fetch(url, {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            method: 'DELETE'
-        })
-            .then(() => dispatch(fetchPersonas('Persona')));
+        API.delete(url, dispatch)
+            .then(() => dispatch(fetchPersonas('Persona')))
+            .catch(e => console.log(e));
     }
 }
 
 export function deletePractitioner (practitioner) {
     return dispatch => {
         let url = `${window.fhirClient.server.serviceUrl}/Practitioner/${practitioner}`;
-        fetch(url, {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            method: 'DELETE'
-        })
+        API.delete(url, dispatch)
             .then(() => dispatch(fetchPersonas('Practitioner')));
     }
 }
@@ -77,37 +65,29 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
             dispatch(lookupPersonasStart(type));
             let next = pagination.link.find(i => i.relation === direction);
             let url = next.url;
-            fetch(url, {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(res => {
-                    res.json().then(personas => {
-                        let pagination = undefined;
-                        let list = personas;
-                        if (personas.entry) {
-                            let resourceResults = [];
+            API.get(url, dispatch)
+                .then(personas => {
+                    let pagination = undefined;
+                    let list = personas;
+                    if (personas.entry) {
+                        let resourceResults = [];
 
-                            for (let key in personas.entry) {
-                                personas.entry[key].resource.fullUrl = personas.entry[key].fullUrl;
-                                resourceResults.push(personas.entry[key].resource);
-                            }
-                            let paginationData = {
-                                total: personas.total,
-                                link: personas.link
-                            };
-
-                            list = resourceResults;
-                            pagination = paginationData;
+                        for (let key in personas.entry) {
+                            personas.entry[key].resource.fullUrl = personas.entry[key].fullUrl;
+                            resourceResults.push(personas.entry[key].resource);
                         }
-                        let state = getState();
-                        let current = state.persona[type.toLocaleLowerCase() + 's'] || [];
-                        list = current.concat(list);
-                        dispatch(setPersonas(type, list, pagination));
-                    })
+                        let paginationData = {
+                            total: personas.total,
+                            link: personas.link
+                        };
+
+                        list = resourceResults;
+                        pagination = paginationData;
+                    }
+                    let state = getState();
+                    let current = state.persona[type.toLocaleLowerCase() + 's'] || [];
+                    list = current.concat(list);
+                    dispatch(setPersonas(type, list, pagination));
                 })
         }
     }
@@ -121,52 +101,33 @@ export function fetchPersonas (type = "Patient", searchCrit = null, count = 17) 
             let state = getState();
             if (type === 'Persona') {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
-                fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {
-                    headers: {
-                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                    }
-                })
-                    .then(res => {
-                        res.json().then(personas => {
-                            dispatch(setPersonas(type, personas));
-                        })
+                API.get(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, dispatch)
+                    .then(personas => {
+                        dispatch(setPersonas(type, personas));
                     })
             } else {
                 let url = `${window.fhirClient.server.serviceUrl}/${type}?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
-                fetch(url, {
-                    headers: {
-                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                    }
-                })
-                    .then(res => {
-                        res.json().then(response => {
-                            let resourceResults = [];
+                API.get(url, dispatch)
+                    .then(response => {
+                        let resourceResults = [];
 
-                            for (let key in response.entry) {
-                                response.entry[key].resource.fullUrl = response.entry[key].fullUrl;
-                                resourceResults.push(response.entry[key].resource);
-                            }
-                            let paginationData = {
-                                total: response.total,
-                                link: response.link
-                            };
+                        for (let key in response.entry) {
+                            response.entry[key].resource.fullUrl = response.entry[key].fullUrl;
+                            resourceResults.push(response.entry[key].resource);
+                        }
+                        let paginationData = {
+                            total: response.total,
+                            link: response.link
+                        };
 
-                            dispatch(setPersonas(type, resourceResults, paginationData));
-                        })
-                            .catch(e => {
-                                dispatch(lookupPersonasFail(e));
-                            })
+                        dispatch(setPersonas(type, resourceResults, paginationData));
                     })
                     .catch(e => {
                         dispatch(lookupPersonasFail(e));
-                    });
+                    })
             }
         }
-    };
+    }
 }
 
 export function createPersona (type, persona) {
@@ -189,18 +150,8 @@ export function createPersona (type, persona) {
             };
 
             let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
-            fetch(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
-                .then(e => {
-                    dispatch(creatingPersonaEnd());
-                });
+            API.post(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, payload, dispatch)
+                .then(() => dispatch(creatingPersonaEnd()));
         }
     }
 }

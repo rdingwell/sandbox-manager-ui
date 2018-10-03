@@ -1,5 +1,5 @@
 import * as types from "./types";
-import { setCreatingSandbox } from "./sandbox";
+import API from '../../lib/api';
 
 export function fhir_Reset () {
     return { type: types.FHIR_RESET };
@@ -8,28 +8,28 @@ export function fhir_Reset () {
 export function fhir_SetContext (context) {
     return {
         type: types.FHIR_SET_CONTEXT,
-        payload: context,
+        payload: context
     };
 }
 
 export function fhir_SetMeta (payload) {
     return {
         type: types.FHIR_SET_META,
-        payload,
+        payload
     };
 }
 
 export function fhir_SetParsedPatientDemographics (data) {
     return {
         type: types.FHIR_SET_PARSED_PATIENT_DEMOGRAPHICS,
-        payload: data,
+        payload: data
     };
 }
 
 export function fhir_setCustomSearchExecuting (executing) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_EXECUTING,
-        payload: { executing },
+        payload: { executing }
     };
 }
 
@@ -63,25 +63,16 @@ export function fhir_SetSmart (payload) {
 
 export function customSearch (query, endpoint) {
     return dispatch => {
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        };
-
         dispatch(fhir_setCustomSearchResults(null));
         dispatch(fhir_setCustomSearchExecuting(true));
 
         endpoint = endpoint ? endpoint : window.fhirClient.server.serviceUrl;
-        fetch(`${endpoint}/${query}`, config)
-            .then(e => e.json().then(results => {
-                dispatch(fhir_setCustomSearchResults(results));
+        API.get(`${endpoint}/${query}`, dispatch)
+            .then(data => {
+                dispatch(fhir_setCustomSearchResults(data));
                 dispatch(fhir_setCustomSearchExecuting(false));
-            }))
-            .catch(error => {
-                console.log(error);
+            })
+            .catch(() => {
                 dispatch(fhir_setCustomSearchExecuting(false));
             });
     }

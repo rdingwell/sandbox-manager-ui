@@ -1,4 +1,5 @@
 import * as types from "./types";
+import API from '../../lib/api';
 
 export function resetState () {
     return { type: types.APP_RESET_STATE }
@@ -16,33 +17,31 @@ export function setTerms (terms) {
     return { type: types.SET_TERMS, payload: { terms } }
 }
 
+export function resetGlobalError () {
+    return {
+        type: types.SET_ERROR_TO_SHOW,
+        payload: { error: undefined }
+    }
+}
+
+export function setGlobalError (error) {
+    return dispatch => {
+        dispatch({
+            type: types.SET_ERROR_TO_SHOW,
+            payload: { error }
+        });
+    }
+}
+
 export function loadTerms () {
     return (dispatch, getState) => {
         let state = getState();
         dispatch(setTermsLoading(true));
 
         let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/termsofuse`;
-        fetch(url, {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                response.json()
-                    .then(terms => {
-                        dispatch(setTerms(terms));
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(setTermsLoading(false));
-            });
+        API.get(url, dispatch)
+            .then(terms => dispatch(setTerms(terms)))
+            .catch(() => dispatch(setTermsLoading(false)));
     }
 }
 

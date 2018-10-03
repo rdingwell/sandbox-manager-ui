@@ -122,6 +122,7 @@ export const APP_RESET_STATE = "APP_RESET_STATE";
 export const SET_APP = "SET_APP";
 export const SET_TERMS_LOADING = "SET_TERMS_LOADING";
 export const SET_TERMS = "SET_TERMS";
+export const SET_ERROR_TO_SHOW = "SET_ERROR_TO_SHOW";
 
 // apps
 export const SET_SANDBOX_APPS = "SET_SANDBOX_APPS";
