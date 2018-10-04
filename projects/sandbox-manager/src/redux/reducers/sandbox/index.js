@@ -214,7 +214,6 @@ export default function (state = initialState, action) {
             state.importResults = undefined;
             state.launchScenarios = undefined;
             state.notifications = [];
-            state.sandboxes = [];
             break;
     }
 
