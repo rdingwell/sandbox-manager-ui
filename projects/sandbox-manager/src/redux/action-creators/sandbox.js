@@ -977,7 +977,7 @@ export function doLaunch (app, persona, user, noUser, scenario) {
 
         let params = {};
         if (scenario) {
-            params = { patient: persona };
+            persona && (params = { patient: persona });
             if (scenario.encounter) params.encounter = scenario.encounter;
             if (scenario.location) params.location = scenario.location;
             if (scenario.resource) params.resource = scenario.resource;
@@ -990,7 +990,6 @@ export function doLaunch (app, persona, user, noUser, scenario) {
                     params[name] = value;
                 }
             }
-
         } else if (persona) {
             params = { patient: persona };
         }

@@ -1,6 +1,7 @@
 .error-message-wrapper {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100vw;
   text-align: center;
   z-index: 10000;
@@ -11,6 +12,8 @@
     position: relative;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    max-height: 150px;
+    overflow: auto;
     .error-close-button {
       position: absolute !important;
       right: 0;
