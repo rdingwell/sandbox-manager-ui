@@ -16,7 +16,8 @@ import CreateSandbox from '../containers/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
-import { CircularProgress, Dialog, FloatingActionButton, IconButton, RaisedButton, Snackbar } from "material-ui";
+import { CircularProgress, Dialog, RaisedButton } from "material-ui";
+import Snackbar from '../UI/Snackbar';
 
 class App extends React.Component {
     constructor (props) {
@@ -74,10 +75,7 @@ class App extends React.Component {
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
-                {!!this.props.errorToShow && <div className='error-message-wrapper'>
-                    <Snackbar open={!!this.props.errorToShow} message={this.props.errorToShow} bodyStyle={{ margin: '0 auto', backgroundColor: theme.palette.primary4Color }}
-                              action={<CloseIcon />} onActionClick={() => this.props.resetGlobalError()} autoHideDuration={50000}/>
-                </div>}
+                {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()} />}
             </Layout>
         </MuiThemeProvider>;
     }

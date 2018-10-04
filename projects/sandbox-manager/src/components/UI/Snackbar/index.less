@@ -1,0 +1,20 @@
+.error-message-wrapper {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  text-align: center;
+  z-index: 10000;
+  .custom-snack {
+    display: inline-block;
+    max-width: 60vw;
+    padding: .7rem 4rem;
+    position: relative;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    .error-close-button {
+      position: absolute !important;
+      right: 0;
+      top: -3px;
+    }
+  }
+}
