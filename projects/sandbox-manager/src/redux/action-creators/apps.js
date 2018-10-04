@@ -64,9 +64,16 @@ export function createApp (app) {
             clientJSON.requireAuthTime = false;
         }
 
+        if (app.tokenEndpointAuthMethod !== "Public Client") {
+            clientJSON.tokenEndpointAuthMethod = "SECRET_BASIC";
+            clientJSON.clientType = "Confidential Client";
+        } else {
+            clientJSON.tokenEndpointAuthMethod = "NONE";
+            clientJSON.clientType = "Public Client";
+        }
+
         let newApp = {
             launchUri: app.launchUri,
-            // logo: app.logoUri,
             redirectUris: app.redirectUris.split(','),
             clientName: app.clientName,
             createdBy: state.users.oauthUser,

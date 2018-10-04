@@ -53,6 +53,7 @@ class AppDialog extends Component {
 
     render () {
         let clientId = null;
+        let clientSecret = null;
         let theme = this.props.muiTheme.palette;
 
         if (this.props.app) {
@@ -60,6 +61,12 @@ class AppDialog extends Component {
                 <span>Client Id: </span>
                 <span>{this.props.app.clientId}</span>
             </div>;
+            clientSecret = this.state.app.clientJSON && this.state.app.clientJSON.clientSecret
+                ? <div className='label-value'>
+                    <span>Client Secret: </span>
+                    <span>{this.state.app.clientJSON.clientSecret}</span>
+                </div>
+                : null;
         }
         let sApp = this.state.app;
 
@@ -96,6 +103,7 @@ class AppDialog extends Component {
                             </DropDownMenu>
                         </div>
                         {clientId}
+                        {clientSecret}
                         <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica}
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
