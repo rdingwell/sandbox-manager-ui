@@ -356,9 +356,13 @@ export const importData = (data) => {
         dispatch(setDataImporting(true));
         let promises = [window.fhirClient.api.transaction({ data })];
         Promise.all(promises)
-            .finally(result => {
+            .then(result => {
                 dispatch(setDataImporting(false));
                 dispatch(setImportResults(result));
+            })
+            .catch(error => {
+                dispatch(setDataImporting(false));
+                dispatch(setImportResults(error));
             });
     }
 };
