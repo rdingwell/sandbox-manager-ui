@@ -216,7 +216,7 @@ class PersonaList extends Component {
                         <span/>
                         <LaunchIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
-                    {isPatient && <IconButton onClick={e => this.handleRowSelect([i*2], e)} style={patientRightIconStyle}>
+                    {isPatient && <IconButton onClick={e => this.handleRowSelect([i * 2], e)} style={patientRightIconStyle}>
                         <span/>
                         <DownIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
@@ -258,7 +258,8 @@ class PersonaList extends Component {
                         {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient ? '30px' : '24px' }}>
                             {isPatient ? 'Age' : 'Password'}
                         </TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
+                        {!isPractitioner &&
+                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn> </TableHeaderColumn>}
@@ -319,11 +320,6 @@ class PersonaList extends Component {
             method: 'PUT',
             body: JSON.stringify(persona)
         };
-
-        fetch(url, config)
-            .then((persona) => {
-
-            })
     };
 
     openInDM = (e, persona) => {
