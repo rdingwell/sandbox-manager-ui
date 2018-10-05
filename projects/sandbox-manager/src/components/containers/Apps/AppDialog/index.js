@@ -20,7 +20,7 @@ class AppDialog extends Component {
             logoUri: props.app && props.app.logoUri || '',
             briefDescription: props.app && props.app.briefDescription || '',
             tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
-            clientJSON: props.app ? props.app.clientJSON : {},
+            clientJSON: props.app ? clientJSON : {},
             patientScoped: true,
             offlineAccess: false,
             copyType: props.app ? props.app.copyType : 'MASTER',

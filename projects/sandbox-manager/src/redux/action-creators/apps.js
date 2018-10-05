@@ -58,7 +58,7 @@ export function createApp (app) {
             clientJSON.requireAuthTime = false;
         }
 
-        if (app.tokenEndpointAuthMethod !== "Public Client") {
+        if (app.tokenEndpointAuthMethod !== "NONE") {
             clientJSON.tokenEndpointAuthMethod = "SECRET_BASIC";
             clientJSON.clientType = "Confidential Client";
         } else {
