@@ -61,7 +61,7 @@ class Index extends Component {
                         <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>;
                 return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
-                                 leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)}/>
+                                 leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} id={sandbox.name}/>
             });
 
         }
@@ -78,7 +78,7 @@ class Index extends Component {
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
                     </SelectField>
                 </div>
-                <RaisedButton primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
+                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
             </h3>
             <div>
                 {!this.props.loading && <List>

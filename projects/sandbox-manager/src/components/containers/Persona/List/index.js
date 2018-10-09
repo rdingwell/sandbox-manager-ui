@@ -189,25 +189,31 @@ class PersonaList extends Component {
                 <TableRowColumn className='left-icon-wrapper'>
                     {badge}
                 </TableRowColumn>
-                <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>
+                <TableRowColumn className={'persona-info name' + (isPractitioner ? ' pract' : '')}>
                     {persona.fhirName || this.getName(persona.name[0] || persona.name)}
                 </TableRowColumn>
-                {!isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
-                    {persona.personaUserId}
+                {!isPatient && !isPractitioner && <TableRowColumn className='persona-info resource'>
+                    {persona.resource + '/' + persona.fhirId}
                 </TableRowColumn>}
                 {isPatient && !isPractitioner && <TableRowColumn className='persona-info'>
                     {persona.id}
                 </TableRowColumn>}
-                {!isPractitioner && <TableRowColumn className='persona-info'>
-                    {!isPatient && persona.password}
+                {isPatient && <TableRowColumn className='persona-info'>
                     {isPatient && age}
                 </TableRowColumn>}
-                {!isPractitioner && <TableRowColumn className='persona-info'>
-                    {!isPatient && !isPractitioner && persona.resource + '/' + persona.fhirId}
+                {isPatient && <TableRowColumn className='persona-info'>
                     {isPatient && (persona.birthDate ? moment(persona.birthDate).format('DD MMM YYYY') : 'N/A')}
                 </TableRowColumn>}
+                {!isPatient && !isPractitioner && <TableRowColumn className='persona-info login'>
+                    <div>
+                        U: {persona.personaUserId}
+                    </div>
+                    <div>
+                        P: {!isPatient && persona.password}
+                    </div>
+                </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
-                {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : ' '} style={{ textAlign: 'right' }}>
+                {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''} style={{ textAlign: 'right' }}>
                     {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
                         <span className='anchor' ref={'anchor' + i}/>
                         <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
@@ -231,9 +237,9 @@ class PersonaList extends Component {
                             }}/>
                         </Menu>
                     </Popover>}
-                </TableRowColumn>}все някое
+                </TableRowColumn>}
             </TableRow>);
-            !this.props.modal && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
+            !this.props.modal && isPatient && rows.push(<TableRow key={persona.id + '_content'} className={'content' + (isSelected ? ' active' : '')} style={contentStyles}>
                 <TableRowColumn colSpan='6'>
                     <div className='chart'>
                         {isSelected && !this.props.fetchingDetails && CHART}
@@ -250,19 +256,24 @@ class PersonaList extends Component {
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary5Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
+                        <TableHeaderColumn className='name' style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
                         {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
-                            {isPatient ? 'Identifier' : 'User Name'}
+                        {isPatient && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
+                            Identifier
                         </TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient ? '30px' : '24px' }}>
-                            {isPatient ? 'Age' : 'Password'}
+                        {isPatient && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient ? '30px' : '24px' }}>
+                            Age
                         </TableHeaderColumn>}
                         {!isPractitioner &&
-                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
+                        <TableHeaderColumn className={!isPatient && !isPractitioner ? 'resource' : ''}
+                                           style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
                             {!isPatient && !isPractitioner ? 'FHIR Resource' : 'DOB'}
                         </TableHeaderColumn>}
-                        {!isPractitioner && <TableHeaderColumn> </TableHeaderColumn>}
+                        {!isPatient && !isPractitioner &&
+                        <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
+                            Login info
+                        </TableHeaderColumn>}
+                        {!isPractitioner && <TableHeaderColumn className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''}> </TableHeaderColumn>}
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false} showRowHover={this.props.modal} deselectOnClickaway={false}>
