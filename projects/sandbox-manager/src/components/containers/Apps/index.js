@@ -58,6 +58,7 @@ class Apps extends Component {
                 </CardMedia>
                 <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                     <h3 className='app-name'>{app.clientName}</h3>
+                    <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
                     {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
