@@ -256,8 +256,8 @@ class PersonaList extends Component {
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} className='persona-table-header' style={{ backgroundColor: this.props.theme.primary5Color }}>
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
-                        <TableHeaderColumn className='name' style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
-                        {isPractitioner && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
+                        <TableHeaderColumn className={'name' + (isPractitioner ? ' pract' : '')} style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
+                        {isPractitioner && <TableHeaderColumn className='pract' style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
                         {isPatient && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             Identifier
                         </TableHeaderColumn>}
