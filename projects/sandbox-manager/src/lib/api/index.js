@@ -70,7 +70,7 @@ const parseResponse = (response, dispatch, resolve, reject) => {
         response.json()
             .then(terms => resolve(terms))
             .catch(e => {
-                if (e.message && (e.message === 'Unexpected token S in JSON at position 0' || e.message === 'Unexpected end of JSON input')) {
+                if (e.message && (e.message === 'Unexpected token S in JSON at position 0' || e.message === 'Unexpected end of JSON input' || e.message === 'JSON.parse: unexpected end of data at line 1 column 1 of the JSON data')) {
                     resolve();
                 } else {
                     dispatch(setGlobalError(e));
