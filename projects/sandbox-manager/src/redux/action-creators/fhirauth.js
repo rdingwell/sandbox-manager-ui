@@ -42,7 +42,7 @@ export function setServerUrl () {
             server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
         } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
             server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.2.0") {
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.4.0") {
             server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
         }
     }
