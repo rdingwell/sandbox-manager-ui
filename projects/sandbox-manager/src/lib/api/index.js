@@ -67,16 +67,26 @@ const parseResponse = (response, dispatch, resolve, reject) => {
             });
         // reject();
     } else {
-        response.json()
-            .then(terms => resolve(terms))
-            .catch(e => {
-                if (e.message && (e.message === 'Unexpected token S in JSON at position 0' || e.message === 'Unexpected end of JSON input' || e.message === 'JSON.parse: unexpected end of data at line 1 column 1 of the JSON data')) {
-                    resolve();
-                } else {
+        try {
+            response.json()
+                .then(terms => resolve(terms))
+                .catch(e => {
+                    if (e.message && (e.message === 'Unexpected token S in JSON at position 0' || e.message === 'Unexpected end of JSON input' || e.message === 'JSON.parse: unexpected end of data at line 1 column 1 of the JSON data')) {
+                        resolve();
+                    } else {
+                        dispatch(setGlobalError(e));
+                        // reject();
+                    }
+                })
+        } catch (e) {
+            response.text()
+                .then(a => {
+                    dispatch(setGlobalError(a));
+                })
+                .catch(e => {
                     dispatch(setGlobalError(e));
-                    // reject();
-                }
-            });
+                });
+        }
     }
 };
 
