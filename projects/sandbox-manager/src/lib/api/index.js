@@ -56,7 +56,7 @@ const get_config = (method, data) => {
 const parseResponse = (response, dispatch, resolve, reject) => {
     if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
-        reject();
+        // reject();
     } else if (response.status >= 300) {
         response.text()
             .then(a => {
@@ -65,7 +65,7 @@ const parseResponse = (response, dispatch, resolve, reject) => {
             .catch(e => {
                 dispatch(setGlobalError(e));
             });
-        reject();
+        // reject();
     } else {
         response.json()
             .then(terms => resolve(terms))
@@ -74,7 +74,7 @@ const parseResponse = (response, dispatch, resolve, reject) => {
                     resolve();
                 } else {
                     dispatch(setGlobalError(e));
-                    reject();
+                    // reject();
                 }
             });
     }
@@ -82,5 +82,5 @@ const parseResponse = (response, dispatch, resolve, reject) => {
 
 const parseError = (error, dispatch, reject) => {
     dispatch(setGlobalError(error));
-    reject();
+    // reject();
 };
