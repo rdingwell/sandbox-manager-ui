@@ -167,7 +167,7 @@ class SandboxDetails extends Component {
         event.preventDefault();
 
         const details = {
-            name: this.state.name,
+            name: this.state.name || this.props.sandboxName,
             description: this.state.description,
             allowOpenAccess: this.state.allowOpen
         };

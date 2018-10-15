@@ -1,10 +1,17 @@
 import * as actionTypes from './types';
-import { authorize, goHome, init, saveSandboxApiEndpointIndex } from './fhirauth';
+import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
 import { fetchPersonas } from "./persona";
-import { fetchingPatient, patientDetailsFetchError, patientDetailsFetchStarted, patientDetailsFetchSuccess, setFetchingSinglePatientFailed, setPatientDetails, setSinglePatientFetched } from "./patient";
-import { resetState } from "./app";
+import { resetState, setGlobalError } from "./app";
+import API from '../../lib/api';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+const setDefaultUrl = (sandboxId) => {
+    return {
+        type: actionTypes.SET_FHIR_SERVER_URL,
+        sandboxId: sandboxId
+    }
+};
 
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
@@ -339,21 +346,8 @@ export const setDeletingCurrentSandbox = (deleting) => {
 
 export function createResource (data) {
     return dispatch => {
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(data)
-        };
         let url = `${window.fhirClient.server.serviceUrl}/${data.resourceType}`;
-
-        fetch(url, config)
-            .then(result => result.json()
-                .then(_ => {
-                    dispatch(fetchPersonas(data.resourceType));
-                }))
+        API.post(url, data, dispatch).finally(() => dispatch(fetchPersonas(data.resourceType)));
     }
 }
 
@@ -363,15 +357,13 @@ export const importData = (data) => {
         let promises = [window.fhirClient.api.transaction({ data })];
         Promise.all(promises)
             .then(result => {
-                console.log(result);
                 dispatch(setDataImporting(false));
                 dispatch(setImportResults(result));
             })
             .catch(error => {
-                console.log(error);
                 dispatch(setDataImporting(false));
                 dispatch(setImportResults(error));
-            })
+            });
     }
 };
 
@@ -381,24 +373,14 @@ export const deleteCurrentSandbox = (history) => {
 
         let sandboxId = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'DELETE'
-        };
         dispatch(setDeletingCurrentSandbox(true));
 
-        fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${sandboxId}`, config)
+        API.delete(`${configuration.sandboxManagerApiUrl}/sandbox/${sandboxId}`, dispatch)
             .then(() => {
                 history && history.push('/dashboard');
                 dispatch(selectSandboxById());
             })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => dispatch(setDeletingCurrentSandbox(false)));
+            .finally(() => dispatch(setDeletingCurrentSandbox(false)));
     }
 };
 
@@ -411,24 +393,7 @@ export const resetCurrentSandbox = (applyDefaultDataSet) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         let dataSet = (applyDefaultDataSet ? 'DEFAULT' : 'NONE');
         let data = { sandboxId, dataSet };
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(data)
-        };
-        fetch(`${configuration.sandboxManagerApiUrl}/fhirdata/reset?sandboxId=${sandboxId}&dataSet=${dataSet}`, config)
-            .then(result => {
-                //
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(setResettingCurrentSandbox(false));
-            });
+        API.post(`${configuration.sandboxManagerApiUrl}/fhirdata/reset?sandboxId=${sandboxId}&dataSet=${dataSet}`, data, dispatch).finally(() => dispatch(setResettingCurrentSandbox(false)))
     }
 };
 
@@ -439,31 +404,13 @@ export const updateSandbox = (sandboxDetails) => {
     };
 
     return (dispatch, getState) => {
-        // dispatch(setScenarioCreating(true));
         let state = getState();
 
         let selectedSandbox = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
         let data = state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId);
         data = Object.assign(data, sandboxDetails);
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'PUT',
-            body: JSON.stringify(data)
-        };
-        fetch(`${configuration.sandboxManagerApiUrl}/sandbox/${selectedSandbox}`, config)
-            .then(() => {
-                dispatch(UPDATE_EVENT);
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                // dispatch(setScenarioCreating(false));
-            });
+        API.put(`${configuration.sandboxManagerApiUrl}/sandbox/${selectedSandbox}`, data, dispatch).then(() => dispatch(UPDATE_EVENT));
     };
 };
 
@@ -479,23 +426,17 @@ export const selectSandbox = (sandbox) => {
         const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
         document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
 
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token
-            }
-        };
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
-            fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, Object.assign({ method: "POST" }, config))
+            API.post(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, {}, dispatch)
                 .then(() => {
                     dispatch(authorizeSandbox(sandbox));
                     dispatch(setDefaultUrl(sandboxId));
                     dispatch(selectSandboxById(sandboxId));
-                    dispatch(setCreatingSandbox(false));
-                });
+                })
+                .finally(() => dispatch(setCreatingSandbox(false)));
         }
     };
-
 };
 
 export function toggleUserAdminRights (userId, toggle) {
@@ -505,15 +446,8 @@ export function toggleUserAdminRights (userId, toggle) {
         let queryParams = "?editUserRole=" + encodeURIComponent(userId) + "&role=ADMIN&add=" + (toggle ? 'true' : 'false');
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        };
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, Object.assign({ method: "PUT" }, config))
-            .then(() => {
+        API.put(configuration.sandboxManagerApiUrl + '/sandbox/' + sessionStorage.sandboxId + queryParams, {}, dispatch)
+            .finally(() => {
                 dispatch(setUpdatingUser(false));
                 dispatch(fetchSandboxes());
             });
@@ -526,20 +460,7 @@ export function deleteScenario (scenario) {
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'DELETE'
-        };
-        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, config)
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(setScenarioDeleting(false));
-            });
+        API.delete(`${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`, dispatch).finally(() => dispatch(setScenarioDeleting(false)));
     }
 }
 
@@ -549,24 +470,12 @@ export function createScenario (data) {
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
         let url = configuration.sandboxManagerApiUrl + '/launchScenario/';
         data.id && (url += data.id);
-        let method = data.id ? "PUT" : "POST";
+        let method = data.id ? API.put : API.post;
 
-        fetch(url, Object.assign({ method }, config))
-            .then(result => {
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
+        method(url, data, dispatch)
+            .finally(() => {
                 dispatch(loadLaunchScenarios());
                 dispatch(setScenarioCreating(false));
             });
@@ -582,25 +491,10 @@ export function updateLaunchScenario (scenario, description, title) {
         description && (scenario.description = description);
         title && (scenario.title = title);
         !description && !title && (scenario.lastLaunchSeconds = new Date().getTime());
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(scenario)
-        };
         let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
         !description && !title && (url += '/launched');
 
-        fetch(url, Object.assign({ method: "PUT" }, config))
-            .then(() => {
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(setScenarioCreating(false));
-            });
+        API.put(url, scenario, dispatch).finally(() => dispatch(setScenarioCreating(false)));
     }
 }
 
@@ -609,24 +503,9 @@ export function updateNeedPatientBanner (scenario) {
         let state = getState();
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(scenario)
-        };
         let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
 
-        fetch(url, Object.assign({ method: "PUT" }, config))
-            .then(() => {
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .then(() => {
-                dispatch(modifyingCustomContext(false));
-            });
+        API.put(url, scenario, dispatch).finally(() => dispatch(modifyingCustomContext(false)));
     }
 }
 
@@ -636,30 +515,18 @@ export const inviteNewUser = (email) => {
 
         dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
+        const data = {
+            invitedBy: {
+                sbmUserId: state.users.oauthUser.sbmUserId
             },
-            body: JSON.stringify({
-                invitedBy: {
-                    sbmUserId: state.users.oauthUser.sbmUserId
-                },
-                invitee: {
-                    email
-                },
-                sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
-            })
+            invitee: {
+                email
+            },
+            sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId)
         };
-        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite', Object.assign({ method: "PUT" }, config))
-            .then(() => {
-                dispatch(fetchSandboxInvites());
-                dispatch(setUserInviting(false));
-            })
-            .catch(e => {
-                console.log(e);
-                dispatch(setUserInviting(false));
-            });
+        API.put(configuration.sandboxManagerApiUrl + '/sandboxinvite', data, dispatch)
+            .then(() => dispatch(fetchSandboxInvites()))
+            .finally(() => dispatch(setUserInviting(false)));
     };
 };
 
@@ -669,21 +536,9 @@ export const removeInvitation = (id) => {
 
         dispatch(setUserInviting(true));
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            }
-        };
-        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', Object.assign({ method: "PUT" }, config))
-            .then(() => {
-                dispatch(fetchSandboxInvites());
-                dispatch(setUserInviting(false));
-            })
-            .catch(e => {
-                console.log(e);
-                dispatch(setUserInviting(false));
-            });
+        API.put(configuration.sandboxManagerApiUrl + '/sandboxinvite/' + id + '?status=REVOKED', {}, dispatch)
+            .then(() => dispatch(fetchSandboxInvites()))
+            .finally(() => dispatch(setUserInviting(false)));
     };
 };
 
@@ -693,25 +548,10 @@ export function getDefaultUserForSandbox (sandboxId) {
             let state = getState();
 
             let configuration = state.config.xsettings.data.sandboxManager;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token
-                },
-                contentType: "application/json",
-            };
-
-            fetch(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, config)
-                .then(userResponse => {
-                    userResponse.json()
-                        .then(user => {
-                            dispatch(setDefaultSandboxUser(user));
-                        })
-                        .catch(_ => {
-                            dispatch(setDefaultSandboxUser(undefined));
-                        })
-                })
-                .catch(e => console.log(e))
-                .then(() => dispatch(setSandboxSelecting(false)));
+            API.get(`${configuration.sandboxManagerApiUrl}/userPersona/default?sandboxId=${sandboxId}`, dispatch)
+                .then(user => dispatch(setDefaultSandboxUser(user)))
+                .catch(() => dispatch(setDefaultSandboxUser(undefined)))
+                .finally(() => dispatch(setSandboxSelecting(false)));
         } else {
             goHome();
         }
@@ -733,7 +573,6 @@ export const createSandbox = (sandboxDetails) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(setCreatingSandbox(true));
-        let config = getConfig(state);
         let clonedSandbox = {};
         if (sandboxDetails.apiEndpointIndex === "5") {
             clonedSandbox.sandboxId = "MasterDstu2Smart";
@@ -756,16 +595,9 @@ export const createSandbox = (sandboxDetails) => {
             "newSandbox": sandboxDetails
         };
 
-        config.body = JSON.stringify(cloneBody);
-        config.method = "POST";
-        config.headers["Content-Type"] = "application/json";
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox/clone', config)
-            .then(() => {
-                dispatch(fetchSandboxes(sandboxDetails.sandboxId));
-            })
-            .catch(err => {
-                dispatch(createSandboxFail(err));
-            });
+        API.post(configuration.sandboxManagerApiUrl + '/sandbox/clone', cloneBody, dispatch)
+            .then(() => dispatch(fetchSandboxes(sandboxDetails.sandboxId)))
+            .catch(() => dispatch(createSandboxFail("error")));
     };
 };
 
@@ -777,37 +609,29 @@ export const fetchSandboxes = (toSelect) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
-        fetch(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, getConfig(state))
-            .then(res => {
-                if (res.status === 401) {
-                    sessionStorage.clear();
-                    localStorage.clear();
-
-                    dispatch(resetState());
-                    window.location.href = window.location.origin;
-                } else {
-                    res && res.json()
-                        .then(data => {
-                            const sandboxes = [];
-                            for (let key in data) {
-                                sandboxes.push({
-                                    ...data[key], id: key
-                                });
-                            }
-                            dispatch(fetchSandboxesSuccess(sandboxes));
-                            setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
-                        })
+        API.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, dispatch)
+            .then(data => {
+                const sandboxes = [];
+                for (let key in data) {
+                    sandboxes.push({
+                        ...data[key], id: key
+                    });
                 }
+                dispatch(fetchSandboxesSuccess(sandboxes));
+                setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
             })
             .catch(err => {
-                console.log(err);
+                sessionStorage.clear();
+                localStorage.clear();
+
+                dispatch(resetState());
+                window.location.href = window.location.origin;
                 dispatch(fetchSandboxesFail(err));
             });
     };
 };
 
 export const fetchSandboxInvites = () => {
-    console.log('Fetching invites');
     return (dispatch, getState) => {
         const state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -815,16 +639,13 @@ export const fetchSandboxInvites = () => {
 
         const queryParams = '?sandboxId=' + sessionStorage.sandboxId + '&status=PENDING';
 
-        fetch(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, getConfig())
-            .then(result => {
-                result.json()
-                    .then(res => {
-                        const invitations = [];
-                        for (let key in res) {
-                            invitations.push({ ...res[key] });
-                        }
-                        dispatch(fetchSandboxInvitesSuccess(invitations));
-                    });
+        API.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, dispatch)
+            .then(res => {
+                const invitations = [];
+                for (let key in res) {
+                    invitations.push({ ...res[key] });
+                }
+                dispatch(fetchSandboxInvitesSuccess(invitations));
             })
             .catch(err => {
                 dispatch(fetchSandboxInvitesFail(err));
@@ -840,18 +661,10 @@ export const fetchUserNotifications = () => {
 
         const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
 
-        fetch(configuration.sandboxManagerApiUrl + '/notification' + queryParams, getConfig())
-            .then(result => {
-                result.json()
-                    .then(res => {
-                        dispatch(setNotifications([]));
-                        dispatch(setNotificationLoading(false));
-                    });
-            })
-            .catch(err => {
+        API.get(configuration.sandboxManagerApiUrl + '/notification' + queryParams, dispatch)
+            .finally(() => {
                 dispatch(setNotifications([]));
                 dispatch(setNotificationLoading(false));
-                console.log(err);
             });
     };
 };
@@ -865,21 +678,9 @@ export const hideNotification = (notification) => {
 
         notification.hidden = true;
 
-        let config = {
-            method: 'POST',
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(notification)
-        };
-
-        fetch(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, config)
+        API.post(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
             .then(() => {
-            }).catch(err => {
-            console.log(err);
-        });
+            });
     };
 };
 
@@ -890,24 +691,8 @@ export const markAllNotificationsSeen = () => {
 
         const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
 
-        let config = {
-            method: 'POST',
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({})
-        };
-
-        fetch(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, config)
-            .then(() => {
-                dispatch(fetchUserNotifications());
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch(fetchUserNotifications());
-            });
+        API.post(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, {}, dispatch)
+            .finally(() => dispatch(fetchUserNotifications()));
     };
 };
 
@@ -918,22 +703,9 @@ export function loadLaunchScenarios () {
             let state = getState();
             if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
                 let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + '/launchScenario?sandboxId=' + sessionStorage.sandboxId;
-                const config = {
-                    headers: {
-                        Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                    }
-                };
-                fetch(url, config)
-                    .then(result => {
-                        result.json()
-                            .then(scenarios => {
-                                dispatch(setLaunchScenarios(scenarios));
-                            })
-                    })
-                    .catch(e => console.log(e))
-                    .then(() => dispatch(setLaunchScenariosLoading(false)));
+                API.get(url, dispatch)
+                    .then(scenarios => dispatch(setLaunchScenarios(scenarios)))
+                    .finally(() => dispatch(setLaunchScenariosLoading(false)));
             }
         } else {
             goHome();
@@ -996,42 +768,18 @@ export function fetchResource (res) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleResource(true));
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    'Content-Type': 'application/json'
-                }
-            };
             let url = `${window.fhirClient.server.serviceUrl}/${res}`;
 
-            fetch(url, config)
-                .then(result => result.json()
-                    .then(res => {
-                        if (!res.issue) {
-                            dispatch(setSingleResource(res));
-                            dispatch(setFetchSingleResource(false));
-                        } else {
-                            dispatch(setFetchingSingleResourceError(res));
-                            dispatch(setFetchSingleResource(false));
-                        }
-                    })
-                    .catch(e => {
-                        dispatch(setFetchingSingleResourceError(e));
-                        dispatch(setFetchSingleResource(false));
-                    }))
-                .catch(e => {
-                    dispatch(setFetchingSingleResourceError(e));
-                    dispatch(setFetchSingleResource(false));
+            API.get(url, dispatch)
+                .then(res => {
+                    if (!res.issue) {
+                        dispatch(setSingleResource(res));
+                    } else {
+                        dispatch(setFetchingSingleResourceError(res));
+                    }
                 })
-            // window.fhirClient.api.read({ type: 'Resource', id })
-            //     .done(patient => {
-            //         dispatch(setSingleResource(patient.data));
-            //         dispatch(setFetchSingleResource(false));
-            //     })
-            //     .fail(e => {
-            //         dispatch(setFetchingSingleResourceError(e));
-            //         dispatch(setFetchSingleResource(false));
-            //     });
+                .catch(e => dispatch(setFetchingSingleResourceError(e)))
+                .finally(() => dispatch(setFetchSingleResource(false)));
         }
     }
 }
@@ -1044,16 +792,7 @@ export function removeUser (userId, history) {
 
         if (state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox/${sandboxId}?removeUserId=${encodeURIComponent(userId)}`;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                method: 'PUT'
-            };
-
-            fetch(url, config)
+            API.put(url, {}, dispatch)
                 .then(() => {
                     if (userId === state.users.user.sbmUserId) {
                         history && history.push('/dashboard');
@@ -1072,15 +811,7 @@ export function updateSandboxInvite (invite, answer) {
 
         dispatch(setInvitesLoading(true));
         let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite/${invite.id}?status=${answer}`;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            method: 'PUT'
-        };
-        fetch(url, config)
+        API.put(url, {}, dispatch)
             .then(() => {
                 dispatch(loadInvites());
                 dispatch(fetchSandboxes());
@@ -1095,23 +826,9 @@ export function loadInvites () {
         dispatch(setInvitesLoading(true));
         if (state.config.xsettings.data.sandboxManager && window.fhirClient) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}&status=PENDING`;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-            fetch(url, config)
-                .then(result => {
-                    result.json()
-                        .then(invitations => {
-                            setInvitesLoading(false);
-                            dispatch(setInvites(invitations));
-                        })
-                })
-                .catch(e => console.log(e))
-                .then(() => dispatch(setInvitesLoading(false)));
+            API.get(url, dispatch)
+                .then(invitations => dispatch(setInvites(invitations)))
+                .finally(() => dispatch(setInvitesLoading(false)));
         } else {
             goHome();
         }
@@ -1127,26 +844,9 @@ export function addCustomContext (sc, key, val) {
         dispatch(modifyingCustomContext(true));
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'PUT',
-            body: JSON.stringify(data)
-        };
 
-        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, config)
-            .then(() => {
-
-            })
-            .catch(e => {
-                console.log(e);
-                dispatch(modifyingCustomContext(false));
-            })
-            .then(() => {
-                dispatch(modifyingCustomContext(false));
-            });
+        API.put(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, data, dispatch)
+            .finally(() => dispatch(modifyingCustomContext(false)));
     }
 }
 
@@ -1158,26 +858,9 @@ export function deleteCustomContext (sc, context) {
         dispatch(modifyingCustomContext(true));
 
         let configuration = state.config.xsettings.data.sandboxManager;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                'Content-Type': 'application/json'
-            },
-            method: 'PUT',
-            body: JSON.stringify(data)
-        };
 
-        fetch(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, config)
-            .then(() => {
-
-            })
-            .catch(e => {
-                console.log(e);
-                dispatch(modifyingCustomContext(false));
-            })
-            .then(() => {
-                dispatch(modifyingCustomContext(false));
-            });
+        API.put(`${configuration.sandboxManagerApiUrl}/launchScenario/${sc.id}`, data, dispatch)
+            .finally(() => dispatch(modifyingCustomContext(false)));
     }
 }
 
@@ -1188,25 +871,9 @@ export function getLoginInfo () {
 
         if (state.config.xsettings.data.sandboxManager) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-            fetch(url, config)
-                .then(result => {
-                    result.json()
-                        .then(loginInfo => {
-                            dispatch(setLoginInfo(loginInfo));
-                            dispatch(setFetchingLoginInfo(false));
-                        })
-                })
-                .catch(e => {
-                    console.log(e);
-                    dispatch(setFetchingLoginInfo(false));
-                });
+            API.get(url, dispatch)
+                .then(loginInfo => dispatch(setLoginInfo(loginInfo)))
+                .finally(() => dispatch(setFetchingLoginInfo(false)));
         } else {
             goHome();
         }
@@ -1220,25 +887,9 @@ export function getUserLoginInfo () {
 
         if (state.config.xsettings.data.sandboxManager) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sandboxId=${sessionStorage.sandboxId}`;
-            const config = {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            };
-            fetch(url, config)
-                .then(result => {
-                    result.json()
-                        .then(loginInfo => {
-                            dispatch(setUserLoginInfo(loginInfo));
-                            dispatch(setFetchingUserLoginInfo(false));
-                        })
-                })
-                .catch(e => {
-                    console.log(e);
-                    dispatch(setFetchingUserLoginInfo(false));
-                });
+            API.get(url, dispatch)
+                .then(loginInfo => dispatch(setUserLoginInfo(loginInfo)))
+                .catch(() => dispatch(setFetchingUserLoginInfo(false)));
         } else {
             goHome();
         }
@@ -1254,13 +905,10 @@ export function loadExportResources () {
 
         dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details: undefined, content: undefined }));
         if (sandboxVersion) {
-            fetch(`/data/export-resources_${sandboxVersion.fhirTag}.json`)
-                .then(data => {
-                    data.json()
-                        .then(resourceList => {
-                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
-                            dispatch(getTotalItemsToExport(resourceList));
-                        })
+            API.get(`/data/export-resources_${sandboxVersion.fhirTag}.json`, dispatch)
+                .then(resourceList => {
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
+                    dispatch(getTotalItemsToExport(resourceList));
                 });
         } else {
             dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
@@ -1269,7 +917,7 @@ export function loadExportResources () {
 }
 
 export function getTotalItemsToExport (resourceList) {
-    return (dispatch, getState) => {
+    return dispatch => {
         let promises = [];
         let content = {};
         let details = {};
@@ -1329,70 +977,47 @@ export function doLaunch (app, persona, user, noUser, scenario) {
 
         let params = {};
         if (scenario) {
-            params = { patient: persona };
+            persona && (params = { patient: persona });
             if (scenario.encounter) params.encounter = scenario.encounter;
             if (scenario.location) params.location = scenario.location;
             if (scenario.resource) params.resource = scenario.resource;
             if (scenario.smartStyleUrl) params.smartStyleUrl = scenario.smartStyleUrl;
             if (scenario.intent) params.intent = scenario.intent;
             if (scenario.contextParams) {
-                for (let i=0; i<scenario.contextParams.length; i++) {
+                for (let i = 0; i < scenario.contextParams.length; i++) {
                     let name = scenario.contextParams[i]['name'];
                     let value = scenario.contextParams[i]['value'];
-                    params[name]= value;
+                    params[name] = value;
                 }
             }
-
         } else if (persona) {
             params = { patient: persona };
         }
 
         params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
         let appWindow = window.open('/launchApp?' + key, '_blank');
-        let config = getConfig(state);
-        user && !noUser && (config.body = JSON.stringify({ username: user.personaUserId, password: user.password }));
-        config.method = "POST";
-        config.headers["Content-Type"] = "application/json";
+        let data = {};
+        user && !noUser && (data = { username: user.personaUserId, password: user.password });
         let launchDetails = {
             patientContext: persona
         };
         user && !noUser && (launchDetails.userPersona = Object.assign({}, user));
 
         try {
-            user && !noUser && fetch(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", config)
-                .then(function (response) {
-                    response.json()
-                        .then(data => {
-                            const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-                            const date = new Date();
-                            date.setTime(date.getTime() + (3 * 60 * 1000));
-                            document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
-                        });
+            user && !noUser && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", data, dispatch)
+                .then(data => {
+                    const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+                    const date = new Date();
+                    date.setTime(date.getTime() + (3 * 60 * 1000));
+                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                 });
-            registerAppContext(app, params, launchDetails, key);
+            registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {
             console.log(e);
             appWindow.close();
         }
     }
 }
-
-const getConfig = (_state) => {
-    return {
-        headers: {
-            Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-        }
-    };
-};
-
-const setDefaultUrl = (sandboxId) => {
-    return {
-        type: actionTypes.SET_FHIR_SERVER_URL,
-        sandboxId: sandboxId
-    }
-};
 
 function random (length) {
     let result = '';
@@ -1402,37 +1027,26 @@ function random (length) {
     return result;
 }
 
-function registerAppContext (app, params, launchDetails, key) {
+function registerAppContext (app, params, launchDetails, key, dispatch) {
     let appToLaunch = Object.assign({}, app);
     delete appToLaunch.clientJSON;
     delete appToLaunch.createdBy;
     delete appToLaunch.sandbox;
-    callRegisterContext(appToLaunch, params, window.fhirClient.server.serviceUrl, launchDetails, key);
+    callRegisterContext(appToLaunch, params, window.fhirClient.server.serviceUrl, launchDetails, key, dispatch);
 }
 
-function callRegisterContext (appToLaunch, params, issuer, launchDetails, key) {
-    let config = {
-        method: 'POST',
-        headers: {
-            Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-            Accept: "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            client_id: appToLaunch.clientId,
-            parameters: params
-        })
+function callRegisterContext (appToLaunch, params, issuer, launchDetails, key, dispatch) {
+    let data = {
+        client_id: appToLaunch.clientId,
+        parameters: params
     };
 
-    fetch(issuer + '/_services/smart/Launch', config)
-        .then(response => {
-            response.json()
-                .then(context =>
-                    window.localStorage[key] = JSON.stringify({
-                        app: appToLaunch,
-                        iss: issuer,
-                        launchDetails: launchDetails,
-                        context
-                    }))
-        })
+    API.post(issuer + '/_services/smart/Launch', data, dispatch)
+        .then(context =>
+            window.localStorage[key] = JSON.stringify({
+                app: appToLaunch,
+                iss: issuer,
+                launchDetails: launchDetails,
+                context
+            }))
 }

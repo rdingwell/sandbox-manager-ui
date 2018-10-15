@@ -1,3 +1,5 @@
+import API from '../../lib/api';
+
 const XSETTINGS_SOURCE = "/data/xsettings.json";
 
 import * as types from "./types";
@@ -8,31 +10,22 @@ export function config_Reset () {
     return { type: types.CONFIG_RESET };
 }
 
+export function setSettings (status, data) {
+    return {
+        type: types.CONFIG_SET_XSETTINGS,
+        payload: { status, data }
+    }
+}
+
 // Complex action creators -----------------------------------------------------
 export function config_LoadXsettings () {
     return function (dispatch) {
-        dispatch({
-            type: types.CONFIG_SET_XSETTINGS,
-            payload: { status: "loading", data: {} },
-        });
+        dispatch(setSettings("loading", {}));
 
-        return fetch(XSETTINGS_SOURCE)
-            .then(res => res.json()
-                .then(data => {
-                    dispatch({
-                        type: types.CONFIG_SET_XSETTINGS,
-                        payload: {
-                            status: "ready",
-                            data: data || {},
-                        },
-                    });
-                }))
-            .catch((reason) => {
-                process.env.NODE_ENV !== "test" && console.error(reason);
-                return dispatch({
-                    type: types.CONFIG_SET_XSETTINGS,
-                    payload: { ...Object.assign({}, initialState.xsettings, { status: "error" }) },
-                });
+        API.get(XSETTINGS_SOURCE, dispatch)
+            .then(data => dispatch(setSettings("ready", data || {})))
+            .catch(() => {
+                dispatch(setSettings("error", initialState.xsettings));
             });
     };
 }

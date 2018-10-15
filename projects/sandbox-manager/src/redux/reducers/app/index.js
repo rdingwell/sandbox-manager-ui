@@ -11,6 +11,9 @@ export default (state = initialState, action) => {
         case types.APP_RESET_STATE:
             state = initialState;
             break;
+        case types.SET_ERROR_TO_SHOW:
+            state.errorToShow = action.payload.error;
+            break;
         case types.SET_TERMS_LOADING:
             state.termsLoading = action.payload.loading;
             break;
@@ -20,6 +23,7 @@ export default (state = initialState, action) => {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.app : state;
             state.rehydrateDone = true;
+            state.errorToShow = undefined;
             break;
     }
 

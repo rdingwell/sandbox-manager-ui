@@ -58,6 +58,7 @@ class Apps extends Component {
                 </CardMedia>
                 <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                     <h3 className='app-name'>{app.clientName}</h3>
+                    <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
                     {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </CardTitle>
@@ -76,6 +77,7 @@ class Apps extends Component {
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
         let app = this.state.selectedApp ? this.props.apps.find(i => i.id === this.state.selectedApp.id) : undefined;
+        let createAppClientJSON = this.state.createdApp && this.state.createdApp.clientJSON ? JSON.parse(this.state.createdApp.clientJSON) : {};
 
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation}
@@ -94,8 +96,16 @@ class Apps extends Component {
                             </IconButton>
                             <h3>Registered App Details</h3>
                             <div className='paper-body'>
-                                App Client Id <br/>
-                                ID: <span className='client-id'>{this.state.createdApp.clientId}</span>
+                                <div>
+                                    App Client Id <br/>
+                                    ID: <span className='client-id'>{this.state.createdApp.clientId}</span>
+                                </div>
+                                {createAppClientJSON.clientSecret && <div>
+                                    <div>
+                                        Client Secret: <br />
+                                        Secret: <span className='client-id'>{createAppClientJSON.clientSecret}</span>
+                                    </div>
+                                </div>}
                             </div>
                         </Paper>
                     </Dialog>

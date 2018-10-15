@@ -46,7 +46,22 @@
         cursor: pointer;
       }
     }
-    td.persona-info.pract {
+    td.name, th.name {
+      width: 20% !important;
+    }
+    td.resource, th.resource {
+      width: 28% !important;
+    }
+    td.persona-info {
+      &.login {
+        & > * {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+    }
+    td.pract, th.pract {
       width: 47% !important;
     }
     td:first-of-type, th:first-of-type {
@@ -58,6 +73,9 @@
       }
       td.actions-row:last-of-type, th.actions-row:last-of-type {
         width: 125px !important;
+        &.small {
+          width: 40px !important;
+        }
       }
     }
     .persona-table-header {

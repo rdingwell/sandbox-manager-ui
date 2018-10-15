@@ -1,7 +1,7 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 import { fetchSandboxes } from "./sandbox";
-import { resetState } from "./app";
+import API from '../../lib/api';
 
 let fhirClient = null;
 
@@ -22,6 +22,69 @@ const getQueryParams = (url) => {
         return urlParams;
     }
 };
+
+export function fhirLogin () {
+    return {
+        type: actionTypes.FHIR_LOGIN
+    };
+}
+
+export function setServerUrl () {
+    const fhirClient = { ...state.fhirClient };
+    const server = { ...fhirClient.server };
+    const sandboxId = action.sandboxId;
+    const fhirVersion = state.fhirVersion;
+    if (sandboxId !== undefined && sandboxId !== "") {
+        server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
+        if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
+            server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
+            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
+            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.4.0") {
+            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+        }
+    }
+    server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
+    fhirClient.server = server;
+
+    state.fhirClient = fhirClient;
+    return state;
+}
+
+export function fhirLoginSuccess () {
+    return {
+        type: actionTypes.FHIR_LOGIN_SUCCESS
+    };
+}
+
+export function goHome () {
+    sessionStorage && sessionStorage.clear && sessionStorage.clear();
+    localStorage && localStorage.clear && localStorage.clear();
+
+    let cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        let spcook = cookies[i].split("=");
+        deleteCookie(spcook[0]);
+    }
+
+    function deleteCookie (cookiename) {
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        let expires = ";expires=" + d;
+        let name = cookiename;
+        document.cookie = name + "=" + expires + "; path=/acc/html";
+    }
+
+    window.location = window.location.origin;
+}
+
+export function fhirLoginFail () {
+    return {
+        type: actionTypes.FHIR_LOGIN_FAIL
+    }
+}
 
 export function clearToken () {
     return {
@@ -156,99 +219,23 @@ export function fhirauth_setSmart (smart, redirect = null) {
         fhirClient = smart;
         window.fhirClient = smart;
         queryFhirVersion(dispatch, fhirClient, state);
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + fhirClient.server.auth.token
-            }
-        };
 
-        fetch(configuration.oauthUserInfoUrl, Object.assign({ method: "POST" }, config))
-            .then(response => {
-                if (response.status === 401) {
-                    goHome();
-                } else {
-                    response.json()
-                        .then(data => {
-                            dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
-
-                            fetch(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), config)
-                                .then(resp => {
-                                    resp.json()
-                                        .then(data => {
-                                            dispatch(saveSandboxManagerUser(data));
-                                            let state = getState();
-                                            redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
-                                            redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
-                                            dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                                            dispatch(fetchSandboxes());
-                                        });
-                                });
-                        });
-                }
+        API.post(configuration.oauthUserInfoUrl, dispatch)
+            .then(data => {
+                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+                API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
+                    .then(data2 => {
+                        dispatch(saveSandboxManagerUser(data2));
+                        let state = getState();
+                        redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                        redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
+                        dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
+                        dispatch(fetchSandboxes());
+                    })
+                    .catch(() => {})
+            })
+            .catch(() => {
+                goHome();
             });
     }
-}
-
-export function fhirLogin () {
-    return {
-        type: actionTypes.FHIR_LOGIN
-    };
-}
-
-export function fhirLoginSuccess () {
-    return {
-        type: actionTypes.FHIR_LOGIN_SUCCESS
-    };
-}
-
-export function fhirLoginFail () {
-    return {
-        type: actionTypes.FHIR_LOGIN_FAIL
-    }
-}
-
-export function setServerUrl () {
-    const fhirClient = { ...state.fhirClient };
-    const server = { ...fhirClient.server };
-    const sandboxId = action.sandboxId;
-    const fhirVersion = state.fhirVersion;
-    if (sandboxId !== undefined && sandboxId !== "") {
-        server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
-        if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
-            server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
-            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
-            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.2.0") {
-            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
-        }
-    }
-    server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
-    fhirClient.server = server;
-
-    state.fhirClient = fhirClient;
-    return state;
-}
-
-
-export function goHome () {
-    sessionStorage && sessionStorage.clear && sessionStorage.clear();
-    localStorage && localStorage.clear && localStorage.clear();
-
-    let cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-        let spcook = cookies[i].split("=");
-        deleteCookie(spcook[0]);
-    }
-
-    function deleteCookie (cookiename) {
-        let d = new Date();
-        d.setDate(d.getDate() - 1);
-        let expires = ";expires=" + d;
-        let name = cookiename;
-        document.cookie = name + "=" + expires + "; path=/acc/html";
-    }
-
-    window.location = window.location.origin;
 }

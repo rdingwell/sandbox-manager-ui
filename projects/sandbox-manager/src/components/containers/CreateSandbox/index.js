@@ -56,7 +56,7 @@ class Index extends Component {
                                           className='fhirVersion'>
                                 <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
                                 <MenuItem value='6' primaryText='FHIR STU3 (v3.0.1)'/>
-                                <MenuItem value='7' primaryText='FHIR R4 (v3.2.0) [beta]'/>
+                                <MenuItem value='7' primaryText='FHIR R4 (v3.4.0) [beta]'/>
                             </DropDownMenu>
                             <div className='subscript'>Choose a version of the FHIR Standard</div>
                             <br/>

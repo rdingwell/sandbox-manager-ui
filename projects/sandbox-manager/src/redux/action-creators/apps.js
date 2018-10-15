@@ -1,4 +1,5 @@
 import * as types from "./types";
+import API from '../../lib/api';
 
 export function setSandboxApps (apps) {
     return { type: types.SET_SANDBOX_APPS, payload: { apps } }
@@ -35,13 +36,6 @@ export function createApp (app) {
         dispatch(appCreating(true));
 
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app";
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        };
         let scope = app.scope.length > 2
             ? app.scope.split(' ')
             : app.patientScoped
@@ -64,9 +58,16 @@ export function createApp (app) {
             clientJSON.requireAuthTime = false;
         }
 
+        if (app.tokenEndpointAuthMethod !== "NONE") {
+            clientJSON.tokenEndpointAuthMethod = "SECRET_BASIC";
+            clientJSON.clientType = "Confidential Client";
+        } else {
+            clientJSON.tokenEndpointAuthMethod = "NONE";
+            clientJSON.clientType = "Public Client";
+        }
+
         let newApp = {
             launchUri: app.launchUri,
-            // logo: app.logoUri,
             redirectUris: app.redirectUris.split(','),
             clientName: app.clientName,
             createdBy: state.users.oauthUser,
@@ -76,32 +77,24 @@ export function createApp (app) {
             clientJSON: JSON.stringify(clientJSON)
         };
 
-        fetch(url, Object.assign({ method: "POST", body: JSON.stringify(newApp) }, config))
-            .then(e => {
-                e.json()
-                    .then(createdApp => {
-                        if (app.logoFile) {
-                            let formData = new FormData();
-                            formData.append("file", app.logoFile);
-                            url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
-                            fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                                .then(() => {
-                                    setTimeout(() => {
-                                        dispatch(setCreatedApp(createdApp));
-                                        dispatch(loadSandboxApps());
-                                    }, 550);
-                                });
-                        } else {
+        API.post(url, newApp, dispatch)
+            .then(createdApp => {
+                if (app.logoFile) {
+                    let formData = new FormData();
+                    formData.append("file", app.logoFile);
+                    url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
+                    API.post(url, formData)
+                        .then(() => setTimeout(() => {
                             dispatch(setCreatedApp(createdApp));
                             dispatch(loadSandboxApps());
-                            dispatch(appCreating(false));
-                        }
-                    });
+                        }, 550));
+                } else {
+                    dispatch(setCreatedApp(createdApp));
+                    dispatch(loadSandboxApps());
+                    dispatch(appCreating(false));
+                }
             })
-            .catch(e => {
-                console.log(e);
-                setTimeout(() => dispatch(appCreating(false)), 550);
-            });
+            .catch(() => setTimeout(() => dispatch(appCreating(false)), 550));
     }
 }
 
@@ -113,14 +106,6 @@ export function updateApp (newValues, originalApp, changes) {
         dispatch(setCreatedApp());
 
         let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/app/${originalApp.id}`;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        };
-
         let newApp = Object.assign({}, originalApp, {
             launchUri: newValues.launchUri,
             briefDescription: newValues.briefDescription,
@@ -141,25 +126,17 @@ export function updateApp (newValues, originalApp, changes) {
                 let formData = new FormData();
                 formData.append("file", newValues.logoFile);
                 url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                fetch(url, { method: 'POST', body: formData, headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                    .then(() => {
-                        setTimeout(() => {
-                            dispatch(loadSandboxApps());
-                        }, 550);
-                    });
+                API.post(url, formData, dispatch).then(() => setTimeout(() => dispatch(loadSandboxApps()), 550));
             } else if (!newValues.logoFile) {
                 url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                fetch(url, { method: 'DELETE', headers: { Authorization: 'BEARER ' + window.fhirClient.server.auth.token } })
-                    .then(() => {
-                        dispatch(loadSandboxApps());
-                    });
+                API.delete(url, dispatch).then(() => dispatch(loadSandboxApps()));
             } else {
                 dispatch(loadSandboxApps());
             }
         };
 
         if (changes.length && !(changes.length === 1 && changes[0] === 'image')) {
-            fetch(url, Object.assign({ method: "PUT", body: JSON.stringify(newApp) }, config))
+            API.put(url, newApp, dispatch)
                 .then(() => {
                     if (changes.indexOf('image') >= 0) {
                         updateImage();
@@ -167,20 +144,15 @@ export function updateApp (newValues, originalApp, changes) {
                         dispatch(loadSandboxApps());
                     }
                 })
-                .catch(e => {
-                    console.log(e);
+                .catch(() => {
                     dispatch(loadSandboxApps());
                 });
         } else if (changes.indexOf('image') >= 0) {
             updateImage();
         } else {
-            setTimeout(() => {
-                dispatch(loadSandboxApps());
-            }, 2500);
+            setTimeout(() => dispatch(loadSandboxApps()), 2500);
         }
     }
-
-
 }
 
 export function deleteApp (app) {
@@ -189,19 +161,7 @@ export function deleteApp (app) {
         dispatch(appDeleting(true));
 
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + app.id;
-        const config = {
-            headers: {
-                Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            }
-        };
-
-        fetch(url, Object.assign({ method: "DELETE" }, config))
-            .catch(e => console.log(e))
-            .then(() => {
-                dispatch(loadSandboxApps());
-            })
+        API.delete(url, dispatch).finally(() => dispatch(loadSandboxApps()));
     }
 }
 
@@ -212,25 +172,7 @@ export function loadApp (app) {
             dispatch(setSandboxAppLoading(true));
 
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/app/${app.id}`;
-            fetch(url, {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    response.json()
-                        .then(app => {
-                            dispatch(setApp(app));
-                        });
-                })
-                .catch(e => {
-                    console.log(e);
-                })
-                .then(() => {
-                    dispatch(setSandboxAppLoading(false));
-                });
+            API.get(url, dispatch).then(app => dispatch(setApp(app))).finally(() => dispatch(setSandboxAppLoading(false)));
         }
     }
 }
@@ -242,24 +184,9 @@ export function loadSandboxApps () {
             dispatch(setSandboxAppsLoading(true));
 
             let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app?sandboxId=" + sessionStorage.sandboxId;
-            fetch(url, {
-                headers: {
-                    Authorization: 'BEARER ' + window.fhirClient.server.auth.token,
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    response.json()
-                        .then(apps => {
-                            dispatch(setSandboxApps(apps));
-                            dispatch(setSandboxAppsLoading(false));
-                            dispatch(appDeleting(false));
-                            dispatch(appCreating(false));
-                        })
-                })
-                .catch(e => {
-                    console.log(e);
+            API.get(url, dispatch)
+                .then(apps => dispatch(setSandboxApps(apps)))
+                .finally(() => {
                     dispatch(setSandboxAppsLoading(false));
                     dispatch(appDeleting(false));
                     dispatch(appCreating(false));

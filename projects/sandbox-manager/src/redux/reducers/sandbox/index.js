@@ -145,6 +145,7 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.CREATE_SANDBOX_FAIL:
             state.createSandboxError = action.error;
+            state.creatingSandbox = false;
             break;
         case actionTypes.LOOKUP_SANDBOX_BY_ID_START:
             state.lookingForSandbox = true;
@@ -213,7 +214,6 @@ export default function (state = initialState, action) {
             state.importResults = undefined;
             state.launchScenarios = undefined;
             state.notifications = [];
-            state.sandboxes = [];
             break;
     }
 

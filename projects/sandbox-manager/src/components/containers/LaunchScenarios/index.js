@@ -309,7 +309,8 @@ class LaunchScenarios extends Component {
                     <div>
                     <span className='section-value' style={lightColor}>
                         <Patient style={iconStyleLight}/>
-                        <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline"}} onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>
+                        {selectedScenario.patientName && <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline"}} onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
+                        {!selectedScenario.patientName && <span>-</span>}
                     </span>
                         <span className='section-value' style={lightColor}>
                         <EventIcon style={iconStyleLight}/>
