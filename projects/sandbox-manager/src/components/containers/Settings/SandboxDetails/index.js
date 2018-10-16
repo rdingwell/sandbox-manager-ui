@@ -33,8 +33,8 @@ class SandboxDetails extends Component {
     }
 
     componentDidMount () {
-        let current = this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.props.user.sbmUserId);
-        current.role === 'ADMIN' && this.setState({ currentUserIsAdmin: true });
+        let current = this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN');
+        current && this.setState({ currentUserIsAdmin: true });
     }
 
     render () {
