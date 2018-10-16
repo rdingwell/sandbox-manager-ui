@@ -605,7 +605,7 @@ export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
         dispatch(getLoginInfo());
-        dispatch(fetchSandboxesStart());
+        !toSelect && dispatch(fetchSandboxesStart());
         let configuration = state.config.xsettings.data.sandboxManager;
         const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
@@ -660,10 +660,11 @@ export const fetchUserNotifications = () => {
         dispatch(setNotificationLoading(true));
 
         const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
-
         API.get(configuration.sandboxManagerApiUrl + '/notification' + queryParams, dispatch)
+            .then((notifications) => {
+                dispatch(setNotifications(notifications));
+            })
             .finally(() => {
-                dispatch(setNotifications([]));
                 dispatch(setNotificationLoading(false));
             });
     };
@@ -678,9 +679,8 @@ export const hideNotification = (notification) => {
 
         notification.hidden = true;
 
-        API.post(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
-            .then(() => {
-            });
+        API.put(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
+            .then(() => dispatch(fetchUserNotifications()));
     };
 };
 
@@ -691,7 +691,7 @@ export const markAllNotificationsSeen = () => {
 
         const queryParams = `?userId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
 
-        API.post(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, {}, dispatch)
+        API.put(configuration.sandboxManagerApiUrl + `/notification/mark-seen` + queryParams, {}, dispatch)
             .finally(() => dispatch(fetchUserNotifications()));
     };
 };

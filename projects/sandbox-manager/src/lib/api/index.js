@@ -70,7 +70,6 @@ const parseResponse = (response, dispatch, resolve, reject) => {
         response.json()
             .then(terms => resolve(terms))
             .catch(e => {
-                console.log(Object.assign({}, ...response));
                 if (response.status < 300) {
                     resolve();
                 } else {

@@ -186,7 +186,7 @@ class PersonaList extends Component {
             let patientRightIconStyle = { padding: 0, width: '40px', height: '40px' };
 
             rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} selected={isSelected}>
-                <TableRowColumn className='left-icon-wrapper'>
+                <TableRowColumn className='persona-info left-icon-wrapper'>
                     {badge}
                 </TableRowColumn>
                 <TableRowColumn className={'persona-info name' + (isPractitioner ? ' pract' : '')}>
@@ -373,7 +373,7 @@ class PersonaList extends Component {
             let selection = getSelection();
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
-            let actualClick = parentNodeClass === 'persona-info' && selection.toString().length === 0;
+            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || node.classList.contains('fa');
             if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();
