@@ -605,7 +605,7 @@ export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
         dispatch(getLoginInfo());
-        dispatch(fetchSandboxesStart());
+        !toSelect && dispatch(fetchSandboxesStart());
         let configuration = state.config.xsettings.data.sandboxManager;
         const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
