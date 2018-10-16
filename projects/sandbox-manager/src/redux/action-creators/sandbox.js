@@ -679,8 +679,7 @@ export const hideNotification = (notification) => {
         notification.hidden = true;
 
         API.post(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
-            .then(() => {
-            });
+            .then(() => dispatch(fetchUserNotifications()));
     };
 };
 
