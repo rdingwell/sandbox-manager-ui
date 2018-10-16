@@ -38,7 +38,6 @@ class SandboxDetails extends Component {
     }
 
     render () {
-        console.log('Is admin: ' + this.state.currentUserIsAdmin);
         let titleStyle = { backgroundColor: this.props.theme.primary5Color };
         let [actions, content] = this.getModalContent();
 
