@@ -32,6 +32,7 @@ export default {
                 .catch(e => parseError(e, dispatch, reject));
         });
     },
+
     postImage (url, data, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_image_config("POST", data))

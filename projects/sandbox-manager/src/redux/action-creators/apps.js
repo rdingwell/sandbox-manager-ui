@@ -79,7 +79,6 @@ export function createApp (app) {
 
         API.post(url, newApp, dispatch)
             .then(createdApp => {
-                debugger
                 if (app.logoFile) {
                     let formData = new FormData();
                     formData.append("file", app.logoFile);
