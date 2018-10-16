@@ -213,7 +213,6 @@ export default function (state = initialState, action) {
             state.singleEncounterLoadingError = undefined;
             state.importResults = undefined;
             state.launchScenarios = undefined;
-            state.notifications = [];
             break;
     }
 
