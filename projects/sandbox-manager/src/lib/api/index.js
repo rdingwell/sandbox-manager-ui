@@ -31,6 +31,14 @@ export default {
                 .then(() => resolve())
                 .catch(e => parseError(e, dispatch, reject));
         });
+    },
+
+    postImage (url, data, dispatch) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_image_config("POST", data))
+                .then(response => parseResponse(response, dispatch, resolve, reject))
+                .catch(e => parseError(e, dispatch, reject));
+        });
     }
 };
 
@@ -48,6 +56,21 @@ const get_config = (method, data) => {
 
     if (data) {
         CONFIG.body = JSON.stringify(data);
+    }
+
+    return CONFIG;
+};
+
+const get_image_config = (method, data) => {
+    let CONFIG = {
+        headers: {
+            Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `BEARER ${window.fhirClient.server.auth.token}` : undefined,
+        },
+        method
+    };
+
+    if (data) {
+        CONFIG.body = data;
     }
 
     return CONFIG;
