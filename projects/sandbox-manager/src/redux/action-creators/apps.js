@@ -83,11 +83,15 @@ export function createApp (app) {
                     let formData = new FormData();
                     formData.append("file", app.logoFile);
                     url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + createdApp.id + "/image";
-                    API.post(url, formData)
+                    API.post(url, formData, dispatch, true)
                         .then(() => setTimeout(() => {
                             dispatch(setCreatedApp(createdApp));
                             dispatch(loadSandboxApps());
-                        }, 550));
+                        }, 550))
+                        .catch(() => {
+                            dispatch(loadSandboxApps());
+                            dispatch(appCreating(false));
+                        });
                 } else {
                     dispatch(setCreatedApp(createdApp));
                     dispatch(loadSandboxApps());
@@ -126,10 +130,10 @@ export function updateApp (newValues, originalApp, changes) {
                 let formData = new FormData();
                 formData.append("file", newValues.logoFile);
                 url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                API.post(url, formData, dispatch).then(() => setTimeout(() => dispatch(loadSandboxApps()), 550));
+                API.post(url, formData, dispatch, true).finally(() => setTimeout(() => dispatch(loadSandboxApps()), 550));
             } else if (!newValues.logoFile) {
                 url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/app/" + originalApp.id + "/image";
-                API.delete(url, dispatch).then(() => dispatch(loadSandboxApps()));
+                API.delete(url, dispatch).finally(() => dispatch(loadSandboxApps()));
             } else {
                 dispatch(loadSandboxApps());
             }

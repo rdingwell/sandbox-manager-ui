@@ -1,9 +1,9 @@
 import { setGlobalError } from '../../redux/action-creators';
 
 export default {
-    post (url, data, dispatch) {
+    post (url, data, dispatch, isFormData) {
         return new Promise((resolve, reject) => {
-            fetch(url, get_config("POST", data))
+            fetch(url, get_config("POST", data, isFormData))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
@@ -36,7 +36,7 @@ export default {
 
 // Helpers
 
-const get_config = (method, data) => {
+const get_config = (method, data, isFormData) => {
     let CONFIG = {
         headers: {
             Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `BEARER ${window.fhirClient.server.auth.token}` : undefined,
@@ -48,6 +48,10 @@ const get_config = (method, data) => {
 
     if (data) {
         CONFIG.body = JSON.stringify(data);
+        if (isFormData) {
+            delete CONFIG.headers['Content-Type'];
+            CONFIG.body = data;
+        }
     }
 
     return CONFIG;
