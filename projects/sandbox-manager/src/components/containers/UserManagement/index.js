@@ -154,17 +154,16 @@ class Users extends Component {
         });
 
         let keys = Object.keys(users);
-        let canDelete = keys.length > 1 && adminCount > 1;
 
         return keys.map(key => {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
-            let canRemoveUser = canDelete && (currentIsAdmin || user.sbmUserId === this.props.user.sbmUserId);
+            let canRemoveUser = keys.length > 1 && ((currentIsAdmin && adminCount > 1) || user.sbmUserId === this.props.user.sbmUserId);
             let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === user.sbmUserId) || {}).accessTimestamp;
             if (lastLogin !== undefined) {
                 lastLogin = new Date(lastLogin);
-                let myDateString = lastLogin.getFullYear() + '-' + ('0' + (lastLogin.getMonth()+1)).slice(-2) + '-'
+                let myDateString = lastLogin.getFullYear() + '-' + ('0' + (lastLogin.getMonth() + 1)).slice(-2) + '-'
                     + ('0' + lastLogin.getDate()).slice(-2);
                 lastLogin = myDateString + ' ' + ('0' + (lastLogin.getHours())).slice(-2) + ':' + ('0' + (lastLogin.getMinutes())).slice(-2);
             } else {
@@ -184,12 +183,9 @@ class Users extends Component {
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
-                                {isAdmin && <MenuItem className='scenario-menu-item' primaryText='Revoke admin'
-                                                                    onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin'
-                                                                          onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user'
-                                          onClick={() => this.handleOpen(user.sbmUserId)}/>
+                                {isAdmin && <MenuItem className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
+                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
+                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user' onClick={() => this.handleOpen(user.sbmUserId)}/>
                             </Menu>
                         </Popover>}
                     </IconButton>
