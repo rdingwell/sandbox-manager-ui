@@ -812,7 +812,7 @@ export function updateSandboxInvite (invite, answer) {
         dispatch(setInvitesLoading(true));
         let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandboxinvite/${invite.id}?status=${answer}`;
         API.put(url, {}, dispatch)
-            .then(() => {
+            .finally(() => {
                 dispatch(loadInvites());
                 dispatch(fetchSandboxes());
             });
