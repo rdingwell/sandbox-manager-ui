@@ -159,7 +159,10 @@ class Users extends Component {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
-            let canRemoveUser = keys.length > 1 && ((currentIsAdmin && adminCount > 1) || user.sbmUserId === this.props.user.sbmUserId);
+            let canRemoveUser = keys.length > 1 && (
+                (currentIsAdmin && user.sbmUserId !== this.props.user.sbmUserId) ||
+                (user.sbmUserId === this.props.user.sbmUserId && (!currentIsAdmin || adminCount > 1))
+            );
             let lastLogin = (this.props.loginInfo.find(i => i.sbmUserId === user.sbmUserId) || {}).accessTimestamp;
             if (lastLogin !== undefined) {
                 lastLogin = new Date(lastLogin);
