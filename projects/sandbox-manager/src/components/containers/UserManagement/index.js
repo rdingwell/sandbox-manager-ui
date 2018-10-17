@@ -186,7 +186,7 @@ class Users extends Component {
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                  targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
-                                {isAdmin && <MenuItem className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
+                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user' onClick={() => this.handleOpen(user.sbmUserId)}/>
                             </Menu>
