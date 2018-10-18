@@ -48,8 +48,6 @@ class App extends React.Component {
 
     componentDidMount () {
         this.setSandboxId();
-        this.props.loadInvites();
-        this.props.fetchUserNotifications();
         window.addEventListener('resize', this.onResize);
     }
 
@@ -90,6 +88,8 @@ class App extends React.Component {
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
         check && this.forceUpdate();
+        check && this.props.loadInvites();
+        check && this.props.fetchUserNotifications();
     };
 
     getCheck = () => {
