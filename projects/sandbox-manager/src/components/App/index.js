@@ -48,6 +48,8 @@ class App extends React.Component {
 
     componentDidMount () {
         this.setSandboxId();
+        this.props.loadInvites();
+        this.props.fetchUserNotifications();
         window.addEventListener('resize', this.onResize);
     }
 
