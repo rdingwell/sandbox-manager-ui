@@ -23,8 +23,6 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
-        this.setSandboxId();
-
         if (this.props.location.pathname !== "/launchApp") {
             if (this.props.fhir.smart.data.server) {
                 let smart = FHIR.client(this.props.fhir.smart.data.server);
@@ -87,9 +85,7 @@ class App extends React.Component {
         let check = this.getCheck();
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
-        check && this.forceUpdate();
-        check && this.props.loadInvites();
-        check && this.props.fetchUserNotifications();
+        check && sessionStorage.sandboxId && this.forceUpdate();
     };
 
     getCheck = () => {
