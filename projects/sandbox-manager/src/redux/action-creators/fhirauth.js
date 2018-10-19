@@ -230,7 +230,7 @@ export function fhirauth_setSmart (smart, redirect = null) {
                         redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
                         redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
                         dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                        dispatch(fetchSandboxes());
+                        window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
                         dispatch(loadInvites());
                         dispatch(fetchUserNotifications());
                     })

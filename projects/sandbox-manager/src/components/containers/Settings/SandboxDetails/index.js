@@ -33,7 +33,13 @@ class SandboxDetails extends Component {
     }
 
     componentDidMount () {
-        let current = this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN');
+        let current = this.props.sandbox && this.props.sandbox.userRoles && this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN');
+        current && this.setState({ currentUserIsAdmin: true });
+    }
+
+    componentWillReceiveProps (nextProps) {
+        let current = (!this.props.sandbox || (this.props.sandbox && !this.props.sandbox.userRoles)) &&
+            (nextProps.sandbox && nextProps.sandbox.userRoles) && nextProps.sandbox.userRoles.find(r => r.user.sbmUserId === nextProps.user.sbmUserId && r.role === 'ADMIN');
         current && this.setState({ currentUserIsAdmin: true });
     }
 

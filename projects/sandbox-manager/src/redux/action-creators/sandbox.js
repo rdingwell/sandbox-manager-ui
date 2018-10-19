@@ -604,30 +604,32 @@ export const createSandbox = (sandboxDetails) => {
 export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
-        dispatch(getLoginInfo());
-        !toSelect && dispatch(fetchSandboxesStart());
-        let configuration = state.config.xsettings.data.sandboxManager;
-        const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
+        if(!state.sandbox.loading ) {
+            dispatch(getLoginInfo());
+            !toSelect && dispatch(fetchSandboxesStart());
+            let configuration = state.config.xsettings.data.sandboxManager;
+            const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
-        API.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, dispatch)
-            .then(data => {
-                const sandboxes = [];
-                for (let key in data) {
-                    sandboxes.push({
-                        ...data[key], id: key
-                    });
-                }
-                dispatch(fetchSandboxesSuccess(sandboxes));
-                setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
-            })
-            .catch(err => {
-                sessionStorage.clear();
-                localStorage.clear();
+            API.get(configuration.sandboxManagerApiUrl + '/sandbox' + queryParams, dispatch)
+                .then(data => {
+                    const sandboxes = [];
+                    for (let key in data) {
+                        sandboxes.push({
+                            ...data[key], id: key
+                        });
+                    }
+                    dispatch(fetchSandboxesSuccess(sandboxes));
+                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                })
+                .catch(err => {
+                    sessionStorage.clear();
+                    localStorage.clear();
 
-                dispatch(resetState());
-                window.location.href = window.location.origin;
-                dispatch(fetchSandboxesFail(err));
-            });
+                    dispatch(resetState());
+                    window.location.href = window.location.origin;
+                    dispatch(fetchSandboxesFail(err));
+                });
+        }
     };
 };
 
