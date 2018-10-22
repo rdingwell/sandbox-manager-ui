@@ -95,15 +95,14 @@ class Apps extends Component {
                                 <i className="material-icons">close</i>
                             </IconButton>
                             <h3>Registered App Details</h3>
-                            <div className='paper-body'>
-                                <div>
-                                    App Client Id <br/>
-                                    ID: <span className='client-id'>{this.state.createdApp.clientId}</span>
+                            <div className="client-details">
+                                <div className="label-value">
+                                   <span>Client Id:</span> <span className='client-id'>{this.state.createdApp.clientId}</span>
                                 </div>
                                 {createAppClientJSON.clientSecret && <div>
-                                    <div>
-                                        Client Secret: <br />
-                                        Secret: <span className='client-id'>{createAppClientJSON.clientSecret}</span>
+                                    <div className="label-value">
+                                        <span>Client Secret:</span>
+                                        <span className='client-id'>{createAppClientJSON.clientSecret}</span>
                                     </div>
                                 </div>}
                             </div>
