@@ -23,10 +23,6 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
-        let check = !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
-        check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
-        check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
-
         if (this.props.location.pathname !== "/launchApp") {
             if (this.props.fhir.smart.data.server) {
                 let smart = FHIR.client(this.props.fhir.smart.data.server);
@@ -44,7 +40,12 @@ class App extends React.Component {
         this.state = {};
     }
 
+    componentDidUpdate () {
+        this.setSandboxId();
+    }
+
     componentDidMount () {
+        this.setSandboxId();
         window.addEventListener('resize', this.onResize);
     }
 
@@ -63,7 +64,7 @@ class App extends React.Component {
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
-                        {this.props.children}
+                        {!this.getCheck() && this.props.children}
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
@@ -75,10 +76,21 @@ class App extends React.Component {
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
-                {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()} />}
+                {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
             </Layout>
         </MuiThemeProvider>;
     }
+
+    setSandboxId = () => {
+        let check = this.getCheck();
+        check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
+        check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
+        check && sessionStorage.sandboxId && this.forceUpdate();
+    };
+
+    getCheck = () => {
+        return !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
+    };
 
     // Event handlers ----------------------------------------------------------
     onResize = () => this.forceUpdate();

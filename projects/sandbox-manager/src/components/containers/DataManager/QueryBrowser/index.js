@@ -81,7 +81,7 @@ export default class QueryBrowser extends Component {
                   value={this.state.activeTab}>
                 <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
                      onActive={() => this.setActiveTab('summary')} value='summary'>
-                    {this.props.results && this.props.results.entry && <span className='query-size'>
+                    {this.props.results && this.props.results.entry && this.props.results.total && <span className='query-size'>
                         <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
                         <span> of <span className='number'>{this.props.results.total}</span></span>
                     </span>}

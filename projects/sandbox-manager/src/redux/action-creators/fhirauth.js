@@ -1,6 +1,6 @@
 import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
-import { fetchSandboxes } from "./sandbox";
+import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
 import API from '../../lib/api';
 
 let fhirClient = null;
@@ -230,7 +230,9 @@ export function fhirauth_setSmart (smart, redirect = null) {
                         redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
                         redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
                         dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                        dispatch(fetchSandboxes());
+                        window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
+                        dispatch(loadInvites());
+                        dispatch(fetchUserNotifications());
                     })
                     .catch(() => {})
             })

@@ -119,13 +119,11 @@ class AppDialog extends Component {
                         <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} disabled={this.state.isReplica}
                                    hintText='eg: launch patient/*.* openid profile' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <span className='subscript'>
-                            Note: If you do not provide scope, defaults will be set.
+                            Space separated list of scopes. Note: If you do not provide scopes, defaults will be set.
                         </span>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
                                    floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
-                        {this.props.app &&
-                        <span className='subscript'>Space separated list of scopes.</span>}
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>

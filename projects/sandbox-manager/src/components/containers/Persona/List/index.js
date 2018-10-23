@@ -271,7 +271,7 @@ class PersonaList extends Component {
                         </TableHeaderColumn>}
                         {!isPatient && !isPractitioner &&
                         <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px' }}>
-                            Login info
+                            Login Info
                         </TableHeaderColumn>}
                         {!isPractitioner && <TableHeaderColumn className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''}> </TableHeaderColumn>}
                     </TableRow>
