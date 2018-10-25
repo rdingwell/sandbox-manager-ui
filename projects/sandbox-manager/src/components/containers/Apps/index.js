@@ -95,7 +95,7 @@ class Apps extends Component {
                     ? <Dialog modal={false} open={!!this.state.createdApp} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
                         <Paper className='paper-card'>
                             <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.closeAll}>
-                                <i className="material-icons">close</i>
+                                <i className="material-icons" data-qa="modal-close-button">close</i>
                             </IconButton>
                             <h3>Registered App Details</h3>
                             <div className="client-details">

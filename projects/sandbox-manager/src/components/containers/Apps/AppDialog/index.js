@@ -87,7 +87,7 @@ class AppDialog extends Component {
                        actionsContainerClassName='app-dialog-actions-wrapper'>
             <Paper className='paper-card'>
                 <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
-                    <i className="material-icons">close</i>
+                    <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>
                 <h3>Registered App Details</h3>
                 <div className='paper-body'>

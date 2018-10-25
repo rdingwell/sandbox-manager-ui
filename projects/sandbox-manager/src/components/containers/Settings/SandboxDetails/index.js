@@ -126,7 +126,7 @@ class SandboxDetails extends Component {
             ? <div className='sandbox-edit-modal' key={this.state.modalToShow}>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={() => this.toggleModal()}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>

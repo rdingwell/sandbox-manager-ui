@@ -16,7 +16,7 @@ export default class SandboxReset extends Component {
         return <div className='delete-wrapper'>
             <div className='screen-title' style={titleStyle}>
                 <IconButton className="close-button" onClick={this.props.onClose}>
-                    <i className="material-icons">close</i>
+                    <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>
                 <h1 style={titleStyle}>DELETE SANDBOX</h1>
             </div>

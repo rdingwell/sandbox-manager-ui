@@ -54,7 +54,7 @@ class Users extends Component {
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITE</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
-                            <i className="material-icons">close</i>
+                            <i className="material-icons" data-qa="modal-close-button">close</i>
                         </IconButton>
                     </div>
                     <div className='screen-content-invite-modal'>
@@ -67,7 +67,7 @@ class Users extends Component {
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITES</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
-                            <i className="material-icons">close</i>
+                            <i className="material-icons" data-qa="modal-close-button">close</i>
                         </IconButton>
                     </div>
                     <div className='screen-content-invites-modal'>
@@ -92,7 +92,7 @@ class Users extends Component {
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>Remove User from Sandbox</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
-                            <i className="material-icons">close</i>
+                            <i className="material-icons" data-qa="modal-close-button">close</i>
                         </IconButton>
                     </div>
                     <div className='screen-content-delete-modal'>

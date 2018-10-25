@@ -1,14 +1,23 @@
+let { helpMenuButtonTest } = require('./tests/dashboard/helpButtonWorks');
+let { helpMenuItemsTest } = require('./tests/dashboard/helpMenuItemsWork');
+let { createSandbox } = require('./tests/dashboard/createSandbox');
+const ACTIONS = { helpMenuButtonTest, helpMenuItemsTest, createSandbox };
+
 const TEST_SUITE = [
     {
         title: 'Sample test case one',
         tests: [
             {
                 screen: 'dashboard',
-                action: 'helpButtonWorks'
+                action: 'helpMenuButtonTest'
             },
+            // {
+            //     screen: 'dashboard',
+            //     action: 'helpMenuItemsTest'
+            // },
             {
                 screen: 'dashboard',
-                action: 'helpMenuItemsWork'
+                action: 'createSandbox'
             }
         ]
     },
@@ -17,15 +26,7 @@ const TEST_SUITE = [
         tests: [
             {
                 screen: 'dashboard',
-                action: 'helpButtonWorks'
-            },
-            {
-                screen: 'dashboard',
-                action: 'helpMenuItemsWork'
-            },
-            {
-                screen: 'dashboard',
-                action: 'createSandbox'
+                action: 'helpMenuButtonTest'
             }
         ]
     }
@@ -40,7 +41,7 @@ describe('Initialize', function () {
 TEST_SUITE.map(testCase => {
     describe(testCase.title, function () {
         testCase.tests.map(test => {
-            require(`./tests/${test.screen}/${test.action}`);
+            ACTIONS[test.action]();
         });
     });
 });
