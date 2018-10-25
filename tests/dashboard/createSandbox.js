@@ -47,5 +47,14 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
     it('should create a sandbox', async () => {
         let createButton = await UTILS.getElementByCss('[data-qa="sandbox-submit-button"]');
         createButton.click();
+
+        await UTILS.waitForLoader('[data-qa="sandbox-creating-loader"]');
+        await UTILS.wait(500);
+        await UTILS.waitForLoader('[data-qa="sandbox-loading-loader"]');
+        await UTILS.wait(1500);
+
+        let currentUrl = await UTILS.getCurrentURL();
+        console.log(currentUrl);
+        expect(currentUrl.toString()).toEqual(expect.stringContaining('AUTOTESTSANDBOX1'));
     });
 });

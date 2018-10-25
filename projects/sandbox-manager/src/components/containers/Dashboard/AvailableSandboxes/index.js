@@ -85,7 +85,7 @@ class Index extends Component {
                 {!this.props.loading && <List>
                     {sandboxes}
                 </List>}
-                {this.props.loading && <div className='loader-wrapper'>
+                {this.props.loading && <div className='loader-wrapper' data-qa='sandbox-loading-loader'>
                     <p>
                         Loading sandboxes
                     </p>

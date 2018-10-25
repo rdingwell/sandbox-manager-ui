@@ -55,3 +55,14 @@ exports.getTabName = async function getTabName () {
 exports.waitForLoad = async function waitForLoad () {
     return await driver.wait(() => driver.executeScript('return document.readyState').then(state => state === 'complete'));
 };
+
+exports.waitForLoader = async function waitForLoader (loaderSelector) {
+    return await driver.wait(async () => {
+        let loader = await this.getElementByCss(loaderSelector);
+        return !!loader;
+    });
+};
+
+exports.getCurrentURL = async function getCurrentURL() {
+    return await driver.getCurrentUrl();
+};
