@@ -60,7 +60,7 @@ class SandboxDetails extends Component {
                     <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
                         <Redo color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
-                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin}>
+                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
                         <Delete color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
                 </div>

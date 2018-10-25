@@ -1,7 +1,8 @@
 let { helpMenuButtonTest } = require('./tests/dashboard/helpButtonWorks');
 let { helpMenuItemsTest } = require('./tests/dashboard/helpMenuItemsWork');
 let { createSandbox } = require('./tests/dashboard/createSandbox');
-const ACTIONS = { helpMenuButtonTest, helpMenuItemsTest, createSandbox };
+let { deleteSandbox } = require('./tests/dashboard/deleteSandbox');
+const ACTIONS = { helpMenuButtonTest, helpMenuItemsTest, createSandbox, deleteSandbox };
 
 const TEST_SUITE = [
     {
@@ -18,6 +19,10 @@ const TEST_SUITE = [
             {
                 screen: 'dashboard',
                 action: 'createSandbox'
+            },
+            {
+                screen: 'dashboard',
+                action: 'deleteSandbox'
             }
         ]
     },
