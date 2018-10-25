@@ -604,7 +604,7 @@ export const createSandbox = (sandboxDetails) => {
 export const fetchSandboxes = (toSelect) => {
     return (dispatch, getState) => {
         const state = getState();
-        if(!state.sandbox.loading ) {
+        if (!state.sandbox.loading) {
             dispatch(getLoginInfo());
             !toSelect && dispatch(fetchSandboxesStart());
             let configuration = state.config.xsettings.data.sandboxManager;
@@ -1000,9 +1000,8 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let data = {};
         user && !noUser && (data = { username: user.personaUserId, password: user.password });
-        let launchDetails = {
-            patientContext: persona
-        };
+        let launchDetails = {};
+        persona && (launchDetails.patientContext = persona);
         user && !noUser && (launchDetails.userPersona = Object.assign({}, user));
 
         try {
