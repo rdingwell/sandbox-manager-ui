@@ -79,7 +79,7 @@ class Index extends Component {
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
                     </SelectField>
                 </div>
-                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
+                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' data-qa='create-sandbox'/>
             </h3>
             <div>
                 {!this.props.loading && <List>

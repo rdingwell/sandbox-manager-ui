@@ -130,7 +130,7 @@
     "less-loader": "4.0.5",
     "lodash": "4.17.4",
     "material-ui": "0.20.0",
-    "mocha": "4.1.0",
+    "mocha": "^4.1.0",
     "mochawesome": "3.0.1",
     "moment": "2.20.1",
     "moxios": "0.4.0",
