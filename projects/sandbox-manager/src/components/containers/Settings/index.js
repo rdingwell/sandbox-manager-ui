@@ -30,7 +30,7 @@ class Settings extends Component {
     }
 
     render () {
-        return <div className='settings-wrapper'>
+        return <div className='settings-wrapper' data-qa='settings-wrapper'>
             <Tabs className='settings-tabs' contentContainerClassName='settings-tabs-container' inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
                   tabItemContainerStyle={{ backgroundColor: this.props.muiTheme.palette.canvasColor, borderBottom: '1px solid ' + this.props.muiTheme.palette.primary7Color }}>
                 <Tab label="Sandbox" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} onActive={() => this.setActiveTab('details')}

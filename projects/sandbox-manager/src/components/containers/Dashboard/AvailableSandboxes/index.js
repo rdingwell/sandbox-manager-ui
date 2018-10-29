@@ -61,7 +61,7 @@ class Index extends Component {
                     : <IconButton tooltip='Authorization required'>
                         <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>;
-                return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
+                return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'} data-qa={`sandbox-${sandbox.sandboxId}`}
                                  leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} id={sandbox.name}/>
             });
 

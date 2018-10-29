@@ -93,7 +93,7 @@ class LaunchScenarios extends Component {
                     Are you sure you want to delete "{this.state.scenarioToDelete ? this.state.scenarioToDelete.description : ''}"?
                 </p>
             </ConfirmModal>
-            <div className='launch-scenarios-wrapper'>
+            <div className='launch-scenarios-wrapper' data-qa='launch-scenarios-wrapper'>
                 <div className='filter-wrapper'>
                     <IconButton onClick={() => this.setState({desc: !this.state.desc})} className='sort-button'>
                         <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>

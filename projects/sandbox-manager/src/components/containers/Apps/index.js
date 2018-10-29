@@ -114,7 +114,7 @@ class Apps extends Component {
                     : null;
 
         return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}>
-            <div className='apps-page-wrapper'>
+            <div className='apps-page-wrapper' data-qa='app-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
                         <span className='dummy-expander'/>

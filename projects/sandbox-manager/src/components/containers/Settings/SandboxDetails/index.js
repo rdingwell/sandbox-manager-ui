@@ -119,7 +119,7 @@ class SandboxDetails extends Component {
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
-                                  label='Delete sandbox' onClick={this.deleteSandbox}/>
+                                  label='Delete sandbox' onClick={this.deleteSandbox} data-qa='sandbox-delete-button'/>
                 </div>;
 
         let content = this.state.modalToShow === MODALS.edit

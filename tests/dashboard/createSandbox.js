@@ -4,7 +4,7 @@ const UTILS = require('../utils');
 
 exports.createSandbox = () => describe('Testing sandbox creation', function () {
     it('should show the creation modal when the button is clicked', async () => {
-        let button = await UTILS.getElementByCss('[data-qa="create-sandbox"]');
+        let button = await UTILS.getElementByCss('[data-qa="create-sandbox"]', 2000);
         button.click();
 
         //Wait for the animation just in case
@@ -54,7 +54,6 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
         await UTILS.wait(1500);
 
         let currentUrl = await UTILS.getCurrentURL();
-        console.log(currentUrl);
         expect(currentUrl.toString()).toEqual(expect.stringContaining('AUTOTESTSANDBOX1'));
     });
 });
