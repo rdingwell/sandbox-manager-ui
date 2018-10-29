@@ -339,10 +339,10 @@ class PersonaList extends Component {
             "authClient": {
                 "clientName": "Patient Data Manager",
                 "clientId": "patient_data_manager",
-                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
+                "redirectUri": "http://localhost:8096/index.html"
             },
-            "appUri": "https://patient-data-manager.hspconsortium.org/",
-            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
+            "appUri": "http://localhost:8096/",
+            "launchUri": "http://localhost:8096/launch.html",
             "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
             "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
         }, persona.id, undefined, true);
