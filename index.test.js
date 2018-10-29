@@ -7,21 +7,28 @@ let { notificationsWork } = require('./tests/header/notificationsWork');
 let { toggleSideMenu } = require('./tests/header/toggleSideMenu');
 let { signOut } = require('./tests/header/signOut');
 let { userMenuWorks } = require('./tests/header/userMenuWorks');
+let { testHomeButton } = require('./tests/header/homeButtonWorks');
 /*
 -------------- NAVIGATION TESTERS --------------
  */
-let {testNavigation} = require('./tests/navigation/testNavigation');
+let { testNavigation } = require('./tests/navigation/testNavigation');
 /*
 -------------- DASHBOARD TESTERS --------------
  */
 let { createSandbox } = require('./tests/dashboard/createSandbox');
-let { selectSandbox } = require('./tests/dashboard/selectSandbox');
+let { testSandboxSelection } = require('./tests/dashboard/selectSandbox');
+/*
+-------------- APPS TESTERS --------------
+ */
+let { testAppCreation } = require('./tests/apps/testAppCreation');
 /*
 -------------- SETTINGS TESTERS --------------
  */
 let { deleteSandbox } = require('./tests/settings/deleteSandbox');
 
-const ACTIONS = { helpMenuButtonTest, helpMenuItemsTest, createSandbox, deleteSandbox, notificationsWork, userMenuWorks, signOut, toggleSideMenu, selectSandbox, testNavigation };
+const ACTIONS = {
+    helpMenuButtonTest, helpMenuItemsTest, createSandbox, deleteSandbox, notificationsWork, userMenuWorks, signOut, toggleSideMenu, testSandboxSelection, testNavigation, testHomeButton, testAppCreation
+};
 
 const UTILS = require('./tests/utils');
 
@@ -29,51 +36,13 @@ const TEST_SUITE = [
     {
         title: 'Sample test case one',
         tests: [
-            {
-                screen: 'header',
-                action: 'helpMenuButtonTest'
-            },
-            {
-                screen: 'header',
-                action: 'notificationsWork'
-            },
-            {
-                screen: 'header',
-                action: 'userMenuWorks'
-            },
-            // {
-            //     screen: 'header',
-            //     action: 'helpMenuItemsTest'
-            // },
-            // {
-            //     screen: 'dashboard',
-            //     action: 'createSandbox'
-            // },
-            {
-                screen: 'dashboard',
-                action: 'selectSandbox'
-            },
-            {
-                screen: 'header',
-                action: 'toggleSideMenu'
-            },
-            {
-                screen: 'navigation',
-                action: 'testNavigation'
-            }
+            'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', 'helpMenuItemsTest', 'createSandbox', 'testHomeButton', 'testSandboxSelection', 'toggleSideMenu', 'testNavigation', 'testAppCreation'
         ]
     },
     {
         title: 'Sample test case two',
         tests: [
-            // {
-            //     screen: 'dashboard',
-            //     action: 'deleteSandbox'
-            // },
-            {
-                screen: 'header',
-                action: 'signOut'
-            }
+            'deleteSandbox', 'signOut'
         ]
     }
 ];
@@ -87,7 +56,7 @@ describe('Initialize', function () {
 TEST_SUITE.map(testCase => {
     describe(testCase.title, function () {
         testCase.tests.map(test => {
-            ACTIONS[test.action]();
+            test.indexOf('__') !== 0 && ACTIONS[test]();
         });
     });
 });

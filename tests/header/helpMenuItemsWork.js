@@ -26,11 +26,11 @@ const MENU_ITEMS = [
         selector: '[data-qa="help-item-fhir"]',
         tabTitle: 'Index - FHIR v3.0.1'
     },
-    {
-        name: 'FAQ',
-        selector: '[data-qa="help-item-faq"]',
-        tabTitle: 'Collaboration Site'
-    },
+    // {
+    //     name: 'FAQ',
+    //     selector: '[data-qa="help-item-faq"]',
+    //     tabTitle: 'Collaboration Site'
+    // },
     // {
     //     name: 'Developer forum',
     //     selector: '[data-qa="help-item-developer-forum"]',
@@ -55,11 +55,6 @@ exports.helpMenuItemsTest = () => [
         });
     }),
     describe('Testing if all the menu items open in a new tab', function () {
-        afterAll(async () => {
-            let overlay = await UTILS.getElementByXPath('/html/body/div[4]');
-            overlay.click();
-        });
-
         MENU_ITEMS.map(item => {
             it(`should open "${item.name}" in a new tab with title: "${item.tabTitle}"`, async () => {
                 let button = await UTILS.getElementByCss(item.selector);
@@ -76,6 +71,12 @@ exports.helpMenuItemsTest = () => [
 
                 expect(tabName).toEqual(expect.stringContaining(item.tabTitle));
             })
+        });
+    }),
+    describe('Closing the menu', function () {
+        it('should close the menu', async () => {
+            let overlay = await UTILS.getElementByXPath('/html/body/div[5]');
+            overlay.click();
         });
     })
 ];
