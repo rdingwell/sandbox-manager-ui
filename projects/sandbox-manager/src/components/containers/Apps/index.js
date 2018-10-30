@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, IconButton, FloatingActionButton, RadioButton, Paper } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import LaunchIcon from "material-ui/svg-icons/action/launch";
@@ -85,6 +85,9 @@ class Apps extends Component {
                          onClose={this.closeAll} doLaunch={this.doLaunch}/>
             : this.state.appToLaunch
                 ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog' autoScrollBodyContent>
+                    {this.props.defaultUser && <div className='no-patient-button'>
+                        <RaisedButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} primary onClick={() => this.doLaunch()} label='Launch without a patient'/>
+                    </div>}
                     {this.props.defaultUser && <PersonaList {...props} idRestrictions={this.state.appToLaunch.samplePatients} titleLeft/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>
@@ -97,7 +100,7 @@ class Apps extends Component {
                             <h3>Registered App Details</h3>
                             <div className="client-details">
                                 <div className="label-value">
-                                   <span>Client Id:</span> <span className='client-id'>{this.state.createdApp.clientId}</span>
+                                    <span>Client Id:</span> <span className='client-id'>{this.state.createdApp.clientId}</span>
                                 </div>
                                 {createAppClientJSON.clientSecret && <div>
                                     <div className="label-value">
@@ -169,7 +172,7 @@ class Apps extends Component {
         this.closeAll();
     };
 
-    doLaunch = (persona) => {
+    doLaunch = (persona = {}) => {
         this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona.id);
         this.closeAll();
     };

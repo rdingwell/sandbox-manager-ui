@@ -163,18 +163,16 @@ class AppDialog extends Component {
     }
 
     launchBlur = () => {
-        if (this.state.app.launchUri.substring(0, 4) === 'http') {
+        let app = Object.assign({}, this.state.app);
+        if (this.state.app.launchUri.substring(0, 4) === 'http' && app.redirectUris.length === 0) {
             let pathArray = this.state.app.launchUri.split('/');
             let protocol = pathArray[0];
             let host = pathArray[2];
             let url = protocol + '//' + host;
-            let app = Object.assign({}, this.state.app);
             app.redirectUris = url + '/';
             this.setState({ app });
-        }
-        else {
+        } else if(app.redirectUris.length === 0) {
             let pathArray = this.state.app.launchUri.split('/');
-            let app = Object.assign({}, this.state.app);
             app.redirectUris = pathArray[0] + '/';
             this.setState({ app });
         }
