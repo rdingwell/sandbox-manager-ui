@@ -974,9 +974,6 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         let configuration = state.config.xsettings.data.sandboxManager;
         user = user ? user : state.sandbox.defaultUser;
 
-        let key = random(32);
-        window.localStorage[key] = "requested-launch";
-
         let params = {};
         if (scenario) {
             persona && (params = { patient: persona });
@@ -997,6 +994,13 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         }
 
         params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
+
+        let key = random(32);
+        window.localStorage[key] = {
+            status: "requested-launch",
+            embedded: !params["need_patient_banner"]
+        };
+
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let data = {};
         user && !noUser && (data = { username: user.personaUserId, password: user.password });
@@ -1048,6 +1052,7 @@ function callRegisterContext (appToLaunch, params, issuer, launchDetails, key, d
                 app: appToLaunch,
                 iss: issuer,
                 launchDetails: launchDetails,
-                context
+                context,
+                embedded: !params["need_patient_banner"]
             }))
 }

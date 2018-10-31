@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 
+import './index.less';
+
+let launched = false;
 export default class LaunchApp extends Component {
+    constructor (props) {
+        super(props);
+
+        this.state = {};
+    }
+
     componentDidMount () {
         // A hack to get around the window popup behavior in modern web browsers
-        let launched = false;
         let key = window.location.search.slice(1);
         if (!(key in window.localStorage)) {
             console.log('Failed to launch app -- no launch key.');
         }
-        onStorage();
-        window.addEventListener('storage', onStorage, false);
 
-        function onStorage () {
-            if (launched || window.localStorage[key] === 'requested-launch') {
+        let onStorage = () => {
+            let details = JSON.parse(window.localStorage[key] || {});
+            console.log('Stored details: ' + details);
+            if (!details || launched || details.status === 'requested-launch') {
                 return;
             }
-            launched = true;
-            let details = JSON.parse(window.localStorage[key]);
-            window.localStorage.removeItem(key);
 
             // Session storage is inherited from opening window, so
             // we need to purge the tokenResponse here to avoid passing
@@ -30,13 +35,46 @@ export default class LaunchApp extends Component {
                 details.app.launchUri = details.app.launchUri + "?"
             }
 
-            window.location = details.app.launchUri +
-                'iss=' + encodeURIComponent(details.iss) +
-                '&launch=' + encodeURIComponent(details.context.launch_id);
-        }
+            if (!details.embedded) {
+                launched = true;
+                window.localStorage.removeItem(key);
+
+                window.location = details.app.launchUri +
+                    'iss=' + encodeURIComponent(details.iss) +
+                    '&launch=' + encodeURIComponent(details.context.launch_id);
+            } else {
+                this.setState({
+                    src: details.app.launchUri +
+                        'iss=' + encodeURIComponent(details.iss) +
+                        '&launch=' + encodeURIComponent(details.context.launch_id)
+                });
+            }
+        };
+
+        onStorage();
+        window.addEventListener('storage', onStorage, false);
     }
 
     render () {
-        return null
+        return this.state.src
+            ? <div className='launched-app-wrapper'>
+                <div className='embedded-header'/>
+                <div className='embedded-sidebar'/>
+                <iframe src={this.state.src}/>
+            </div>
+            : null;
+    }
+
+    getFhirUserResource = (userId) => {
+        let userIdSections = userId.split("/");
+
+        window.fhirClient.api.read({ type: userIdSections[userIdSections.length - 2], id: userIdSections[userIdSections.length - 1] })
+            .done(userResult => {
+                let user = { name: "" };
+                user.name = nameGivenFamily(userResult.data);
+                user.id = userResult.data.id;
+                user.details = userResult.data;
+                this.setState({ user });
+            });
     }
 }

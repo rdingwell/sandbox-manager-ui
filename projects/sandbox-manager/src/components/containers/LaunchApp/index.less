@@ -1,0 +1,22 @@
+.launched-app-wrapper {
+  overflow: hidden;
+  & > * {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .embedded-header {
+    width: 100%;
+    height: 140px;
+    background-color: #2699fb;
+  }
+  .embedded-sidebar {
+    width: 260px;
+    height: ~'calc(100% - 140px)';
+    border-right: 1px solid whitesmoke;
+  }
+  iframe {
+    width: ~'calc(100% - 261px)';
+    height: ~'calc(100% - 140px)';
+    border: none;
+  }
+}
