@@ -58,7 +58,7 @@ export default class QueryBrowser extends Component {
                     </IconButton>
                     <div className='paper-body'>
                         <div className='result-wrapper'>
-                            {this.state.selectedEntry && <ReactJson src={this.state.selectedEntry} name={false}/>}
+                            {this.state.selectedEntry && <ReactJson src={this.state.selectedEntry.resource} name={false}/>}
                         </div>
                     </div>
                 </Paper>
