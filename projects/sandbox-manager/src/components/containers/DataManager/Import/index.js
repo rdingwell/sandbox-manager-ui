@@ -44,7 +44,7 @@ export default class Import extends Component {
                 </Tab>
                 <Tab label={<span><CodeIcon style={{ color: !data ? palette.primary5Color : palette.primary3Color }}/> Results</span>} className={'result tab' + (!data ? ' active' : '')}
                      onActive={() => this.setActiveTab('result')} ref='results'>
-                    {this.props.results && <ReactJson src={this.props.results}/>}
+                    {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.dataImporting && <div className='loader-wrapper' style={{ paddingTop: '200px' }}><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>
             </Tabs>
