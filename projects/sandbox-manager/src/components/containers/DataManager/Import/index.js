@@ -36,6 +36,7 @@ export default class Import extends Component {
                             <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({ input })}
                                        floatingLabelText='JSON' hintText='Paste you json here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         </div>}
+                    <div>Place a FHIR resource (Patient, Bundle, etc.) in the form above or upload a file containing a resource</div>
                     <div className='import-button'>
                         <input type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
                         <RaisedButton label='Load from file' primary onClick={() => this.refs.file.click()}/>
