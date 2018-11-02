@@ -30,7 +30,7 @@ and link it to npm so that it can be used as a standard node module.
 
 #### Verify
 
-* http://localhost:8080/
+* http://localhost:3001/
 
 #### Configuration ####
 

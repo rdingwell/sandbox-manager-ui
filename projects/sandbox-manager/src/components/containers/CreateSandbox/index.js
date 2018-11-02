@@ -51,7 +51,7 @@ class Index extends Component {
                             <TextField id='id' floatingLabelText='Sandbox Id*' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
                                        errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
-                            <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
+                            <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
                                           className='fhirVersion'>
                                 <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
