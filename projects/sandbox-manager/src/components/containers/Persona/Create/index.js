@@ -24,7 +24,7 @@ export default class CreatePersona extends Component {
 
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
-            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1
+            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1 && moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid()
             : this.props.type === PersonaList.TYPES.practitioner
                 ? this.state.name.length >= 1 && this.state.fName.length >= 1
                 : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1;
@@ -73,9 +73,9 @@ export default class CreatePersona extends Component {
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                               floatingLabelText="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                onChange={(_, birthDate) => this.setState({ birthDate })} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
-                    <h4>Gender</h4>
+                    <h4>Gender*</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
                         <RadioButton value="male" label="Male"/>
                         <RadioButton value="female" label="Female"/>

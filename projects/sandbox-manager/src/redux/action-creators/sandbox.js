@@ -354,15 +354,29 @@ export function createResource (data) {
 export const importData = (data) => {
     return dispatch => {
         dispatch(setDataImporting(true));
-        let promises = [window.fhirClient.api.transaction({ data })];
+        let promises;
+        try {
+            let dataObject = JSON.parse(data);
+            if (dataObject.resourceType === 'Bundle') {
+                promises = [window.fhirClient.api.transaction({ data })];
+            } else if (dataObject.id !== undefined) {
+                promises = [window.fhirClient.api.update({ type: dataObject.resourceType, id: dataObject.id, data: data })];
+            } else {
+                promises = [window.fhirClient.api.create({ type: dataObject.resourceType, data: data })];
+            }
+        } catch (err) {
+            // This will take care of informing the user that the JSON was not formatted correctly
+            promises = [window.fhirClient.api.transaction({ data })];
+        }
+
         Promise.all(promises)
             .then(result => {
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(result));
+                dispatch(setImportResults(result[0].data));
             })
             .catch(error => {
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(error));
+                dispatch(setImportResults(error.error.responseJSON));
             });
     }
 };
