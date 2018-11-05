@@ -1,12 +1,12 @@
 const { Builder } = require('selenium-webdriver');
 const { setDriver } = require('../utils');
-require('selenium-webdriver/chrome');
+// require('selenium-webdriver/chrome');
 require('selenium-webdriver/firefox');
-require('chromedriver');
+// require('chromedriver');
 require('geckodriver');
 
-const d = new Builder().forBrowser('chrome').build();
-const rootURL = 'localhost:3001';
+const d = new Builder().forBrowser('firefox').build();
+const rootURL = 'http://localhost:3001';
 let driver;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60 * 5;
 

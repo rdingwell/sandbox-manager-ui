@@ -26,16 +26,16 @@ const MENU_ITEMS = [
         selector: '[data-qa="help-item-fhir"]',
         tabTitle: 'Index - FHIR v3.0.1'
     },
-    // {
-    //     name: 'FAQ',
-    //     selector: '[data-qa="help-item-faq"]',
-    //     tabTitle: 'Collaboration Site'
-    // },
-    // {
-    //     name: 'Developer forum',
-    //     selector: '[data-qa="help-item-developer-forum"]',
-    //     tabTitle: 'Sample one'
-    // }
+    {
+        name: 'FAQ',
+        selector: '[data-qa="help-item-faq"]',
+        tabTitle: 'Collaboration Site'
+    },
+    {
+        name: 'Developer forum',
+        selector: '[data-qa="help-item-developer-forum"]',
+        tabTitle: 'Google'
+    }
 ];
 
 exports.helpMenuItemsTest = () => [
@@ -64,6 +64,7 @@ exports.helpMenuItemsTest = () => [
                 await UTILS.wait(500);
 
                 await UTILS.moveToTab(1);
+                await UTILS.wait(500);
                 await UTILS.waitForLoad();
                 let tabName = await UTILS.getTabName();
                 await UTILS.closeTab(1);

@@ -34,13 +34,31 @@ const UTILS = require('./tests/utils');
 
 const TEST_SUITE = [
     {
-        title: 'Sample test case one',
+        title: 'Test the header bar',
         tests: [
-            'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', 'helpMenuItemsTest', 'createSandbox', 'testHomeButton', 'testSandboxSelection', 'toggleSideMenu', 'testNavigation', 'testAppCreation'
+            'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', '__helpMenuItemsTest'
         ]
     },
     {
-        title: 'Sample test case two',
+        title: 'Test dashboard functionality',
+        tests: [
+            'createSandbox', 'testHomeButton', 'testSandboxSelection'
+        ]
+    },
+    {
+        title: 'Test the side menu and navigation',
+        tests: [
+            'toggleSideMenu', 'testNavigation'
+        ]
+    },
+    {
+        title: 'Test apps screen functionality',
+        tests: [
+            'testAppCreation'
+        ]
+    },
+    {
+        title: 'Cleanup after the testing',
         tests: [
             'deleteSandbox', 'signOut'
         ]
