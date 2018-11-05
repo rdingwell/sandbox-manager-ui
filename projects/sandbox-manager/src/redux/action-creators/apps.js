@@ -169,14 +169,17 @@ export function deleteApp (app) {
     }
 }
 
-export function loadApp (app) {
+export function loadApp (app, callback) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             let state = getState();
             dispatch(setSandboxAppLoading(true));
 
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/app/${app.id}`;
-            API.get(url, dispatch).then(app => dispatch(setApp(app))).finally(() => dispatch(setSandboxAppLoading(false)));
+            API.get(url, dispatch).then(app => {
+                dispatch(setApp(app));
+                callback && callback(app);
+            }).finally(() => dispatch(setSandboxAppLoading(false)));
         }
     }
 }
