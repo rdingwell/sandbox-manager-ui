@@ -47,11 +47,11 @@ class Index extends Component {
                         <form>
                             <TextField id='name' floatingLabelText='Sandbox Name*' value={this.state.name} onChange={this.sandboxNameChangedHandler}
                                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/> <br/>
-                            <div className='subscript'>Must be less than 50 characters. e.g., NewCo Sandbox</div>
+                            <div className='subscript'>Must be fewer than 50 characters. e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id*' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
                                        errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
-                            <div className='subscript'>Letters and numbers only. Must be less than 20 characters.</div>
-                            <div className='subscript'>Your sandbox will be available at http://localhost:3000/{this.state.sandboxId}</div>
+                            <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
+                            <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
                                           className='fhirVersion'>
                                 <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
@@ -64,7 +64,6 @@ class Index extends Component {
                                 <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler}/>
                                 <Checkbox label='Import sample patients and practitioners' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler}/>
                                 <Checkbox label='Import sample applications' className='checkbox' defaultChecked onCheck={this.applyDefaultAppsChangeHandler}/>
-                                <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
                             <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}
                                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>

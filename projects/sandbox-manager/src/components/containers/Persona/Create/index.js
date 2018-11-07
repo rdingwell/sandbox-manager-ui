@@ -16,15 +16,13 @@ export default class CreatePersona extends Component {
             fName: '',
             birthDate: '',
             suffix: '',
-            speciality: '',
-            role: '',
             gender: ''
         };
     }
 
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
-            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1
+            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1 && moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid()
             : this.props.type === PersonaList.TYPES.practitioner
                 ? this.state.name.length >= 1 && this.state.fName.length >= 1
                 : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1;
@@ -73,9 +71,9 @@ export default class CreatePersona extends Component {
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                               floatingLabelText="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                onChange={(_, birthDate) => this.setState({ birthDate })} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
-                    <h4>Gender</h4>
+                    <h4>Gender*</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
                         <RadioButton value="male" label="Male"/>
                         <RadioButton value="female" label="Female"/>
@@ -85,11 +83,6 @@ export default class CreatePersona extends Component {
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
-                               onChange={(_, speciality) => this.setState({ speciality })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
                 </div>}
             </div>
         </Paper>
@@ -115,26 +108,6 @@ export default class CreatePersona extends Component {
             data.birthDate = this.state.birthDate;
         } else if (this.props.type === PersonaList.TYPES.practitioner) {
             this.state.suffix && (data.name[0].suffix = [this.state.suffix]);
-            data.practitionerRole = [
-                {
-                    role: {
-                        coding: [
-                            {
-                                display: this.state.role
-                            }
-                        ]
-                    },
-                    specialty: [
-                        {
-                            coding: [
-                                {
-                                    display: this.state.speciality
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
         } else {
             data.userId = this.state.username;
             data.password = this.state.password;

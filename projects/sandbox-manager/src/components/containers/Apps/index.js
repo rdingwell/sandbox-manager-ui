@@ -143,7 +143,6 @@ class Apps extends Component {
     }
 
     search = (type, crit) => {
-        console.log('search');
         this.state.appToLaunch && this.state.appToLaunch.samplePatients
             ? this.props.fetchPersonas(type, this.state.appToLaunch.samplePatients.split('?')[1] + '&' + crit, 15)
             : this.props.fetchPersonas(type, crit, 15);
@@ -191,10 +190,23 @@ class Apps extends Component {
     handleAppLaunch = (event, app) => {
         event && event.preventDefault();
         event && event.stopPropagation();
-        app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
-        (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-        this.setState({ appToLaunch: app, registerDialogVisible: false });
-        this.props.resetPersonas();
+
+        if(!!app) {
+            this.props.loadApp(app, loadedApp => {
+                let clientJSON = JSON.parse(loadedApp.clientJSON);
+                let isPatientScoped = clientJSON.scope.find(i => i.toLowerCase().indexOf('patient/') >= 0);
+                if (isPatientScoped) {
+                    app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
+                    (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
+                    this.setState({ appToLaunch: app, registerDialogVisible: false});
+                    this.props.resetPersonas();
+                } else {
+                    this.setState({ appToLaunch: app, registerDialogVisible: false}, this.doLaunch);
+                }
+            });
+        } else {
+            this.setState({ appToLaunch: undefined, registerDialogVisible: false});
+        }
     };
 }
 

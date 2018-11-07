@@ -8,4 +8,4 @@ COPY ./projects/sandbox-manager/build/www /usr/share/nginx/html/
 #COPY . .
 #ENV TARGET_ENV="test"
 #RUN npm install
-#CMD [ "npm", "run", "serve" ]
+#CMD [ "npm", "run", "sm" ]
