@@ -16,8 +16,6 @@ export default class CreatePersona extends Component {
             fName: '',
             birthDate: '',
             suffix: '',
-            speciality: '',
-            role: '',
             gender: ''
         };
     }
@@ -85,11 +83,6 @@ export default class CreatePersona extends Component {
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
-                               onChange={(_, speciality) => this.setState({ speciality })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
                 </div>}
             </div>
         </Paper>
@@ -115,26 +108,6 @@ export default class CreatePersona extends Component {
             data.birthDate = this.state.birthDate;
         } else if (this.props.type === PersonaList.TYPES.practitioner) {
             this.state.suffix && (data.name[0].suffix = [this.state.suffix]);
-            data.practitionerRole = [
-                {
-                    role: {
-                        coding: [
-                            {
-                                display: this.state.role
-                            }
-                        ]
-                    },
-                    specialty: [
-                        {
-                            coding: [
-                                {
-                                    display: this.state.speciality
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
         } else {
             data.userId = this.state.username;
             data.password = this.state.password;
