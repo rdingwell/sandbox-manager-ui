@@ -1008,11 +1008,12 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         }
 
         params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
+        let embedded = !params["need_patient_banner"];
 
         let key = random(32);
         window.localStorage[key] = {
             status: "requested-launch",
-            embedded: !params["need_patient_banner"]
+            embedded
         };
 
         let appWindow = window.open('/launchApp?' + key, '_blank');

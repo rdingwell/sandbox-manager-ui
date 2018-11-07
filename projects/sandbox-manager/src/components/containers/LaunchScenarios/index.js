@@ -172,12 +172,18 @@ class LaunchScenarios extends Component {
     };
 
     openEHRSimulator = (sc) => {
-        let url = `http://localhost:3000/launch/${this.props.sandbox.sandboxId}/${this.props.sandboxApiUrl}/${window.fhirClient.server.serviceUrl.split('/')[2]}/
-        ${window.fhirClient.server.auth.token}/${sc.app.id}/${sc.userPersona.id}/${sc.patient}`;
+        const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+        const date = new Date();
+        const token = {
+            sandboxId: this.props.sandbox.sandboxId, sandboxApiUrl: this.props.sandboxApiUrl, appId: sc.app.id, personaId: sc.userPersona.id, patientId: sc.patient,
+            refApi: window.fhirClient.server.serviceUrl.split('/')[2], token: window.fhirClient.server.auth.token
+        };
+        date.setTime(date.getTime() + (3 * 60 * 1000));
+        document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+
         let openLink = this.refs.openLink;
-        openLink.href = url;
+        openLink.href = 'http://localhost:3000/launch';
         openLink.click();
-        console.log(sc);
     };
 
     handleRowSelect = (row) => {
