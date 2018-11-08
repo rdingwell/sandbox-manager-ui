@@ -178,6 +178,13 @@ class LaunchScenarios extends Component {
             sandboxId: this.props.sandbox.sandboxId, sandboxApiUrl: this.props.sandboxApiUrl, appId: sc.app.id, personaId: sc.userPersona.id, patientId: sc.patient,
             refApi: window.fhirClient.server.serviceUrl.split('/')[2], token: window.fhirClient.server.auth.token
         };
+        sc.encounter && (token.encounter = sc.encounter);
+        sc.location && (token.location = sc.location);
+        sc.resource && (token.resource = sc.resource);
+        sc.smartStyleUrl && (token.smartStyleUrl = sc.smartStyleUrl);
+        sc.intent && (token.intent = sc.intent);
+        sc.contextParams && (token.contextParams = sc.contextParams);
+
         date.setTime(date.getTime() + (3 * 60 * 1000));
         document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
 
