@@ -64,7 +64,6 @@ class Index extends Component {
                                 <Checkbox label='Allow Open FHIR Endpoint' className='checkbox' onCheck={this.allowOpenChangeHandler}/>
                                 <Checkbox label='Import sample patients and practitioners' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler}/>
                                 <Checkbox label='Import sample applications' className='checkbox' defaultChecked onCheck={this.applyDefaultAppsChangeHandler}/>
-                                <div className='subscript'>If not selected, the sandbox will be empty</div>
                             </div>
                             <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}
                                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>

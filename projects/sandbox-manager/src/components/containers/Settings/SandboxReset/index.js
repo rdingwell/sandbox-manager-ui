@@ -36,7 +36,6 @@ class SandboxReset extends Component {
                 </ul>
                 <Checkbox label='Import sample patients and practitioners' onCheck={(_e, defaultData) => this.props.toggleSampleData(defaultData)} labelStyle={{ color: this.props.theme.primary2Color }}
                           iconStyle={{fill: this.props.theme.primary2Color}}/>
-                <p>If not selected, the sandbox will be empty</p>
                 {this.props.sandbox &&
                 <Checkbox label={'Are you sure you want to reset sandbox ' + this.props.sandbox.name + '?'} iconStyle={{fill: this.props.theme.primary2Color}}
                           onCheck={(_e, reset) => this.props.toggleReset(reset)} labelStyle={{ color: this.props.theme.primary2Color }} />}
