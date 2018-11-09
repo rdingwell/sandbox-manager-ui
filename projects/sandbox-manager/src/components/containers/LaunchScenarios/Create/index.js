@@ -269,6 +269,7 @@ class Create extends Component {
                                             trackStyle={{ backgroundColor: palette.primary7Color }} toggled={this.state.patientBanner}
                                             thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                             onToggle={(_, value) => this.onChange('patientBanner', value)}/>
+                                    {!this.state.patientBanner && <span className='sub'>app will open in EHR Simulator</span>}
                                 </div>
                             </div>
                             <div className='column-item-wrapper big-and-centered'>

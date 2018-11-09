@@ -385,16 +385,17 @@ class LaunchScenarios extends Component {
                             {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
                     </span>
                         <span className='section-value' style={lightColor}>
-                        <FullScreenIcon style={iconStyleLight}/>
-                        <Toggle className='toggle' label='Needs Patient Banner' style={{ display: 'inline-block', bottom: '2px' }} labelStyle={needsBanner}
-                                thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
-                                trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary7Color }} toggled={selectedScenario.needPatientBanner === 'T'}
-                                thumbSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
-                                trackSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5' }}
-                                onToggle={e => {
-                                    this.toggleNeedsPatientBanner(e, selectedScenario)
-                                }}/>
-                    </span>
+                            <FullScreenIcon style={iconStyleLight}/>
+                            <Toggle className='toggle' label='Needs Patient Banner' style={{ display: 'inline-block', bottom: '2px' }} labelStyle={needsBanner}
+                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
+                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary7Color }} toggled={selectedScenario.needPatientBanner === 'T'}
+                                    thumbSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
+                                    trackSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5' }}
+                                    onToggle={e => {
+                                        this.toggleNeedsPatientBanner(e, selectedScenario)
+                                    }}/>
+                            {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>app will open in EHR Simulator</span>}
+                        </span>
                     </div>
                 </div>
                 <div className='custom-context-wrapper'>
