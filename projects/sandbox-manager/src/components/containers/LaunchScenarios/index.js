@@ -189,7 +189,7 @@ class LaunchScenarios extends Component {
         document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
 
         let openLink = this.refs.openLink;
-        openLink.href = 'http://localhost:3000/launch';
+        openLink.href = `${this.props.ehrUrl}/launch`;
         openLink.click();
     };
 
@@ -514,6 +514,10 @@ const mapStateToProps = state => {
     let sandboxApiUrl = state.config.xsettings.data.sandboxManager && state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
     sandboxApiUrl && sandboxApiUrl.indexOf('//') >= 0 && (sandboxApiUrl = sandboxApiUrl.split('//')[1]);
 
+    let ehrUrl = state.config.xsettings.data.sandboxManager
+        ? state.config.xsettings.data.sandboxManager.ehrSimulator
+        : '';
+
     return {
         user: state.users.oauthUser,
         apps: state.apps.apps,
@@ -544,7 +548,7 @@ const mapStateToProps = state => {
         personaLoading: state.persona.loading,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
 
-        sandboxApiUrl
+        sandboxApiUrl, ehrUrl
     }
 };
 
