@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
@@ -11,7 +10,6 @@ import * as actionCreators from '../../redux/action-creators';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Layout from 'sandbox-manager-lib/components/Layout';
-import CreateSandbox from '../containers/CreateSandbox';
 
 import StorageIcon from 'material-ui/svg-icons/device/storage';
 import ContactsIcon from 'material-ui/svg-icons/communication/contacts';
@@ -137,7 +135,7 @@ class App extends React.Component {
             <NavigationItem key={6} theme={theme} link={'/' + this.props.selectedSandbox.sandboxId + '/data-manager'} icon={StorageIcon} text={<span>{strings.navigation.dataManager}</span>}/>,
             <NavigationItem key={7} theme={theme} link={'/' + this.props.selectedSandbox.sandboxId + '/settings'} active={this.props.screen === 'settings'} icon={SettingsIcon}
                             text={<span>{strings.navigation.settings}</span>}/>];
-        this.props.selectedSandbox && list.unshift(<li key={0} className={'navigation-item' + (!this.props.sandbox.defaultUser ? ' disabled' : '')} style={ehrStyle}>
+        this.props.selectedSandbox && list.unshift(<li key={0} className={'navigation-item bigger' + (!this.props.sandbox.defaultUser ? ' disabled' : '')} style={ehrStyle}>
             <a href={!this.props.sandbox.defaultUser ? undefined : ehrSimulatorUrl} target='_blank' style={{ color: theme.palette.primary3Color }} onClick={ehrSimulatorUrl ? this.openEHR : undefined}>
                 <Desktop style={iconStyle}/>
                 <span>{strings.navigation.ehrSimulator}</span>
