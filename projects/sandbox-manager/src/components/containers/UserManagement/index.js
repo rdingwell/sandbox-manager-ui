@@ -31,7 +31,7 @@ class Users extends Component {
     }
 
     componentDidMount () {
-        this.props.fetchSandboxInvites();
+        // this.props.fetchSandboxInvites();
     }
 
     render () {
@@ -134,6 +134,7 @@ class Users extends Component {
     };
 
     showInvitationsModal = () => {
+        this.props.fetchSandboxInvites();
         this.setState({ invitationsModal: true });
     };
 
