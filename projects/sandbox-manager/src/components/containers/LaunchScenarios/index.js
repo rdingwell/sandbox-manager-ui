@@ -394,7 +394,7 @@ class LaunchScenarios extends Component {
                                     onToggle={e => {
                                         this.toggleNeedsPatientBanner(e, selectedScenario)
                                     }}/>
-                            {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>app will open in EHR Simulator</span>}
+                            {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
                         </span>
                     </div>
                 </div>
