@@ -24,6 +24,7 @@
     "oauthLogoutUrl": "https://auth-test.hspconsortium.org/logout",
     "oauthUserInfoUrl": "https://auth-test.hspconsortium.org/userinfo",
     "sbmUrlHasContextPath": "false",
+    "ehrSimulator": "https://ehr-app-test.hspconsortium.org",
     "userManagementUrl": "https://account-test.hspconsortium.org",
     "reservedEndpoints": [
       "this",
