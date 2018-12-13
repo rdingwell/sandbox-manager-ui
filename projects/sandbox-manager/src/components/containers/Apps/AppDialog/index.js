@@ -173,7 +173,7 @@ class AppDialog extends Component {
             this.setState({ app });
         } else if(app.redirectUris.length === 0) {
             let pathArray = this.state.app.launchUri.split('/');
-            app.redirectUris = pathArray[0] + '/';
+            app.redirectUris = pathArray[0];
             this.setState({ app });
         }
     };
