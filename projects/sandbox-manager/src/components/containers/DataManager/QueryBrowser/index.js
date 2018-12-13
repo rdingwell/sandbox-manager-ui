@@ -46,7 +46,7 @@ export default class QueryBrowser extends Component {
         let json = this.state.activeTab === 'json';
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
-
+        
         return <div className='query-browser-wrapper'>
             <Dialog paperClassName='query-result-dialog' open={this.state.showDialog} onRequestClose={this.toggle}>
                 <Paper className='paper-card'>
@@ -89,7 +89,7 @@ export default class QueryBrowser extends Component {
                         {this.props.executing ?
                             <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>
                             : <List>
-                                {this.props.results && this.props.results.entry && this.props.results.entry.map((e, i) => {
+                                {this.props.results && this.props.results.entry && this.props.results.entry.length > 0 ? this.props.results.entry.map((e, i) => {
                                     let entry = parseEntry(e);
                                     return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
                                         {entry.props.map((item, index) => {
@@ -99,7 +99,8 @@ export default class QueryBrowser extends Component {
                                             </div>
                                         })}
                                     </ListItem>
-                                })}
+                                })
+                                    : <div>{this.props.results != null && <span>No Results Found</span>}</div>}
                             </List>}
                     </div>
                 </Tab>
