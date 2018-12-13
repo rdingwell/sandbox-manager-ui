@@ -169,7 +169,7 @@ class AppDialog extends Component {
             let protocol = pathArray[0];
             let host = pathArray[2];
             let url = protocol + '//' + host;
-            app.redirectUris = url + '/';
+            app.redirectUris = url;
             this.setState({ app });
         } else if(app.redirectUris.length === 0) {
             let pathArray = this.state.app.launchUri.split('/');
