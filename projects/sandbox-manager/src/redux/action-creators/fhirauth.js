@@ -60,6 +60,7 @@ export function fhirLoginSuccess () {
 }
 
 export function goHome () {
+    console.log('goHome');
     sessionStorage && sessionStorage.clear && sessionStorage.clear();
     localStorage && localStorage.clear && localStorage.clear();
 
@@ -140,6 +141,7 @@ function queryFhirVersion (dispatch, fhirClient, state) {
 }
 
 export function authorize (url, state, sandboxId) {
+    console.log('authorize');
     let thisUri = sandboxId ? window.location.origin + "/" + sandboxId + "/apps" : window.location.origin + "/after-auth";
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
@@ -183,6 +185,7 @@ export function authorize (url, state, sandboxId) {
 }
 
 export function init () {
+    console.log('init');
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state);
@@ -190,6 +193,7 @@ export function init () {
 }
 
 export function afterFhirAuth (url) {
+    console.log('afterFhirAuth');
     return dispatch => {
         let params = getQueryParams(url);
         if (params && params.code) {
@@ -211,6 +215,7 @@ export function afterFhirAuth (url) {
 }
 
 export function fhirauth_setSmart (smart, redirect = null) {
+    console.log('fhirauth_setSmart');
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
