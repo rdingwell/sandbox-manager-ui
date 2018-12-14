@@ -52,12 +52,12 @@ class App extends React.Component {
 
     componentDidUpdate () {
         this.setSandboxId();
+        !!sessionStorage.sandboxId && sessionStorage.sandboxId !== "after-auth" && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
     }
 
     componentDidMount () {
         this.setSandboxId();
         window.addEventListener('resize', this.onResize);
-        !!sessionStorage.sandboxId && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
     }
 
     componentWillUnmount () {
