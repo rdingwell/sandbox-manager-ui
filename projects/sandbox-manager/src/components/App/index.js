@@ -52,7 +52,7 @@ class App extends React.Component {
 
     componentDidUpdate () {
         this.setSandboxId();
-        !!sessionStorage.sandboxId && sessionStorage.sandboxId !== "after-auth" && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
+        !!sessionStorage.sandboxId && sessionStorage.sandboxId !== "after-auth" && !this.props.loadingSingleSandbox && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
     }
 
     componentDidMount () {
@@ -196,6 +196,7 @@ const mapStateToProps = (state) => {
         ...state, ...lib, ...glib,
         selectedSandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
         selecting: state.sandbox.selecting,
+        loadingSingleSandbox: state.sandbox.loadingSingleSandbox,
         resetting: state.sandbox.resetting,
         deleting: state.sandbox.deleting,
         errorToShow: state.app.errorToShow

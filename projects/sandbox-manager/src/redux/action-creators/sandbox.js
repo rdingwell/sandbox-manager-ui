@@ -33,6 +33,13 @@ export function setSandboxExportStatus (status) {
     }
 }
 
+export function setLoadingSingleSandbox (loading) {
+    return {
+        type: actionTypes.SET_SANDBOX_LOADING_SINGLE,
+        payload: { loading }
+    }
+}
+
 export function setFetchSingleLocation (fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_LOCATION,
@@ -653,6 +660,7 @@ export const fetchSandbox = (id) => {
         const state = getState();
         if (!state.sandbox.loading) {
             dispatch(getLoginInfo());
+            dispatch(setLoadingSingleSandbox(true));
             let configuration = state.config.xsettings.data.sandboxManager;
 
             API.get(configuration.sandboxManagerApiUrl + `/sandbox/${id}`, dispatch)
@@ -662,12 +670,14 @@ export const fetchSandbox = (id) => {
                         ...data, id: state.sandboxes.sandboxes.length + 1
                     });
                     setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                    dispatch(setLoadingSingleSandbox(false));
                 })
                 .catch(err => {
                     sessionStorage.clear();
                     localStorage.clear();
 
                     dispatch(resetState());
+                    dispatch(setLoadingSingleSandbox(false));
                     window.location.href = window.location.origin;
                 });
         }
