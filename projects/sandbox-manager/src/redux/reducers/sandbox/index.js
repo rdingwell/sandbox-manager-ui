@@ -204,6 +204,7 @@ export default function (state = initialState, action) {
             state.fetchingSingleResource = false;
             state.creatingSandbox = false;
             state.deleting = false;
+            state.loadingSingleSandbox = false;
             state.resetting = false;
             state.loading = false;
             state.exportStatus = initialState.exportStatus;
