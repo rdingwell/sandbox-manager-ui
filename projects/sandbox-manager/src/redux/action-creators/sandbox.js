@@ -33,6 +33,13 @@ export function setSandboxExportStatus (status) {
     }
 }
 
+export function setLoadingSingleSandbox (loading) {
+    return {
+        type: actionTypes.SET_SANDBOX_LOADING_SINGLE,
+        payload: { loading }
+    }
+}
+
 export function setFetchSingleLocation (fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_LOCATION,
@@ -642,6 +649,36 @@ export const fetchSandboxes = (toSelect) => {
                     dispatch(resetState());
                     window.location.href = window.location.origin;
                     dispatch(fetchSandboxesFail(err));
+                });
+        }
+    };
+};
+
+export const fetchSandbox = (id) => {
+    debugger;
+    return (dispatch, getState) => {
+        const state = getState();
+        if (!state.sandbox.loading) {
+            dispatch(getLoginInfo());
+            dispatch(setLoadingSingleSandbox(true));
+            let configuration = state.config.xsettings.data.sandboxManager;
+
+            API.get(configuration.sandboxManagerApiUrl + `/sandbox/${id}`, dispatch)
+                .then(data => {
+                    const sandboxes = state.sandboxes.sandboxes || [];
+                    sandboxes.push({
+                        ...data, id: state.sandboxes.sandboxes.length + 1
+                    });
+                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                    dispatch(setLoadingSingleSandbox(false));
+                })
+                .catch(err => {
+                    sessionStorage.clear();
+                    localStorage.clear();
+
+                    dispatch(resetState());
+                    dispatch(setLoadingSingleSandbox(false));
+                    window.location.href = window.location.origin;
                 });
         }
     };
