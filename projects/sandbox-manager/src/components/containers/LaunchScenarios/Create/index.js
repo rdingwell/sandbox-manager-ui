@@ -273,7 +273,7 @@ class Create extends Component {
                                 </div>
                             </div>
                             <div className='column-item-wrapper big-and-centered'>
-                                <a href='http://docs.smarthealthit.org/authorization/scopes-and-launch-context/' target='_blank'>
+                                <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
                                     <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                                     <div>About SMART Context</div>
                                 </a>
