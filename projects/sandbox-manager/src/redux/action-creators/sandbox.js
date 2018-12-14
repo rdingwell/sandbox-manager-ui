@@ -647,6 +647,33 @@ export const fetchSandboxes = (toSelect) => {
     };
 };
 
+export const fetchSandbox = (id) => {
+    debugger;
+    return (dispatch, getState) => {
+        const state = getState();
+        if (!state.sandbox.loading) {
+            dispatch(getLoginInfo());
+            let configuration = state.config.xsettings.data.sandboxManager;
+
+            API.get(configuration.sandboxManagerApiUrl + `/sandbox/${id}`, dispatch)
+                .then(data => {
+                    const sandboxes = state.sandboxes.sandboxes || [];
+                    sandboxes.push({
+                        ...data, id: state.sandboxes.sandboxes.length + 1
+                    });
+                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                })
+                .catch(err => {
+                    sessionStorage.clear();
+                    localStorage.clear();
+
+                    dispatch(resetState());
+                    window.location.href = window.location.origin;
+                });
+        }
+    };
+};
+
 export const fetchSandboxInvites = () => {
     return (dispatch, getState) => {
         const state = getState();

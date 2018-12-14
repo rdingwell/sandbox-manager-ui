@@ -57,6 +57,7 @@ class App extends React.Component {
     componentDidMount () {
         this.setSandboxId();
         window.addEventListener('resize', this.onResize);
+        !!sessionStorage.sandboxId && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
     }
 
     componentWillUnmount () {
