@@ -107,6 +107,7 @@ class App extends React.Component {
         let props = {
             additionalLogoMargin: isDashboard,
             onAuthInit: this.props.init,
+            updateSandboxInvite: this.props.updateSandboxInvite,
             sideNavVisible, onHomeClick, signOut, invitations, navigationItems
         };
 
