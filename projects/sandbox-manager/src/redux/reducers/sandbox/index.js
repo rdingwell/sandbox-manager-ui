@@ -14,9 +14,6 @@ export default function (state = initialState, action) {
         case actionTypes.FHIR_SET_SMART:
             state.selecting = false;
             break;
-        case actionTypes.SET_SANDBOX_LOADING_SINGLE:
-            state.loadingSingleSandbox = action.payload.loading;
-            break;
         case actionTypes.FETCHING_LOGIN_INFO:
             state.fetchingLoginInfo = action.payload.fetching;
             break;
@@ -204,7 +201,6 @@ export default function (state = initialState, action) {
             state.fetchingSingleResource = false;
             state.creatingSandbox = false;
             state.deleting = false;
-            state.loadingSingleSandbox = false;
             state.resetting = false;
             state.loading = false;
             state.exportStatus = initialState.exportStatus;
