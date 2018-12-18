@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
+import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
 import './styles.less';
 
 class AppDialog extends Component {
@@ -55,6 +56,7 @@ class AppDialog extends Component {
         let clientId = null;
         let clientSecret = null;
         let theme = this.props.muiTheme.palette;
+        let iconStyle = { color: theme.primary3Color, fill: theme.primary3Color, width: '24px', height: '24px' };
 
         if (this.props.app) {
             clientId = <div className='label-value'>
@@ -121,6 +123,12 @@ class AppDialog extends Component {
                         <span className='subscript'>
                             Space separated list of scopes. Note: If you do not provide scopes, defaults will be set.
                         </span>
+                        <div className='scopes-info'>
+                            <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
+                                <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                                <div>About SMART Scopes</div>
+                            </a>
+                        </div>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
                                    floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
