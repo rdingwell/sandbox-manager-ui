@@ -159,7 +159,7 @@ class Users extends Component {
         return keys.map(key => {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
-
+            
             let canRemoveUser = keys.length > 1 && (
                 (currentIsAdmin && user.sbmUserId !== this.props.user.sbmUserId) ||
                 (user.sbmUserId === this.props.user.sbmUserId && (!currentIsAdmin || adminCount > 1))
@@ -189,7 +189,8 @@ class Users extends Component {
                             <Menu desktop autoWidth={false} width='100px'>
                                 {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user' onClick={() => this.handleOpen(user.sbmUserId)}/>
+                                {user.sbmUserId !== this.props.user.sbmUserId && <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user' onClick={() => this.handleOpen(user.sbmUserId)}/>}
+                                {user.sbmUserId === this.props.user.sbmUserId && <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Leave sandbox' onClick={() => this.handleOpen(user.sbmUserId)}/>}
                             </Menu>
                         </Popover>}
                     </IconButton>
