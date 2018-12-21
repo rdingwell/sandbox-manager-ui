@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
+import {customSearch, fhir_setCustomSearchExecuting, fhir_setCustomSearchResults} from './fhir';
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
@@ -929,6 +930,7 @@ export function loadExportResources () {
         } else {
             dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
         }
+
     }
 }
 
@@ -979,6 +981,67 @@ export function getTotalItemsToExport (resourceList) {
                 });
                 dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
             })
+    }
+}
+
+export function exportQuery (query) {
+    return dispatch => {
+        let resourceList = [];
+        let content = {};
+        let details = {};
+        if (query.indexOf('_count') === -1) {
+            if (query.indexOf('?') === -1) {
+                query += '?_count=50';
+            } else {
+                query += '&_count=50';
+            }
+        }
+        let getNext = function (data, type) {
+            window.fhirClient.api.nextPage({ bundle: data })
+                .then(d => {
+                    if (d.data) {
+                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                        content[type] = content[type].concat(d.data.entry);
+                        hasNext && getNext(d.data, type);
+
+                        //We need to check if we have the total amount of items in the DB
+                        //for longer list FHIR does not return the total on the first search
+                        //and we need to update the data when the total is first returned
+                        !details[type].total && (details[type].total = d.data.total);
+                        !hasNext && (details[type].loading = false);
+                    }
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
+                });
+        };
+        let endpoint = window.fhirClient.server.serviceUrl;
+        API.get(`${endpoint}/${query}`, dispatch)
+            .then(data => {
+                    if (data && data.entry && data.entry.length) {
+                        let type = data.entry[0].resource.resourceType;
+                        let hasNext = !!data.link[1];
+
+                        details[type] = {
+                            total: data.total,
+                            loading: hasNext
+                        };
+
+                        content[type] = data.entry;
+                        !hasNext && resourceList.push(1);
+                        hasNext && getNext(data, type);
+                    } else {
+                        let type = data.resourceType;
+                        let dataList = []
+                        dataList.push(data);
+                        content[type] = dataList;
+                    }
+                dispatch(fhir_setCustomSearchResults(data));
+                dispatch(fhir_setCustomSearchExecuting(false));
+                dispatch(setSandboxExportStatus({loading: true, error: false, resourceList, details: undefined, content: data}));
+            })
+            .catch(() => {
+                dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
+                dispatch(fhir_setCustomSearchExecuting(false));
+            });
     }
 }
 

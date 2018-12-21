@@ -52,16 +52,19 @@ export default class Export extends Component {
         return <div className='export-wrapper'>
             <div className='controls-wrapper'>
                 <div className='input-wrapper'>
-                    <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => this.setState({ query })}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.search(this.state.query)}
-                                  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={true}/>
+                    <AutoComplete id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
+                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter}
+                                  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
                 {(!status.loading || (status.loading && !allDone)) &&
-                <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
+                    <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
                               label={this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'} disabled={status.loading}/>}
                 <div className='exporting-status-wrapper'>
                     {status.loading && status.resourceList.length !== 0 && status.content && allDone &&
-                    <RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>}
+                        <RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>}
+                    {/*{status.loading && status.resourceList.length !== 0 && status.content && allDone && this.state.query.length === 0 ?*/}
+                    {/*<RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>*/}
+                    {/*: <RaisedButton className='button' secondary onClick={() => this.downloadFileForQuery(status)} icon={<ExportIcon/>} label='Download file'/>}*/}
 
                     {status.loading && status.resourceList.length === 0 &&
                     <span>Loading resource list for the current FHIR version. </span>}
@@ -80,10 +83,13 @@ export default class Export extends Component {
 
     downloadFile (status) {
         let a = document.createElement("a");
-
         let entry = [];
-        Object.keys(status.content).map(key => {
-            status.content[key].map(item => {
+        let content = status.content;
+        if (status.content.entry) {
+            content = {"any": status.content.entry};
+        }
+        Object.keys(content).map(key => {
+            content[key].map(item => {
                 entry.push({
                     "resource": item.resource,
                     "request": {
@@ -116,4 +122,24 @@ export default class Export extends Component {
             a.dispatchEvent(e);
         }
     }
+
+    // downloadFileForQuery (status) {
+    //     let a = document.createElement("a");
+    //     let blob = new Blob(
+    //         [JSON.stringify(status.content, undefined, 2)],
+    //         { type: 'text/json' }
+    //     );
+    //     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    //         window.navigator.msSaveOrOpenBlob(blob, 'sandbox-export.json');
+    //     } else {
+    //         let e = document.createEvent('MouseEvents');
+    //         let a = document.createElement('a');
+    //
+    //         a.download = 'sandbox-export.json';
+    //         a.href = window.URL.createObjectURL(blob);
+    //         a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+    //         e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    //         a.dispatchEvent(e);
+    //     }
+    // }
 }

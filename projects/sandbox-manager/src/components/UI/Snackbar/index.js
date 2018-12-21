@@ -17,12 +17,15 @@ class Snackbar extends Component {
     }
 
     parseMessage = (message) => {
+        debugger
         try {
             message = JSON.parse(message);
             if (message.resourceType !== undefined && message.resourceType !== null) {
                 if (message.resourceType === "OperationOutcome") {
                     message = message.issue[0].diagnostics;
                 }
+            } else {
+                message = message.message;
             }
         } catch(e) {
             // do nothing
