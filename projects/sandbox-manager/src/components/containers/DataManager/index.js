@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery, cancelDownload } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -40,7 +40,7 @@ class DataManager extends Component {
                 <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
                     <div>
                         <Export clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} dataImporting={this.props.dataImporting}
-                                export={this.exportResources} exportStatus={this.props.exportStatus}/>
+                                export={this.exportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
                     </div>
                 </Tab>
             </Tabs>
@@ -75,6 +75,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery, cancelDownload }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));

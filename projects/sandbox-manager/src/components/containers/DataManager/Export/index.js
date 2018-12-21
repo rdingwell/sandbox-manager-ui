@@ -36,7 +36,6 @@ export default class Export extends Component {
         let totalItemCount = 0;
         let exportedItemsCount = 0;
         let allDone = !!status.content;
-
         if (status.loading) {
             status.details && Object.keys(status.details).map(key => {
                 let detail = status.details[key];
@@ -53,21 +52,17 @@ export default class Export extends Component {
             <div className='controls-wrapper'>
                 <div className='input-wrapper'>
                     <AutoComplete id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter}
+                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.export(this.state.query)}
                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
-                {(!status.loading || (status.loading && !allDone)) &&
-                    <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
-                              label={this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'} disabled={status.loading}/>}
+                <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
+                              label={this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'}/>
                 <div className='exporting-status-wrapper'>
                     {status.loading && status.resourceList.length !== 0 && status.content && allDone &&
                         <RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>}
-                    {/*{status.loading && status.resourceList.length !== 0 && status.content && allDone && this.state.query.length === 0 ?*/}
-                    {/*<RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>*/}
-                    {/*: <RaisedButton className='button' secondary onClick={() => this.downloadFileForQuery(status)} icon={<ExportIcon/>} label='Download file'/>}*/}
 
-                    {status.loading && status.resourceList.length === 0 &&
-                    <span>Loading resource list for the current FHIR version. </span>}
+                    {status.loading && status.resourceList.length === 0 && this.state.query.length > 0 &&
+                    <span>Counting total objects to export. </span>}
 
                     {status.loading && status.resourceList.length !== 0 && !status.content &&
                     <span>Counting total objects to export. </span>}
@@ -76,7 +71,14 @@ export default class Export extends Component {
                         <span>Object loaded: {exportedItemsCount} / {totalItemCount}</span>
                         <LinearProgress mode="determinate" max={totalItemCount} value={exportedItemsCount}/>
                     </Fragment>}
+
                 </div>
+                {status.loading && !allDone &&
+                    <div className='exporting-status-wrapper'>
+                        <RaisedButton className='button' onClick={() => this.props.cancelDownload()} labelColor={this.props.muiTheme.palette.primary5Color}
+                                      backgroundColor={this.props.muiTheme.palette.primary4Color} label='Cancel download'/>
+                </div>}
+
             </div>
         </div>;
     }
@@ -121,6 +123,10 @@ export default class Export extends Component {
             e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
             a.dispatchEvent(e);
         }
+    }
+
+    resetResults() {
+        this.props.resetResults();
     }
 
     // downloadFileForQuery (status) {

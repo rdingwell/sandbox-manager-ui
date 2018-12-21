@@ -985,10 +985,12 @@ export function getTotalItemsToExport (resourceList) {
 }
 
 export function exportQuery (query) {
-    return dispatch => {
+    return (dispatch, getState) => {
         let resourceList = [];
         let content = {};
         let details = {};
+        dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+
         if (query.indexOf('_count') === -1) {
             if (query.indexOf('?') === -1) {
                 query += '?_count=50';
@@ -997,21 +999,32 @@ export function exportQuery (query) {
             }
         }
         let getNext = function (data, type) {
-            window.fhirClient.api.nextPage({ bundle: data })
-                .then(d => {
-                    if (d.data) {
-                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
-                        content[type] = content[type].concat(d.data.entry);
-                        hasNext && getNext(d.data, type);
+            debugger
+            if (getState().sandbox.exportStatus.loading) {
+                window.fhirClient.api.nextPage({bundle: data})
+                    .then(d => {
+                        if (d.data) {
+                            let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                            content[type] = content[type].concat(d.data.entry);
+                            hasNext && getNext(d.data, type);
 
-                        //We need to check if we have the total amount of items in the DB
-                        //for longer list FHIR does not return the total on the first search
-                        //and we need to update the data when the total is first returned
-                        !details[type].total && (details[type].total = d.data.total);
-                        !hasNext && (details[type].loading = false);
-                    }
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
-                });
+                            //We need to check if we have the total amount of items in the DB
+                            //for longer list FHIR does not return the total on the first search
+                            //and we need to update the data when the total is first returned
+                            !details[type].total && (details[type].total = d.data.total);
+                            !hasNext && (details[type].loading = false);
+                        }
+                        if (getState().sandbox.exportStatus.loading) {
+                            dispatch(setSandboxExportStatus({
+                                loading: true,
+                                error: false,
+                                resourceList: [1],
+                                details,
+                                content
+                            }));
+                        }
+                    });
+            }
         };
         let endpoint = window.fhirClient.server.serviceUrl;
         API.get(`${endpoint}/${query}`, dispatch)
@@ -1042,6 +1055,12 @@ export function exportQuery (query) {
                 dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
                 dispatch(fhir_setCustomSearchExecuting(false));
             });
+    }
+}
+
+export function cancelDownload () {
+    return dispatch => {
+        dispatch(setSandboxExportStatus({loading: false, error: false, resourceList: [], details: undefined, content: undefined}));
     }
 }
 
