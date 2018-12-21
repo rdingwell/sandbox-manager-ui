@@ -935,7 +935,7 @@ export function loadExportResources () {
 }
 
 export function getTotalItemsToExport (resourceList) {
-    return dispatch => {
+    return (dispatch, getState) => {
         let promises = [];
         let content = {};
         let details = {};
@@ -947,21 +947,31 @@ export function getTotalItemsToExport (resourceList) {
         });
 
         let getNext = function (data, type) {
-            window.fhirClient.api.nextPage({ bundle: data })
-                .then(d => {
-                    if (d.data) {
-                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
-                        content[type] = content[type].concat(d.data.entry);
-                        hasNext && getNext(d.data, type);
+            if (getState().sandbox.exportStatus.loading) {
+                window.fhirClient.api.nextPage({bundle: data})
+                    .then(d => {
+                        if (d.data) {
+                            let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                            content[type] = content[type].concat(d.data.entry);
+                            hasNext && getNext(d.data, type);
 
-                        //We need to check if we have the total amount of items in the DB
-                        //for longer list FHIR does not return the total on the first search
-                        //and we need to update the data when the total is first returned
-                        !details[type].total && (details[type].total = d.data.total);
-                        !hasNext && (details[type].loading = false);
-                    }
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-                });
+                            //We need to check if we have the total amount of items in the DB
+                            //for longer list FHIR does not return the total on the first search
+                            //and we need to update the data when the total is first returned
+                            !details[type].total && (details[type].total = d.data.total);
+                            !hasNext && (details[type].loading = false);
+                        }
+                        if (getState().sandbox.exportStatus.loading) {
+                            dispatch(setSandboxExportStatus({
+                                loading: true,
+                                error: false,
+                                resourceList: [1],
+                                details,
+                                content
+                            }));
+                        }
+                    });
+            }
         };
 
         Promise.all(promises)
@@ -991,15 +1001,7 @@ export function exportQuery (query) {
         let details = {};
         dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
 
-        if (query.indexOf('_count') === -1) {
-            if (query.indexOf('?') === -1) {
-                query += '?_count=50';
-            } else {
-                query += '&_count=50';
-            }
-        }
         let getNext = function (data, type) {
-            debugger
             if (getState().sandbox.exportStatus.loading) {
                 window.fhirClient.api.nextPage({bundle: data})
                     .then(d => {

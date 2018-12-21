@@ -73,8 +73,10 @@ export default class Export extends Component {
                     </Fragment>}
 
                 </div>
-                {status.loading && !allDone &&
+                {status.loading && !allDone && status.content &&
                     <div className='exporting-status-wrapper'>
+                        <div>Do not close your browser or you will lose your progress.</div>
+                        <br/>
                         <RaisedButton className='button' onClick={() => this.props.cancelDownload()} labelColor={this.props.muiTheme.palette.primary5Color}
                                       backgroundColor={this.props.muiTheme.palette.primary4Color} label='Cancel download'/>
                 </div>}
