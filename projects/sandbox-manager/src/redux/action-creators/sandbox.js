@@ -658,6 +658,7 @@ export const fetchSandboxInvites = () => {
 
         API.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, dispatch)
             .then(res => {
+                debugger
                 const invitations = [];
                 for (let key in res) {
                     invitations.push({ ...res[key] });

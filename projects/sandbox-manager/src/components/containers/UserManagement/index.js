@@ -208,11 +208,19 @@ class Users extends Component {
         let buttonStyles = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary3Color };
         let style = { width: '55px', height: '55px' };
         let revokeStyle = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color };
-
+debugger
         return this.props.invitations.map((invitation, key) => {
+            let timestamp = invitation.inviteTimestamp;
+            if (timestamp !== undefined) {
+                timestamp = new Date(timestamp);
+                timestamp = timestamp.getFullYear() + '-' + ('0' + (timestamp.getMonth() + 1)).slice(-2) + '-'
+                    + ('0' + timestamp.getDate()).slice(-2);;
+            } else {
+                timestamp = '';
+            }
             return <TableRow key={key}>
                 <TableRowColumn>{invitation.invitee.email}</TableRowColumn>
-                <TableRowColumn>Jul 2, 2018</TableRowColumn>
+                <TableRowColumn>{timestamp}</TableRowColumn>
                 <TableRowColumn className='invite-buttons-wrapper'>
                     <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
                         <Redo/>
