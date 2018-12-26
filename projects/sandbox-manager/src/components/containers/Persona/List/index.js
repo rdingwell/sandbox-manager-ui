@@ -336,15 +336,7 @@ class PersonaList extends Component {
     openInDM = (e, persona) => {
         e.stopPropagation();
         this.props.doLaunch({
-            "authClient": {
-                "clientName": "Patient Data Manager",
-                "clientId": "patient_data_manager",
-                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
-            },
-            "appUri": "https://patient-data-manager.hspconsortium.org/",
-            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
-            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
-            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+            "launchUri": `${this.props.patientDataManagerUrl}/launch.html`
         }, persona.id, undefined, true);
     };
 
@@ -387,6 +379,9 @@ class PersonaList extends Component {
 }
 
 const mapStateToProps = state => {
+    let patientDataManagerUrl = state.config.xsettings.data.sandboxManager
+        ? state.config.xsettings.data.sandboxManager.patientDataManager
+        : '';
     return {
         patients: state.persona.patients,
         practitioners: state.persona.practitioners,
@@ -409,7 +404,8 @@ const mapStateToProps = state => {
         immunizationCount: state.patient.details.Immunization || 0,
         carePlanCount: state.patient.details.CarePlan || 0,
         careTeamCount: state.patient.details.CareTeam || 0,
-        goalCount: state.patient.details.Goal || 0
+        goalCount: state.patient.details.Goal || 0,
+        patientDataManagerUrl
     };
 };
 
