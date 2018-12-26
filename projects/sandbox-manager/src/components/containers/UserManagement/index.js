@@ -208,7 +208,7 @@ class Users extends Component {
         let buttonStyles = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary3Color };
         let style = { width: '55px', height: '55px' };
         let revokeStyle = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color };
-debugger
+
         return this.props.invitations.map((invitation, key) => {
             let timestamp = invitation.inviteTimestamp;
             if (timestamp !== undefined) {

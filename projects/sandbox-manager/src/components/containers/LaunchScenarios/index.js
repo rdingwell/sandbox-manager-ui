@@ -116,7 +116,7 @@ class LaunchScenarios extends Component {
                 this.setState({ showConfirmModal: false })
             }} onCancel={() => this.setState({ showConfirmModal: false, scenarioToDelete: undefined })} title='Confirm'>
                 <p>
-                    Are you sure you want to delete "{this.state.scenarioToDelete ? this.state.scenarioToDelete.description : ''}"?
+                    Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
                 </p>
             </ConfirmModal>
             <div className='launch-scenarios-wrapper'>
