@@ -1,6 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
-import {customSearch, fhir_setCustomSearchExecuting, fhir_setCustomSearchResults} from './fhir';
+import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir';
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
@@ -1009,7 +1009,7 @@ export function getTotalItemsToExport (resourceList, query) {
                         dataList.push(data);
                         content[type] = dataList;
                     }
-                    dispatch(fhir_setCustomSearchResults(data));
+                    dispatch(fhir_setExportSearchResults(data));
                     dispatch(fhir_setCustomSearchExecuting(false));
                     dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
                 })

@@ -86,7 +86,6 @@ export default class Export extends Component {
     }
 
     downloadFile (status) {
-        debugger
         let a = document.createElement("a");
         let entry = [];
         let content = status.content;
@@ -132,23 +131,4 @@ export default class Export extends Component {
         this.props.resetResults();
     }
 
-    // downloadFileForQuery (status) {
-    //     let a = document.createElement("a");
-    //     let blob = new Blob(
-    //         [JSON.stringify(status.content, undefined, 2)],
-    //         { type: 'text/json' }
-    //     );
-    //     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-    //         window.navigator.msSaveOrOpenBlob(blob, 'sandbox-export.json');
-    //     } else {
-    //         let e = document.createEvent('MouseEvents');
-    //         let a = document.createElement('a');
-    //
-    //         a.download = 'sandbox-export.json';
-    //         a.href = window.URL.createObjectURL(blob);
-    //         a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
-    //         e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    //         a.dispatchEvent(e);
-    //     }
-    // }
 }

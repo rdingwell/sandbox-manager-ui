@@ -17,7 +17,6 @@ class Snackbar extends Component {
     }
 
     parseMessage = (message) => {
-        debugger
         try {
             message = JSON.parse(message);
             if (message.resourceType !== undefined && message.resourceType !== null) {

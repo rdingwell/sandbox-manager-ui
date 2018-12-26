@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery, cancelDownload } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -61,6 +61,7 @@ const mapStateToProps = state => {
 
     return {
         results: state.fhir.customSearchResults,
+        exportResults: state.fhir.customExportResults,
         importResults: state.sandbox.importResults,
         dataImporting: state.sandbox.dataImporting,
         executing: state.fhir.executing,
@@ -68,6 +69,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, exportQuery, cancelDownload }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
