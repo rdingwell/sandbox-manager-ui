@@ -40,7 +40,7 @@ class DataManager extends Component {
                 <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
                     <div>
                         <Export clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} dataImporting={this.props.dataImporting}
-                                export={this.exportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
+                                export={this.props.loadExportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
                     </div>
                 </Tab>
             </Tabs>
@@ -55,13 +55,6 @@ class DataManager extends Component {
         this.setState({ activeTab: tab });
     };
 
-    exportResources = (query) => {
-        if (query.length > 0) {
-            this.props.exportQuery(query);
-        } else {
-            this.props.loadExportResources();
-        }
-    }
 }
 
 const mapStateToProps = state => {

@@ -7,7 +7,7 @@ import ExportIcon from "material-ui/svg-icons/communication/import-export";
 // There are stored in a table at the BE but are not changed so I've hardcoded them
 // until we have time to build an algorithm to suggest based on the FHIR implementation
 const SUGGESTIONS = [
-    "Patient", "Patient?name=s", "Patient?birthdate=>2010-01-01&birthdate=<2011-12-31", "Observation",
+    "Patient", "Patient?name=s", "Patient?_id=SMART-1288992&_revinclude=*", "Patient?birthdate=>2010-01-01&birthdate=<2011-12-31", "Observation",
     "Observation?category=vital-signs", "Observation?date=>2010-01-01&date=<2011-12-31", "Condition", "Condition?onset=>2010-01-01&onset=<2011-12-31",
     "Condition?code:text=diabetes", "Procedure", "Procedure?date=>2010-01-01&date=<2011-12-31", "AllergyIntolerance", "AllergyIntolerance?date=>1999-01-01&date=<2011-12-31"
 ];
@@ -52,7 +52,7 @@ export default class Export extends Component {
             <div className='controls-wrapper'>
                 <div className='input-wrapper'>
                     <AutoComplete id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={() => this.props.export(this.state.query)}
+                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter}
                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
                 <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
@@ -86,6 +86,7 @@ export default class Export extends Component {
     }
 
     downloadFile (status) {
+        debugger
         let a = document.createElement("a");
         let entry = [];
         let content = status.content;
@@ -98,7 +99,7 @@ export default class Export extends Component {
                     "resource": item.resource,
                     "request": {
                         "method": "PUT",
-                        "url": key + "/" + item.resource.id
+                        "url": item.resource.resourceType + "/" + item.resource.id
                     }
                 })
             })

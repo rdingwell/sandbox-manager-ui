@@ -913,7 +913,7 @@ export function getUserLoginInfo () {
     }
 }
 
-export function loadExportResources () {
+export function loadExportResources (query) {
     return (dispatch, getState) => {
         let state = getState();
         let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
@@ -925,7 +925,7 @@ export function loadExportResources () {
             API.get(`/data/export-resources_${sandboxVersion.fhirTag}.json`, dispatch)
                 .then(resourceList => {
                     dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
-                    dispatch(getTotalItemsToExport(resourceList));
+                    dispatch(getTotalItemsToExport(resourceList, query));
                 });
         } else {
             dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
@@ -934,17 +934,10 @@ export function loadExportResources () {
     }
 }
 
-export function getTotalItemsToExport (resourceList) {
+export function getTotalItemsToExport (resourceList, query) {
     return (dispatch, getState) => {
-        let promises = [];
         let content = {};
         let details = {};
-
-        resourceList.map(resource => {
-            let params = { type: resource, count: 50 };
-
-            promises.push(window.fhirClient.api.search(params));
-        });
 
         let getNext = function (data, type) {
             if (getState().sandbox.exportStatus.loading) {
@@ -962,75 +955,42 @@ export function getTotalItemsToExport (resourceList) {
                             !hasNext && (details[type].loading = false);
                         }
                         if (getState().sandbox.exportStatus.loading) {
-                            dispatch(setSandboxExportStatus({
-                                loading: true,
-                                error: false,
-                                resourceList: [1],
-                                details,
-                                content
-                            }));
+                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
                         }
                     });
             }
         };
 
-        Promise.all(promises)
-            .then(data => {
-                data.map(d => {
-                    if (d.data && d.data.entry && d.data.entry.length) {
-                        let hasNext = !!d.data.link[1];
+        if (query.length === 0) {
+            let promises = [];
+            resourceList.map(resource => {
+                let params = { type: resource, count: 50 };
 
-                        details[d.config.type] = {
-                            total: d.data.total,
-                            loading: hasNext
-                        };
+                promises.push(window.fhirClient.api.search(params));
+            });
 
-                        content[d.config.type] = d.data.entry;
-                        hasNext && getNext(d.data, d.config.type);
-                    }
-                });
-                dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-            })
-    }
-}
+            Promise.all(promises)
+                .then(data => {
+                    data.map(d => {
+                        if (d.data && d.data.entry && d.data.entry.length) {
+                            let hasNext = !!d.data.link[1];
 
-export function exportQuery (query) {
-    return (dispatch, getState) => {
-        let resourceList = [];
-        let content = {};
-        let details = {};
-        dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                            details[d.config.type] = {
+                                total: d.data.total,
+                                loading: hasNext
+                            };
 
-        let getNext = function (data, type) {
-            if (getState().sandbox.exportStatus.loading) {
-                window.fhirClient.api.nextPage({bundle: data})
-                    .then(d => {
-                        if (d.data) {
-                            let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
-                            content[type] = content[type].concat(d.data.entry);
-                            hasNext && getNext(d.data, type);
-
-                            //We need to check if we have the total amount of items in the DB
-                            //for longer list FHIR does not return the total on the first search
-                            //and we need to update the data when the total is first returned
-                            !details[type].total && (details[type].total = d.data.total);
-                            !hasNext && (details[type].loading = false);
-                        }
-                        if (getState().sandbox.exportStatus.loading) {
-                            dispatch(setSandboxExportStatus({
-                                loading: true,
-                                error: false,
-                                resourceList: [1],
-                                details,
-                                content
-                            }));
+                            content[d.config.type] = d.data.entry;
+                            hasNext && getNext(d.data, d.config.type);
                         }
                     });
-            }
-        };
-        let endpoint = window.fhirClient.server.serviceUrl;
-        API.get(`${endpoint}/${query}`, dispatch)
-            .then(data => {
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+        } else {
+            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details, content: {} }));
+            let endpoint = window.fhirClient.server.serviceUrl;
+            API.get(`${endpoint}/${query}`, dispatch)
+                .then(data => {
                     if (data && data.entry && data.entry.length) {
                         let type = data.entry[0].resource.resourceType;
                         let hasNext = !!data.link[1];
@@ -1045,18 +1005,19 @@ export function exportQuery (query) {
                         hasNext && getNext(data, type);
                     } else {
                         let type = data.resourceType;
-                        let dataList = []
+                        let dataList = [];
                         dataList.push(data);
                         content[type] = dataList;
                     }
-                dispatch(fhir_setCustomSearchResults(data));
-                dispatch(fhir_setCustomSearchExecuting(false));
-                dispatch(setSandboxExportStatus({loading: true, error: false, resourceList, details: undefined, content: data}));
-            })
-            .catch(() => {
-                dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
-                dispatch(fhir_setCustomSearchExecuting(false));
-            });
+                    dispatch(fhir_setCustomSearchResults(data));
+                    dispatch(fhir_setCustomSearchExecuting(false));
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+                .catch(() => {
+                    dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
+                    dispatch(fhir_setCustomSearchExecuting(false));
+                });
+        }
     }
 }
 
