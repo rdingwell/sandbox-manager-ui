@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
+import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import './styles.less';
 
 class AppDialog extends Component {
@@ -62,11 +63,14 @@ class AppDialog extends Component {
             clientId = <div className='label-value'>
                 <span>Client Id: </span>
                 <span>{this.props.app.clientId}</span>
+                <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.props.app.clientId)}/>
             </div>;
+
             clientSecret = this.state.app.clientJSON && this.state.app.clientJSON.clientSecret
                 ? <div className='label-value'>
                     <span>Client Secret: </span>
                     <span>{this.state.app.clientJSON.clientSecret}</span>
+                    <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.state.app.clientJSON.clientSecret)}/>
                 </div>
                 : null;
         }

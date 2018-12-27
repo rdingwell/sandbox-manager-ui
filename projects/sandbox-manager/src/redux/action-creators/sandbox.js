@@ -208,6 +208,13 @@ export function setUserInviting (inviting) {
     }
 }
 
+export function setCopying (copying) {
+    return {
+        type: actionTypes.SET_COPYING,
+        payload: { copying }
+    }
+}
+
 export function setScenarioCreating (creating) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
@@ -1082,6 +1089,21 @@ export function doLaunch (app, persona, user, noUser, scenario) {
             console.log(e);
             appWindow.close();
         }
+    }
+}
+
+export function copyToClipboard (str) {
+    return dispatch => {
+        dispatch(setCopying(true));
+        let el = document.createElement('textarea');
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setTimeout(function () {
+            dispatch(setCopying(false));
+        }, 1500);
     }
 }
 
