@@ -214,9 +214,13 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''} style={{ textAlign: 'right' }}>
-                    {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
+                    {!isPatient && <IconButton onClick={() => {
+                        this.toggleMenuForItem();
+                        this.deletePersona(persona);
+                    }}>
                         <span className='anchor' ref={'anchor' + i}/>
-                        <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                        {/*<MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>*/}
+                        <DeleteIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
@@ -257,7 +261,8 @@ class PersonaList extends Component {
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
                         <TableHeaderColumn className={'name' + (isPractitioner ? ' pract' : '')} style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
-                        {isPractitioner && <TableHeaderColumn className='pract' style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
+                        {isPractitioner &&
+                        <TableHeaderColumn className='pract' style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
                         {isPatient && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             Identifier
                         </TableHeaderColumn>}
