@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
@@ -10,6 +10,7 @@ import Export from './Export';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
+import {setSandboxExportStatus} from "../../../redux/action-creators/sandbox";
 
 class DataManager extends Component {
     constructor (props) {
@@ -39,7 +40,7 @@ class DataManager extends Component {
                 <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
                     <div>
                         <Export clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} dataImporting={this.props.dataImporting}
-                                export={this.props.loadExportResources} exportStatus={this.props.exportStatus}/>
+                                export={this.props.loadExportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
                     </div>
                 </Tab>
             </Tabs>
@@ -53,12 +54,14 @@ class DataManager extends Component {
     setActiveTab = (tab) => {
         this.setState({ activeTab: tab });
     };
+
 }
 
 const mapStateToProps = state => {
 
     return {
         results: state.fhir.customSearchResults,
+        exportResults: state.fhir.customExportResults,
         importResults: state.sandbox.importResults,
         dataImporting: state.sandbox.dataImporting,
         executing: state.fhir.executing,
@@ -66,6 +69,6 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));

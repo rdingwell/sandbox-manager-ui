@@ -29,9 +29,13 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_CUSTOM_SEARCH_RESULTS:
             state.customSearchResults = action.payload.results;
             break;
+        case types.FHIR_SET_EXPORT_SEARCH_RESULTS:
+            state.customExportResults = action.payload.exportResults;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             state.customSearchResults = null;
+            state.customExportResults = null;
             state.executing = false;
             break;
     }

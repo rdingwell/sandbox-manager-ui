@@ -22,6 +22,7 @@
     "baseServiceUrl_6": "http://localhost:8076",
     "baseServiceUrl_7": "http://localhost:8077",
     "ehrSimulator": "http://localhost:3000",
+    "patientDataManager": "http://localhost:8096",
     "oauthLogoutUrl": "http://localhost:8060/logout",
     "oauthUserInfoUrl": "http://localhost:8060/userinfo",
     "sbmUrlHasContextPath": "false",
