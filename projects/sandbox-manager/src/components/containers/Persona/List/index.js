@@ -103,7 +103,7 @@ class PersonaList extends Component {
             </ConfirmModal>
             {!this.props.modal && <div className='create-resource-button'>
                 <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
-                               personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
+                               personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} existingPersonas={this.getFilteredList()} search={this.props.search}/>
             </div>}
             <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')}>
                 {!this.props.noFilter && <div className='filter-wrapper'>
