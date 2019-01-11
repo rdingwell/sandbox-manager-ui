@@ -50,13 +50,18 @@ class Apps extends Component {
         let appsList = this.props.apps ? this.props.apps.slice() : [];
         appsList.sort((a, b) => a.clientName.localeCompare(b.clientName));
 
-        let apps = appsList.map((app, index) => (
-            <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
-                  onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
+        let apps = appsList.map((app, index) => {
+            let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
+            if(!this.props.modal && !app.briefDescription) {
+                titleStyle.height = '39%';
+                titleStyle.bottom = '-18%';
+            }
+            return <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+                         onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>
-                <CardTitle className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
+                <CardTitle className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
                     <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
                     {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
@@ -69,7 +74,7 @@ class Apps extends Component {
                                 icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
                 </CardActions>}
             </Card>
-        ));
+        });
 
         let props = {
             type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.muiTheme.palette, lookupPersonasStart: this.props.lookupPersonasStart,
