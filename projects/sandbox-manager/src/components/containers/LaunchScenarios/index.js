@@ -116,7 +116,7 @@ class LaunchScenarios extends Component {
                 this.setState({ showConfirmModal: false })
             }} onCancel={() => this.setState({ showConfirmModal: false, scenarioToDelete: undefined })} title='Confirm'>
                 <p>
-                    Are you sure you want to delete "{this.state.scenarioToDelete ? this.state.scenarioToDelete.description : ''}"?
+                    Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
                 </p>
             </ConfirmModal>
             <div className='launch-scenarios-wrapper'>
@@ -497,15 +497,7 @@ class LaunchScenarios extends Component {
     openInDM = (e, patient) => {
         // e.stopPropagation();
         this.props.doLaunch({
-            "authClient": {
-                "clientName": "Patient Data Manager",
-                "clientId": "patient_data_manager",
-                "redirectUri": "https://patient-data-manager.hspconsortium.org/index.html"
-            },
-            "appUri": "https://patient-data-manager.hspconsortium.org/",
-            "launchUri": "https://patient-data-manager.hspconsortium.org/launch.html",
-            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
-            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+            'launchUri': `${this.props.patientDataManagerUrl}/launch.html`
         }, patient, undefined, true);
     };
 }
@@ -516,6 +508,9 @@ const mapStateToProps = state => {
 
     let ehrUrl = state.config.xsettings.data.sandboxManager
         ? state.config.xsettings.data.sandboxManager.ehrSimulator
+        : '';
+    let patientDataManagerUrl = state.config.xsettings.data.sandboxManager
+        ? state.config.xsettings.data.sandboxManager.patientDataManager
         : '';
 
     return {
@@ -550,7 +545,7 @@ const mapStateToProps = state => {
         personaLoading: state.persona.loading,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
 
-        sandboxApiUrl, ehrUrl
+        sandboxApiUrl, ehrUrl, patientDataManagerUrl
     }
 };
 

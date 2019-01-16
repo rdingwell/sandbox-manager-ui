@@ -43,6 +43,7 @@ export default {
 
     notifications: [],
     inviting: false,
+    copying: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,

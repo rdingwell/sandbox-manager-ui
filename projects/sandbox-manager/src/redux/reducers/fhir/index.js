@@ -37,9 +37,13 @@ export default function (state = initialState, action) {
             results.entry = state.customSearchResults.entry.concat(results.entry);
             state.customSearchResults = results;
             break;
+        case types.FHIR_SET_EXPORT_SEARCH_RESULTS:
+            state.customExportResults = action.payload.exportResults;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             state.customSearchResults = null;
+            state.customExportResults = null;
             state.executing = false;
             break;
     }

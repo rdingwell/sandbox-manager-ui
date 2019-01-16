@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, TextField } from 'material-ui';
+import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, Snackbar, TextField } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import DownloadIcon from 'material-ui/svg-icons/file/cloud-download';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from 'material-ui/svg-icons/action/launch';
+import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 import API from '../../../lib/api';
 import {
     lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp,
-    getDefaultUserForSandbox, getPersonasPage, resetPersonas
+    getDefaultUserForSandbox, getPersonasPage, resetPersonas, copyToClipboard
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -41,7 +42,8 @@ class Apps extends Component {
             showConfirmModal: false,
             createApp: undefined,
             appIsLoading: false,
-            manifestURL: ''
+            manifestURL: '',
+            textSelected: undefined
         };
     }
 
@@ -57,6 +59,7 @@ class Apps extends Component {
     }
 
     render () {
+        let palette = this.props.muiTheme.palette;
         let appsList = this.props.apps ? this.props.apps.slice() : [];
         appsList.sort((a, b) => a.clientName.localeCompare(b.clientName));
 
@@ -66,7 +69,7 @@ class Apps extends Component {
                 titleStyle.height = '39%';
                 titleStyle.bottom = '-18%';
             }
-            return <Card className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+            return <Card title={app.clientName} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
@@ -97,7 +100,7 @@ class Apps extends Component {
         let dialog = (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation} manifest={this.state.manifest}
                          muiTheme={this.props.muiTheme} app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
-                         onClose={this.closeAll} doLaunch={this.doLaunch}/>
+                         onClose={this.closeAll} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
             : this.state.appToLaunch
                 ? <Dialog modal={false} open={!!this.state.appToLaunch} onRequestClose={this.handleAppLaunch} className='launch-app-dialog' autoScrollBodyContent>
                     {this.props.defaultUser && <div className='no-patient-button'>
@@ -116,11 +119,13 @@ class Apps extends Component {
                             <div className="client-details">
                                 <div className="label-value">
                                     <span>Client Id:</span> <span className='client-id'>{this.state.createdApp.clientId}</span>
+                                    <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.state.createdApp.clientId)}/>
                                 </div>
                                 {createAppClientJSON.clientSecret && <div>
                                     <div className="label-value">
                                         <span>Client Secret:</span>
                                         <span className='client-id'>{createAppClientJSON.clientSecret}</span>
+                                        <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(createAppClientJSON.clientSecret)}/>
                                     </div>
                                 </div>}
                             </div>
@@ -179,6 +184,8 @@ class Apps extends Component {
                     Deleting this app will result in the deletion of all the launch scenarios connected to it.
                 </p>
             </ConfirmModal>}
+            <Snackbar open={this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000}
+                      bodyStyle={{ margin: '0 auto', backgroundColor: palette.primary2Color, textAlign: 'center' }}/>
         </Page>
     }
 
@@ -306,13 +313,14 @@ const mapStateToProps = state => {
         defaultUser: state.sandbox.defaultUser,
         personas: state.persona.patients,
         personaLoading: state.persona.loading,
-        pagination: state.persona.patientsPagination
+        pagination: state.persona.patientsPagination,
+        copying: state.sandbox.copying
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart, resetPersonas,
+        fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart, resetPersonas, copyToClipboard,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     }, dispatch);

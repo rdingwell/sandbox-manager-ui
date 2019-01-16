@@ -89,6 +89,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_USER_INVITING:
             state.inviting = action.payload.inviting;
             break;
+        case actionTypes.SET_COPYING:
+            state.copying = action.payload.copying;
+            break;
         case actionTypes.DELETE_SANDBOX :
             const sandboxes = state.sandboxes.filter(sandbox => sandbox.id !== action.sandboxId);
             state.sandboxes = sandboxes;

@@ -25,6 +25,7 @@
     "oauthUserInfoUrl": "https://auth-test.hspconsortium.org/userinfo",
     "sbmUrlHasContextPath": "false",
     "ehrSimulator": "https://ehr-app-test.hspconsortium.org",
+    "patientDataManager": "https://patient-data-manager-test.hspconsortium.org",
     "userManagementUrl": "https://account-test.hspconsortium.org",
     "reservedEndpoints": [
       "this",

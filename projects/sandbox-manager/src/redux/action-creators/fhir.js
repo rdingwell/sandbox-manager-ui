@@ -58,6 +58,13 @@ export function fhir_setCustomSearchResultsNext (results) {
     }
 }
 
+export function fhir_setExportSearchResults (exportResults) {
+    return {
+        type: types.FHIR_SET_EXPORT_SEARCH_RESULTS,
+        payload: { exportResults }
+    }
+}
+
 export function fhir_SetSmart (payload) {
     return dispatch => {
         if (payload.status === 'ready') {

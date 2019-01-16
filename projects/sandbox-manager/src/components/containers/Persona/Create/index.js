@@ -16,16 +16,21 @@ export default class CreatePersona extends Component {
             fName: '',
             birthDate: '',
             suffix: '',
-            gender: ''
+            gender: '',
+            personaUserId: ''
         };
     }
+
+    handleUserPersonaId  = (personaUserId) => {
+        this.setState({personaUserId: personaUserId})
+    };
 
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
             ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1 && moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid()
             : this.props.type === PersonaList.TYPES.practitioner
                 ? this.state.name.length >= 1 && this.state.fName.length >= 1
-                : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1;
+                : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1 && !this.userIdDuplicate();
 
         return <div>
             <Dialog bodyClassName='create-persona-dialog' open={this.props.open} onRequestClose={this.props.close}
@@ -45,8 +50,8 @@ export default class CreatePersona extends Component {
 
         return this.state.selectedForCreation
             ? <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
-                               theme={this.props.theme}/>
+                <PersonaInputs persona={this.state.selectedForCreation} existingPersonas={this.props.existingPersonas} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
+                               onInputUserPersonaId={this.handleUserPersonaId} theme={this.props.theme} userIdDuplicate={this.userIdDuplicate()}/>
             </div>
             : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
                            next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
@@ -92,6 +97,10 @@ export default class CreatePersona extends Component {
         let isValid = moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid();
         let birthDateError = isValid || this.state.birthDate.length === 0 ? undefined : 'Invalid birth date. Needs to be in format: YYYY-MM-DD';
         this.setState({ birthDateError });
+    };
+
+    userIdDuplicate = () => {
+        return this.props.existingPersonas.find(i => i.personaUserId.toLowerCase().split('@')[0] === this.state.personaUserId.toLowerCase());
     };
 
     create = () => {

@@ -23,6 +23,8 @@ class Snackbar extends Component {
                 if (message.resourceType === "OperationOutcome") {
                     message = message.issue[0].diagnostics;
                 }
+            } else {
+                message = message.message;
             }
         } catch(e) {
             // do nothing
