@@ -6,16 +6,23 @@
     position: absolute;
     top: -46px;
     .dummy-expander {
-      width: 842px;
+      width: 772px;
       display: inline-block;
       @media (max-width: 1262px) {
-        width: 532px;
+        width: 462px;
       }
       @media (max-width: 927px) {
-        width: 300px;
+        width: 230px;
       }
     }
+    & > .actions > *:last-child {
+      margin-left: 1rem;
+    }
   }
+}
+
+.manifest-load {
+  padding: 0 25px;
 }
 
 .apps-screen-wrapper {
