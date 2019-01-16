@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
+import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir';
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
@@ -30,13 +31,6 @@ export function setSandboxExportStatus (status) {
     return {
         type: actionTypes.SET_SANDBOX_EXPORT_STATUS,
         payload: { status }
-    }
-}
-
-export function setLoadingSingleSandbox (loading) {
-    return {
-        type: actionTypes.SET_SANDBOX_LOADING_SINGLE,
-        payload: { loading }
     }
 }
 
@@ -211,6 +205,13 @@ export function setUserInviting (inviting) {
     return {
         type: actionTypes.SET_USER_INVITING,
         payload: { inviting }
+    }
+}
+
+export function setCopying (copying) {
+    return {
+        type: actionTypes.SET_COPYING,
+        payload: { copying }
     }
 }
 
@@ -654,36 +655,6 @@ export const fetchSandboxes = (toSelect) => {
     };
 };
 
-export const fetchSandbox = (id) => {
-    debugger;
-    return (dispatch, getState) => {
-        const state = getState();
-        if (!state.sandbox.loading) {
-            dispatch(getLoginInfo());
-            dispatch(setLoadingSingleSandbox(true));
-            let configuration = state.config.xsettings.data.sandboxManager;
-
-            API.get(configuration.sandboxManagerApiUrl + `/sandbox/${id}`, dispatch)
-                .then(data => {
-                    const sandboxes = state.sandboxes.sandboxes || [];
-                    sandboxes.push({
-                        ...data, id: state.sandboxes.sandboxes.length + 1
-                    });
-                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
-                    dispatch(setLoadingSingleSandbox(false));
-                })
-                .catch(err => {
-                    sessionStorage.clear();
-                    localStorage.clear();
-
-                    dispatch(resetState());
-                    dispatch(setLoadingSingleSandbox(false));
-                    window.location.href = window.location.origin;
-                });
-        }
-    };
-};
-
 export const fetchSandboxInvites = () => {
     return (dispatch, getState) => {
         const state = getState();
@@ -694,6 +665,7 @@ export const fetchSandboxInvites = () => {
 
         API.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, dispatch)
             .then(res => {
+
                 const invitations = [];
                 for (let key in res) {
                     invitations.push({ ...res[key] });
@@ -817,22 +789,20 @@ export function fetchIntent (id) {
     }
 }
 
-export function fetchResource (res) {
+export function fetchResource (id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleResource(true));
-            let url = `${window.fhirClient.server.serviceUrl}/${res}`;
-
-            API.get(url, dispatch)
-                .then(res => {
-                    if (!res.issue) {
-                        dispatch(setSingleResource(res));
-                    } else {
-                        dispatch(setFetchingSingleResourceError(res));
-                    }
+            window.fhirClient.api.read({ type: 'Resource', id })
+                .done(patient => {
+                    dispatch(setSingleResource(patient.data));
+                    dispatch(setFetchSingleResource(false))
                 })
-                .catch(e => dispatch(setFetchingSingleResourceError(e)))
-                .finally(() => dispatch(setFetchSingleResource(false)));
+                .fail(e => {
+                    console.log(e);
+                    dispatch(setFetchingSingleResourceError(e));
+                    dispatch(setFetchSingleResource(false))
+                });
         }
     }
 }
@@ -949,7 +919,7 @@ export function getUserLoginInfo () {
     }
 }
 
-export function loadExportResources () {
+export function loadExportResources (query) {
     return (dispatch, getState) => {
         let state = getState();
         let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
@@ -961,61 +931,105 @@ export function loadExportResources () {
             API.get(`/data/export-resources_${sandboxVersion.fhirTag}.json`, dispatch)
                 .then(resourceList => {
                     dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
-                    dispatch(getTotalItemsToExport(resourceList));
+                    dispatch(getTotalItemsToExport(resourceList, query));
                 });
         } else {
             dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
         }
+
     }
 }
 
-export function getTotalItemsToExport (resourceList) {
-    return dispatch => {
-        let promises = [];
+export function getTotalItemsToExport (resourceList, query) {
+    return (dispatch, getState) => {
         let content = {};
         let details = {};
 
-        resourceList.map(resource => {
-            let params = { type: resource, count: 50 };
-
-            promises.push(window.fhirClient.api.search(params));
-        });
-
         let getNext = function (data, type) {
-            window.fhirClient.api.nextPage({ bundle: data })
-                .then(d => {
-                    if (d.data) {
-                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
-                        content[type] = content[type].concat(d.data.entry);
-                        hasNext && getNext(d.data, type);
+            if (getState().sandbox.exportStatus.loading) {
+                window.fhirClient.api.nextPage({bundle: data})
+                    .then(d => {
+                        if (d.data) {
+                            let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                            content[type] = content[type].concat(d.data.entry);
+                            hasNext && getNext(d.data, type);
 
-                        //We need to check if we have the total amount of items in the DB
-                        //for longer list FHIR does not return the total on the first search
-                        //and we need to update the data when the total is first returned
-                        !details[type].total && (details[type].total = d.data.total);
-                        !hasNext && (details[type].loading = false);
-                    }
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-                });
+                            //We need to check if we have the total amount of items in the DB
+                            //for longer list FHIR does not return the total on the first search
+                            //and we need to update the data when the total is first returned
+                            !details[type].total && (details[type].total = d.data.total);
+                            !hasNext && (details[type].loading = false);
+                        }
+                        if (getState().sandbox.exportStatus.loading) {
+                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
+                        }
+                    });
+            }
         };
 
-        Promise.all(promises)
-            .then(data => {
-                data.map(d => {
-                    if (d.data && d.data.entry && d.data.entry.length) {
-                        let hasNext = !!d.data.link[1];
+        if (query.length === 0) {
+            let promises = [];
+            resourceList.map(resource => {
+                let params = { type: resource, count: 50 };
 
-                        details[d.config.type] = {
-                            total: d.data.total,
+                promises.push(window.fhirClient.api.search(params));
+            });
+
+            Promise.all(promises)
+                .then(data => {
+                    data.map(d => {
+                        if (d.data && d.data.entry && d.data.entry.length) {
+                            let hasNext = !!d.data.link[1];
+
+                            details[d.config.type] = {
+                                total: d.data.total,
+                                loading: hasNext
+                            };
+
+                            content[d.config.type] = d.data.entry;
+                            hasNext && getNext(d.data, d.config.type);
+                        }
+                    });
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+        } else {
+            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details, content: {} }));
+            let endpoint = window.fhirClient.server.serviceUrl;
+            API.get(`${endpoint}/${query}`, dispatch)
+                .then(data => {
+                    if (data && data.entry && data.entry.length) {
+                        let type = data.entry[0].resource.resourceType;
+                        let hasNext = !!data.link[1];
+
+                        details[type] = {
+                            total: data.total,
                             loading: hasNext
                         };
 
-                        content[d.config.type] = d.data.entry;
-                        hasNext && getNext(d.data, d.config.type);
+                        content[type] = data.entry;
+                        !hasNext && resourceList.push(1);
+                        hasNext && getNext(data, type);
+                    } else {
+                        let type = data.resourceType;
+                        let dataList = [];
+                        dataList.push(data);
+                        content[type] = dataList;
                     }
+                    dispatch(fhir_setExportSearchResults(data));
+                    dispatch(fhir_setCustomSearchExecuting(false));
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+                .catch(() => {
+                    dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
+                    dispatch(fhir_setCustomSearchExecuting(false));
                 });
-                dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-            })
+        }
+    }
+}
+
+export function cancelDownload () {
+    return dispatch => {
+        dispatch(setSandboxExportStatus({loading: false, error: false, resourceList: [], details: undefined, content: undefined}));
     }
 }
 
@@ -1073,6 +1087,21 @@ export function doLaunch (app, persona, user, noUser, scenario) {
             console.log(e);
             appWindow.close();
         }
+    }
+}
+
+export function copyToClipboard (str) {
+    return dispatch => {
+        dispatch(setCopying(true));
+        let el = document.createElement('textarea');
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setTimeout(function () {
+            dispatch(setCopying(false));
+        }, 1500);
     }
 }
 

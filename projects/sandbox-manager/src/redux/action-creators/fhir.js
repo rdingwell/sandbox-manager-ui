@@ -33,6 +33,13 @@ export function fhir_setCustomSearchExecuting (executing) {
     };
 }
 
+export function fhir_setCustomSearchGettingNextPage (executing) {
+    return {
+        type: types.FHIR_SET_CUSTOM_SEARCH_GETTING_NEXT_PAGE,
+        payload: { executing }
+    };
+}
+
 export function fhir_SetSampleData () {
     return { type: types.FHIR_SET_SAMPLE_DATA };
 }
@@ -41,6 +48,20 @@ export function fhir_setCustomSearchResults (results) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_RESULTS,
         payload: { results }
+    }
+}
+
+export function fhir_setCustomSearchResultsNext (results) {
+    return {
+        type: types.FHIR_SET_CUSTOM_SEARCH_RESULTS_NEXT,
+        payload: { results }
+    }
+}
+
+export function fhir_setExportSearchResults (exportResults) {
+    return {
+        type: types.FHIR_SET_EXPORT_SEARCH_RESULTS,
+        payload: { exportResults }
     }
 }
 
@@ -74,6 +95,21 @@ export function customSearch (query, endpoint) {
             })
             .catch(() => {
                 dispatch(fhir_setCustomSearchExecuting(false));
+            });
+    }
+}
+
+export function customSearchNextPage (link) {
+    return dispatch => {
+        dispatch(fhir_setCustomSearchGettingNextPage(true));
+
+        API.get(link.url, dispatch)
+            .then(data => {
+                dispatch(fhir_setCustomSearchResultsNext(data));
+                dispatch(fhir_setCustomSearchGettingNextPage(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setCustomSearchGettingNextPage(false));
             });
     }
 }

@@ -16,7 +16,6 @@ export default {
     updatingUser: false,
     selecting: false,
     deleting: false,
-    loadingSingleSandbox: false,
 
     fetchingSingleEncounter: false,
     singleEncounter: false,
@@ -44,6 +43,7 @@ export default {
 
     notifications: [],
     inviting: false,
+    copying: false,
     resetting: false,
     createSandboxError: '',
     lookingForSandbox: false,

@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
+import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
@@ -10,24 +11,13 @@ import * as actionCreators from '../../redux/action-creators';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Layout from 'sandbox-manager-lib/components/Layout';
-
-import StorageIcon from 'material-ui/svg-icons/device/storage';
-import ContactsIcon from 'material-ui/svg-icons/communication/contacts';
-import LaunchIcon from 'material-ui/svg-icons/action/launch';
-import AppsIcon from 'material-ui/svg-icons/navigation/apps';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import Warning from 'material-ui/svg-icons/alert/warning';
-import Desktop from 'material-ui/svg-icons/hardware/desktop-windows';
-import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import CreateSandbox from '../containers/CreateSandbox';
 
 import Init from '../Init/';
 
 import './style.less';
 import { CircularProgress, Dialog, RaisedButton } from "material-ui";
 import Snackbar from '../UI/Snackbar';
-import SandboxSelector from 'sandbox-manager-lib/components/Navigation/Toolbar/SandboxSelector';
-import strings from 'sandbox-manager-lib/strings';
-import NavigationItem from 'sandbox-manager-lib/components/Navigation/NavigationItems/NavigationItem';
 
 class App extends React.Component {
     constructor (props) {
@@ -52,7 +42,6 @@ class App extends React.Component {
 
     componentDidUpdate () {
         this.setSandboxId();
-        !!sessionStorage.sandboxId && sessionStorage.sandboxId !== "after-auth" && !this.props.loadingSingleSandbox && !this.props.selectedSandbox && this.props.fetchSandbox(sessionStorage.sandboxId);
     }
 
     componentDidMount () {
@@ -68,11 +57,10 @@ class App extends React.Component {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
         let theme = getMuiTheme(this.props.ui.theme);
-
-        let layoutProps = this.getLayoutProps(theme);
-
         return this.props.ui && <MuiThemeProvider muiTheme={theme}>
-            <Layout {...layoutProps}>
+            <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
+                    signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox} hideNotification={this.props.hideNotification}
+                    markAllNotificationsSeen={this.props.markAllNotificationsSeen}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
@@ -192,16 +180,7 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-
-    return {
-        ...state, ...lib, ...glib,
-        selectedSandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
-        selecting: state.sandbox.selecting,
-        loadingSingleSandbox: state.sandbox.loadingSingleSandbox,
-        resetting: state.sandbox.resetting,
-        deleting: state.sandbox.deleting,
-        errorToShow: state.app.errorToShow
-    }
+    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting, resetting: state.sandbox.resetting, deleting: state.sandbox.deleting, errorToShow: state.app.errorToShow }
 };
 const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
 
