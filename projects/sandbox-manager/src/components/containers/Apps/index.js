@@ -132,21 +132,23 @@ class Apps extends Component {
                         </Paper>
                     </Dialog>
                     : this.state.loadDialogVisible
-                        ? <Dialog modal={false} open={!!this.state.loadDialogVisible} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent
-                                  actions={[
-                                      <RaisedButton primary label='Load' onClick={this.loadManifest} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}/>
-                                  ]}>
+                        ? <Dialog modal={false} open={!!this.state.loadDialogVisible} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
                             <Paper className='paper-card'>
                                 <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.closeAll}>
                                     <i className="material-icons">close</i>
                                 </IconButton>
-                                <h3>Load manifest</h3>
+                                <h3>Register with manifest</h3>
                                 <div className="manifest-load">
-                                    <div style={{ width: '70%', display: 'inline-block', verticalAlign: 'middle' }}>
-                                        <TextField multiLine floatingLabelText='Manifest URL' value={this.state.manifestURL} fullWidth onChange={(_, a) => this.setState({ manifestURL: a.trim() })}
+                                    <div style={{ width: '100%', verticalAlign: 'middle' }}>
+                                        <TextField floatingLabelText='Manifest URL' value={this.state.manifestURL} fullWidth onChange={(_, a) => this.setState({ manifestURL: a.trim() })}
                                                    disabled={this.state.loadingManifest}/>
+                                        <RaisedButton primary label='Load' onClick={this.loadManifest} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}/>
+                                        <span className='sub'>Example: https://bilirubin-risk-chart.hspconsortium.org(/.well-known/smart/manifest.json)</span>
                                     </div>
-                                    <div style={{ width: '30%', display: 'inline-block', verticalAlign: 'middle', textAlign: 'center' }}>
+                                    <div className='separator'>
+                                        <span>or</span>
+                                    </div>
+                                    <div style={{ width: '100%', verticalAlign: 'middle', textAlign: 'center' }}>
                                         <RaisedButton label='Load from file' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}/>
                                         <input ref='file' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
                                     </div>
@@ -184,7 +186,7 @@ class Apps extends Component {
                     Deleting this app will result in the deletion of all the launch scenarios connected to it.
                 </p>
             </ConfirmModal>}
-            <Snackbar open={this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000}
+            <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000}
                       bodyStyle={{ margin: '0 auto', backgroundColor: palette.primary2Color, textAlign: 'center' }}/>
         </Page>
     }

@@ -116,7 +116,7 @@ class AppDialog extends Component {
                         </div>
                         {clientId}
                         {clientSecret}
-                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica}
+                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest}
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
                                    hintText='e.g.: https://mydomain.com/growth-chart/launch.html' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
@@ -140,7 +140,7 @@ class AppDialog extends Component {
                             </a>
                         </div>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica && !this.props.manifest}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}

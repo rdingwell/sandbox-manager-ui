@@ -29,7 +29,7 @@ export default {
         return new Promise((resolve, reject) => {
             fetch(url, get_config_no_auth("GET"))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
-                .catch(e => parseError(e, dispatch, reject));
+                .catch(e => reject(e));
         });
     },
 
