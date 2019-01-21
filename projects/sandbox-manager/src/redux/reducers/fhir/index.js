@@ -23,6 +23,12 @@ export default function (state = initialState, action) {
         case types.APP_RESET_STATE:
             state = initialState;
             break;
+        case types.FHIR_SET_VALIDATION_EXECUTING:
+            state.validationExecuting = action.payload.executing;
+            break;
+        case types.FHIR_SET_VALIDATION_RESULTS:
+            state.validationResults = action.payload.results;
+            break;
         case types.FHIR_SET_CUSTOM_SEARCH_EXECUTING:
             state.executing = action.payload.executing;
             break;
@@ -42,6 +48,7 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
+            state.validationResults = null;
             state.customSearchResults = null;
             state.customExportResults = null;
             state.executing = false;

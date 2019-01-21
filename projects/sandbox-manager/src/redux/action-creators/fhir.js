@@ -33,6 +33,20 @@ export function fhir_setCustomSearchExecuting (executing) {
     };
 }
 
+export function fhir_setValidationResults (results) {
+    return {
+        type: types.FHIR_SET_VALIDATION_RESULTS,
+        payload: { results }
+    };
+}
+
+export function fhir_setValidationExecuting (executing) {
+    return {
+        type: types.FHIR_SET_VALIDATION_EXECUTING,
+        payload: { executing }
+    };
+}
+
 export function fhir_setCustomSearchGettingNextPage (executing) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_GETTING_NEXT_PAGE,
@@ -99,6 +113,38 @@ export function customSearch (query, endpoint) {
     }
 }
 
+export function validate (object) {
+    return dispatch => {
+        dispatch(fhir_setValidationResults(null));
+        dispatch(fhir_setValidationExecuting(true));
+
+        API.post(`${window.fhirClient.server.serviceUrl}/${object.resourceType}/$validate`, object, dispatch)
+            .then(data => {
+                dispatch(fhir_setValidationResults(data));
+                dispatch(fhir_setValidationExecuting(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setValidationExecuting(false));
+            });
+    }
+}
+
+export function validateExisting (url) {
+    return dispatch => {
+        dispatch(fhir_setValidationResults(null));
+        dispatch(fhir_setValidationExecuting(true));
+
+        API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
+            .then(data => {
+                dispatch(fhir_setValidationResults(data));
+                dispatch(fhir_setValidationExecuting(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setValidationExecuting(false));
+            });
+    }
+}
+
 export function customSearchNextPage (link) {
     return dispatch => {
         dispatch(fhir_setCustomSearchGettingNextPage(true));
@@ -114,7 +160,7 @@ export function customSearchNextPage (link) {
     }
 }
 
-export function clearSearchResults() {
+export function clearSearchResults () {
     return dispatch => {
         dispatch(fhir_setCustomSearchResults());
     }

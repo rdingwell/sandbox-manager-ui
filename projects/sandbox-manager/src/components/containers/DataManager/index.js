@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage } from '../../../redux/action-creators';
+import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting }
+from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
 import Import from "./Import";
 import Export from './Export';
+import Validate from './Validate';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
@@ -42,6 +44,9 @@ class DataManager extends Component {
                                 export={this.props.loadExportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
                     </div>
                 </Tab>
+                <Tab label="Validate" className={'export tab' + (this.state.activeTab === 'validate' ? ' active' : '')} onActive={() => this.setActiveTab('validate')}>
+                    <Validate muiTheme={this.props.muiTheme} validate={this.props.validate} validateExisting={this.props.validateExisting} results={this.props.validationResults}/>
+                </Tab>
             </Tabs>
         </div>;
     }
@@ -63,6 +68,7 @@ const mapStateToProps = state => {
 
     return {
         results: state.fhir.customSearchResults,
+        validationResults: state.fhir.validationResults,
         gettingNextPage: state.fhir.gettingNextPage,
         exportResults: state.fhir.customExportResults,
         importResults: state.sandbox.importResults,
@@ -72,6 +78,9 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+        app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting
+    }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
