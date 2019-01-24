@@ -37,28 +37,28 @@ class Validate extends Component {
                      onActive={() => this.setActiveTab('input')} value='input'>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
-                            Validate an existing resource
+                            Existing resource
                         </CardTitle>
                         <div className='card-content'>
                             <div className='input-wrapper'>
-                                <TextField fullWidth id='query' {...styleProps} onChange={(_, query) => this.setState({ query, manualJson: '', file: '', fileJson: '' })} hintText='/Patient/smart-613876'
+                                <TextField fullWidth id='query' {...styleProps} onChange={(_, query) => this.setState({ query, manualJson: '', file: '', fileJson: '' })} hintText='Patient/smart-613876'
                                            value={this.state.query}/>
                             </div>
                         </div>
                     </Card>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
-                            Validate a file
+                            From file
                         </CardTitle>
                         <div className='card-content'>
-                            <input type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
+                            <input value='' type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
                             <RaisedButton label='Browse for file' primary onClick={() => this.refs.file.click()}/>
                             {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
                         </div>
                     </Card>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
-                            Validate JSON
+                            JSON
                         </CardTitle>
                         <div>
                             <TextField className='manual-input' hintText='Paste JSON here' onChange={(_, manualJson) => this.setState({ query: '', file: '', fileJson: '', manualJson })}
