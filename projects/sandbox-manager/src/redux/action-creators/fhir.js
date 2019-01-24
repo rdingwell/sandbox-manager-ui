@@ -33,6 +33,41 @@ export function fhir_setCustomSearchExecuting (executing) {
     };
 }
 
+export function fhir_setLoadingMetadata (loading) {
+    return {
+        type: types.FHIR_SET_METADATA_LOADING,
+        payload: { loading }
+    };
+}
+
+export function fhir_setLoadingResources (loading) {
+    return {
+        type: types.FHIR_SET_RESOURCES_LOADING,
+        payload: { loading }
+    };
+}
+
+export function fhir_setMetadata (data) {
+    return {
+        type: types.FHIR_SET_METADATA,
+        payload: { data }
+    };
+}
+
+export function fhir_setResources (data) {
+    return {
+        type: types.FHIR_SET_RESOURCES,
+        payload: { data }
+    };
+}
+
+export function fhir_setResourcesCount (data) {
+    return {
+        type: types.FHIR_SET_RESOURCES_COUNT,
+        payload: { data }
+    };
+}
+
 export function fhir_setValidationResults (results) {
     return {
         type: types.FHIR_SET_VALIDATION_RESULTS,
@@ -113,6 +148,35 @@ export function customSearch (query, endpoint) {
     }
 }
 
+export function getMetadata (shouldGetResourcesCount = true) {
+    return dispatch => {
+        dispatch(fhir_setLoadingMetadata(true));
+        API.get(`${window.fhirClient.server.serviceUrl}/metadata?_format=json&_pretty=true`, dispatch)
+            .then(data => {
+                dispatch(fhir_setMetadata(data));
+                shouldGetResourcesCount && dispatch(getResourcesCount(data.rest[0].resource));
+                dispatch(fhir_setLoadingMetadata(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setLoadingMetadata(false));
+            });
+    }
+}
+
+export function fetchResources (type, query) {
+    return dispatch => {
+        dispatch(fhir_setLoadingResources(true));
+        API.get(`${window.fhirClient.server.serviceUrl}/${type}?_count=40${query}`, dispatch)
+            .then(data => {
+                dispatch(fhir_setResources(data));
+                dispatch(fhir_setLoadingResources(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setLoadingResources(false));
+            });
+    }
+}
+
 export function validate (object) {
     return dispatch => {
         dispatch(fhir_setValidationResults(null));
@@ -143,6 +207,26 @@ export function validateExisting (url) {
                 dispatch(fhir_setValidationExecuting(false));
             });
     }
+}
+
+export function getResourcesCount (data, query) {
+    return dispatch => {
+        let counts = {};
+        let promises = [];
+        data.map(res => {
+            promises.push(new Promise(resolve => {
+                API.get(`${window.fhirClient.server.serviceUrl}/${res.type}?_count=1${query}`, dispatch)
+                    .then(d => {
+                        counts[res.type] = d.total;
+                        resolve();
+                    })
+            }))
+        });
+        Promise.all(promises)
+            .then(() => {
+                dispatch(fhir_setResourcesCount(counts));
+            })
+    };
 }
 
 export function customSearchNextPage (link) {

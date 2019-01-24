@@ -4,6 +4,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import CodeIcon from 'material-ui/svg-icons/action/code';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import ReactJson from 'react-json-view';
+import TreeBrowser from './TreeBrowser';
 
 import './styles.less';
 
@@ -14,7 +15,7 @@ class Validate extends Component {
 
         this.state = {
             query: '',
-            activeTab: 'input',
+            activeTab: 'existing',
             canFit: 2
         };
     }
@@ -25,7 +26,7 @@ class Validate extends Component {
 
     render () {
         let palette = this.props.muiTheme.palette;
-        let json = this.state.activeTab === 'json';
+        let tab = this.state.activeTab;
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
         let styleProps = { underlineFocusStyle, floatingLabelFocusStyle };
@@ -33,8 +34,8 @@ class Validate extends Component {
         return <div className='validate-wrapper'>
             <Tabs className='validate-tabs' contentContainerClassName='validate-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
                   value={this.state.activeTab}>
-                <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Input</span>} className={'manual-input tab' + (!json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('input')} value='input'>
+                <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
+                     className={'manual-input tab' + (tab === 'existing' ? ' active' : '')} onActive={() => this.setActiveTab('existing')} value='existing'>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
                             Existing resource
@@ -46,9 +47,15 @@ class Validate extends Component {
                             </div>
                         </div>
                     </Card>
+                    <div>
+                        <RaisedButton label='Validate' primary onClick={this.search}/>
+                    </div>
+                </Tab>
+                <Tab label={<span><ListIcon style={{ color: tab === 'file' ? palette.primary5Color : palette.primary3Color }}/> File</span>}
+                     className={'manual-input tab' + (tab === 'file' ? ' active' : '')} onActive={() => this.setActiveTab('file')} value='file'>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
-                            From file
+                            File
                         </CardTitle>
                         <div className='card-content'>
                             <input value='' type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
@@ -56,6 +63,12 @@ class Validate extends Component {
                             {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
                         </div>
                     </Card>
+                    <div>
+                        <RaisedButton label='Validate' primary onClick={this.search}/>
+                    </div>
+                </Tab>
+                <Tab label={<span><ListIcon style={{ color: tab === 'json-input' ? palette.primary5Color : palette.primary3Color }}/> JSON</span>}
+                     className={'manual-input tab' + (tab === 'json-input' ? ' active' : '')} onActive={() => this.setActiveTab('json-input')} value='json-input'>
                     <Card>
                         <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
                             JSON
@@ -69,8 +82,12 @@ class Validate extends Component {
                         <RaisedButton label='Validate' primary onClick={this.search}/>
                     </div>
                 </Tab>
-                <Tab label={<span><CodeIcon style={{ color: json ? palette.primary5Color : palette.primary3Color }}/> RESULT</span>} className={'json tab' + (json ? ' active' : '')}
-                     onActive={() => this.setActiveTab('json')} value='json'>
+                <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
+                     className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
+                    <TreeBrowser />
+                </Tab>
+                <Tab label={<span><CodeIcon style={{ color: tab === 'json' ? palette.primary5Color : palette.primary3Color }}/> RESULT</span>}
+                     className={'json tab' + (tab === 'json' ? ' active' : '')} onActive={() => this.setActiveTab('json')} value='json'>
                     {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>
