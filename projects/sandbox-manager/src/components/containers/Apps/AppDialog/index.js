@@ -34,6 +34,7 @@ class AppDialog extends Component {
         this.state = {
             value: 'PublicClient',
             modalOpen: false,
+            clone: false,
             changes: [],
             app,
             originalApp: Object.assign({}, app),
@@ -64,7 +65,7 @@ class AppDialog extends Component {
         let theme = this.props.muiTheme.palette;
         let iconStyle = { color: theme.primary3Color, fill: theme.primary3Color, width: '24px', height: '24px' };
 
-        if (this.props.app) {
+        if (this.props.app && !this.state.clone) {
             clientId = <div className='label-value'>
                 <span>Client Id: </span>
                 <span>{this.props.app.clientId}</span>
@@ -81,14 +82,15 @@ class AppDialog extends Component {
         }
         let sApp = this.state.app;
 
-        let saveEnabled = this.props.app
+        let saveEnabled = (this.props.app && !this.state.clone)
             ? this.state.changes.length > 0
             : sApp.clientName.length > 2 && sApp.launchUri.length > 2 && sApp.redirectUris.length > 2;
         let actions = [
             <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled}/>
         ];
 
-        this.props.app && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
+        this.props.app && !this.state.clone && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
+        this.props.app && !this.state.clone && actions.unshift(<RaisedButton secondary label='Clone' onClick={this.clone}/>,);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
         let underlineFocusStyle = { borderColor: theme.primary2Color };
@@ -180,6 +182,13 @@ class AppDialog extends Component {
         </Dialog>
     }
 
+    clone = () => {
+        let app = Object.assign({}, this.state.app);
+        app.clientName = '';
+        this.setState({ clone: true, isReplica: false, app });
+        this.loadImageFromWeb();
+    };
+
     launchBlur = () => {
         let app = Object.assign({}, this.state.app);
         if (this.state.app.launchUri.substring(0, 4) === 'http' && app.redirectUris.length === 0) {
@@ -262,7 +271,7 @@ class AppDialog extends Component {
     };
 
     save = () => {
-        this.props.onSubmit && this.props.onSubmit(this.state.app, this.state.changes);
+        this.props.onSubmit && this.props.onSubmit(this.state.app, this.state.changes, this.state.clone);
     };
 }
 
