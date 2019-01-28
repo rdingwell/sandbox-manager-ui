@@ -4,9 +4,10 @@ import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getRe
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { Card, CardTitle, Dialog, ListItem, RaisedButton, List } from 'material-ui';
+import { Card, CardTitle, Dialog, ListItem, RaisedButton, List, IconButton } from 'material-ui';
 import Remove from 'material-ui/svg-icons/content/remove';
 import FolderOpen from 'material-ui/svg-icons/file/folder-open';
+import Validate from 'material-ui/svg-icons/av/playlist-add-check';
 import Folder from 'material-ui/svg-icons/file/folder';
 import PersonaList from '../../../Persona/List';
 
@@ -100,7 +101,7 @@ class TreeBrowser extends Component {
 
         return <List className='tree-list'>
             <ListItem primaryText="Patient" leftIcon={this.getIcon('patient')} initiallyOpen={true} primaryTogglesNestedList={true} nestedItems={props}
-                      onNestedListToggle={() => this.toggleItem('patient')}/>
+                      onNestedListToggle={() => this.toggleItem('patient')} rightIconButton={<IconButton style={{marginRight: '10px'}} tooltip="Validate"><Validate /></IconButton>}/>
         </List>
     };
 
@@ -113,7 +114,7 @@ class TreeBrowser extends Component {
                     list.push(item.resource);
                 });
                 return <ListItem key={id} primaryText={<span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>} leftIcon={this.getIcon(id)}
-                                 primaryTogglesNestedList={true} nestedItems={this.getNested(list, id)} onNestedListToggle={() => this.toggleItem(id)}/>;
+                                 primaryTogglesNestedList={true} nestedItems={this.getNested(list, id, true)} onNestedListToggle={() => this.toggleItem(id)}/>;
             }
         });
     };
@@ -136,7 +137,7 @@ class TreeBrowser extends Component {
         return this.state.toggledItems[item] ? <FolderOpen/> : <Folder/>;
     };
 
-    getNested = (object, parentId) => {
+    getNested = (object, parentId, isRootLevel) => {
         if (object.map) {
             return object.map((listItem, index) => {
                 if (['string', 'number', 'boolean'].indexOf(typeof (listItem)) !== -1) {
@@ -145,7 +146,7 @@ class TreeBrowser extends Component {
                 } else {
                     let id = `${parentId}.${index}`;
                     return <ListItem key={id} primaryText={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true} nestedItems={this.getNested(listItem, id)}
-                                     onNestedListToggle={() => this.toggleItem(id)}/>;
+                                     onNestedListToggle={() => this.toggleItem(id)} rightIconButton={isRootLevel ? <IconButton style={{marginRight: '10px'}} tooltip="Validate"><Validate /></IconButton> : undefined}/>;
                 }
             });
         } else {

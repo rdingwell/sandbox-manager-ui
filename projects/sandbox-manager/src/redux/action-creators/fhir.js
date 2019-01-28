@@ -163,7 +163,7 @@ export function getMetadata (shouldGetResourcesCount = true) {
     }
 }
 
-export function fetchResources (type, query) {
+export function fetchResources (type, query = "") {
     return dispatch => {
         dispatch(fhir_setLoadingResources(true));
         API.get(`${window.fhirClient.server.serviceUrl}/${type}?_count=40${query}`, dispatch)
@@ -209,7 +209,7 @@ export function validateExisting (url) {
     }
 }
 
-export function getResourcesCount (data, query) {
+export function getResourcesCount (data, query = "") {
     return dispatch => {
         let counts = {};
         let promises = [];
