@@ -23,18 +23,25 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
-        if (this.props.location.pathname !== "/launchApp") {
-            if (this.props.fhir.smart.data.server) {
-                let smart = FHIR.client(this.props.fhir.smart.data.server);
+        if (props.location.pathname !== "/launchApp") {
+            if (props.fhir.smart.data.server) {
+                let smart = FHIR.client(props.fhir.smart.data.server);
                 let split = smart.server.serviceUrl.split('/');
                 let isCorrectServer = split ? split.indexOf(sessionStorage.sandboxId) >= 0 : true;
-                if (sessionStorage.sandboxId && !isCorrectServer && this.props.history.location.search.indexOf('?code=') === -1) {
+                if (sessionStorage.sandboxId && !isCorrectServer && props.history.location.search.indexOf('?code=') === -1) {
                     let newSmart = Object.assign({}, smart);
                     window.fhirClient = smart;
                     newSmart.server.serviceUrl = smart.server.serviceUrl.replace(split[3], sessionStorage.sandboxId);
-                    this.props.selectSandbox(this.props.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId));
+                    props.selectSandbox(props.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId));
                 }
             }
+        }
+
+        if (props.location.search && props.location.search.indexOf('id=') >= 0) {
+            const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+            const date = new Date();
+            let split = props.location.search.split('?')[1].split('id=')[1].split('&')[0];
+            document.cookie = `hspc-invitation-id=${split}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
         }
 
         this.state = {};
