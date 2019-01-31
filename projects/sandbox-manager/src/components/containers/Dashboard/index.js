@@ -99,10 +99,7 @@ class Dashboard extends Component {
     };
 
     handleCancel = () => {
-        let d = new Date();
-        d.setDate(d.getDate() - 1);
-        let expires = ";expires=" + d;
-        document.cookie = "hspc-invitation-id=" + expires + "; path=/";
+        document.cookie = "hspc-invitation-id=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
         this.setState({ showAccept: false, invitationToAccept: undefined });
     };
 }
