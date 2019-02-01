@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AvailableSandboxes from './AvailableSandboxes';
-import { Dialog, IconButton, Paper } from 'material-ui';
+import { Dialog, IconButton, Paper, RaisedButton } from 'material-ui';
 import CreateSandbox from '../CreateSandbox';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite } from '../../../redux/action-creators';
@@ -42,14 +42,9 @@ class Dashboard extends Component {
             : this.state.showAccept && invite
                 ? <Dialog open={this.state.showAccept} bodyClassName='invitation-dialog'
                           actions={[
-                              <IconButton id={0} tooltip='Accept' iconStyle={{ color: this.props.muiTheme.palette.primary1Color }}
-                                          onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')}>
-                                  <NavigationCheck/>
-                              </IconButton>,
-                              <IconButton id={1} tooltip='Reject' iconStyle={{ color: this.props.muiTheme.palette.primary4Color }}
-                                          onClick={() => this.updateSandboxInvite(invite, 'REJECTED')}>
-                                  <NavigationClose/>
-                              </IconButton>]}>
+                              <RaisedButton style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
+                              <RaisedButton secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
+                              ]}>
                     <div className='sandbox-invitation-wrapper'>
                         <Paper className='paper-card'>
                             <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
