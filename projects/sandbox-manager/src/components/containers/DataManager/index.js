@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting }
-from '../../../redux/action-creators';
+import {
+    importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
+    uploadProfile, loadProfiles
+} from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QueryBrowser from './QueryBrowser';
 import Import from "./Import";
 import Export from './Export';
 import Validate from './Validate';
+import Profiles from './Profiles';
 import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
@@ -36,7 +39,11 @@ class DataManager extends Component {
                 </Tab>
                 <Tab label="Import" className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')} onActive={() => this.setActiveTab('import')}>
                     <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme}
-                            dataImporting={this.props.dataImporting}/>
+                            dataImporting={this.props.dataImporting} uploadProfile={this.props.uploadProfile}/>
+                </Tab>
+                <Tab label="Profiles" className={'profiles tab' + (this.state.activeTab === 'profiles' ? ' active' : '')} onActive={() => this.setActiveTab('profiles')}>
+                    <Profiles results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} uploadProfile={this.props.uploadProfile}
+                              loadProfiles={this.props.loadProfiles} profiles={this.props.profiles}/>
                 </Tab>
                 <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
                     <div>
@@ -74,13 +81,14 @@ const mapStateToProps = state => {
         importResults: state.sandbox.importResults,
         dataImporting: state.sandbox.dataImporting,
         executing: state.fhir.executing,
-        exportStatus: state.sandbox.exportStatus
+        exportStatus: state.sandbox.exportStatus,
+        profiles: state.fhir.profiles
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators(
-    {
-        app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting
-    }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({
+    app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
+    uploadProfile, loadProfiles
+}, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));

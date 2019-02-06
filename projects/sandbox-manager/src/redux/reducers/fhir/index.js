@@ -20,6 +20,12 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_SMART:
             state.smart = action.payload;
             break;
+        case types.FHIR_SET_PROFDILES_LOADING:
+            state.profilesLoading = action.payload.loading;
+            break;
+        case types.FHIR_SET_PROFDILES:
+            state.profiles = action.payload.profiles;
+            break;
         case types.APP_RESET_STATE:
             state = initialState;
             break;

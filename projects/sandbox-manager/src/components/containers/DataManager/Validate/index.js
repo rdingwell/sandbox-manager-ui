@@ -84,7 +84,7 @@ class Validate extends Component {
                 </Tab>
                 <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                      className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                    <TreeBrowser />
+                    <TreeBrowser onValidate={query => this.setState({ query, manualJson: '', file: '', fileJson: '' }, this.search)} />
                 </Tab>
                 <Tab label={<span><CodeIcon style={{ color: tab === 'json' ? palette.primary5Color : palette.primary3Color }}/> RESULT</span>}
                      className={'json tab' + (tab === 'json' ? ' active' : '')} onActive={() => this.setActiveTab('json')} value='json'>

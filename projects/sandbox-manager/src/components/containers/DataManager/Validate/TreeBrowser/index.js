@@ -71,7 +71,6 @@ class TreeBrowser extends Component {
                 </div>
             </Card>
             <div>
-                <RaisedButton label='Validate' primary onClick={this.search}/>
             </div>
         </Fragment>
     }
@@ -81,8 +80,9 @@ class TreeBrowser extends Component {
     };
 
     getTree = () => {
-        let ownProps = Object.keys(this.state.selectedPersona).map(key => {
-            let item = this.state.selectedPersona[key];
+        let persona = this.state.selectedPersona;
+        let ownProps = Object.keys(persona).map(key => {
+            let item = persona[key];
             let id = 'ownProps.' + key;
             if (['string', 'number', 'boolean'].indexOf(typeof (item)) !== -1) {
                 return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>}/>;
@@ -100,8 +100,8 @@ class TreeBrowser extends Component {
         ];
 
         return <List className='tree-list'>
-            <ListItem primaryText="Patient" leftIcon={this.getIcon('patient')} initiallyOpen={true} primaryTogglesNestedList={true} nestedItems={props}
-                      onNestedListToggle={() => this.toggleItem('patient')} rightIconButton={<IconButton style={{marginRight: '10px'}} tooltip="Validate"><Validate /></IconButton>}/>
+            <ListItem primaryText="Patient" leftIcon={this.getIcon('patient')} initiallyOpen={true} primaryTogglesNestedList={true} onNestedListToggle={() => this.toggleItem('patient')}
+                      nestedItems={props} rightIconButton={<IconButton onClick={() => this.validate(persona)} style={{ marginRight: '10px' }} tooltip="Validate"><Validate/></IconButton>}/>
         </List>
     };
 
@@ -145,8 +145,10 @@ class TreeBrowser extends Component {
                     return <ListItem key={id} primaryText={<span><span className='bold'>{listItem}</span></span>} leftIcon={<Remove/>}/>;
                 } else {
                     let id = `${parentId}.${index}`;
-                    return <ListItem key={id} primaryText={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true} nestedItems={this.getNested(listItem, id)}
-                                     onNestedListToggle={() => this.toggleItem(id)} rightIconButton={isRootLevel ? <IconButton style={{marginRight: '10px'}} tooltip="Validate"><Validate /></IconButton> : undefined}/>;
+                    return <ListItem key={id} primaryText={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true}
+                                     nestedItems={this.getNested(listItem, id)} onNestedListToggle={() => this.toggleItem(id)}
+                                     rightIconButton={isRootLevel ?
+                                         <IconButton onClick={() => this.validate(listItem)} style={{ marginRight: '10px' }} tooltip="Validate"><Validate/></IconButton> : undefined}/>;
                 }
             });
         } else {
@@ -167,7 +169,11 @@ class TreeBrowser extends Component {
                                  onNestedListToggle={() => this.toggleItem(id)}/>;
             }
         })
-    }
+    };
+
+    validate = (item) => {
+        this.props.onValidate && this.props.onValidate(`${item.resourceType}/${item.id}`);
+    };
 }
 
 const mapStateToProps = state => {
