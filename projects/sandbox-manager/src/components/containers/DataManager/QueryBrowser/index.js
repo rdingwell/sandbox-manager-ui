@@ -160,7 +160,7 @@ export default class QueryBrowser extends Component {
         let stage = document.getElementsByClassName('stage')[0];
         let dif = stage.scrollHeight - stage.scrollTop - stage.offsetHeight;
 
-        let next = this.props.results.link && this.props.results.link.find(i => i.relation === 'next');
+        let next = this.props.results && this.props.results.link && this.props.results.link.find(i => i.relation === 'next');
         let shouldFetch = dif <= 50 && next && !this.props.gettingNextPage;
         shouldFetch && this.props.next(next);
     };
