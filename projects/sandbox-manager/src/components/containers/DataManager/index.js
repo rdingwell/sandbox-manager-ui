@@ -41,10 +41,10 @@ class DataManager extends Component {
                     <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme}
                             dataImporting={this.props.dataImporting} uploadProfile={this.props.uploadProfile}/>
                 </Tab>
-                <Tab label="Profiles" className={'profiles tab' + (this.state.activeTab === 'profiles' ? ' active' : '')} onActive={() => this.setActiveTab('profiles')}>
-                    <Profiles results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} uploadProfile={this.props.uploadProfile}
-                              loadProfiles={this.props.loadProfiles} profiles={this.props.profiles}/>
-                </Tab>
+                {/*<Tab label="Profiles" className={'profiles tab' + (this.state.activeTab === 'profiles' ? ' active' : '')} onActive={() => this.setActiveTab('profiles')}>*/}
+                    {/*<Profiles results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} uploadProfile={this.props.uploadProfile}*/}
+                              {/*loadProfiles={this.props.loadProfiles} profiles={this.props.profiles}/>*/}
+                {/*</Tab>*/}
                 <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
                     <div>
                         <Export clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} dataImporting={this.props.dataImporting}
