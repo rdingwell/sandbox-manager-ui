@@ -20,6 +20,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_SMART:
             state.smart = action.payload;
             break;
+        case types.FHIR_CLEAN_VALIDATION_RESULTS:
+            state.validationResults = undefined;
+            break;
         case types.FHIR_SET_PROFDILES_LOADING:
             state.profilesLoading = action.payload.loading;
             break;

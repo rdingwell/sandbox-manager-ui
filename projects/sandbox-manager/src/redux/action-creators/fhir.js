@@ -89,6 +89,12 @@ export function fhir_setCustomSearchGettingNextPage (executing) {
     };
 }
 
+export function cleanValidationResults () {
+    return {
+        type: types.FHIR_CLEAN_VALIDATION_RESULTS
+    };
+}
+
 export function fhir_setProfilesLoading (loading) {
     return {
         type: types.FHIR_SET_PROFDILES_LOADING,

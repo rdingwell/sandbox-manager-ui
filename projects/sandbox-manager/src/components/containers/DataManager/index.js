@@ -3,7 +3,7 @@ import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    uploadProfile, loadProfiles
+    uploadProfile, loadProfiles, cleanValidationResults
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -52,7 +52,8 @@ class DataManager extends Component {
                     </div>
                 </Tab>
                 <Tab label="Validate" className={'export tab' + (this.state.activeTab === 'validate' ? ' active' : '')} onActive={() => this.setActiveTab('validate')}>
-                    <Validate muiTheme={this.props.muiTheme} validate={this.props.validate} validateExisting={this.props.validateExisting} results={this.props.validationResults}/>
+                    <Validate muiTheme={this.props.muiTheme} validate={this.props.validate} validateExisting={this.props.validateExisting} results={this.props.validationResults}
+                              cleanValidationResults={this.props.cleanValidationResults}/>
                 </Tab>
             </Tabs>
         </div>;
@@ -88,7 +89,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    uploadProfile, loadProfiles
+    uploadProfile, loadProfiles, cleanValidationResults
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
