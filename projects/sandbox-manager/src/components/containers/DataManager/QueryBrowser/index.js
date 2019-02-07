@@ -92,7 +92,7 @@ export default class QueryBrowser extends Component {
                 <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
                      onActive={() => this.setActiveTab('summary')} value='summary'>
                     {this.props.results && this.props.results.entry && this.props.results.total && <span className='query-size'>
-                        <span>Showing <span className='number'>{this.props.results.entry.length}</span></span>
+                        <span>Showing <span className='number'>{this.props.results.entry.length || 1}</span></span>
                         <span> of <span className='number'>{this.props.results.total}</span></span>
                     </span>}
                     <div className='query-result-wrapper'>
@@ -110,7 +110,15 @@ export default class QueryBrowser extends Component {
                                             })}
                                         </ListItem>
                                     })
-                                    : <div>{this.props.results != null && <span>No Results Found</span>}</div>}
+                                    : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
+                                    : <div>{this.props.results != null && <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
+                                            {parseEntry({resource: this.props.results}).props.map((item, index) => {
+                                                return <div className='result-item' key={index}>
+                                                    <span>{item.label}: </span>
+                                                    <span>{item.value}</span>
+                                                </div>
+                                            })}
+                                        </ListItem>}</div>}
                             </List>}
                         {this.props.gettingNextPage && <div className='loader-wrapper-small'><CircularProgress size={80} thickness={5}/></div>}
                     </div>
