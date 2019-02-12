@@ -370,7 +370,7 @@ class PersonaList extends Component {
             let selection = getSelection();
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
-            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || node.classList.contains('fa');
+            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || (node.classList && node.classList.contains('fa'));
             if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();
