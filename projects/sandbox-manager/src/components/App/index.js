@@ -18,7 +18,7 @@ import Init from '../Init/';
 import './style.less';
 import { CircularProgress, Dialog, RaisedButton } from "material-ui";
 import Snackbar from '../UI/Snackbar';
-import cookie from 'react-cookies';
+import Cookies from 'js-cookie';
 
 class App extends React.Component {
     constructor (props) {
@@ -40,7 +40,7 @@ class App extends React.Component {
 
         if (props.location.search && props.location.search.indexOf('id=') >= 0) {
             let split = props.location.search.split('?')[1].split('id=')[1].split('&')[0];
-            cookie.save('hspc-invitation-id', split, { path: '/' });
+            Cookies.set('hspc-invitation-id', split, { path: '/' });
         }
 
         this.state = {};

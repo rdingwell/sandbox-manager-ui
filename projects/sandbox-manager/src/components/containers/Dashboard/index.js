@@ -11,7 +11,7 @@ import Footer from "sandbox-manager-lib/components/Navigation/Footer";
 import Page from 'sandbox-manager-lib/components/Page';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { NavigationCheck, NavigationClose } from 'material-ui/svg-icons';
-import cookie from 'react-cookies';
+import Cookies from 'js-cookie';
 
 class Dashboard extends Component {
     constructor (props) {
@@ -95,7 +95,7 @@ class Dashboard extends Component {
     };
 
     handleCancel = () => {
-        cookie.remove('hspc-invitation-id', { path: '/' });
+        Cookies.remove('hspc-invitation-id', { path: '/' });
         this.setState({ showAccept: false, invitationToAccept: undefined });
     };
 }

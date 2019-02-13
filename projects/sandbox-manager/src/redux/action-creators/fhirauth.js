@@ -2,7 +2,7 @@ import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
 import API from '../../lib/api';
-import cookie from 'react-cookies';
+import Cookies from 'js-cookie';
 
 let fhirClient = null;
 
@@ -71,7 +71,7 @@ export function goHome () {
     }
 
     function deleteCookie (cookiename) {
-        cookie.remove(cookiename, { path: '/' });
+        Cookies.remove(cookiename, { path: '/' });
     }
 
     window.location = window.location.origin;
@@ -230,7 +230,8 @@ export function fhirauth_setSmart (smart, redirect = null) {
                         dispatch(loadInvites());
                         dispatch(fetchUserNotifications());
                     })
-                    .catch(() => {})
+                    .catch(() => {
+                    })
             })
             .catch(() => {
                 goHome();

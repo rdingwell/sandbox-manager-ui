@@ -4,7 +4,7 @@ import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
-import cookie from 'react-cookies';
+import Cookies from 'js-cookie';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -446,7 +446,7 @@ export const selectSandbox = (sandbox) => {
 
         let configuration = state.config.xsettings.data.sandboxManager;
 
-        cookie.remove(configuration.personaCookieName, { path: '/' });
+        Cookies.remove(configuration.personaCookieName, { path: '/' });
 
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
