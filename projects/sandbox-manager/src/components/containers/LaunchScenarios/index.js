@@ -173,7 +173,6 @@ class LaunchScenarios extends Component {
     };
 
     openEHRSimulator = (sc) => {
-        const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
         const date = new Date();
         const token = {
             sandboxId: this.props.sandbox.sandboxId, sandboxApiUrl: this.props.sandboxApiUrl, appId: sc.app.id, personaId: sc.userPersona.id, patientId: sc.patient,
@@ -187,7 +186,6 @@ class LaunchScenarios extends Component {
         sc.contextParams && (token.contextParams = sc.contextParams);
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-        // document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
 
         cookie.save('hspc-launch-token', JSON.stringify(token), { path: '/' });
 

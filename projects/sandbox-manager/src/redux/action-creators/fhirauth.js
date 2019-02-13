@@ -2,6 +2,7 @@ import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
 import API from '../../lib/api';
+import cookie from 'react-cookies';
 
 let fhirClient = null;
 
@@ -70,11 +71,7 @@ export function goHome () {
     }
 
     function deleteCookie (cookiename) {
-        let d = new Date();
-        d.setDate(d.getDate() - 1);
-        let expires = ";expires=" + d;
-        let name = cookiename;
-        document.cookie = name + "=" + expires + "; path=/acc/html";
+        cookie.remove(cookiename, { path: '/' });
     }
 
     window.location = window.location.origin;
@@ -152,8 +149,7 @@ export function authorize (url, state, sandboxId) {
     let config = state.config.xsettings.data.sandboxManager;
     let serviceUrl = config.defaultServiceUrl;
 
-    const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-    document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    cookie.remove(config.personaCookieName, { path: '/' });
 
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";

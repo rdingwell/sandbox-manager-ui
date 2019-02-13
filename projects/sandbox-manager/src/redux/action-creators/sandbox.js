@@ -4,6 +4,7 @@ import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
+import cookie from 'react-cookies';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -445,8 +446,7 @@ export const selectSandbox = (sandbox) => {
 
         let configuration = state.config.xsettings.data.sandboxManager;
 
-        const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-        document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        cookie.remove(configuration.personaCookieName, { path: '/' });
 
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
@@ -1077,10 +1077,7 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         try {
             user && !noUser && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", data, dispatch)
                 .then(data => {
-                    const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-                    const date = new Date();
-                    date.setTime(date.getTime() + (3 * 60 * 1000));
-                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    cookie.save('hspc-persona-token', data.jwt, { path: '/' });
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {
