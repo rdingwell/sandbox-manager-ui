@@ -154,7 +154,7 @@ class App extends React.Component {
         const token = { sandboxId: this.props.selectedSandbox.sandboxId, sandboxApiUrl, refApi: window.fhirClient.server.serviceUrl.split('/')[2], token: window.fhirClient.server.auth.token };
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-        cookie.save('hspc-launch-token', JSON.stringify(token), { path: '/' });
+        Cookies.set('hspc-launch-token', JSON.stringify(token), { path: '/' });
     };
 
     setSandboxId = () => {

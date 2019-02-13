@@ -149,7 +149,7 @@ export function authorize (url, state, sandboxId) {
     let config = state.config.xsettings.data.sandboxManager;
     let serviceUrl = config.defaultServiceUrl;
 
-    cookie.remove(config.personaCookieName, { path: '/' });
+    Cookies.remove(config.personaCookieName, { path: '/' });
 
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
