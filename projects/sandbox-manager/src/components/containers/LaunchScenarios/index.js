@@ -188,7 +188,8 @@ class LaunchScenarios extends Component {
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
 
-        cookie.save('hspc-launch-token', JSON.stringify(token), { path: '/', domain: cookieUrl, expires: date.getTime() });
+        let testCookie = cookie;
+        testCookie.save('hspc-launch-token', JSON.stringify(token), { path: '/', domain: cookieUrl, expires: date.getTime() });
 
         let openLink = this.refs.openLink;
         openLink.href = `${this.props.ehrUrl}/launch`;
