@@ -8,7 +8,7 @@ import TreeBrowser from './TreeBrowser';
 
 import './styles.less';
 
-class Validate extends Component {
+class Validation extends Component {
 
     constructor (props) {
         super(props);
@@ -91,6 +91,11 @@ class Validate extends Component {
                     {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                 </Tab>
+                {/*<Tab label={<span><CodeIcon style={{ color: !data ? palette.primary5Color : palette.primary3Color }}/> Results</span>} onActive={() => this.setActiveTab('import')}*/}
+                     {/*className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')}>*/}
+                    {/*{this.props.results && this.state.input.length > 0 && <ReactJson src={this.props.results} name={false}/>}*/}
+                    {/*{this.props.dataImporting && <div className='loader-wrapper' style={{ paddingTop: '200px' }}><CircularProgress size={80} thickness={5}/></div>}*/}
+                {/*</Tab>*/}
             </Tabs>
         </div>;
     }
@@ -123,4 +128,4 @@ class Validate extends Component {
     };
 }
 
-export default Validate;
+export default Validation;

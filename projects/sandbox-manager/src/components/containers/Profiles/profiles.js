@@ -3,10 +3,15 @@ import { RaisedButton, Tabs, Tab, CircularProgress, List, ListItem } from 'mater
 import ReactJson from 'react-json-view';
 import CodeIcon from 'material-ui/svg-icons/action/code';
 import ListIcon from 'material-ui/svg-icons/action/list';
+import { cleanValidationResults, uploadProfile, loadProfiles, validate, validateExisting, clearResults } from '../../../redux/action-creators';
+import muiThemeable from "material-ui/styles/muiThemeable";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './styles.less';
+import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
-export default class Profiles extends Component {
+class Profiles extends Component {
     constructor (props) {
         super(props);
 
@@ -58,7 +63,7 @@ export default class Profiles extends Component {
 
                 //Build child components
                 let nestedItems = Object.keys(grouping).map((i, k) => {
-                    return <ListItem key={k} className='profile-list-item' primaryText={i} initiallyOpen={false} primaryTogglesNestedList  hoverColor='transparent'
+                    return <ListItem key={k} className='profile-list-item' primaryText={i} initiallyOpen={false} primaryTogglesNestedList hoverColor='transparent'
                                      nestedItems={grouping[i].map(q => <ListItem className='profile-list-item' key={q.id} primaryText={q.title} hoverColor='transparent'/>)}/>
                 });
 
@@ -80,3 +85,15 @@ export default class Profiles extends Component {
         this.refs.results.handleClick();
     };
 }
+
+const mapStateToProps = state => {
+
+    return {
+        validationResults: state.fhir.validationResults,
+        profiles: state.fhir.profiles
+    };
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators({ cleanValidationResults, uploadProfile, loadProfiles, validate, validateExisting, clearResults }, dispatch);
+
+export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));
