@@ -23,6 +23,7 @@ import DohMessage from "sandbox-manager-lib/components/DohMessage";
 import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { isUrlValid } from '../../../lib/misc';
+import HelpButton from '../../UI/HelpButton';
 
 const postfix = '/.well-known/smart/manifest.json';
 const neededProps = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -157,7 +158,8 @@ class Apps extends Component {
                         </Dialog>
                         : null;
 
-        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}>
+        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}
+                     helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/60915727/Sandbox+Registered+Apps'/>}>
             <div className='apps-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>

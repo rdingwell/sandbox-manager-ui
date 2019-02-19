@@ -14,6 +14,7 @@ import Page from 'sandbox-manager-lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
 import moment from 'moment';
+import HelpButton from '../../../UI/HelpButton';
 
 import './styles.less';
 import { bindActionCreators } from "redux";
@@ -94,7 +95,13 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
+        let helpIcon = <HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/79364100/Sandbox+Persona'/>;
+        let pageProps = {
+            noTitle: this.props.noTitle, title, titleLeft: this.props.titleLeft, close: this.props.close, scrollContent: this.props.scrollContent
+        };
+        !isPatient && !isPractitioner && (pageProps.helpIcon = helpIcon);
+
+        return <Page {...pageProps}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>

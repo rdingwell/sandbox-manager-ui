@@ -66,6 +66,7 @@ import muiThemeable from "material-ui/styles/muiThemeable";
 import Create from './Create';
 
 import './styles.less';
+import HelpButton from '../../UI/HelpButton';
 
 const SORT_VALUES = [
     { val: 'last_used', label: 'Last Used' },
@@ -109,7 +110,7 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <Page title='Launch Scenarios'>
+        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
