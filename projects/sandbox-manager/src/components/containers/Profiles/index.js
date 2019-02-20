@@ -3,7 +3,7 @@ import { Tabs, Tab } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults
+    cleanValidationResults, uploadProfile, loadProfiles
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -25,13 +25,14 @@ class DataManager extends Component {
     componentDidMount () {
         this.props.app_setScreen('profiles');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
+        this.props.loadProfiles();
     }
 
     render () {
         return <div className='profiles-wrapper page-content-wrapper'>
             <Tabs className='profile-tabs' contentContainerClassName='profiles-tabs-container' inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}>
                 <Tab label="Profiles" className={'profiles tab' + (this.state.activeTab === 'profiles' ? ' active' : '')} onActive={() => this.setActiveTab('profiles')}>
-                    <Profiles profiles={this.props.profiles} palette={this.props.muiTheme.palette}/>
+                    <Profiles profiles={this.props.profiles} palette={this.props.muiTheme.palette} uploadProfile={this.props.uploadProfile}/>
                 </Tab>
                 <Tab label="Validate" className={'validate tab' + (this.state.activeTab === 'validate' ? ' active' : '')} onActive={() => this.setActiveTab('validate')}>
                     <Validate muiTheme={this.props.muiTheme} validate={this.props.validate} validateExisting={this.props.validateExisting} results={this.props.validationResults}
@@ -63,7 +64,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults
+    cleanValidationResults, uploadProfile, loadProfiles
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
