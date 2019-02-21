@@ -184,7 +184,7 @@ class AppDialog extends Component {
 
     clone = () => {
         let app = Object.assign({}, this.state.app);
-        app.clientName = '';
+        app.clientName = `Copy of ${app.clientName}`;
         this.setState({ clone: true, isReplica: false, app });
         this.loadImageFromWeb();
     };
