@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, Snackbar, TextField } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import DownloadIcon from 'material-ui/svg-icons/file/cloud-download';
-import LaunchIcon from 'material-ui/svg-icons/action/launch';
+import Publish from 'material-ui/svg-icons/editor/publish';
+import LaunchIcon from 'material-ui/svg-icons/av/play-circle-outline';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
@@ -168,7 +168,7 @@ class Apps extends Component {
                             <ContentAdd/>
                         </FloatingActionButton>
                         <FloatingActionButton onClick={() => this.setState({ loadDialogVisible: true })}>
-                            <DownloadIcon/>
+                            <Publish/>
                         </FloatingActionButton>
                     </div>
                 </div>}

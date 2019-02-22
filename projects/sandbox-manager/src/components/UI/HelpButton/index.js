@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import HelpIcon from 'material-ui/svg-icons/action/help-outline'
+import HelpIcon from 'material-ui/svg-icons/action/info-outline'
 
 import './styles.less';
 

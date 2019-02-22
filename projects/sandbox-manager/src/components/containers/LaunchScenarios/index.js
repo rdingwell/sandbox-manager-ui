@@ -43,7 +43,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from "material-ui/svg-icons/av/play-circle-outline";
 import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
 import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
 import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
