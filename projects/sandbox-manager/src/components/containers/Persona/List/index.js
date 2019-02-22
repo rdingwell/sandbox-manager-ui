@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Badge, CircularProgress, FloatingActionButton, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from 'material-ui/svg-icons/image/edit';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import FilterList from "material-ui/svg-icons/content/filter-list";
