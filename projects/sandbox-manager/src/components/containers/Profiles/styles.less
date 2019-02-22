@@ -22,12 +22,27 @@
         .validate-result-wrapper {
           height: ~'calc(100% - 51px)';
           overflow: hidden;
+          .react-json-view {
+            padding: 10px;
+            overflow: auto;
+            height: 100%;
+            box-sizing: border-box;
+          }
         }
       }
     }
 
     .card-title {
       background-color: whitesmoke;
+      .validate-by-title {
+        text-align: right;
+        position: absolute;
+        right: 10px;
+        max-width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     .card-content {
@@ -176,7 +191,9 @@
         .validate-tabs-container {
           height: ~'calc(100% - 55px)';
           overflow: hidden;
-          //padding: 20px 5px 0 5px;
+          &:not(.no-padding) {
+            padding: 0 5px;
+          }
 
           & > div {
             height: 100%;
@@ -197,10 +214,6 @@
               button {
                 padding: 20px 40px;
               }
-            }
-
-            .react-json-view {
-              padding: 10px;
             }
           }
         }

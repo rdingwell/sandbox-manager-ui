@@ -56,7 +56,10 @@ class DataManager extends Component {
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper'>
-                            {this.props.profiles && this.getList()}
+                            {!this.props.profilesLoading && this.props.profiles && this.getList()}
+                            {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '30px', margin: 0 }}>
+                                <CircularProgress size={40} thickness={5}/>
+                            </div>}
                         </div>
                     </div>
                 </Card>
@@ -65,8 +68,8 @@ class DataManager extends Component {
                         <span>Validation</span>
                     </CardTitle>
                     <div className='validate-wrapper'>
-                        <Tabs className='validate-tabs' contentContainerClassName='validate-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }}
-                              style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab}>
+                        <Tabs className='validate-tabs' contentContainerClassName={`validate-tabs-container ${this.state.activeTab === 'browse' ? 'no-padding' : ''}`}
+                              inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab}>
                             <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
                                  className={'manual-input tab' + (tab === 'existing' ? ' active' : '')} onActive={() => this.setActiveTab('existing')} value='existing'>
                                 <div>
@@ -94,15 +97,16 @@ class DataManager extends Component {
                             </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                                  className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser onValidate={query => this.setState({ query, manualJson: '', file: '', fileJson: '' }, this.search)}/>
+                                <TreeBrowser onValidate={query => this.setState({ query, manualJson: '', file: '', fileJson: '' }, this.validate)}/>
                             </Tab>
                         </Tabs>
-                        <RaisedButton className='validate-button' label='Validate' primary onClick={this.search} disabled={validateDisabled}/>
+                        <RaisedButton className='validate-button' label='Validate' primary onClick={this.validate} disabled={validateDisabled}/>
                     </div>
                 </Card>
                 <Card className='card result-card'>
                     <CardTitle className='card-title'>
                         <span>Validation result</span>
+                        <span className='validate-by-title'>{this.state.selectedProfile ? `Validate by: ${this.props.profiles.find(i => i.url === this.state.selectedProfile).name}` : ''}</span>
                     </CardTitle>
                     <div className='validate-result-wrapper'>
                         {this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
@@ -125,12 +129,20 @@ class DataManager extends Component {
         fr.readAsText(file);
     };
 
-    search = () => {
+    validate = () => {
         this.state.fileJson
-            ? this.props.validate(JSON.parse(this.state.fileJson))
+            ? this.props.validate(this.prepareJSON(JSON.parse(this.state.fileJson)))
             : this.state.manualJson
-            ? this.props.validate(JSON.parse(this.state.manualJson))
-            : this.props.validateExisting(this.state.query);
+            ? this.props.validate(this.prepareJSON(JSON.parse(this.state.manualJson)))
+            : this.props.validateExisting(this.state.query, this.state.selectedProfile);
+    };
+
+    prepareJSON = (json) => {
+        if (this.state.selectedProfile) {
+            !json.meta && (json.meta = {});
+            json.meta.profile = [this.state.selectedProfile];
+        }
+        return json;
     };
 
     setActiveTab = (tab) => {
@@ -173,7 +185,8 @@ const mapStateToProps = state => {
         dataImporting: state.sandbox.dataImporting,
         executing: state.fhir.executing,
         exportStatus: state.sandbox.exportStatus,
-        profiles: state.fhir.profiles
+        profiles: state.fhir.profiles,
+        profilesLoading: state.fhir.profilesLoading
     };
 };
 

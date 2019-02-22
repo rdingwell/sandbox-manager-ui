@@ -190,6 +190,7 @@ export function uploadProfile (file) {
         let config = state.config.xsettings.data.sandboxManager;
         let formData = new FormData();
         formData.append("file", file);
+        dispatch(fhir_setProfilesLoading(true));
 
         let url = config.baseServiceUrl_1;
         if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "2") {
@@ -209,10 +210,10 @@ export function uploadProfile (file) {
         API.post(`${url}/system/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}`, formData, dispatch, true)
             .then(data => {
                 dispatch(fhir_setCustomSearchResults(data));
-                dispatch(fhir_setCustomSearchExecuting(false));
+                dispatch(loadProfiles());
             })
             .catch(() => {
-                dispatch(fhir_setCustomSearchExecuting(false));
+                dispatch(fhir_setProfilesLoading(false));
             });
     }
 }
@@ -251,30 +252,47 @@ export function validate (object) {
         dispatch(fhir_setValidationResults(null));
         dispatch(fhir_setValidationExecuting(true));
 
-        API.post(`${window.fhirClient.server.serviceUrl}/${object.resourceType}/$validate`, object, dispatch)
+        API.postNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${object.resourceType}/$validate`, object, dispatch)
             .then(data => {
                 dispatch(fhir_setValidationResults(data));
                 dispatch(fhir_setValidationExecuting(false));
             })
-            .catch(() => {
+            .catch((e) => {
+                dispatch(fhir_setValidationResults(e));
                 dispatch(fhir_setValidationExecuting(false));
             });
     }
 }
 
-export function validateExisting (url) {
+export function validateExisting (url, selectedProfile) {
     return dispatch => {
         dispatch(fhir_setValidationResults(null));
         dispatch(fhir_setValidationExecuting(true));
 
-        API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
-            .then(data => {
-                dispatch(fhir_setValidationResults(data));
-                dispatch(fhir_setValidationExecuting(false));
-            })
-            .catch(() => {
-                dispatch(fhir_setValidationExecuting(false));
-            });
+        if (!selectedProfile) {
+            API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
+                .then(data => {
+                    dispatch(fhir_setValidationResults(data));
+                    dispatch(fhir_setValidationExecuting(false));
+                })
+                .catch((e) => {
+                    dispatch(fhir_setValidationResults(e));
+                    dispatch(fhir_setValidationExecuting(false));
+                });
+        } else {
+            API.get(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
+                .then(data => {
+                    if (data.resourceType) {
+                        !data.meta && (data.meta = {});
+                        data.meta.profile = [selectedProfile];
+                        dispatch(validate(data));
+                    }
+                })
+                .catch((e) => {
+                    dispatch(fhir_setValidationResults(e));
+                    dispatch(fhir_setValidationExecuting(false));
+                });
+        }
     }
 }
 

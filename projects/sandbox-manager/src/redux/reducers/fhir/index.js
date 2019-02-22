@@ -81,6 +81,7 @@ export default function (state = initialState, action) {
             state.executing = false;
             state.resources = false;
             state.resourcesLoading = false;
+            state.profiles = [];
             break;
     }
 
