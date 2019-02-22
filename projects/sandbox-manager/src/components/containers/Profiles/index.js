@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress } from 'material-ui';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, AutoComplete } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
@@ -17,6 +17,8 @@ import HelpButton from '../../UI/HelpButton';
 import TreeBrowser from './TreeBrowser';
 
 class DataManager extends Component {
+    timer = null;
+
     constructor (props) {
         super(props);
 
@@ -56,7 +58,7 @@ class DataManager extends Component {
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper'>
-                            {!this.props.profilesLoading && this.props.profiles && this.getList()}
+                            {!this.props.profilesLoading && this.props.profiles && this.getList(palette)}
                             {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '30px', margin: 0 }}>
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
@@ -150,13 +152,35 @@ class DataManager extends Component {
         this.setState({ activeTab: tab, query: '', manualJson: '', fileJson: '', file: '' });
     };
 
-    getList = () => {
-        return <List>
-            {this.props.profiles.map((profile, key) => {
-                let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
-                return <ListItem key={key} className={classes} primaryText={profile.url} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}/>;
-            })}
-        </List>
+    getList = (palette) => {
+        let underlineFocusStyle = { borderColor: palette.primary2Color };
+        let floatingLabelFocusStyle = { color: palette.primary2Color };
+
+        return <div>
+            <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
+                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+            <List>
+                {this.props.profiles.map((profile, key) => {
+                    if (this.state.filter && profile.url.indexOf(this.state.filter) === -1) {
+                        return;
+                    }
+                    let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
+                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}/>;
+                })}
+            </List>
+        </div>
+    };
+
+    delayFiltering = (value) => {
+        this.timer && clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.filter(value);
+            this.timer = null;
+        }, 500);
+    };
+
+    filter = (value) => {
+        this.setState({ filter: value });
     };
 
     toggleProfile = (url) => {
