@@ -15,6 +15,7 @@ import ReactJson from 'react-json-view';
 import './styles.less';
 import HelpButton from '../../UI/HelpButton';
 import TreeBrowser from './TreeBrowser';
+import ResultsTable from './ResultsTable';
 
 class DataManager extends Component {
     timer = null;
@@ -25,7 +26,8 @@ class DataManager extends Component {
         this.state = {
             query: '',
             activeTab: 'existing',
-            canFit: 2
+            canFit: 2,
+            resultsView: true
         };
     }
 
@@ -45,6 +47,7 @@ class DataManager extends Component {
             || (this.state.activeTab === 'existing' && this.state.query.length <= 5)
             || (this.state.activeTab === 'file' && !this.state.file)
             || (this.state.activeTab === 'json-input' && this.state.manualJson.length <= 5);
+        let typeButton = <span className='results-button' onClick={() => this.setState({resultsView: !this.state.resultsView})}>{this.state.resultsView ? 'JSON' : 'Table'}</span>;
 
         return <Page title='Profiles' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             <div className='profiles-wrapper'>
@@ -52,7 +55,7 @@ class DataManager extends Component {
                     <CardTitle className='card-title'>
                         <span>Profiles</span>
                     </CardTitle>
-                    <div className='card-content import-button'>
+                    <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
@@ -63,6 +66,7 @@ class DataManager extends Component {
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
                         </div>
+                        <div className='white-shadow' />
                     </div>
                 </Card>
                 <Card className='card validate-card'>
@@ -107,11 +111,12 @@ class DataManager extends Component {
                 </Card>
                 <Card className='card result-card'>
                     <CardTitle className='card-title'>
-                        <span>Validation result</span>
+                        <span>Validation result {this.props.validationResults && typeButton}</span>
                         <span className='validate-by-title'>{this.state.selectedProfile ? `Validate by: ${this.props.profiles.find(i => i.url === this.state.selectedProfile).name}` : ''}</span>
                     </CardTitle>
                     <div className='validate-result-wrapper'>
-                        {this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
+                        {!this.state.resultsView && this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
+                        {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults} />}
                         {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                     </div>
                 </Card>
@@ -161,7 +166,7 @@ class DataManager extends Component {
                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
             <List>
                 {this.props.profiles.map((profile, key) => {
-                    if (this.state.filter && profile.url.indexOf(this.state.filter) === -1) {
+                    if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
                     }
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');

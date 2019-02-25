@@ -16,12 +16,15 @@
       width: 100%;
       height: 25vh;
       min-height: 300px;
+
       & > div {
         height: 100%;
         overflow: hidden;
+
         .validate-result-wrapper {
           height: ~'calc(100% - 51px)';
           overflow: hidden;
+
           .react-json-view {
             padding: 10px;
             overflow: auto;
@@ -34,6 +37,7 @@
 
     .card-title {
       background-color: whitesmoke;
+
       .validate-by-title {
         text-align: right;
         position: absolute;
@@ -43,10 +47,35 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+
+      .results-button {
+        margin-left: 5px;
+        box-sizing: border-box;
+        border: 1px solid gray;
+        padding: 4px 8px;
+        border-radius: 4px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     .card-content {
       padding: 10px;
+
+      &.left-padding {
+        padding-top: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+      }
+
+      .white-shadow {
+        position: absolute;
+        bottom: 0;
+        width: 95%;
+        height: 10px;
+        background: linear-gradient(rgba(255, 255, 255, .1), rgba(255, 255, 255, 1));
+      }
     }
   }
 
@@ -79,9 +108,13 @@
       width: 100%;
       overflow: auto;
       box-sizing: border-box;
+
+      & > div {
+        padding-right: 5px;
+      }
     }
 
-    span.profile-list-item{
+    span.profile-list-item {
       & > div {
         & > span {
           opacity: 0;
@@ -97,6 +130,7 @@
           }
         }
       }
+
       &.active > div > div {
         background-color: whitesmoke;
       }
@@ -191,6 +225,7 @@
         .validate-tabs-container {
           height: ~'calc(100% - 55px)';
           overflow: hidden;
+
           &:not(.no-padding) {
             padding: 0 5px;
           }
