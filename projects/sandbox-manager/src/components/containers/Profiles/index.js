@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, AutoComplete } from 'material-ui';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, AutoComplete, Toggle } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
@@ -27,7 +27,8 @@ class DataManager extends Component {
             query: '',
             activeTab: 'existing',
             canFit: 2,
-            resultsView: true
+            resultsView: true,
+            selectedPersona: undefined
         };
     }
 
@@ -43,11 +44,13 @@ class DataManager extends Component {
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
         let styleProps = { underlineFocusStyle, floatingLabelFocusStyle };
-        let validateDisabled = this.state.activeTab === 'browse'
+        let validateDisabled = (this.state.activeTab === 'browse' && this.state.query.length <= 5)
             || (this.state.activeTab === 'existing' && this.state.query.length <= 5)
             || (this.state.activeTab === 'file' && !this.state.file)
             || (this.state.activeTab === 'json-input' && this.state.manualJson.length <= 5);
-        let typeButton = <span className='results-button' onClick={() => this.setState({resultsView: !this.state.resultsView})}>{this.state.resultsView ? 'JSON' : 'Table'}</span>;
+        let typeButton = <Toggle className='view-toggle' label='Show as table' labelPosition='right' toggled={this.state.resultsView} thumbStyle={{ backgroundColor: palette.primary5Color }}
+                                 trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
+                                 trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ resultsView: !this.state.resultsView })}/>;
 
         return <Page title='Profiles' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             <div className='profiles-wrapper'>
@@ -66,7 +69,7 @@ class DataManager extends Component {
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
                         </div>
-                        <div className='white-shadow' />
+                        <div className='white-shadow'/>
                     </div>
                 </Card>
                 <Card className='card validate-card'>
@@ -103,7 +106,8 @@ class DataManager extends Component {
                             </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                                  className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser onValidate={query => this.setState({ query, manualJson: '', file: '', fileJson: '' }, this.validate)}/>
+                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.setState({ query, manualJson: '', file: '', fileJson: '' })}
+                                             selectPatient={this.selectPatient}/>
                             </Tab>
                         </Tabs>
                         <RaisedButton className='validate-button' label='Validate' primary onClick={this.validate} disabled={validateDisabled}/>
@@ -116,13 +120,17 @@ class DataManager extends Component {
                     </CardTitle>
                     <div className='validate-result-wrapper'>
                         {!this.state.resultsView && this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
-                        {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults} />}
+                        {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults}/>}
                         {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                     </div>
                 </Card>
             </div>
         </Page>
     }
+
+    selectPatient = (selectedPersona) => {
+        this.setState({ selectedPersona });
+    };
 
     readFile = () => {
         let fr = new FileReader();
@@ -154,7 +162,7 @@ class DataManager extends Component {
 
     setActiveTab = (tab) => {
         this.props.cleanValidationResults();
-        this.setState({ activeTab: tab, query: '', manualJson: '', fileJson: '', file: '' });
+        this.setState({ activeTab: tab, query: '', manualJson: '', fileJson: '', file: '', selectedPersona: undefined });
     };
 
     getList = (palette) => {

@@ -60,6 +60,15 @@
           cursor: pointer;
         }
       }
+
+      .view-toggle {
+        display: inline-block !important;
+        width: auto !important;
+        margin-left: 10px !important;
+        & > div > div > div:first-of-type {
+          opacity: .5;
+        }
+      }
     }
 
     .card-content {
@@ -108,7 +117,8 @@
       vertical-align: top;
       height: 100%;
       width: 100%;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       box-sizing: border-box;
 
       & > div {
