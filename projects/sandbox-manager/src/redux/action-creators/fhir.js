@@ -173,7 +173,7 @@ export function loadProfiles () {
         dispatch(fhir_setProfilesLoading(true));
 
         let endpoint = window.fhirClient.server.serviceUrl;
-        API.get(`${endpoint}/StructureDefinition`, dispatch)
+        API.get(`${endpoint}/StructureDefinition?_count=50`, dispatch)
             .then(data => {
                 dispatch(fhir_setProfiles(data.entry.map(i => i.resource)));
                 dispatch(fhir_setProfilesLoading(false));
