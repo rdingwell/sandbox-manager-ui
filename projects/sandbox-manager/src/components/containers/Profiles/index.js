@@ -64,7 +64,7 @@ class DataManager extends Component {
                                  trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                  trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ resultsView: !this.state.resultsView })}/>;
 
-        return <Page title='Profiles' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
+        return <Page title={<span>Profiles <span style={{fontSize: '14px', verticalAlign: 'middle'}}>[BETA]</span></span>} helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
                     <CardTitle className='card-title'>
@@ -77,7 +77,8 @@ class DataManager extends Component {
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.props.profiles && this.getList(palette)}
-                            {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '30px', margin: 0 }}>
+                            {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
+                                {/*<div style={{color: 'rgb(117, 117, 117)', paddingBottom: '10px'}}>May take several minutes to upload profile</div>*/}
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
                         </div>
