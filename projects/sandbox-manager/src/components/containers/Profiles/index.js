@@ -81,7 +81,7 @@ class DataManager extends Component {
                               inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab}>
                             <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                                  className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.setState({ query, manualJson: '', file: '', fileJson: '' })}
+                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
                                              selectPatient={this.selectPatient}/>
                             </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
@@ -127,6 +127,11 @@ class DataManager extends Component {
             </div>
         </Page>
     }
+
+    toggleTree = (query) => {
+        query = this.state.query !== query ? query : '';
+        this.setState({ query, manualJson: '', file: '', fileJson: '' });
+    };
 
     selectPatient = (selectedPersona) => {
         this.setState({ selectedPersona });

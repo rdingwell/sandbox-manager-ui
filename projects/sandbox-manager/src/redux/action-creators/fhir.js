@@ -168,12 +168,13 @@ export function customSearch (query, endpoint) {
     }
 }
 
-export function loadProfiles () {
+export function loadProfiles (url) {
     return dispatch => {
         dispatch(fhir_setProfilesLoading(true));
 
         let endpoint = window.fhirClient.server.serviceUrl;
-        API.get(`${endpoint}/StructureDefinition`, dispatch)
+        url = url ? url : `${endpoint}/StructureDefinition`;
+        API.get(url, dispatch)
             .then(data => {
                 dispatch(fhir_setProfiles(data.entry.map(i => i.resource)));
                 dispatch(fhir_setProfilesLoading(false));
