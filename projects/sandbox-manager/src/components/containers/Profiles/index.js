@@ -25,7 +25,7 @@ class DataManager extends Component {
 
         this.state = {
             query: '',
-            activeTab: 'existing',
+            activeTab: 'browse',
             canFit: 2,
             resultsView: true,
             selectedPersona: undefined
@@ -79,6 +79,11 @@ class DataManager extends Component {
                     <div className='validate-wrapper'>
                         <Tabs className='validate-tabs' contentContainerClassName={`validate-tabs-container ${this.state.activeTab === 'browse' ? 'no-padding' : ''}`}
                               inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab}>
+                            <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
+                                 className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
+                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.setState({ query, manualJson: '', file: '', fileJson: '' })}
+                                             selectPatient={this.selectPatient}/>
+                            </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
                                  className={'manual-input tab' + (tab === 'existing' ? ' active' : '')} onActive={() => this.setActiveTab('existing')} value='existing'>
                                 <div>
@@ -103,11 +108,6 @@ class DataManager extends Component {
                                     <TextField className='manual-input' hintText='Paste fhir resource json here' {...styleProps} multiLine fullWidth value={this.state.manualJson}
                                                onChange={(_, manualJson) => this.setState({ query: '', file: '', fileJson: '', manualJson })}/>
                                 </div>
-                            </Tab>
-                            <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
-                                 className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.setState({ query, manualJson: '', file: '', fileJson: '' })}
-                                             selectPatient={this.selectPatient}/>
                             </Tab>
                         </Tabs>
                         <RaisedButton className='validate-button' label='Validate' primary onClick={this.validate} disabled={validateDisabled}/>
