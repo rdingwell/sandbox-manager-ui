@@ -207,7 +207,7 @@ export function uploadProfile (file) {
             url = config.baseServiceUrl_7;
         }
 
-        API.post(`${url}/system/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}`, formData, dispatch, true)
+        API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}`, formData, dispatch, true)
             .then(data => {
                 dispatch(fhir_setCustomSearchResults(data));
                 dispatch(loadProfiles());
