@@ -1,5 +1,6 @@
 import * as types from "./types";
 import API from '../../lib/api';
+import { lookupPersonasStart, setPersonas } from './persona';
 
 export function fhir_Reset () {
     return { type: types.FHIR_RESET };
@@ -168,20 +169,53 @@ export function customSearch (query, endpoint) {
     }
 }
 
-export function loadProfiles (url) {
+export function loadProfiles (count, filter) {
     return dispatch => {
         dispatch(fhir_setProfilesLoading(true));
 
-        let endpoint = window.fhirClient.server.serviceUrl;
-        url = url ? url : `${endpoint}/StructureDefinition`;
-        API.get(url, dispatch)
-            .then(data => {
-                dispatch(fhir_setProfiles(data.entry.map(i => i.resource)));
-                dispatch(fhir_setProfilesLoading(false));
-            })
-            .catch(() => {
-                dispatch(fhir_setProfilesLoading(false));
-            });
+        if (window.fhirClient) {
+            let endpoint = window.fhirClient.server.serviceUrl;
+            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
+                .then(data => {
+                    dispatch(fhir_setProfiles({entry: data.entry.map(i => i.resource), total: data.total, link: data.link}));
+                    dispatch(fhir_setProfilesLoading(false));
+                })
+                .catch(() => {
+                    dispatch(fhir_setProfilesLoading(false));
+                });
+        }
+    }
+}
+
+export function getProfilesPagination () {
+    return (dispatch, getState) => {
+        if (window.fhirClient) {
+            dispatch(fhir_setProfilesLoading(true));
+            let state = getState();
+            let next = state.fhir.profilePagination.link.find(i => i.relation === "next");
+            let url = next.url;
+            API.get(url, dispatch)
+                .then(profiles => {
+                    let list = profiles;
+                    if (profiles.entry) {
+                        let resourceResults = [];
+
+                        for (let key in profiles.entry) {
+                            profiles.entry[key].resource.fullUrl = profiles.entry[key].fullUrl;
+                            resourceResults.push(profiles.entry[key].resource);
+                        }
+                        list = resourceResults;
+                    }
+                    state = getState();
+                    let current = state.fhir.profiles || [];
+                    list = current.concat(list);
+                    dispatch(fhir_setProfiles({ entry: list, total: profiles.total, link: profiles.link }));
+                    dispatch(fhir_setProfilesLoading(false));
+                })
+                .catch(e => {
+                    dispatch(fhir_setProfilesLoading(false));
+                });
+        }
     }
 }
 

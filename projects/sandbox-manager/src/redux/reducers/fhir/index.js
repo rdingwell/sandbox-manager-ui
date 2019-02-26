@@ -27,7 +27,11 @@ export default function (state = initialState, action) {
             state.profilesLoading = action.payload.loading;
             break;
         case types.FHIR_SET_PROFDILES:
-            state.profiles = action.payload.profiles;
+            state.profiles = action.payload.profiles.entry;
+            state.profilePagination = {
+                total: action.payload.profiles.total,
+                link: action.payload.profiles.link
+            };
             break;
         case types.APP_RESET_STATE:
             state = initialState;

@@ -4,9 +4,8 @@ import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getRe
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { Dialog, ListItem, RaisedButton, List, RadioButton } from 'material-ui';
+import { Dialog, ListItem, RaisedButton, List } from 'material-ui';
 import Remove from 'material-ui/svg-icons/content/remove';
-import FolderOpen from 'material-ui/svg-icons/file/folder-open';
 import Folder from 'material-ui/svg-icons/file/folder';
 import Description from 'material-ui/svg-icons/action/description';
 import PersonaList from '../../Persona/List';
@@ -82,15 +81,15 @@ class TreeBrowser extends Component {
             if (['string', 'number', 'boolean'].indexOf(typeof (item)) !== -1) {
                 return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>}/>;
             } else {
-                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
+                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
                                  onNestedListToggle={() => this.toggleItem(id)}/>;
             }
         });
         let references = this.props.loadingResources ? [] : this.getReferences();
         let props = [
-            <ListItem key={`2-${persona.id}`} primaryText="Own props" leftIcon={this.getIcon('ownProps')} primaryTogglesNestedList={true} nestedItems={ownProps}
+            <ListItem key={`2-${persona.id}`} primaryText="Own props" leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={ownProps}
                       onNestedListToggle={() => this.toggleItem('ownProps')} className='list-item'/>,
-            <ListItem key={`3-${persona.id}`} primaryText="References" leftIcon={this.getIcon('references')} primaryTogglesNestedList={true} nestedItems={references}
+            <ListItem key={`3-${persona.id}`} primaryText="References" leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={references}
                       onNestedListToggle={() => this.toggleItem('references')} className='list-item'/>
         ];
         let id = `${persona.resourceType}/${persona.id}`;
@@ -114,7 +113,7 @@ class TreeBrowser extends Component {
                 this.props.patientResources[resource].entry.map(item => {
                     list.push(item.resource);
                 });
-                return <ListItem key={id} primaryText={<span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>} leftIcon={this.getIcon(id)}
+                return <ListItem key={id} primaryText={<span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>} leftIcon={<Folder/>}
                                  primaryTogglesNestedList={true} nestedItems={this.getNested(list, id, true)} onNestedListToggle={() => this.toggleItem(id)} className='list-item'/>;
             }
         });
@@ -132,10 +131,6 @@ class TreeBrowser extends Component {
             toggledItems[item] = true
         }
         this.setState({ toggledItems });
-    };
-
-    getIcon = (item) => {
-        return this.state.toggledItems[item] ? <FolderOpen/> : <Folder/>;
     };
 
     getNested = (object, parentId, isRootLevel) => {
@@ -167,7 +162,7 @@ class TreeBrowser extends Component {
             } else if (typeof (item) === 'boolean') {
                 return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>}/>;
             } else {
-                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
+                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
                                  onNestedListToggle={() => this.toggleItem(id)}/>;
             }
         })
