@@ -1,3 +1,24 @@
+.tree-browser {
+  margin: 0;
+  height: 100%;
+
+  .tree-input-wrapper {
+    height: ~'calc(100% - 35px)';
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .tree-list {
+    text-align: left;
+
+    .radio {
+      top: 12px !important;
+      right: 15px !important;
+      width: 24px !important;
+    }
+  }
+}
+
 .patient-select-dialog {
   & > div > div {
     padding: 0 !important;
@@ -20,25 +41,5 @@
     width: 68px !important;
     position: absolute !important;
     right: 0;
-  }
-}
-
-.tree-input-wrapper {
-  width: 40rem;
-  background-color: #fff;
-  display: inline-block;
-  height: 45vh;
-  min-height: 400px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  & > div:not(.tree-list) {
-    margin-top: 10rem;
-  }
-  .tree-list {
-    width: 40rem;
-    text-align: left;
-    .bold {
-      font-weight: bold;
-    }
   }
 }

@@ -1,15 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
-import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient } from '../../../../../redux/action-creators';
+import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient } from '../../../../redux/action-creators';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { Card, CardTitle, Dialog, ListItem, RaisedButton, List, IconButton } from 'material-ui';
+import { Card, CardTitle, Dialog, ListItem, RaisedButton, List, IconButton, RadioButtonGroup, RadioButton } from 'material-ui';
 import Remove from 'material-ui/svg-icons/content/remove';
 import FolderOpen from 'material-ui/svg-icons/file/folder-open';
-import Validate from 'material-ui/svg-icons/av/playlist-add-check';
 import Folder from 'material-ui/svg-icons/file/folder';
-import PersonaList from '../../../Persona/List';
+import PersonaList from '../../Persona/List';
 
 import './styles.less';
 
@@ -19,7 +18,6 @@ class TreeBrowser extends Component {
         super(props);
 
         this.state = {
-            selectedPersona: undefined,
             patientSelectVisible: false,
             toggledItems: {
                 patient: true
@@ -34,7 +32,7 @@ class TreeBrowser extends Component {
     render () {
         let palette = this.props.muiTheme.palette;
         let click = selectedPersona => {
-            selectedPersona && this.setState({ selectedPersona });
+            selectedPersona && this.props.selectPatient(selectedPersona);
             this.toggleModal();
 
             //Build a list of resources that can point to the patient
@@ -54,25 +52,21 @@ class TreeBrowser extends Component {
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
 
-        return <Fragment>
-            <Card>
-                <CardTitle className='card-title' style={{ color: palette.primary2Color }}>
-                    Browse linked resources
-                </CardTitle>
-                <div className='card-content big'>
-                    <div className='tree-input-wrapper'>
-                        {!this.state.selectedPersona && !this.state.patientSelectVisible && <RaisedButton label='Select a patient' primary onClick={this.toggleModal}/>}
-                        {!this.state.selectedPersona && this.state.patientSelectVisible &&
-                        <Dialog open={this.state.patientSelectVisible} modal={false} onRequestClose={this.toggleModal} contentClassName='patient-select-dialog'>
-                            <PersonaList {...props} titleLeft/>
-                        </Dialog>}
-                        {this.state.selectedPersona && this.getTree()}
-                    </div>
-                </div>
-            </Card>
-            <div>
+        return <div className='tree-browser'>
+            <div className='tab-title'>Browse linked resources</div>
+            <div className='tree-input-wrapper'>
+                {!this.props.selectedPersona && !this.state.patientSelectVisible && <RaisedButton label='Select a patient' primary onClick={this.toggleModal}/>}
+                {this.props.selectedPersona && !this.state.patientSelectVisible && <RaisedButton label='Change patient' primary onClick={() => {
+                    this.props.selectPatient();
+                    this.toggleModal();
+                }}/>}
+                {!this.props.selectedPersona && this.state.patientSelectVisible &&
+                <Dialog open={this.state.patientSelectVisible} modal={false} onRequestClose={this.toggleModal} contentClassName='patient-select-dialog'>
+                    <PersonaList {...props} titleLeft/>
+                </Dialog>}
+                {this.props.selectedPersona && this.getTree()}
             </div>
-        </Fragment>
+        </div>
     }
 
     toggleModal = () => {
@@ -80,7 +74,7 @@ class TreeBrowser extends Component {
     };
 
     getTree = () => {
-        let persona = this.state.selectedPersona;
+        let persona = this.props.selectedPersona;
         let ownProps = Object.keys(persona).map(key => {
             let item = persona[key];
             let id = 'ownProps.' + key;
@@ -93,16 +87,21 @@ class TreeBrowser extends Component {
         });
         let references = this.props.loadingResources ? [] : this.getReferences();
         let props = [
-            <ListItem key={2} primaryText="Own props" leftIcon={this.getIcon('ownProps')} primaryTogglesNestedList={true} nestedItems={ownProps}
+            <ListItem key={`2-${persona.id}`} primaryText="Own props" leftIcon={this.getIcon('ownProps')} primaryTogglesNestedList={true} nestedItems={ownProps}
                       onNestedListToggle={() => this.toggleItem('ownProps')}/>,
-            <ListItem key={3} primaryText="References" leftIcon={this.getIcon('references')} primaryTogglesNestedList={true} nestedItems={references}
+            <ListItem key={`3-${persona.id}`} primaryText="References" leftIcon={this.getIcon('references')} primaryTogglesNestedList={true} nestedItems={references}
                       onNestedListToggle={() => this.toggleItem('references')}/>
         ];
+        let id = `${persona.resourceType}/${persona.id}`;
 
-        return <List className='tree-list'>
+        return <List className='tree-list' key={persona.id} id={persona.id}>
             <ListItem primaryText="Patient" leftIcon={this.getIcon('patient')} initiallyOpen={true} primaryTogglesNestedList={true} onNestedListToggle={() => this.toggleItem('patient')}
-                      nestedItems={props} rightIconButton={<IconButton onClick={() => this.validate(persona)} style={{ marginRight: '10px' }} tooltip="Validate"><Validate/></IconButton>}/>
+                      nestedItems={props} rightIconButton={<RadioButton checked={this.props.query === id} onCheck={() => this.toggle(id)} className='radio'/>}/>
         </List>
+    };
+
+    toggle = (selectedResource) => {
+        this.props.onToggle && this.props.onToggle(selectedResource);
     };
 
     getReferences = () => {
@@ -145,10 +144,10 @@ class TreeBrowser extends Component {
                     return <ListItem key={id} primaryText={<span><span className='bold'>{listItem}</span></span>} leftIcon={<Remove/>}/>;
                 } else {
                     let id = `${parentId}.${index}`;
+                    let checked = `${listItem.resourceType}/${listItem.id}`;
                     return <ListItem key={id} primaryText={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>} leftIcon={this.getIcon(id)} primaryTogglesNestedList={true}
                                      nestedItems={this.getNested(listItem, id)} onNestedListToggle={() => this.toggleItem(id)}
-                                     rightIconButton={isRootLevel ?
-                                         <IconButton onClick={() => this.validate(listItem)} style={{ marginRight: '10px' }} tooltip="Validate"><Validate/></IconButton> : undefined}/>;
+                                     rightIconButton={isRootLevel ? <RadioButton checked={this.props.query === checked} onCheck={() => this.toggle(checked)} className='radio'/> : undefined}/>;
                 }
             });
         } else {
@@ -169,10 +168,6 @@ class TreeBrowser extends Component {
                                  onNestedListToggle={() => this.toggleItem(id)}/>;
             }
         })
-    };
-
-    validate = (item) => {
-        this.props.onValidate && this.props.onValidate(`${item.resourceType}/${item.id}`);
     };
 }
 
