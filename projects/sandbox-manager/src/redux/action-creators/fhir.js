@@ -1069,6 +1069,7 @@ export function uploadProfile (file) {
 export function getMetadata (shouldGetResourcesCount = true) {
     return dispatch => {
         dispatch(fhir_setLoadingMetadata(true));
+        debugger
         API.get(`${window.fhirClient.server.serviceUrl}/metadata?_format=json&_pretty=true`, dispatch)
             .then(data => {
                 dispatch(fhir_setMetadata(data));
