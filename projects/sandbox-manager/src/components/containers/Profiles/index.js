@@ -3,7 +3,7 @@ import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, Ci
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,7 +35,19 @@ class DataManager extends Component {
     componentDidMount () {
         this.props.app_setScreen('profiles');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
-        this.props.loadProfiles();
+
+        let canFit = this.calcCanFit();
+
+        this.setState({ canFit });
+        this.props.loadProfiles(canFit);
+
+        let element = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        element.addEventListener('scroll', this.scroll);
+    }
+
+    componentWillUnmount () {
+        let element = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        element && element.removeEventListener('scroll', this.scroll);
     }
 
     render () {
@@ -63,8 +75,8 @@ class DataManager extends Component {
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
-                        <div className='loaded-profiles-wrapper'>
-                            {!this.props.profilesLoading && this.props.profiles && this.getList(palette)}
+                        <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
+                            {this.props.profiles && this.getList(palette)}
                             {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '30px', margin: 0 }}>
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
@@ -81,7 +93,7 @@ class DataManager extends Component {
                               inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab}>
                             <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                                  className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.setState({ query, manualJson: '', file: '', fileJson: '' })}
+                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
                                              selectPatient={this.selectPatient}/>
                             </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
@@ -127,6 +139,26 @@ class DataManager extends Component {
             </div>
         </Page>
     }
+
+    calcCanFit = () => {
+        let containerHeight = document.getElementsByClassName('loaded-profiles-wrapper')[0].clientHeight;
+        // we calculate how much patients we can show on the screen and get just that much plus two so that we have content below the fold
+        return Math.ceil(containerHeight / 55) + 2;
+    };
+
+    scroll = () => {
+        let stage = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        let dif = stage.scrollHeight - stage.scrollTop - stage.offsetHeight;
+
+        let next = this.props.profilePagination && this.props.profilePagination.link && this.props.profilePagination.link.find(i => i.relation === 'next');
+        let shouldFetch = dif <= 50 && next && !this.props.profilesLoading;
+        shouldFetch && this.props.getProfilesPagination(next);
+    };
+
+    toggleTree = (query) => {
+        query = this.state.query !== query ? query : '';
+        this.setState({ query, manualJson: '', file: '', fileJson: '' });
+    };
 
     selectPatient = (selectedPersona) => {
         this.setState({ selectedPersona });
@@ -193,7 +225,8 @@ class DataManager extends Component {
     };
 
     filter = (value) => {
-        this.setState({ filter: value });
+        // this.setState({ filter: value });
+        this.props.loadProfiles(this.state.canFit, value);
     };
 
     toggleProfile = (url) => {
@@ -223,13 +256,14 @@ const mapStateToProps = state => {
         executing: state.fhir.executing,
         exportStatus: state.sandbox.exportStatus,
         profiles: state.fhir.profiles,
+        profilePagination: state.fhir.profilePagination,
         profilesLoading: state.fhir.profilesLoading
     };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
