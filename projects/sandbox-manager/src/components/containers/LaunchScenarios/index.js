@@ -196,7 +196,7 @@ class LaunchScenarios extends Component {
         openLink.click();
 
         setTimeout(() => {
-            Cookies.remove('hspc-launch-token', JSON.stringify(token), { path: '/', domain: cookieUrl, expires: date.getTime() });
+            Cookies.remove('hspc-launch-token', { path: '/', domain: cookieUrl, expires: date.getTime() });
         }, 10000);
     };
 
