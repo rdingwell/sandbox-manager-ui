@@ -1077,7 +1077,10 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         try {
             user && !noUser && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", data, dispatch)
                 .then(data => {
-                    Cookies.set('hspc-persona-token', data.jwt, { path: '/' });
+                    const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+                    const date = new Date();
+                    date.setTime(date.getTime() + (3 * 60 * 1000));
+                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {
