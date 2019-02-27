@@ -1080,7 +1080,7 @@ export function doLaunch (app, persona, user, noUser, scenario) {
                     const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                     const date = new Date();
                     date.setTime(date.getTime() + (3 * 60 * 1000));
-                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    Cookies.set('hspc-persona-token', data.jwt, { path: '/', domain: url, expires: data.getTime() });
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {
