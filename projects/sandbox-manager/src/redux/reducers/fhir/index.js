@@ -26,6 +26,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_PROFDILES_LOADING:
             state.profilesLoading = action.payload.loading;
             break;
+        case types.FHIR_SET_PROFDILES_UPLOADING:
+            state.profilesUploading = action.payload.loading;
+            break;
         case types.FHIR_SET_PROFDILES:
             state.profiles = action.payload.profiles.entry;
             state.profilePagination = {

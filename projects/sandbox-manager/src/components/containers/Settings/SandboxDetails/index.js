@@ -48,8 +48,7 @@ class SandboxDetails extends Component {
         let [actions, content] = this.getModalContent();
 
         return <Card className='sandbox-details-wrapper'>
-            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog'
-                    contentStyle={{ maxWidth: '450px' }}>
+            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{ maxWidth: '450px' }}>
                 {content}
             </Dialog>
             <CardHeader className='details-header' style={titleStyle}>
