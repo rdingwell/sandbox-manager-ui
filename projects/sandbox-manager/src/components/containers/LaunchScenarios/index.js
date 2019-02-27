@@ -110,7 +110,7 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
+        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
@@ -194,10 +194,6 @@ class LaunchScenarios extends Component {
         let openLink = this.refs.openLink;
         openLink.href = `${this.props.ehrUrl}/launch`;
         openLink.click();
-
-        setTimeout(() => {
-            Cookies.remove('hspc-launch-token', { path: '/', domain: cookieUrl, expires: date.getTime() });
-        }, 10000);
     };
 
     handleRowSelect = (row) => {
