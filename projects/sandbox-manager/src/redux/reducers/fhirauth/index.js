@@ -32,7 +32,6 @@ export default (state = initialState, action) => {
 };
 
 const setServerUrl = (state, action) => {
-    // debugger;
     // const fhirClient = { ...state.fhirClient };
     // const server = { ...fhirClient.server };
     //

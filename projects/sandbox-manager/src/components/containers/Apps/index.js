@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, Snackbar, TextField } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import DownloadIcon from 'material-ui/svg-icons/file/cloud-download';
-import LaunchIcon from 'material-ui/svg-icons/action/launch';
+import Publish from 'material-ui/svg-icons/editor/publish';
+import LaunchIcon from 'material-ui/svg-icons/av/play-circle-outline';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
@@ -23,6 +23,7 @@ import DohMessage from "sandbox-manager-lib/components/DohMessage";
 import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { isUrlValid } from '../../../lib/misc';
+import HelpButton from '../../UI/HelpButton';
 
 const postfix = '/.well-known/smart/manifest.json';
 const neededProps = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -157,7 +158,8 @@ class Apps extends Component {
                         </Dialog>
                         : null;
 
-        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}>
+        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}
+                     helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/60915727/Sandbox+Registered+Apps'/>}>
             <div className='apps-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
@@ -166,7 +168,7 @@ class Apps extends Component {
                             <ContentAdd/>
                         </FloatingActionButton>
                         <FloatingActionButton onClick={() => this.setState({ loadDialogVisible: true })}>
-                            <DownloadIcon/>
+                            <Publish/>
                         </FloatingActionButton>
                     </div>
                 </div>}
