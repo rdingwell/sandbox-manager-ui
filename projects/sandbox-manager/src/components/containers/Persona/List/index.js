@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Badge, CircularProgress, FloatingActionButton, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from 'material-ui/svg-icons/image/edit';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import FilterList from "material-ui/svg-icons/content/filter-list";
@@ -14,6 +14,7 @@ import Page from 'sandbox-manager-lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
 import moment from 'moment';
+import HelpButton from '../../../UI/HelpButton';
 
 import './styles.less';
 import { bindActionCreators } from "redux";
@@ -94,7 +95,13 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
+        let helpIcon = <HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/79364100/Sandbox+Persona'/>;
+        let pageProps = {
+            noTitle: this.props.noTitle, title, titleLeft: this.props.titleLeft, close: this.props.close, scrollContent: this.props.scrollContent
+        };
+        !isPatient && !isPractitioner && (pageProps.helpIcon = helpIcon);
+
+        return <Page {...pageProps}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
@@ -370,7 +377,7 @@ class PersonaList extends Component {
             let selection = getSelection();
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
-            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || node.classList.contains('fa');
+            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || (node.classList && node.classList.contains('fa'));
             if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();

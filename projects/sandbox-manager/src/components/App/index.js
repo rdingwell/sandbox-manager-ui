@@ -18,6 +18,7 @@ import Init from '../Init/';
 import './style.less';
 import { CircularProgress, Dialog, RaisedButton } from "material-ui";
 import Snackbar from '../UI/Snackbar';
+import Cookies from 'js-cookie';
 
 class App extends React.Component {
     constructor (props) {
@@ -38,10 +39,8 @@ class App extends React.Component {
         }
 
         if (props.location.search && props.location.search.indexOf('id=') >= 0) {
-            const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-            const date = new Date();
             let split = props.location.search.split('?')[1].split('id=')[1].split('&')[0];
-            document.cookie = `hspc-invitation-id=${split}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+            Cookies.set('hspc-invitation-id', split, { path: '/' });
         }
 
         this.state = {};
@@ -147,7 +146,6 @@ class App extends React.Component {
     };
 
     openEHR = () => {
-        const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
         const date = new Date();
 
         let sandboxApiUrl = this.props.config.xsettings.data.sandboxManager && this.props.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
@@ -156,7 +154,7 @@ class App extends React.Component {
         const token = { sandboxId: this.props.selectedSandbox.sandboxId, sandboxApiUrl, refApi: window.fhirClient.server.serviceUrl.split('/')[2], token: window.fhirClient.server.auth.token };
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-        document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+        Cookies.set('hspc-launch-token', JSON.stringify(token), { path: '/' });
     };
 
     setSandboxId = () => {
