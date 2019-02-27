@@ -103,6 +103,13 @@ export function fhir_setProfilesLoading (loading) {
     };
 }
 
+export function fhir_setProfilesUploading (loading) {
+    return {
+        type: types.FHIR_SET_PROFDILES_UPLOADING,
+        payload: { loading }
+    };
+}
+
 export function fhir_setProfiles (profiles) {
     return {
         type: types.FHIR_SET_PROFDILES,
@@ -177,7 +184,8 @@ export function loadProfiles (count, filter) {
             let endpoint = window.fhirClient.server.serviceUrl;
             API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
                 .then(data => {
-                    dispatch(fhir_setProfiles({entry: data.entry.map(i => i.resource), total: data.total, link: data.link}));
+                    data.entry = data.entry ? data.entry : [];
+                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => i.resource), total: data.total, link: data.link }));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(() => {
@@ -219,13 +227,13 @@ export function getProfilesPagination () {
     }
 }
 
-export function uploadProfile (file) {
+export function uploadProfile (file, count) {
     return (dispatch, getState) => {
         let state = getState();
         let config = state.config.xsettings.data.sandboxManager;
         let formData = new FormData();
         formData.append("file", file);
-        dispatch(fhir_setProfilesLoading(true));
+        dispatch(fhir_setProfilesUploading(true));
 
         let url = config.baseServiceUrl_1;
         if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "2") {
@@ -245,10 +253,11 @@ export function uploadProfile (file) {
         API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}`, formData, dispatch, true)
             .then(data => {
                 dispatch(fhir_setCustomSearchResults(data));
-                dispatch(loadProfiles());
+                dispatch(loadProfiles(count));
+                dispatch(fhir_setProfilesUploading(false));
             })
             .catch(() => {
-                dispatch(fhir_setProfilesLoading(false));
+                dispatch(fhir_setProfilesUploading(false));
             });
     }
 }
@@ -289,10 +298,14 @@ export function validate (object) {
 
         API.postNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${object.resourceType}/$validate`, object, dispatch)
             .then(data => {
+                data.validatedObject = object.id;
+                data.validatedProfile = object.meta && object.meta.profile && object.meta.profile[0];
                 dispatch(fhir_setValidationResults(data));
                 dispatch(fhir_setValidationExecuting(false));
             })
             .catch((e) => {
+                data.validatedObject = object.id;
+                data.validatedProfile = object.meta && object.meta.profile && object.meta.profile[0];
                 dispatch(fhir_setValidationResults(e));
                 dispatch(fhir_setValidationExecuting(false));
             });
@@ -307,6 +320,7 @@ export function validateExisting (url, selectedProfile) {
         if (!selectedProfile) {
             API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
                 .then(data => {
+                    data.validatedObject = url;
                     dispatch(fhir_setValidationResults(data));
                     dispatch(fhir_setValidationExecuting(false));
                 })

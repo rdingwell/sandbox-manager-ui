@@ -9,6 +9,7 @@ import Remove from 'material-ui/svg-icons/content/remove';
 import Folder from 'material-ui/svg-icons/file/folder';
 import Description from 'material-ui/svg-icons/action/description';
 import PersonaList from '../../Persona/List';
+import { getPatientName } from "sandbox-manager-lib/utils/fhir";
 
 import './styles.less';
 
@@ -96,7 +97,7 @@ class TreeBrowser extends Component {
         let classes = `list-item ${this.props.query === id ? 'active' : ''}`;
 
         return <List className='tree-list' key={persona.id} id={persona.id}>
-            <ListItem primaryText="Patient" leftIcon={<Description />} initiallyOpen={true} onNestedListToggle={() => this.toggleItem('patient')}
+            <ListItem primaryText={`${getPatientName(persona)}`} leftIcon={<Description />} initiallyOpen={true} onNestedListToggle={() => this.toggleItem('patient')}
                       nestedItems={props} className={classes} onClick={() => this.toggle(id)}/>
         </List>
     };

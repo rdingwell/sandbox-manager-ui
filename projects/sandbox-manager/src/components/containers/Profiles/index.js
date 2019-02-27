@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, AutoComplete, Toggle } from 'material-ui';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
@@ -28,7 +28,8 @@ class DataManager extends Component {
             activeTab: 'browse',
             canFit: 2,
             resultsView: true,
-            selectedPersona: undefined
+            selectedPersona: undefined,
+            showZipWarning: false
         };
     }
 
@@ -63,8 +64,34 @@ class DataManager extends Component {
         let typeButton = <Toggle className='view-toggle' label='Show as table' labelPosition='right' toggled={this.state.resultsView} thumbStyle={{ backgroundColor: palette.primary5Color }}
                                  trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                  trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ resultsView: !this.state.resultsView })}/>;
+        let actions = [
+            <div className='warning-modal-action'>
+                <RaisedButton label='OK' primary onClick={this.toggleWarningModal}/>
+            </div>
+        ];
+        let titleStyle = {
+            backgroundColor: palette.primary2Color,
+            color: palette.alternateTextColor,
+            paddingLeft: '10px',
+            marginLeft: '0'
+        };
 
         return <Page title={<span>Profiles <span style={{fontSize: '14px', verticalAlign: 'middle'}}>[BETA]</span></span>} helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
+            {this.state.showZipWarning && <Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }}>
+                <div className='sandbox-edit-modal'>
+                    <div className='screen-title' style={titleStyle}>
+                        <IconButton className="close-button" onClick={this.toggleWarningModal}>
+                            <i className="material-icons">close</i>
+                        </IconButton>
+                        <h1 style={titleStyle}>Incorrect file type</h1>
+                    </div>
+                    <div>
+                        <p>
+                            Only zip files are allowed!
+                        </p>
+                    </div>
+                </div>
+            </Dialog>}
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
                     <CardTitle className='card-title'>
@@ -72,13 +99,12 @@ class DataManager extends Component {
                     </CardTitle>
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
-                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
+                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
-                            {this.props.profiles && this.getList(palette)}
-                            {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
-                                {/*<div style={{color: 'rgb(117, 117, 117)', paddingBottom: '10px'}}>May take several minutes to upload profile</div>*/}
+                            {!this.props.profilesUploading && this.props.profiles && this.getList(palette)}
+                            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
                         </div>
@@ -108,7 +134,7 @@ class DataManager extends Component {
                             <Tab label={<span><ListIcon style={{ color: tab === 'file' ? palette.primary5Color : palette.primary3Color }}/> File</span>}
                                  className={'manual-input tab' + (tab === 'file' ? ' active' : '')} onActive={() => this.setActiveTab('file')} value='file'>
                                 <div>
-                                    <input value='' type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
+                                    <input value='' type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile} accept='application/json'/>
                                     <div className='tab-title'>Validate resource from file</div>
                                     <RaisedButton label='Select file' primary onClick={() => this.refs.file.click()}/>
                                     {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
@@ -129,12 +155,17 @@ class DataManager extends Component {
                 <Card className='card result-card'>
                     <CardTitle className='card-title'>
                         <span>Validation result {this.props.validationResults && typeButton}</span>
-                        <span className='validate-by-title'>{this.state.selectedProfile ? `Validate by: ${this.props.profiles.find(i => i.url === this.state.selectedProfile).name}` : ''}</span>
+                        <span className='validate-by-title'>
+                            {this.props.validationResults && <span>Validated <strong>{this.props.validationResults.validatedObject}</strong> </span>}
+                            {this.props.validationResults && this.props.validationResults.validatedProfile
+                                ? <span>against <strong>{this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile).name}</strong></span>
+                                : ''}
+                        </span>
                     </CardTitle>
                     <div className='validate-result-wrapper'>
                         {!this.state.resultsView && this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
                         {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults}/>}
-                        {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+                        {this.props.validationExecuting && <div className='loader-wrapper'><CircularProgress size={60} thickness={5}/></div>}
                     </div>
                 </Card>
             </div>
@@ -183,6 +214,7 @@ class DataManager extends Component {
             : this.state.manualJson
             ? this.props.validate(this.prepareJSON(JSON.parse(this.state.manualJson)))
             : this.props.validateExisting(this.state.query, this.state.selectedProfile);
+        this.state.activeTab === 'browse' && this.setState({ query: '' });
     };
 
     prepareJSON = (json) => {
@@ -226,7 +258,6 @@ class DataManager extends Component {
     };
 
     filter = (value) => {
-        // this.setState({ filter: value });
         this.props.loadProfiles(this.state.canFit, value);
     };
 
@@ -236,7 +267,15 @@ class DataManager extends Component {
     };
 
     loadZip = () => {
-        this.props.uploadProfile(this.refs.fileZip.files[0]);
+        if (this.refs.fileZip.files && this.refs.fileZip.files[0] && this.refs.fileZip.files[0].type.indexOf('zip') > -1) {
+            this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit);
+        } else {
+            this.toggleWarningModal();
+        }
+    };
+
+    toggleWarningModal = () => {
+        this.setState({ showZipWarning: !this.state.showZipWarning });
     };
 
     import = () => {
@@ -254,11 +293,12 @@ const mapStateToProps = state => {
         exportResults: state.fhir.customExportResults,
         importResults: state.sandbox.importResults,
         dataImporting: state.sandbox.dataImporting,
-        executing: state.fhir.executing,
         exportStatus: state.sandbox.exportStatus,
         profiles: state.fhir.profiles,
         profilePagination: state.fhir.profilePagination,
-        profilesLoading: state.fhir.profilesLoading
+        profilesLoading: state.fhir.profilesLoading,
+        profilesUploading: state.fhir.profilesUploading,
+        validationExecuting: state.fhir.validationExecuting
     };
 };
 
