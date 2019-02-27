@@ -76,7 +76,7 @@ class DataManager extends Component {
             marginLeft: '0'
         };
 
-        return <Page title='Profiles' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
+        return <Page title={<span>Profiles <span style={{fontSize: '14px', verticalAlign: 'middle'}}>[BETA]</span></span>} helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.state.showZipWarning && <Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }}>
                 <div className='sandbox-edit-modal'>
                     <div className='screen-title' style={titleStyle}>
@@ -104,7 +104,7 @@ class DataManager extends Component {
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {!this.props.profilesUploading && this.props.profiles && this.getList(palette)}
-                            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '30px', margin: 0 }}>
+                            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                                 <CircularProgress size={40} thickness={5}/>
                             </div>}
                         </div>
