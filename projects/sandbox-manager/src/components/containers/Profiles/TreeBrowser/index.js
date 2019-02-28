@@ -159,12 +159,12 @@ class TreeBrowser extends Component {
             let item = object[key];
             let id = `${parentId}.${key}`;
             if (typeof (item) === 'string') {
-                return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item}</span></span>} leftIcon={<Remove/>}/>;
+                return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item}</span></span>} leftIcon={<Remove/>} className='list-item'/>;
             } else if (typeof (item) === 'boolean') {
-                return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>}/>;
+                return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>} className='list-item'/>;
             } else {
                 return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
-                                 onNestedListToggle={() => this.toggleItem(id)}/>;
+                                 onNestedListToggle={() => this.toggleItem(id)} className='list-item'/>;
             }
         })
     };
