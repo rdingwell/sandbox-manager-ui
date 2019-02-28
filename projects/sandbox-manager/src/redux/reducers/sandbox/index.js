@@ -167,7 +167,7 @@ export default function (state = initialState, action) {
             state.sandboxApiEndpointIndex = action.index;
             break;
         case actionTypes.SET_DEFAULT_SANDBOX_USER:
-            state.defaultUser = action.payload.user;
+            state.defaultUser = action.payload.user && action.payload.user.id ? action.payload.user : undefined;
             break;
         case actionTypes.SET_LAUNCH_SCENARIOS_LOADING:
             state.launchScenariosLoading = action.payload.loading;

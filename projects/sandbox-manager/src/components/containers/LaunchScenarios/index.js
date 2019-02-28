@@ -31,7 +31,6 @@ import {
     getDefaultUserForSandbox
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
-import Cookies from 'js-cookie';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
@@ -188,8 +187,7 @@ class LaunchScenarios extends Component {
         sc.contextParams && (token.contextParams = sc.contextParams);
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-
-        Cookies.set('hspc-launch-token', JSON.stringify(token), { path: '/', domain: cookieUrl });
+        document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
 
         let openLink = this.refs.openLink;
         openLink.href = `${this.props.ehrUrl}/launch`;
