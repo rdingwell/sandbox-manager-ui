@@ -11,7 +11,6 @@ import Footer from "sandbox-manager-lib/components/Navigation/Footer";
 import Page from 'sandbox-manager-lib/components/Page';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { NavigationCheck, NavigationClose } from 'material-ui/svg-icons';
-import Cookies from 'js-cookie';
 
 class Dashboard extends Component {
     constructor (props) {
@@ -45,7 +44,7 @@ class Dashboard extends Component {
                           actions={[
                               <RaisedButton style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
                               <RaisedButton secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
-                              ]}>
+                          ]}>
                     <div className='sandbox-invitation-wrapper'>
                         <Paper className='paper-card'>
                             <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
@@ -95,7 +94,7 @@ class Dashboard extends Component {
     };
 
     handleCancel = () => {
-        Cookies.remove('hspc-invitation-id', { path: '/' });
+        document.cookie = "hspc-invitation-id=;expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
         this.setState({ showAccept: false, invitationToAccept: undefined });
     };
 }
@@ -110,3 +109,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Dashboard)));
+
+
+
+// WEBPACK FOOTER //
+// ./src/components/containers/Dashboard/index.js

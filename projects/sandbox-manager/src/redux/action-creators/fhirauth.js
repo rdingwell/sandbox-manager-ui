@@ -2,7 +2,6 @@ import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
 import API from '../../lib/api';
-import Cookies from 'js-cookie';
 
 let fhirClient = null;
 
@@ -71,7 +70,11 @@ export function goHome () {
     }
 
     function deleteCookie (cookiename) {
-        Cookies.remove(cookiename, { path: '/' });
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        let expires = ";expires=" + d;
+        let name = cookiename;
+        document.cookie = name + "=" + expires + "; path=/acc/html";
     }
 
     window.location = window.location.origin;
@@ -149,7 +152,8 @@ export function authorize (url, state, sandboxId) {
     let config = state.config.xsettings.data.sandboxManager;
     let serviceUrl = config.defaultServiceUrl;
 
-    Cookies.remove(config.personaCookieName, { path: '/' });
+    const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+    document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
 
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
@@ -216,28 +220,28 @@ export function fhirauth_setSmart (smart, redirect = null) {
         window.fhirClient = smart;
         queryFhirVersion(dispatch, fhirClient, state);
 
-        configuration && configuration.oauthUserInfoUrl
-            ? API.post(configuration.oauthUserInfoUrl, dispatch)
-                .then(data => {
-                    dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
-                    API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
-                        .then(data2 => {
-                            dispatch(saveSandboxManagerUser(data2));
-                            let state = getState();
-                            redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
-                            redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
-                            dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                            window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
-                            dispatch(loadInvites());
-                            dispatch(fetchUserNotifications());
-                        })
-                        .catch(() => {
-                            goHome();
-                        })
-                })
-                .catch(() => {
-                    goHome();
-                })
-            : goHome();
+        API.post(configuration.oauthUserInfoUrl, dispatch)
+            .then(data => {
+                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+                API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
+                    .then(data2 => {
+                        dispatch(saveSandboxManagerUser(data2));
+                        let state = getState();
+                        redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                        redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
+                        dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
+                        window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
+                        dispatch(loadInvites());
+                        dispatch(fetchUserNotifications());
+                    })
+                    .catch(() => {})
+            })
+            .catch(() => {
+                goHome();
+            });
     }
 }
+
+
+// WEBPACK FOOTER //
+// ./src/redux/action-creators/fhirauth.js
