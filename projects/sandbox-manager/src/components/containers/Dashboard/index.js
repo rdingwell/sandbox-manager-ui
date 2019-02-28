@@ -44,7 +44,7 @@ class Dashboard extends Component {
                           actions={[
                               <RaisedButton style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
                               <RaisedButton secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
-                          ]}>
+                              ]}>
                     <div className='sandbox-invitation-wrapper'>
                         <Paper className='paper-card'>
                             <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
@@ -109,8 +109,3 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Dashboard)));
-
-
-
-// WEBPACK FOOTER //
-// ./src/components/containers/Dashboard/index.js

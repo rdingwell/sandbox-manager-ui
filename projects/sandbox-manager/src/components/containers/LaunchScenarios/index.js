@@ -42,7 +42,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import PersonaList from '../Persona/List';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from "material-ui/svg-icons/av/play-circle-outline";
 import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
 import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
 import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
@@ -65,6 +65,7 @@ import muiThemeable from "material-ui/styles/muiThemeable";
 import Create from './Create';
 
 import './styles.less';
+import HelpButton from '../../UI/HelpButton';
 
 const SORT_VALUES = [
     { val: 'last_used', label: 'Last Used' },
@@ -108,7 +109,7 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <Page title='Launch Scenarios'>
+        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
@@ -588,8 +589,3 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(LaunchScenarios)))
-
-
-
-// WEBPACK FOOTER //
-// ./src/components/containers/LaunchScenarios/index.js

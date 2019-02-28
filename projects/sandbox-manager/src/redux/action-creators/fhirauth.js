@@ -220,28 +220,28 @@ export function fhirauth_setSmart (smart, redirect = null) {
         window.fhirClient = smart;
         queryFhirVersion(dispatch, fhirClient, state);
 
-        API.post(configuration.oauthUserInfoUrl, dispatch)
-            .then(data => {
-                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
-                API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
-                    .then(data2 => {
-                        dispatch(saveSandboxManagerUser(data2));
-                        let state = getState();
-                        redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
-                        redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
-                        dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                        window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
-                        dispatch(loadInvites());
-                        dispatch(fetchUserNotifications());
-                    })
-                    .catch(() => {})
-            })
-            .catch(() => {
-                goHome();
-            });
+        configuration && configuration.oauthUserInfoUrl
+            ? API.post(configuration.oauthUserInfoUrl, dispatch)
+                .then(data => {
+                    dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+                    API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
+                        .then(data2 => {
+                            dispatch(saveSandboxManagerUser(data2));
+                            let state = getState();
+                            redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                            redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
+                            dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
+                            window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
+                            dispatch(loadInvites());
+                            dispatch(fetchUserNotifications());
+                        })
+                        .catch(() => {
+                            goHome();
+                        })
+                })
+                .catch(() => {
+                    goHome();
+                })
+            : goHome();
     }
 }
-
-
-// WEBPACK FOOTER //
-// ./src/redux/action-creators/fhirauth.js

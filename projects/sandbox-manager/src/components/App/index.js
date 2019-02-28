@@ -194,8 +194,3 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);
 export { connectedComponent };
 export default withRouter(connectedComponent);
-
-
-
-// WEBPACK FOOTER //
-// ./src/components/App/index.js

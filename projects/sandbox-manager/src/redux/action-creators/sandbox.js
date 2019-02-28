@@ -1137,8 +1137,3 @@ function callRegisterContext (appToLaunch, params, issuer, launchDetails, key, d
                 embedded: !params["need_patient_banner"]
             }))
 }
-
-
-
-// WEBPACK FOOTER //
-// ./src/redux/action-creators/sandbox.js
