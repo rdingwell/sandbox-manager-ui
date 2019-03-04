@@ -20,7 +20,7 @@ class Index extends Component {
             applyDefaultApps: true,
             description: '',
             createDisabled: true,
-            apiEndpointIndex: '6'
+            apiEndpointIndex: '9'
         };
     }
 

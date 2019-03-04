@@ -452,6 +452,7 @@ export const selectSandbox = (sandbox) => {
             let sandboxId = sandbox.sandboxId;
             API.post(configuration.sandboxManagerApiUrl + '/sandbox/' + sandboxId + "/login" + queryParams, {}, dispatch)
                 .then(() => {
+                    debugger
                     dispatch(authorizeSandbox(sandbox));
                     dispatch(setDefaultUrl(sandboxId));
                     dispatch(selectSandboxById(sandboxId));
