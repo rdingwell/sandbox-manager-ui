@@ -446,7 +446,13 @@ export const selectSandbox = (sandbox) => {
         let configuration = state.config.xsettings.data.sandboxManager;
 
         const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-        document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        } else {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        }
 
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
@@ -1080,7 +1086,12 @@ export function doLaunch (app, persona, user, noUser, scenario) {
                     const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                     const date = new Date();
                     date.setTime(date.getTime() + (3 * 60 * 1000));
-                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+                    if (isIE11) {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.toUTCString()}; domain=${url}; path=/`;
+                    } else {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    }
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {

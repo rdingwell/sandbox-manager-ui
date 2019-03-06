@@ -94,7 +94,12 @@ class Dashboard extends Component {
     };
 
     handleCancel = () => {
-        document.cookie = "hspc-invitation-id=;expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = "hspc-invitation-id=;expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
+        } else {
+            document.cookie = "hspc-invitation-id=;expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
+        }
         this.setState({ showAccept: false, invitationToAccept: undefined });
     };
 }

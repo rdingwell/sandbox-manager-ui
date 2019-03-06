@@ -41,7 +41,13 @@ class App extends React.Component {
             const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
             const date = new Date();
             let split = props.location.search.split('?')[1].split('id=')[1].split('&')[0];
-            document.cookie = `hspc-invitation-id=${split}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+
+            let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+            if (isIE11) {
+                document.cookie = `hspc-invitation-id=${split}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
+            } else {
+                document.cookie = `hspc-invitation-id=${split}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+            }
         }
 
         this.state = {};
@@ -156,7 +162,12 @@ class App extends React.Component {
         const token = { sandboxId: this.props.selectedSandbox.sandboxId, sandboxApiUrl, refApi: window.fhirClient.server.serviceUrl.split('/')[2], token: window.fhirClient.server.auth.token };
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-        document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
+        } else {
+            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+        }
     };
 
     setSandboxId = () => {

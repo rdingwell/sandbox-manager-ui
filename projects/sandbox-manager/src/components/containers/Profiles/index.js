@@ -17,7 +17,7 @@ import HelpButton from '../../UI/HelpButton';
 import TreeBrowser from './TreeBrowser';
 import ResultsTable from './ResultsTable';
 
-class DataManager extends Component {
+class Profiles extends Component {
     timer = null;
 
     constructor (props) {
@@ -144,6 +144,7 @@ class DataManager extends Component {
                                  className={'manual-input tab' + (tab === 'json-input' ? ' active' : '')} onActive={() => this.setActiveTab('json-input')} value='json-input'>
                                 <div>
                                     <span className='tab-title'>JSON</span>
+                                    <RaisedButton className='clear-json-button' disabled={!this.state.manualJson} label='CLEAR' primary onClick={() => this.setState({manualJson: ''})}/>
                                     <TextField className='manual-input' hintText='Paste fhir resource json here' {...styleProps} multiLine fullWidth value={this.state.manualJson}
                                                onChange={(_, manualJson) => this.setState({ query: '', file: '', fileJson: '', manualJson })}/>
                                 </div>
@@ -307,4 +308,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
 }, dispatch);
 
-export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
+export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));
