@@ -38,12 +38,12 @@ export function setServerUrl () {
         server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
         if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
             server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
-            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.0.2") {
+            server.serviceUrl = config.baseServiceUrl_8 + "/" + sandboxId + "/data";
         } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
-            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.4.0") {
-            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+            server.serviceUrl = config.baseServiceUrl_9 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "4.0.0") {
+            server.serviceUrl = config.baseServiceUrl_10 + "/" + sandboxId + "/data";
         }
     }
     server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
