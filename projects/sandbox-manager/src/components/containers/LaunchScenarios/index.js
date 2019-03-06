@@ -190,7 +190,6 @@ class LaunchScenarios extends Component {
         let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
         if (isIE11) {
             document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.toUTCString()}; domain=${cookieUrl}`;
-            // "hspc-launch-token=48; expires=Wed, 05 Mar 2019 12:06:12 GMT; domain=.hspconsortium.org"
         } else {
             document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
         }
