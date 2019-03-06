@@ -234,6 +234,7 @@ export function uploadProfile (file, count) {
         let formData = new FormData();
         formData.append("file", file);
         dispatch(fhir_setProfilesUploading(true));
+        debugger
 
         let url = config.baseServiceUrl_5;
         if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
@@ -248,7 +249,7 @@ export function uploadProfile (file, count) {
             url = config.baseServiceUrl_10;
         }
 
-        API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}`, formData, dispatch, true)
+        API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&apiEndpoint=${state.sandbox.sandboxApiEndpointIndex}`, formData, dispatch, true)
             .then(data => {
                 dispatch(fhir_setCustomSearchResults(data));
                 dispatch(loadProfiles(count));

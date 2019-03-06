@@ -34,6 +34,7 @@ export function setServerUrl () {
     const server = { ...fhirClient.server };
     const sandboxId = action.sandboxId;
     const fhirVersion = state.fhirVersion;
+    debugger
     if (sandboxId !== undefined && sandboxId !== "") {
         server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
         if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
