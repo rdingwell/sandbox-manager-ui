@@ -4,7 +4,6 @@ import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
-import Cookies from 'js-cookie';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -446,7 +445,14 @@ export const selectSandbox = (sandbox) => {
 
         let configuration = state.config.xsettings.data.sandboxManager;
 
-        Cookies.remove(configuration.personaCookieName, { path: '/' });
+        const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        } else {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        }
 
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
@@ -1077,7 +1083,15 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         try {
             user && !noUser && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", data, dispatch)
                 .then(data => {
-                    Cookies.set('hspc-persona-token', data.jwt, { path: '/' });
+                    const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+                    const date = new Date();
+                    date.setTime(date.getTime() + (3 * 60 * 1000));
+                    let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+                    if (isIE11) {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.toUTCString()}; domain=${url}; path=/`;
+                    } else {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    }
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {

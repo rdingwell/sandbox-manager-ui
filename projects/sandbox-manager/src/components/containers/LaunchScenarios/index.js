@@ -31,7 +31,6 @@ import {
     getDefaultUserForSandbox
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
-import Cookies from 'js-cookie';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
@@ -110,7 +109,7 @@ class LaunchScenarios extends Component {
     }
 
     render () {
-        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
+        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
@@ -188,8 +187,12 @@ class LaunchScenarios extends Component {
         sc.contextParams && (token.contextParams = sc.contextParams);
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
-
-        Cookies.set('hspc-launch-token', JSON.stringify(token), { path: '/', domain: cookieUrl });
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
+        } else {
+            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+        }
 
         let openLink = this.refs.openLink;
         openLink.href = `${this.props.ehrUrl}/launch`;

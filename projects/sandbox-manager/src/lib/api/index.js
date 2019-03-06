@@ -9,6 +9,14 @@ export default {
         });
     },
 
+    postNoErrorManagement (url, data, dispatch, isFormData) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config("POST", data, isFormData))
+                .then(response => parseResponse(response, dispatch, resolve, reject, true))
+                .catch(e => parseError(e, dispatch, reject, true));;
+        });
+    },
+
     put (url, data, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("PUT", data))
@@ -85,34 +93,36 @@ const get_config_no_auth = (method, data, isFormData) => {
     return CONFIG;
 };
 
-const parseResponse = (response, dispatch, resolve, reject) => {
+const parseResponse = (response, dispatch, resolve, reject, noGlobalError = false) => {
     if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
-        reject();
-    } else if (response.status >= 300) {
+        reject('Not found!');
+    } else if (!noGlobalError && response.status >= 300) {
         response.text()
             .then(a => {
-                dispatch(setGlobalError(a));
+                !noGlobalError && dispatch(setGlobalError(a));
+                reject(e);
             })
             .catch(e => {
-                dispatch(setGlobalError(e));
+                !noGlobalError && dispatch(setGlobalError(e));
+                reject(e);
             });
-        reject();
+        reject(e);
     } else {
         response.json()
             .then(terms => resolve(terms))
             .catch(e => {
                 if (response.status < 300) {
-                    resolve();
+                    resolve(e);
                 } else {
-                    dispatch(setGlobalError(e));
-                    reject();
+                    !noGlobalError && dispatch(setGlobalError(e));
+                    reject(e);
                 }
             })
     }
 };
 
-const parseError = (error, dispatch, reject) => {
-    dispatch(setGlobalError(error));
-    reject();
+const parseError = (error, dispatch, reject, noGlobalError = false) => {
+    !noGlobalError && dispatch(setGlobalError(error));
+    reject(error);
 };

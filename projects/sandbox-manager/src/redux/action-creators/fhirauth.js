@@ -2,7 +2,6 @@ import * as actionTypes from './types';
 import { setOauthUserInfo, saveSandboxManagerUser } from './users';
 import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
 import API from '../../lib/api';
-import Cookies from 'js-cookie';
 
 let fhirClient = null;
 
@@ -71,7 +70,11 @@ export function goHome () {
     }
 
     function deleteCookie (cookiename) {
-        Cookies.remove(cookiename, { path: '/' });
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        let expires = ";expires=" + d;
+        let name = cookiename;
+        document.cookie = name + "=" + expires + "; path=/acc/html";
     }
 
     window.location = window.location.origin;
@@ -149,7 +152,13 @@ export function authorize (url, state, sandboxId) {
     let config = state.config.xsettings.data.sandboxManager;
     let serviceUrl = config.defaultServiceUrl;
 
-    Cookies.remove(config.personaCookieName, { path: '/' });
+    const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+    let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+    if (isIE11) {
+        document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    } else {
+        document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    }
 
     if (sandboxId !== undefined && sandboxId !== "") {
         serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
