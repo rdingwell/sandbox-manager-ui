@@ -449,7 +449,7 @@ export const selectSandbox = (sandbox) => {
 
         let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
         if (isIE11) {
-            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}`;
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
         } else {
             document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
         }
@@ -1088,7 +1088,7 @@ export function doLaunch (app, persona, user, noUser, scenario) {
                     date.setTime(date.getTime() + (3 * 60 * 1000));
                     let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
                     if (isIE11) {
-                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.toUTCString()}; domain=${url}`;
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.toUTCString()}; domain=${url}; path=/`;
                     } else {
                         document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
                     }
