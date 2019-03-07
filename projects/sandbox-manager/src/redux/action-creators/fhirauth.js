@@ -34,16 +34,17 @@ export function setServerUrl () {
     const server = { ...fhirClient.server };
     const sandboxId = action.sandboxId;
     const fhirVersion = state.fhirVersion;
+    debugger
     if (sandboxId !== undefined && sandboxId !== "") {
         server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
         if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
             server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
-            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.0.2") {
+            server.serviceUrl = config.baseServiceUrl_8 + "/" + sandboxId + "/data";
         } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
-            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.4.0") {
-            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+            server.serviceUrl = config.baseServiceUrl_9 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "4.0.0") {
+            server.serviceUrl = config.baseServiceUrl_10 + "/" + sandboxId + "/data";
         }
     }
     server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
@@ -161,19 +162,17 @@ export function authorize (url, state, sandboxId) {
     }
 
     if (sandboxId !== undefined && sandboxId !== "") {
-        serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
-        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "2") {
-            serviceUrl = config.baseServiceUrl_2 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "3") {
-            serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "4") {
-            serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "5") {
-            serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
+        serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
+        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
             serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
         } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "7") {
             serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "8") {
+            serviceUrl = config.baseServiceUrl_8 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "9") {
+            serviceUrl = config.baseServiceUrl_9 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "10") {
+            serviceUrl = config.baseServiceUrl_10 + "/" + sandboxId + "/data";
         }
     }
 
