@@ -62,6 +62,45 @@ const DETAILS = {
         { resourceType: "CarePlan", patientSearch: "subject" },
         { resourceType: "CareTeam", patientSearch: "subject" },
         { resourceType: "Goal", patientSearch: "subject" }
+    ],
+    8: [
+        {resourceType: "Observation", patientSearch: "subject"},
+        {resourceType: "Encounter", patientSearch: "patient"},
+        {resourceType: "MedicationOrder", patientSearch: "patient"},
+        {resourceType: "MedicationDispense", patientSearch: "patient"},
+        {resourceType: "AllergyIntolerance", patientSearch: "patient"},
+        {resourceType: "Condition", patientSearch: "patient"},
+        {resourceType: "Procedure", patientSearch: "patient"},
+        {resourceType: "DiagnosticReport", patientSearch: "subject"},
+        {resourceType: "Immunization", patientSearch: "patient"}
+    ],
+    9: [
+        { resourceType: "Observation", patientSearch: "subject" },
+        { resourceType: "Encounter", patientSearch: "patient" },
+        { resourceType: "MedicationRequest", patientSearch: "patient" },
+        { resourceType: "MedicationDispense", patientSearch: "patient" },
+        { resourceType: "AllergyIntolerance", patientSearch: "patient" },
+        { resourceType: "Condition", patientSearch: "subject" },
+        { resourceType: "Procedure", patientSearch: "subject" },
+        { resourceType: "DiagnosticReport", patientSearch: "subject" },
+        { resourceType: "Immunization", patientSearch: "patient" },
+        { resourceType: "CarePlan", patientSearch: "subject" },
+        { resourceType: "CareTeam", patientSearch: "subject" },
+        { resourceType: "Goal", patientSearch: "subject" }
+    ],
+    10: [
+        { resourceType: "Observation", patientSearch: "subject" },
+        { resourceType: "Encounter", patientSearch: "patient" },
+        { resourceType: "MedicationRequest", patientSearch: "patient" },
+        { resourceType: "MedicationDispense", patientSearch: "patient" },
+        { resourceType: "AllergyIntolerance", patientSearch: "patient" },
+        { resourceType: "Condition", patientSearch: "subject" },
+        { resourceType: "Procedure", patientSearch: "subject" },
+        { resourceType: "DiagnosticReport", patientSearch: "subject" },
+        { resourceType: "Immunization", patientSearch: "patient" },
+        { resourceType: "CarePlan", patientSearch: "subject" },
+        { resourceType: "CareTeam", patientSearch: "subject" },
+        { resourceType: "Goal", patientSearch: "subject" }
     ]
 };
 
