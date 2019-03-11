@@ -111,7 +111,7 @@ export default class QueryBrowser extends Component {
                                         </ListItem>
                                     })
                                     : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
-                                    : <div>{this.props.results != null && <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
+                                    : <div>{this.props.results != null && <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: {resource: this.props.results} })} className='result-list-item'>
                                             {parseEntry({resource: this.props.results}).props.map((item, index) => {
                                                 return <div className='result-item' key={index}>
                                                     <span>{item.label}: </span>
