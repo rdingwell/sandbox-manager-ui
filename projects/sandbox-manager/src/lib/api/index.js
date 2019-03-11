@@ -1,4 +1,4 @@
-import { setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -13,7 +13,8 @@ export default {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("POST", data, isFormData))
                 .then(response => parseResponse(response, dispatch, resolve, reject, true))
-                .catch(e => parseError(e, dispatch, reject, true));;
+                .catch(e => parseError(e, dispatch, reject, true));
+            ;
         });
     },
 
@@ -101,13 +102,13 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
         response.text()
             .then(a => {
                 !noGlobalError && dispatch(setGlobalError(a));
-                reject(e);
+                if (a.indexOf('User not authorized to perform this action') >= 0) {
+                    goHome();
+                }
             })
             .catch(e => {
                 !noGlobalError && dispatch(setGlobalError(e));
-                reject(e);
             });
-        reject(e);
     } else {
         response.json()
             .then(terms => resolve(terms))
