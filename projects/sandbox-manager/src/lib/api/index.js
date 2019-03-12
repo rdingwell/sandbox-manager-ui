@@ -1,4 +1,4 @@
-import { goHome, setGlobalError } from '../../redux/action-creators';
+import { fhirUpdateEndpointURL, goHome, saveSandboxApiEndpointIndex, setGlobalError } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -14,7 +14,6 @@ export default {
             fetch(url, get_config("POST", data, isFormData))
                 .then(response => parseResponse(response, dispatch, resolve, reject, true))
                 .catch(e => parseError(e, dispatch, reject, true));
-            ;
         });
     },
 
@@ -95,7 +94,31 @@ const get_config_no_auth = (method, data, isFormData) => {
 };
 
 const parseResponse = (response, dispatch, resolve, reject, noGlobalError = false) => {
-    if (response.status === 404) {
+
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    if (response.status === 500) {
+        // check the sandbox version
+        fetch(sessionStorage.sandboxApiEndpointCheck)
+            .then(tmp => tmp.json()
+                .then(indexData => {
+                    if (indexData.apiEndpointIndex !== sessionStorage.sandboxApiEndpointIndex) {
+                        goHome();
+                    }
+                })
+                .catch(e => {
+                    !noGlobalError && dispatch(setGlobalError(e));
+                    reject();
+                }))
+            .catch(e => {
+                !noGlobalError && dispatch(setGlobalError(e));
+                reject();
+            });
+    }
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+
+    else if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
         reject('Not found!');
     } else if (!noGlobalError && response.status >= 300) {
