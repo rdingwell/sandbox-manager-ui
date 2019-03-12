@@ -1,4 +1,4 @@
-import { fhirUpdateEndpointURL, goHome, saveSandboxApiEndpointIndex, setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -118,7 +118,7 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
 
-    else if (response.status === 404) {
+    if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
         reject('Not found!');
     } else if (!noGlobalError && response.status >= 300) {
