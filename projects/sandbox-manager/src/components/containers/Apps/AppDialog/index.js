@@ -91,7 +91,7 @@ class AppDialog extends Component {
 
         this.props.app && !this.state.clone && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
         this.props.app && !this.state.clone && actions.unshift(<RaisedButton secondary label='Clone' onClick={this.clone}/>,);
-        this.props.app && actions.unshift(<RaisedButton label='Create manifest' onClick={this.createManifest}/>,);
+        this.props.app && actions.unshift(<RaisedButton label='Download manifest' onClick={this.createManifest}/>,);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
         let underlineFocusStyle = { borderColor: theme.primary2Color };
