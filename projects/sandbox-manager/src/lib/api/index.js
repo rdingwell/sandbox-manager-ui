@@ -105,9 +105,11 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                 if (a.indexOf('User not authorized to perform this action') >= 0) {
                     goHome();
                 }
+                reject();
             })
             .catch(e => {
                 !noGlobalError && dispatch(setGlobalError(e));
+                reject();
             });
     } else {
         response.json()
