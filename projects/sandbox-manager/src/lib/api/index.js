@@ -120,6 +120,8 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                     let parsed = JSON.parse(a);
                     if (parsed.error && parsed.error === 'invalid_token') {
                         goHome();
+                    } else if (parsed.message) {
+                        !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
                     }
                     reject();
                 } catch (e) {
