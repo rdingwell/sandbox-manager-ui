@@ -182,7 +182,7 @@ export function loadProfiles (count, filter) {
 
         if (window.fhirClient) {
             let endpoint = window.fhirClient.server.serviceUrl;
-            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
+            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name=${filter}` : ''}`, dispatch)
                 .then(data => {
                     data.entry = data.entry ? data.entry : [];
                     dispatch(fhir_setProfiles({ entry: data.entry.map(i => i.resource), total: data.total, link: data.link }));
