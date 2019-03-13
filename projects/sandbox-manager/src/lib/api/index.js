@@ -105,17 +105,7 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                     if (indexData.apiEndpointIndex !== sessionStorage.sandboxApiEndpointIndex) {
                         goHome();
                     }
-                })
-                .catch(e => {
-                    console.log(e);
-                    // !noGlobalError && dispatch(setGlobalError(e));
-                    // reject();
-                }))
-            .catch(e => {
-                console.log(e);
-                // !noGlobalError && dispatch(setGlobalError(e));
-                // reject();
-            });
+                }));
     }
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
@@ -126,11 +116,19 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
     } else if (!noGlobalError && response.status >= 300) {
         response.text()
             .then(a => {
-                !noGlobalError && dispatch(setGlobalError(a));
-                if (a.indexOf('User not authorized to perform this action') >= 0) {
-                    goHome();
+                try {
+                    let parsed = JSON.parse(a);
+                    if (parsed.error && parsed.error === 'invalid_token') {
+                        goHome();
+                    }
+                    reject();
+                } catch (e) {
+                    !noGlobalError && dispatch(setGlobalError(a));
+                    if (a.indexOf('User not authorized to perform this action') >= 0) {
+                        goHome();
+                    }
+                    reject();
                 }
-                reject();
             })
             .catch(e => {
                 !noGlobalError && dispatch(setGlobalError(e));
