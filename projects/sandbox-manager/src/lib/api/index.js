@@ -107,12 +107,14 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                     }
                 })
                 .catch(e => {
-                    !noGlobalError && dispatch(setGlobalError(e));
-                    reject();
+                    console.log(e);
+                    // !noGlobalError && dispatch(setGlobalError(e));
+                    // reject();
                 }))
             .catch(e => {
-                !noGlobalError && dispatch(setGlobalError(e));
-                reject();
+                console.log(e);
+                // !noGlobalError && dispatch(setGlobalError(e));
+                // reject();
             });
     }
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
