@@ -1,4 +1,4 @@
-import { setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -13,7 +13,7 @@ export default {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("POST", data, isFormData))
                 .then(response => parseResponse(response, dispatch, resolve, reject, true))
-                .catch(e => parseError(e, dispatch, reject, true));;
+                .catch(e => parseError(e, dispatch, reject, true));
         });
     },
 
@@ -94,20 +94,48 @@ const get_config_no_auth = (method, data, isFormData) => {
 };
 
 const parseResponse = (response, dispatch, resolve, reject, noGlobalError = false) => {
+
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    if (response.status === 500) {
+        // check the sandbox version
+        fetch(sessionStorage.sandboxApiEndpointCheck)
+            .then(tmp => tmp.json()
+                .then(indexData => {
+                    if (indexData.apiEndpointIndex !== sessionStorage.sandboxApiEndpointIndex) {
+                        goHome();
+                    }
+                }));
+    }
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+
     if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
         reject('Not found!');
     } else if (!noGlobalError && response.status >= 300) {
         response.text()
             .then(a => {
-                !noGlobalError && dispatch(setGlobalError(a));
-                reject(e);
+                try {
+                    let parsed = JSON.parse(a);
+                    if (parsed.error && parsed.error === 'invalid_token') {
+                        goHome();
+                    } else if (parsed.message) {
+                        !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
+                    }
+                    reject();
+                } catch (e) {
+                    !noGlobalError && dispatch(setGlobalError(a));
+                    if (a.indexOf('User not authorized to perform this action') >= 0) {
+                        goHome();
+                    }
+                    reject();
+                }
             })
             .catch(e => {
                 !noGlobalError && dispatch(setGlobalError(e));
-                reject(e);
+                reject();
             });
-        reject(e);
     } else {
         response.json()
             .then(terms => resolve(terms))

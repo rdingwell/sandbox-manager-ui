@@ -1,6 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
-import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir';
+import { fhir_setCustomSearchExecuting, fhir_setExportSearchResults } from './fhir';
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
@@ -591,9 +591,22 @@ export function authorizeSandbox (sandbox) {
         if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
             const state = getState();
+
+            // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+            let managerUrl = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
+            sessionStorage.sandboxApiEndpointIndex = sandbox.apiEndpointIndex;
+            sessionStorage.sandboxApiEndpointCheck = `${managerUrl}/sandbox?sandboxId=${sandbox.sandboxId}`;
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+            // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
             authorize(window.location, state, sandbox.sandboxId);
         }
     }
+}
+
+export function updateSandboxApiEndpoint() {
+
 }
 
 export const createSandbox = (sandboxDetails) => {
@@ -602,17 +615,17 @@ export const createSandbox = (sandboxDetails) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(setCreatingSandbox(true));
         let clonedSandbox = {};
-        if (sandboxDetails.apiEndpointIndex === "5") {
+        if (sandboxDetails.apiEndpointIndex === "8") {
             clonedSandbox.sandboxId = "MasterDstu2Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterDstu2Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex === "6") {
+        } else if (sandboxDetails.apiEndpointIndex === "9") {
             clonedSandbox.sandboxId = "MasterStu3Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterStu3Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex === "7") {
+        } else if (sandboxDetails.apiEndpointIndex === "10") {
             clonedSandbox.sandboxId = "MasterR4Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterR4Empty";
@@ -953,7 +966,7 @@ export function getTotalItemsToExport (resourceList, query) {
 
         let getNext = function (data, type) {
             if (getState().sandbox.exportStatus.loading) {
-                window.fhirClient.api.nextPage({bundle: data})
+                window.fhirClient.api.nextPage({ bundle: data })
                     .then(d => {
                         if (d.data) {
                             let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
@@ -1026,7 +1039,7 @@ export function getTotalItemsToExport (resourceList, query) {
                     dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
                 })
                 .catch(() => {
-                    dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
+                    dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined }));
                     dispatch(fhir_setCustomSearchExecuting(false));
                 });
         }
@@ -1035,7 +1048,7 @@ export function getTotalItemsToExport (resourceList, query) {
 
 export function cancelDownload () {
     return dispatch => {
-        dispatch(setSandboxExportStatus({loading: false, error: false, resourceList: [], details: undefined, content: undefined}));
+        dispatch(setSandboxExportStatus({ loading: false, error: false, resourceList: [], details: undefined, content: undefined }));
     }
 }
 

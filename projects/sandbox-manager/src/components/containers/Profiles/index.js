@@ -75,6 +75,7 @@ class Profiles extends Component {
             paddingLeft: '10px',
             marginLeft: '0'
         };
+        let profile = this.props.validationResults && this.props.validationResults.validatedProfile && this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile) || {};
 
         return <Page title={<span>Profiles <span style={{fontSize: '14px', verticalAlign: 'middle'}}>[BETA]</span></span>} helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.state.showZipWarning && <Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }}>
@@ -159,7 +160,7 @@ class Profiles extends Component {
                         <span className='validate-by-title'>
                             {this.props.validationResults && <span>Validated <strong>{this.props.validationResults.validatedObject}</strong> </span>}
                             {this.props.validationResults && this.props.validationResults.validatedProfile
-                                ? <span>against <strong>{this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile).name}</strong></span>
+                                ? <span>against <strong>{profile.name}</strong></span>
                                 : ''}
                         </span>
                     </CardTitle>

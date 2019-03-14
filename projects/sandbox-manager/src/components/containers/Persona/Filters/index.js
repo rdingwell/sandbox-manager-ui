@@ -192,7 +192,7 @@ export default class Filters extends Component {
         }
         if (filters.name) {
             transformedFilter += (transformedFilter.length > 0 ? '&' : '');
-            transformedFilter += `name:contains=${filters.name}`;
+            transformedFilter += `name=${filters.name}`;
         }
         if (filter === 'resource' && value) {
             transformedFilter = { resource: value };

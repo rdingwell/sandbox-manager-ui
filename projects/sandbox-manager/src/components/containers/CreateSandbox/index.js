@@ -20,7 +20,7 @@ class Index extends Component {
             applyDefaultApps: true,
             description: '',
             createDisabled: true,
-            apiEndpointIndex: '6'
+            apiEndpointIndex: '10'
         };
     }
 
@@ -54,9 +54,9 @@ class Index extends Component {
                             <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
                             <DropDownMenu value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
                                           className='fhirVersion'>
-                                <MenuItem value='5' primaryText='FHIR DSTU2 (v1.0.2)'/>
-                                <MenuItem value='6' primaryText='FHIR STU3 (v3.0.1)'/>
-                                <MenuItem value='7' primaryText='FHIR R4 (v3.4.0) [beta]'/>
+                                <MenuItem value='8' primaryText='FHIR DSTU2 (v1.0.2)'/>
+                                <MenuItem value='9' primaryText='FHIR STU3 (v3.0.1)'/>
+                                <MenuItem value='10' primaryText='FHIR R4 (v4.0.0)'/>
                             </DropDownMenu>
                             <div className='subscript'>Choose a version of the FHIR Standard</div>
                             <br/>

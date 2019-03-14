@@ -17,11 +17,11 @@ class AppDialog extends Component {
         let app = {
             clientName: props.app ? props.app.clientName : (manifest ? manifest.client_name : ''),
             launchUri: props.app ? props.app.launchUri : (manifest ? manifest.launch_url : ''),
-            samplePatients: props.app && props.app.samplePatients ? props.app.samplePatients : '',
+            samplePatients: props.app && props.app.samplePatients ? props.app.samplePatients : (manifest ? manifest.samplePatients : ''),
             redirectUris: redirectUris ? redirectUris : (manifest ? manifest.redirect_uris.join(',') : ''),
             scope: scope ? scope : (manifest ? manifest.scope : ''),
             logoUri: props.app ? props.app.logoUri : (manifest ? manifest.logo_uri : ''),
-            briefDescription: props.app && props.app.briefDescription || '',
+            briefDescription: props.app ? props.app.briefDescription : (manifest ? manifest.briefDescription : ''),
             tokenEndpointAuthMethod: clientJSON && clientJSON.tokenEndpointAuthMethod || 'NONE',
             clientJSON: props.app ? clientJSON : {},
             patientScoped: true,
@@ -91,6 +91,7 @@ class AppDialog extends Component {
 
         this.props.app && !this.state.clone && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
         this.props.app && !this.state.clone && actions.unshift(<RaisedButton secondary label='Clone' onClick={this.clone}/>,);
+        this.props.app && actions.unshift(<RaisedButton label='Download manifest' onClick={this.createManifest}/>,);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
         let underlineFocusStyle = { borderColor: theme.primary2Color };
@@ -181,6 +182,35 @@ class AppDialog extends Component {
             </Paper>
         </Dialog>
     }
+
+    createManifest = () => {
+        let clientJSON = JSON.parse(this.props.app.clientJSON);
+        let manifest = {
+            software_id: this.props.app.softwareId,
+            client_name: this.props.app.clientName,
+            client_uri: this.props.app.clientUri,
+            logo_uri: this.props.app.logoUri,
+            launch_url: this.props.app.launchUri,
+            redirect_uris: clientJSON.redirectUris,
+            scope: clientJSON.scope.concat(' '),
+            token_endpoint_auth_method: clientJSON.tokenEndpointAuthMethod,
+            grant_types: clientJSON.grant_types,
+            fhirVersions: this.props.app.fhirVersions,
+            briefDescription: this.props.app.briefDescription,
+            samplePatients: this.props.app.samplePatients
+        };
+
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest)));
+        element.setAttribute('download', `${this.props.app.clientName}.manifest.json`);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    };
 
     clone = () => {
         let app = Object.assign({}, this.state.app);

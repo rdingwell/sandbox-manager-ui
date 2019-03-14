@@ -30,7 +30,7 @@ class Snackbar extends Component {
             // do nothing
         }
 
-        return message;
+        return message || 'Unknown error';
     }
 }
 

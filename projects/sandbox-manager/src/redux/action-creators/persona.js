@@ -1,6 +1,7 @@
 import * as actionTypes from "./types";
 import { parseNames } from "sandbox-manager-lib/utils/fhir";
 import API from '../../lib/api';
+import { getDefaultUserForSandbox } from './sandbox';
 
 export function lookupPersonasStart (type) {
     return {
@@ -46,7 +47,10 @@ export function deletePersona (persona) {
         let state = getState();
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/userPersona/" + persona.id;
         API.delete(url, dispatch)
-            .then(() => dispatch(fetchPersonas('Persona')))
+            .then(() => {
+                dispatch(fetchPersonas('Persona'));
+                getDefaultUserForSandbox(sessionStorage.sandboxId);
+            })
             .catch(e => console.log(e));
     }
 }
