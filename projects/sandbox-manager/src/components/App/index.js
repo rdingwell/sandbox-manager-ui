@@ -85,6 +85,9 @@ class App extends React.Component {
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
+                {this.props.app.showGlobalSessionModal && <Dialog className='loader-wrapper' modal open={this.props.app.showGlobalSessionModal}>
+                    <p>Your session has expired. You will be redirected to the dashboard.</p>
+                </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
             </Layout>
         </MuiThemeProvider>;

@@ -1,4 +1,4 @@
-import { goHome, setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError, showGlobalSessionModal } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -119,7 +119,15 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                 try {
                     let parsed = JSON.parse(a);
                     if (parsed.error && parsed.error === 'invalid_token') {
-                        goHome();
+                        let count = 9;
+                        dispatch(showGlobalSessionModal());
+                        dispatch(setGlobalError('You session has expired. You will be redirected to the dashboard in 10 seconds'));
+                        let interval = setInterval(() => {
+                            dispatch(setGlobalError(`You session has expired. You will be redirected to the dashboard in ${count} seconds`));
+                            count--;
+                            count === 0 && clearInterval(interval);
+                            count === 0 && goHome();
+                        }, 1000);
                     } else if (parsed.message) {
                         !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
                     } else if (parsed.issue) {
@@ -130,7 +138,15 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                 } catch (e) {
                     !noGlobalError && dispatch(setGlobalError(a));
                     if (a.indexOf('User not authorized to perform this action') >= 0) {
-                        goHome();
+                        let count = 9;
+                        dispatch(setGlobalError('You session has expired. You will be redirected to the dashboard in 10 seconds'));
+                        dispatch(showGlobalSessionModal());
+                        let interval = setInterval(() => {
+                            dispatch(setGlobalError(`You session has expired. You will be redirected to the dashboard in ${count} seconds`));
+                            count--;
+                            count === 0 && clearInterval(interval);
+                            count === 0 && goHome();
+                        }, 1000);
                     }
                     reject();
                 }
