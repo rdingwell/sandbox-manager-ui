@@ -122,6 +122,9 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                         goHome();
                     } else if (parsed.message) {
                         !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
+                    } else if (parsed.issue) {
+                        let issue = parsed.issue.map(i => i.diagnostics) || [];
+                        !noGlobalError && dispatch(setGlobalError(issue.join('\n')));
                     }
                     reject();
                 } catch (e) {
