@@ -605,10 +605,6 @@ export function authorizeSandbox (sandbox) {
     }
 }
 
-export function updateSandboxApiEndpoint() {
-
-}
-
 export const createSandbox = (sandboxDetails) => {
     return (dispatch, getState) => {
         const state = getState();
@@ -723,8 +719,15 @@ export const hideNotification = (notification) => {
 
         notification.hidden = true;
 
+        dispatch(setNotificationLoading(true));
         API.put(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
-            .then(() => dispatch(fetchUserNotifications()));
+            .then(() => {
+                dispatch(fetchUserNotifications());
+                dispatch(setNotificationLoading(false));
+            })
+            .catch(() => {
+                dispatch(setNotificationLoading(false));
+            });
     };
 };
 
