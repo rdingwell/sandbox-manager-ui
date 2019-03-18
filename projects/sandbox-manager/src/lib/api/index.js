@@ -119,15 +119,8 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                 try {
                     let parsed = JSON.parse(a);
                     if (parsed.error && parsed.error === 'invalid_token') {
-                        let count = 9;
                         dispatch(showGlobalSessionModal());
-                        dispatch(setGlobalError('You session has expired. You will be redirected to the dashboard in 10 seconds'));
-                        let interval = setInterval(() => {
-                            dispatch(setGlobalError(`You session has expired. You will be redirected to the dashboard in ${count} seconds`));
-                            count--;
-                            count === 0 && clearInterval(interval);
-                            count === 0 && goHome();
-                        }, 1000);
+                        setTimeout(goHome, 3000);
                     } else if (parsed.message) {
                         !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
                     } else if (parsed.issue) {
@@ -136,17 +129,11 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                     }
                     reject();
                 } catch (e) {
-                    !noGlobalError && dispatch(setGlobalError(a));
                     if (a.indexOf('User not authorized to perform this action') >= 0) {
-                        let count = 9;
-                        dispatch(setGlobalError('You session has expired. You will be redirected to the dashboard in 10 seconds'));
                         dispatch(showGlobalSessionModal());
-                        let interval = setInterval(() => {
-                            dispatch(setGlobalError(`You session has expired. You will be redirected to the dashboard in ${count} seconds`));
-                            count--;
-                            count === 0 && clearInterval(interval);
-                            count === 0 && goHome();
-                        }, 1000);
+                        setTimeout(goHome, 3000);
+                    } else {
+                        !noGlobalError && dispatch(setGlobalError(a));
                     }
                     reject();
                 }

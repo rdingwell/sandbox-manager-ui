@@ -86,7 +86,7 @@ class App extends React.Component {
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
                 {this.props.app.showGlobalSessionModal && <Dialog className='loader-wrapper' modal open={this.props.app.showGlobalSessionModal}>
-                    <p>Your session has expired. You will be redirected to the dashboard.</p>
+                    <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
             </Layout>
