@@ -44,7 +44,7 @@ export default {
     delete (url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("DELETE"))
-                .then(() => resolve())
+                .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
     }
