@@ -14,6 +14,9 @@ export default (state = initialState, action) => {
         case types.SET_ERROR_TO_SHOW:
             state.errorToShow = action.payload.error;
             break;
+        case types.SET_GLOBAL_SESSION_MODAL:
+            state.showGlobalSessionModal = true;
+            break;
         case types.SET_TERMS_LOADING:
             state.termsLoading = action.payload.loading;
             break;
@@ -23,6 +26,7 @@ export default (state = initialState, action) => {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.app : state;
             state.rehydrateDone = true;
+            state.showGlobalSessionModal = false;
             state.errorToShow = undefined;
             break;
     }

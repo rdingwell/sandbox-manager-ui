@@ -1,4 +1,4 @@
-import { goHome, setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError, showGlobalSessionModal } from '../../redux/action-creators';
 
 export default {
     post (url, data, dispatch, isFormData) {
@@ -119,7 +119,8 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                 try {
                     let parsed = JSON.parse(a);
                     if (parsed.error && parsed.error === 'invalid_token') {
-                        goHome();
+                        dispatch(showGlobalSessionModal());
+                        setTimeout(goHome, 3000);
                     } else if (parsed.message) {
                         !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
                     } else if (parsed.issue) {
@@ -128,9 +129,11 @@ const parseResponse = (response, dispatch, resolve, reject, noGlobalError = fals
                     }
                     reject();
                 } catch (e) {
-                    !noGlobalError && dispatch(setGlobalError(a));
                     if (a.indexOf('User not authorized to perform this action') >= 0) {
-                        goHome();
+                        dispatch(showGlobalSessionModal());
+                        setTimeout(goHome, 3000);
+                    } else {
+                        !noGlobalError && dispatch(setGlobalError(a));
                     }
                     reject();
                 }

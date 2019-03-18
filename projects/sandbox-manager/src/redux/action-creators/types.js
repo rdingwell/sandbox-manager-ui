@@ -140,6 +140,7 @@ export const SET_APP = "SET_APP";
 export const SET_TERMS_LOADING = "SET_TERMS_LOADING";
 export const SET_TERMS = "SET_TERMS";
 export const SET_ERROR_TO_SHOW = "SET_ERROR_TO_SHOW";
+export const SET_GLOBAL_SESSION_MODAL = "SET_GLOBAL_SESSION_MODAL";
 
 // apps
 export const SET_SANDBOX_APPS = "SET_SANDBOX_APPS";
