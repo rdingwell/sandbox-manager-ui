@@ -1132,7 +1132,7 @@ export function copyToClipboard (str) {
     }
 }
 
-function random (length) {
+export function random (length) {
     let result = '';
     for (let i = length; i > 0; --i) {
         result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];

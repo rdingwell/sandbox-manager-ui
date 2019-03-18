@@ -28,6 +28,10 @@
   height: 13rem;
   padding: 0 25px;
 
+  &.small {
+    height: 8rem;
+  }
+
   & > div:first-of-type > div:first-of-type {
     width: ~"calc(100% - 88px - 1rem)" !important;
     margin-right: 1rem;
@@ -43,6 +47,7 @@
   .separator {
     text-align: center;
     margin: 10px 0;
+
     span {
       padding: 5px 10px;
       border: 1px solid whitesmoke;
@@ -192,6 +197,30 @@
           display: none;
           word-break: break-word;
         }
+      }
+
+      .hook-name {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 14px;
+        font-size: 20px;
+        text-align: left;
+        max-width: 90%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .hook-url {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 14px;
+        font-size: 14px;
+        text-align: left;
+        max-width: 90%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
 
       .app-description {

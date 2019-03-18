@@ -12,6 +12,7 @@ import fhirauth from "./reducers/fhirauth";
 import persona from "./reducers/persona";
 import app from "./reducers/app";
 import patient from "./reducers/patient";
+import hooks from './reducers/hooks';
 
 const persistConfig = {
     key: 'root',
@@ -29,7 +30,7 @@ const persistConfig = {
         ),
     ]
 };
-const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, persona, app, patient });
+const reducers = combineReducers({ config, fhir, ui, sandbox, users, apps, fhirauth, persona, app, patient, hooks });
 
 export default function () {
     return new Promise(resolve => {

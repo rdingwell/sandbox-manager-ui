@@ -8,3 +8,4 @@ export * from "./app";
 export * from "./persona";
 export * from "./patient";
 export * from "./apps";
+export * from "./hooks";
