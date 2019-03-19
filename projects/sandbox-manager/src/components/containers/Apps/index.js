@@ -108,37 +108,34 @@ class Apps extends Component {
     }
 
     getHooks = () => {
-        return this.props.hooksList.map((hook, index) => {
+        let hooks = [];
+        let currentURL = '';
+        this.props.hooksList.map((hook, index) => {
             let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
             if (!this.props.modal && !hook.description) {
                 titleStyle.height = '39%';
                 titleStyle.bottom = '-18%';
             }
-            return <Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={index}
-                         onTouchStart={() => this.hookCardClick(hook)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
+            hook.url !== currentURL && hooks.push(<div key={index + '_div'}><h2>{hook.url}</h2></div>);
+            currentURL = hook.url;
+            hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={index}
+                             onTouchStart={() => this.hookCardClick(hook)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: '100%' }} src={hook.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>
                 <CardTitle className='card-title' style={titleStyle}>
-                    <h3 className='hook-name'>{hook.title}</h3>
-                    <h3 className='hook-url'>{hook.url}</h3>
+                    <h3 className='app-name'>{hook.title}</h3>
+                    <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
                     {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedHook ? hook.id === this.props.selectedHook.id : false}/>}
                     <div className='app-description'>{hook.description}</div>
                 </CardTitle>
                 {!this.props.modal && <CardActions className='card-actions-wrapper'>
                     <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
                                 icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
-                    <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook)}
-                                icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
                 </CardActions>}
-            </Card>
+            </Card>);
         });
-    };
-
-    handleHookLaunch = (e, hook) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.props.launchHook(hook);
+        return hooks;
     };
 
     getDialog = () => {
@@ -272,7 +269,7 @@ class Apps extends Component {
                     });
                 }
 
-                this.setState({hooks: services, loadingManifest: false });
+                this.setState({ hooks: services, loadingManifest: false });
                 this.closeAll();
             })
             .catch(_ => {

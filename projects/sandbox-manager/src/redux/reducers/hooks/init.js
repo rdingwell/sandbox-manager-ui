@@ -32,7 +32,7 @@ export default {
             description: "Detects issues with infants and the Kernicterus risk protocol",
             prefetch: {
                 patient: "Patient/{{context.patientId}}",
-                observations: `Observation?patient={{context.patientId}}&code=58941-6&_sort:desc=date&_count=1`
+                observations: `Observation?patient={{context.patientId}}&code=http://loinc.org|58941-6&_sort:desc=date&_count=1`
             }
         },
         {
@@ -49,5 +49,6 @@ export default {
             url: "https://bilirubin-cdshooks.hspconsortium.org/cds-services",
             description: "Sends a Demo Info Card"
         }
-    ]
+    ],
+    cards: []
 }

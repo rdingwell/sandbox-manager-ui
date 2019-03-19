@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
@@ -12,6 +11,7 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Layout from 'sandbox-manager-lib/components/Layout';
 import CreateSandbox from '../containers/CreateSandbox';
+import HookCards from '../containers/HookCards';
 
 import Init from '../Init/';
 
@@ -89,6 +89,7 @@ class App extends React.Component {
                     <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
+                <HookCards />
             </Layout>
         </MuiThemeProvider>;
     }
