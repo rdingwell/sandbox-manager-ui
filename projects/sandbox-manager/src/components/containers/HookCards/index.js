@@ -19,6 +19,10 @@ class HookCards extends Component {
         }
     }
 
+    componentWillReceiveProps (nextProps) {
+        nextProps.cards.length < this.props.cards.length && this.setState({ selectedCard: undefined, cardToRemove: undefined });
+    }
+
     render () {
         return <div className='hook-cards-wrapper' style={{ height: `${this.props.cards.length * 32}px` }}>
             {this.getCards()}
@@ -29,25 +33,46 @@ class HookCards extends Component {
     getCards = () => {
         return this.props.cards.map((card, i) => {
             let classes = `hook-card ${card.indicator}${i === this.state.removedCard ? ' remove' : ''}${i === this.state.selectedCard ? ' open' : ''}`;
-            if (this.state.cardToRemove !== undefined && this.state.cardToRemove > i) {
-                i++;
-            }
+            let offset = (this.props.cards.length - i - 1) * 32 - (this.state.selectedCard === i ? 0 : 368);
+            this.state.cardToRemove === i && (offset -= 432);
+            this.state.cardToRemove > i && (offset -= 32);
+            let bottom = `${offset}px`;
 
-            return <div key={i} className={classes} style={{ bottom: `${(this.props.cards.length - i - 1) * 32 - (this.state.selectedCard === i ? 32 : 300)}px` }} onClick={() => this.toggleCard(i)}>
+            return <div key={i + card.summary.substring(0, 5)} className={classes} style={{ bottom }} onClick={() => this.toggleCard(i)}>
                 <span>{card.summary}</span>
                 <div className='hook-card-content-wrapper' onClick={this.preventClick}>
-                    <span>
-                        Source: {card.source && card.source.label
-                        ? <span className={`${card.source.url ? 'link' : ''}`} onClick={() => this.openUrl(card.source.url)}>{card.source.label}</span>
-                        : <span className='alert'>No source provided (this is a required field. Consider adding it to the card)!</span>}
-                    </span>
-                    {card.detail && <div className='detail-wrapper' dangerouslySetInnerHTML={{ __html: card.detail }}/>}
-                    <div className='links-wrapper'>
-                        {card.links && card.links.map(link => {
-                            return <RaisedButton onClick={() => this.openUrl(link.url)} overlayStyle={{ padding: '0 16px' }}>
-                                <span style={{ position: 'relative', marginRight: '10px' }}>{link.label}</span>
-                            </RaisedButton>
-                        })}
+                    <div className='source-wrapper'>
+                        <div className='title'>
+                            <span>Source</span>
+                        </div>
+                        <div className='hook-card-content'>
+                            {card.source && card.source.label
+                                ? <span className={`${card.source.url ? 'link' : ''}`} onClick={() => this.openUrl(card.source.url)}>{card.source.label}</span>
+                                : <span className='alert'>No source provided (this is a required field. Consider adding it to the card)!</span>}
+                        </div>
+                    </div>
+                    {card.detail && <div className='detail-wrapper'>
+                        <div className='title'>
+                            <span>Details</span>
+                        </div>
+                        <div className='hook-card-content' dangerouslySetInnerHTML={{ __html: card.detail }}/>
+                    </div>}
+                    {card.links && card.links.length && <div className='links-wrapper'>
+                        <div className='title'>
+                            <span>Links</span>
+                        </div>
+                        <div className='hook-card-content'>
+                            {card.links && card.links.map((link, key) => {
+                                return <RaisedButton onClick={() => this.openUrl(link.url)} overlayStyle={{ padding: '0 16px' }} key={key}>
+                                    <span style={{ position: 'relative', marginRight: '10px' }}>{link.label}</span>
+                                </RaisedButton>
+                            })}
+                        </div>
+                    </div>}
+                    <div className='hook-card-actions'>
+                        <RaisedButton onClick={() => this.removeCard(i)} overlayStyle={{ padding: '0 16px' }}>
+                            <span style={{ position: 'relative', marginRight: '10px' }}>Dismiss card</span>
+                        </RaisedButton>
                     </div>
                 </div>
             </div>
@@ -72,13 +97,12 @@ class HookCards extends Component {
 
     removeCard = (index) => {
         this.setState({ cardToRemove: index }, () => {
-            this.setState({ removedCard: index });
+            // setTimeout(() => {
+            //     this.setState({ selectedCard: undefined, cardToRemove: undefined });
             setTimeout(() => {
                 this.props.removeResultCard(index);
-                this.setState({ removedCard: index }, () => {
-
-                });
-            }, 500);
+            }, 300)
+            // }, 200);
         });
     };
 }

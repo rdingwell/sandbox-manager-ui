@@ -17,7 +17,7 @@
     position: absolute;
     width: 100%;
     transition: all .3s;
-    height: 300px;
+    height: 400px;
 
     &:hover {
       cursor: pointer;
@@ -96,7 +96,7 @@
     .hook-card-content-wrapper {
       background-color: #f5f5f5;
       width: 98%;
-      height: 82%;
+      height: 84%;
       position: relative;
       left: 1%;
       border-radius: 5px;
@@ -104,6 +104,8 @@
       top: 5%;
       color: black;
       font-size: 1.2rem;
+      padding: 2px 10px;
+      box-sizing: border-box;
 
       &:hover {
         cursor: default;
@@ -112,6 +114,7 @@
       .link {
         color: darkblue;
         text-decoration: underline;
+
         &:hover {
           cursor: pointer;
         }
@@ -119,6 +122,51 @@
 
       .alert {
         color: #9C0227;
+      }
+
+      .source-wrapper, .detail-wrapper, .links-wrapper {
+        background: white;
+        border: 1px solid darkgray;
+        box-sizing: border-box;
+        border-radius: 5px;
+        margin-bottom: 10px;
+
+        .title {
+          border-bottom: 1px solid darkgray;
+        }
+      }
+
+      .detail-wrapper, .links-wrapper {
+        width: ~'calc(50% - 5px)';
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: top;
+
+        img {
+          max-width: 100%;
+        }
+
+        .hook-card-content {
+          padding: 5px;
+        }
+      }
+
+      .source-wrapper {
+        margin-top: 5px;
+      }
+
+      .detail-wrapper {
+        margin-right: 5px;
+      }
+
+      .links-wrapper {
+        margin-left: 5px;
+      }
+
+      .hook-card-actions {
+        position: absolute;
+        bottom: 5px;
+        width: 100%;
       }
     }
   }
