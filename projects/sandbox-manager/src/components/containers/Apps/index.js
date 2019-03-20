@@ -14,8 +14,12 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
+import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
+import PatientIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import PillIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/pill_icon_2.svg";
 
 import AppDialog from './AppDialog';
+import HookDialog from './HookDialog';
 import PersonaList from "../Persona/List";
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
 
@@ -45,8 +49,9 @@ class Apps extends Component {
             createApp: undefined,
             appIsLoading: false,
             manifestURL: '',
+            serviceName: '',
             textSelected: undefined,
-            hooks: []
+            hooks: props.hooksList || []
         };
     }
 
@@ -77,9 +82,9 @@ class Apps extends Component {
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
                         <span className='dummy-expander'/>
-                        <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
+                        {!this.props.hooks && <FloatingActionButton onClick={() => this.setState({ registerDialogVisible: true })}>
                             <ContentAdd/>
-                        </FloatingActionButton>
+                        </FloatingActionButton>}
                         <FloatingActionButton onClick={() => this.setState({ loadDialogVisible: true })}>
                             <Publish/>
                         </FloatingActionButton>
@@ -109,33 +114,60 @@ class Apps extends Component {
 
     getHooks = () => {
         let hooks = [];
-        let currentURL = '';
-        this.props.hooksList.map((hook, index) => {
-            let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
-            if (!this.props.modal && !hook.description) {
-                titleStyle.height = '39%';
-                titleStyle.bottom = '-18%';
-            }
-            hook.url !== currentURL && hooks.push(<div key={index + '_div'}><h2>{hook.url}</h2></div>);
-            currentURL = hook.url;
-            hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={index}
-                             onTouchStart={() => this.hookCardClick(hook)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
-                <CardMedia className='media-wrapper'>
-                    <img style={{ height: '100%' }} src={hook.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
-                </CardMedia>
-                <CardTitle className='card-title' style={titleStyle}>
-                    <h3 className='app-name'>{hook.title}</h3>
-                    <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
-                    {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedHook ? hook.id === this.props.selectedHook.id : false}/>}
-                    <div className='app-description'>{hook.description}</div>
-                </CardTitle>
-                {!this.props.modal && <CardActions className='card-actions-wrapper'>
-                    <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
-                                icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
-                </CardActions>}
-            </Card>);
+        this.state.hooks.map(service => {
+            hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
+                <h2>{service.title}</h2>
+                <span>{service.url}</span>
+            </div>);
+            return service.hooks.map((hook, index) => {
+                hook.url = service.url;
+                let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
+                if (!this.props.modal && !hook.description) {
+                    titleStyle.height = '39%';
+                    titleStyle.bottom = '-18%';
+                }
+                hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
+                                 onTouchStart={() => this.hookCardClick(hook)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
+                    <div className='hook-icon-wrapper'>
+                        {this.getHookIcon(hook.hook)}
+                    </div>
+                    <CardMedia className='media-wrapper'>
+                        {hook.logoUri && <img style={{ height: '100%' }} src={hook.logoUri} alt='HSPC Logo'/>}
+                        {!hook.logoUri && <HooksIcon className='default-hook-icon'/>}
+                    </CardMedia>
+                    <CardTitle className='card-title' style={titleStyle}>
+                        <h3 className='app-name'>{hook.title}</h3>
+                        <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
+                        {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedHook ? hook.id === this.props.selectedHook.id : false}/>}
+                        <div className='app-description'>{hook.description}</div>
+                    </CardTitle>
+                    {!this.props.modal && <CardActions className='card-actions-wrapper'>
+                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
+                                    icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
+                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook)}
+                                    icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
+                    </CardActions>}
+                </Card>);
+            });
         });
         return hooks;
+    };
+
+    getHookIcon = (hookType) => {
+
+        switch (hookType) {
+            case 'patient-view':
+                return <PatientIcon/>;
+            case 'medication-prescribe':
+                return <PillIcon className='additional-rotation'/>;
+        }
+        return null;
+    };
+
+    handleHookSelect = (e, hook) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ selectedHook: hook, registerDialogVisible: false, appIsLoading: true });
     };
 
     getDialog = () => {
@@ -189,6 +221,7 @@ class Apps extends Component {
                                 </IconButton>
                                 <h3>{this.props.hooks ? 'Register through service' : 'Register with manifest'}</h3>
                                 <div className={`manifest-load${this.props.hooks ? ' small' : ''}`}>
+                                    <TextField value={this.state.serviceName} onChange={(_, serviceName) => this.setState({ serviceName })} fullWidth floatingLabelText={'Service name'}/>
                                     <div style={{ width: '100%', verticalAlign: 'middle' }}>
                                         <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={(_, a) => this.setState({ manifestURL: a.trim() })}
                                                    floatingLabelText={this.props.hooks ? 'Service url' : 'Manifest URL'}/>
@@ -208,7 +241,10 @@ class Apps extends Component {
                                 </div>
                             </Paper>
                         </Dialog>
-                        : null;
+                        :
+                        !!this.state.selectedHook
+                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook}/>
+                            : null;
     };
 
     getApps = () => {
@@ -260,16 +296,20 @@ class Apps extends Component {
         this.setState({ loadingManifest: true });
         API.getNoAuth(url)
             .then(result => {
-                let services = [];
+                let hooks = this.state.hooks.slice();
+                let newHooks = {
+                    title: this.state.serviceName || url,
+                    url,
+                    hooks: []
+                };
                 if (result && result.services) {
                     result.services.map(service => {
-                        services.push(service);
-                        services[services.length - 1].url = url;
-                        !services[services.length - 1].title && services[services.length - 1].name && (services[services.length - 1].title = services[services.length - 1].name);
+                        newHooks.hooks.push(service);
                     });
                 }
+                hooks.push(newHooks);
 
-                this.setState({ hooks: services, loadingManifest: false });
+                this.setState({ hooks, loadingManifest: false });
                 this.closeAll();
             })
             .catch(_ => {
@@ -359,7 +399,7 @@ class Apps extends Component {
         !this.state.loadingManifest &&
         this.setState({
             selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false, createdApp: undefined, loadDialogVisible: false, loadingManifest: false,
-            hookToLaunch: undefined
+            hookToLaunch: undefined, selectedHook: undefined
         });
     };
 

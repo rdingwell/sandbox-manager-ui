@@ -25,14 +25,10 @@
 }
 
 .manifest-load {
-  height: 13rem;
+  height: 15rem;
   padding: 0 25px;
 
-  &.small {
-    height: 8rem;
-  }
-
-  & > div:first-of-type > div:first-of-type {
+  & > div:last-of-type > div:first-of-type {
     width: ~"calc(100% - 88px - 1rem)" !important;
     margin-right: 1rem;
   }
@@ -115,6 +111,16 @@
     }
   }
 
+  .service-title-wrapper {
+    position: relative;
+
+    span {
+      font-size: .8rem;
+      position: absolute;
+      bottom: -18px;
+    }
+  }
+
   .app-card {
     width: 278px;
     height: 235px;
@@ -122,6 +128,34 @@
     position: relative;
     overflow: hidden;
     margin: 24px 32px 0 0;
+
+    .hook-icon-wrapper {
+      position: absolute;
+      top: -14px;
+      right: -30px;
+      width: 80px;
+      height: 50px;
+      transform: rotate(45deg);
+      background-color: #1B9F7D;
+
+      svg {
+        transform: rotate(-45deg);
+        top: 20px;
+        position: relative;
+        left: 27px;
+        fill: white;
+
+        &.additional-rotation {
+          transform: rotate(-135deg);
+          top: 24px;
+          left: 29px;
+        }
+
+        path {
+          fill: white !important;
+        }
+      }
+    }
 
     .explore-app-button-wrapper {
       padding: 9px 0 !important;
@@ -350,4 +384,10 @@
     position: absolute !important;
     right: 0;
   }
+}
+
+.default-hook-icon {
+  fill: #00749f;
+  height: 100%;
+  width: 100%;
 }

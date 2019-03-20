@@ -6,7 +6,6 @@ import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import './styles.less';
-import FeedbackIcon from '../../App';
 import { RaisedButton } from 'material-ui';
 
 class HookCards extends Component {
@@ -97,12 +96,9 @@ class HookCards extends Component {
 
     removeCard = (index) => {
         this.setState({ cardToRemove: index }, () => {
-            // setTimeout(() => {
-            //     this.setState({ selectedCard: undefined, cardToRemove: undefined });
             setTimeout(() => {
                 this.props.removeResultCard(index);
             }, 300)
-            // }, 200);
         });
     };
 }
