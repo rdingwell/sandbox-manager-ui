@@ -121,7 +121,7 @@ class Apps extends Component {
             </div>);
             return service.hooks.map((hook, index) => {
                 hook.url = service.url;
-                hook.id = index;
+                // hook.id = index;
                 let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
                 if (!this.props.modal && !hook.description) {
                     titleStyle.height = '39%';
