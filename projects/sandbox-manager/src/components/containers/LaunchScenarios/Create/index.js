@@ -104,7 +104,10 @@ class Create extends Component {
     getActions = () => {
         let hasAllRequiredHookContext = this.state.scenarioType === 'hook' && Object.keys(this.props.resourceListLoadError).length === 0;
         hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
-            (!this.state[item] || this.state[item].length === 0) && (hasAllRequiredHookContext = false);
+            let resType = this.props.hookContexts[this.state.selectedApp.hook][item].resourceType;
+            if (!this.state[item] || this.state[item].length === 0 || (typeof (resType) === 'string' && !this.props.resourceList[resType])) {
+                hasAllRequiredHookContext = false;
+            }
         });
 
         let nextEnabled = this.state.currentStep === -1
@@ -249,7 +252,7 @@ class Create extends Component {
                                 <div className='summary-item-icon-left'>
                                     <WebIcon style={iconStyle}/>
                                 </div>
-                                <span className='summary-item-text'>{this.state.selectedApp.clientName}</span>
+                                <span className='summary-item-text'>{this.state.selectedApp.clientName || this.state.selectedApp.title}</span>
                             </div>
                             <div className='summary-item'>
                                 <span className='section-sub-title'>Launched by</span>
@@ -268,48 +271,7 @@ class Create extends Component {
                             <div className='summary-item'>
                                 <span className='section-sub-title'>With the following context:</span>
                             </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <PatientIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.props.singlePatient ? getPatientName(this.props.singlePatient) : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <EventIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.state.encounterId ? this.state.encounterId : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <HospitalIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.state.locationId ? this.state.locationId : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <DescriptionIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.state.resource ? this.state.resource : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <BulbIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.state.intent ? this.state.intent : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <LinkIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>{this.state.url ? this.state.url : '-'}</span>
-                            </div>
-                            <div className='summary-item'>
-                                <div className='summary-item-icon-left'>
-                                    <FullScreenIcon style={iconStyle}/>
-                                </div>
-                                <span className='summary-item-text'>Needs Patient Banner: {this.state.patientBanner ? 'Yes' : 'No'}</span>
-                            </div>
+                            {this.getContextSummary(iconStyle)}
                         </div>
                         <div className='context-right-column'>
                             <div className='summary-item'>
@@ -328,6 +290,68 @@ class Create extends Component {
                         </div>
                     </div>
                 </div>;
+        }
+    };
+
+    getContextSummary = (iconStyle) => {
+        if (this.state.scenarioType === 'app') {
+            return <Fragment>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <PatientIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.props.singlePatient ? getPatientName(this.props.singlePatient) : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <EventIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.state.encounterId ? this.state.encounterId : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <HospitalIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.state.locationId ? this.state.locationId : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <DescriptionIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.state.resource ? this.state.resource : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <BulbIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.state.intent ? this.state.intent : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <LinkIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>{this.state.url ? this.state.url : '-'}</span>
+                </div>
+                <div className='summary-item'>
+                    <div className='summary-item-icon-left'>
+                        <FullScreenIcon style={iconStyle}/>
+                    </div>
+                    <span className='summary-item-text'>Needs Patient Banner: {this.state.patientBanner ? 'Yes' : 'No'}</span>
+                </div>
+            </Fragment>
+        } else {
+            return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
+                let context = this.props.hookContexts[this.state.selectedApp.hook][key];
+                let value = this.state[key] || '';
+
+                return <div className='summary-item' key={index}>
+                    <div className='summary-item-icon-left'>
+                        <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
+                    </div>
+                    <span className='summary-item-text'><span>{context.title}</span>: {value ? value : '-'}</span>
+                </div>
+
+            })
         }
     };
 
@@ -464,7 +488,7 @@ class Create extends Component {
         return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
             let context = this.props.hookContexts[this.state.selectedApp.hook][key];
             let value = this.state[key] || '';
-            let disabled = key === 'userId' || typeof (context.resourceType) !== 'string';
+            let disabled = key === 'userId' || typeof (context.resourceType) !== 'string' || this.props.resourceListFetching[context.resourceType];
 
             return index % 2 === comp && <div className='column-item-wrapper' key={index}>
                 <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
@@ -578,14 +602,25 @@ class Create extends Component {
             createdBy: this.props.user
         };
         this.state.id && (data.id = this.state.id);
-        this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
-        this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
-        this.state.encounterId && (data.encounter = this.state.encounterId);
-        this.props.singlePatient && (data.patient = this.state.patientId);
-        this.state.locationId && (data.location = this.state.locationId);
-        this.state.resource && (data.resource = this.state.resource);
-        this.state.url && (data.smartStyleUrl = this.state.url);
-        this.state.intent && (data.intent = this.state.intent);
+
+        if (this.state.scenarioType === 'app') {
+            this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
+            this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
+            this.state.encounterId && (data.encounter = this.state.encounterId);
+            this.props.singlePatient && (data.patient = this.state.patientId);
+            this.state.locationId && (data.location = this.state.locationId);
+            this.state.resource && (data.resource = this.state.resource);
+            this.state.url && (data.smartStyleUrl = this.state.url);
+            this.state.intent && (data.intent = this.state.intent);
+        } else {
+            data.context = [];
+            Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map(key => {
+                let value = this.state[key];
+                let obj = {};
+                obj[key] = value;
+                value && value.length > 0 && (data.context.push(obj));
+            })
+        }
 
         this.props.create && this.props.create(data);
 
@@ -598,7 +633,7 @@ class Create extends Component {
         if (currentStep === 1) {
             this.props.fetchPersonas(PersonaList.TYPES.persona);
         } else if (this.state.titleIsClean && currentStep === 3 && !this.state.id) {
-            let title = `Launch ${this.state.selectedApp.clientName}`;
+            let title = `Launch ${this.state.selectedApp.clientName || this.state.selectedApp.title}`;
             title += (this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '');
             title += ` as ${this.getSelectedName()}`;
             state.title = title;

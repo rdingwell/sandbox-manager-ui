@@ -247,6 +247,10 @@
       }
 
       .summary-item {
+        .summary-item-text > span {
+          font-weight: bold;
+        }
+
         span.section-title {
           font-size: 18px;
           color: black;
@@ -266,6 +270,13 @@
           margin-right: 16px;
           position: relative;
           top: 6px;
+
+          .required-tag {
+            color: red;
+            position: absolute;
+            top: 0;
+            right: -5px;
+          }
         }
 
         .summary-item-icon-right {

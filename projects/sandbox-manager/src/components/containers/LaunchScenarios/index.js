@@ -22,6 +22,7 @@ import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icon
 import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
 import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
 import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
+import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
@@ -227,14 +228,16 @@ class LaunchScenarios extends Component {
                         return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
-                                    {isPatient
+                                    {!sc.app
+                                        ? <i><HooksIcon /></i>
+                                        : isPatient
                                         ? <i><Patient/></i>
                                         : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
                             <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.title || sc.description}</span>
-                                <span className='launch-scenario-app-name'>{sc.app.clientName}</span>
+                                <span className='launch-scenario-app-name'>{sc.app && sc.app.clientName}{'\u00A0'}</span>
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
@@ -327,10 +330,10 @@ class LaunchScenarios extends Component {
                     <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
-                            <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                            <img style={{ height: '100%' }} src={selectedScenario.app && selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                         </CardMedia>
                         <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                            <span className='app-name'>{selectedScenario.app.clientName}</span>
+                            <span className='app-name'>{selectedScenario.app && selectedScenario.app.clientName}</span>
                         </div>
                     </Card>
                 </div>
