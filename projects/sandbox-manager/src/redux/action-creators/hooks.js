@@ -1,31 +1,10 @@
 import API from '../../lib/api';
 import * as types from './types';
 import { random } from './sandbox';
+import { setGlobalError } from './app';
 
-const CONTEXT = {
-    'patient-view': {
-        userId: {
-            required: true,
-            get: getUserId
-        },
-        patientId: {
-            required: true
-        },
-        encounterId: {}
-    },
-    'medication-prescribe': {
-        userId: {
-            required: true,
-            get: getUserId
-        },
-        patientId: {
-            required: true
-        },
-        medications: {
-            required: true
-        },
-        encounterId: {}
-    }
+const GETTERS = {
+    userId: getUserId
 };
 
 export const hookExecuting = executing => {
@@ -42,7 +21,7 @@ export const setResultCards = cards => {
     }
 };
 
-export function removeResultCard(cardIndex) {
+export function removeResultCard (cardIndex) {
     return {
         type: types.HOOKS_REMOVE_CARD,
         payload: { cardIndex }
@@ -54,13 +33,13 @@ export const launchHook = (hook, launchContext) => {
         dispatch(hookExecuting(true));
 
         let state = getState();
-        let context = buildContext(hook.hook, launchContext, state);
+        let context = buildContext(hook.hook, launchContext, state, dispatch);
 
         // Authorize the hook
         let userData = { username: state.sandbox.defaultUser.personaUserId, password: state.sandbox.defaultUser.password };
         let configuration = state.config.xsettings.data.sandboxManager;
 
-        API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", userData, dispatch)
+        context && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", userData, dispatch)
             .then(authData => {
                 let data = {
                     hookInstance: random(64),
@@ -116,17 +95,24 @@ export const launchHook = (hook, launchContext) => {
     }
 };
 
-function buildContext (hook, launchContext, state) {
-    let params = CONTEXT[hook];
+function buildContext (hook, launchContext, state, dispatch) {
+    let params = state.hooks.hookContexts[hook];
     let context = {};
+    let hasMissingContext = false;
     if (params) {
         Object.keys(params).map(key => {
-            let val = params[key].get ? params[key].get(state) : launchContext[key];
-            val && val.length > 0 && (context[key] = val);
+            let required = params[key].required;
+            let val = launchContext[key] ? launchContext[key] : GETTERS[key] ? GETTERS[key](state) : undefined;
+            if ((!val || val.length === 0) && required) {
+                dispatch(setGlobalError(`Hook can not be launched! Missing required context "${key}".`));
+                hasMissingContext = true;
+            } else if (val && val.length > 0) {
+                context[key] = val;
+            }
         });
     }
 
-    return context;
+    return !hasMissingContext ? context : undefined;
 }
 
 function getUserId (state) {

@@ -17,6 +17,7 @@ export default (state = initialState, action) => {
             break;
         case "persist/REHYDRATE":
             state = action.payload && action.payload.hooks ? action.payload.hooks : state;
+            state.hookContexts = initialState.hookContexts;
             break;
     }
 

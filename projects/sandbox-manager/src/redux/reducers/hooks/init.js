@@ -56,5 +56,32 @@ export default {
             ]
         }
     ],
-    cards: []
+    cards: [],
+    hookContexts: {
+        'patient-view': {
+            userId: {
+                required: true
+            },
+            patientId: {
+                required: true
+            },
+            encounterId: {
+                required: false
+            }
+        },
+        'medication-prescribe': {
+            userId: {
+                required: true
+            },
+            patientId: {
+                required: true
+            },
+            medications: {
+                required: true
+            },
+            encounterId: {
+                required: false
+            }
+        }
+    }
 }

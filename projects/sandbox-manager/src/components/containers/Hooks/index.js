@@ -4,7 +4,7 @@ import Apps from '../Apps';
 
 class Hooks extends Component {
     render () {
-        return <Apps {...this.props} hooks title='Registered Hooks' />;
+        return <Apps {...this.props} hooks title='Registered CDS Services' />;
     }
 }
 
