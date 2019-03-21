@@ -155,7 +155,7 @@ class Create extends Component {
                             <img style={{ height: '100%' }} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
                         </CardMedia>
                         <CardTitle className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>App launch</h3>
+                            <h3 className='app-name'>SMART App</h3>
                             <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'app'}/>
                         </CardTitle>
                     </Card>
@@ -164,7 +164,7 @@ class Create extends Component {
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
                         <CardTitle className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>Hook launch</h3>
+                            <h3 className='app-name'>CDS Hook</h3>
                             <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'hook'}/>
                         </CardTitle>
                     </Card>
@@ -613,12 +613,10 @@ class Create extends Component {
             this.state.url && (data.smartStyleUrl = this.state.url);
             this.state.intent && (data.intent = this.state.intent);
         } else {
-            data.context = [];
+            data.context = {};
             Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map(key => {
                 let value = this.state[key];
-                let obj = {};
-                obj[key] = value;
-                value && value.length > 0 && (data.context.push(obj));
+                value && value.length > 0 && (data.context[key] = value);
             })
         }
 
