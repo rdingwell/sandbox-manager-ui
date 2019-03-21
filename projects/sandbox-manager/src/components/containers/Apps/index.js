@@ -121,13 +121,14 @@ class Apps extends Component {
             </div>);
             return service.hooks.map((hook, index) => {
                 hook.url = service.url;
+                hook.id = index;
                 let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
                 if (!this.props.modal && !hook.description) {
                     titleStyle.height = '39%';
                     titleStyle.bottom = '-18%';
                 }
                 hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
-                                 onTouchStart={() => this.hookCardClick(hook)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
+                                 onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
                     <div className='hook-icon-wrapper'>
                         {this.getHookIcon(hook.hook)}
                     </div>
@@ -138,7 +139,8 @@ class Apps extends Component {
                     <CardTitle className='card-title' style={titleStyle}>
                         <h3 className='app-name'>{hook.title}</h3>
                         <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
-                        {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedHook ? hook.id === this.props.selectedHook.id : false}/>}
+                        {this.props.modal && <RadioButton className='app-radio' value="selected"
+                                                          checked={this.props.selectedApp ? hook.url === this.props.selectedApp.url && hook.id === this.props.selectedApp.id : false}/>}
                         <div className='app-description'>{hook.description}</div>
                     </CardTitle>
                     {!this.props.modal && <CardActions className='card-actions-wrapper'>
@@ -373,6 +375,11 @@ class Apps extends Component {
     appCardClick = (app) => {
         let toggledApp = this.state.toggledApp && this.state.toggledApp === app.id ? undefined : app.id;
         this.setState({ toggledApp });
+    };
+
+    hookCardClick = (hook) => {
+        let toggledHook = this.state.toggledHook && this.state.toggledHook === hook ? undefined : hook;
+        this.setState({ toggledHook });
     };
 
     delete = () => {

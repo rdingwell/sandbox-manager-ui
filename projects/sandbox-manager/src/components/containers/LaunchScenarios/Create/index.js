@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { CircularProgress, Dialog, FlatButton, IconButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
+import React, { Component, Fragment } from 'react';
+import { Card, CardActions, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
@@ -15,6 +15,7 @@ import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/ro
 import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
 import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
 import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
+import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
 import { getPatientName, getAge } from "sandbox-manager-lib/utils/fhir";
 import PersonaList from "../../Persona/List";
@@ -45,7 +46,8 @@ class Create extends Component {
             personaType: (props.userPersona && props.userPersona.resource) || null,
             selectedPersona: props.userPersona || null,
             url: props.smartStyleUrl || '',
-            currentStep: 0
+            currentStep: -1,
+            scenarioType: undefined
         };
     }
 
@@ -72,37 +74,43 @@ class Create extends Component {
             <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
                 <i className="material-icons">close</i>
             </IconButton>
-            <div className='stepper'>
-                <Stepper activeStep={this.state.currentStep}>
-                    <Step>
-                        <StepLabel className='step-label'>Select App</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel className='step-label'>Choose Persona</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel className='step-label'>Build Launch Context</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel className='step-label'>Details</StepLabel>
-                    </Step>
-                </Stepper>
-            </div>
+            {this.state.currentStep >= 0 && <div className='stepper'>
+                {this.getStepper()}
+            </div>}
             <div className='create-scenario-content-wrapper'>
                 {this.getContent()}
             </div>
         </Dialog>
     }
 
+    getStepper = () => {
+        return <Stepper activeStep={this.state.currentStep}>
+            <Step>
+                <StepLabel className='step-label'>{this.state.scenarioType === 'app' ? 'Select App' : 'Select Hook'}</StepLabel>
+            </Step>
+            <Step>
+                <StepLabel className='step-label'>Choose Persona</StepLabel>
+            </Step>
+            <Step>
+                <StepLabel className='step-label'>Build Launch Context</StepLabel>
+            </Step>
+            <Step>
+                <StepLabel className='step-label'>Details</StepLabel>
+            </Step>
+        </Stepper>
+    };
+
     getActions = () => {
-        let nextEnabled = this.state.currentStep === 0
-            ? !!this.state.selectedApp
-            : this.state.currentStep === 1
-                ? !!this.state.selectedPersona
-                : this.state.currentStep === 2
-                    ? !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError
-                    && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError
-                    : this.state.title.length > 2;
+        let nextEnabled = this.state.currentStep === -1
+            ? !!this.state.scenarioType
+            : this.state.currentStep === 0
+                ? !!this.state.selectedApp
+                : this.state.currentStep === 1
+                    ? !!this.state.selectedPersona
+                    : this.state.currentStep === 2
+                        ? !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError
+                        && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError
+                        : this.state.title.length > 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
 
@@ -110,7 +118,7 @@ class Create extends Component {
             ? [<FlatButton disabled={!nextEnabled} label="NEXT" labelPosition="before" style={{ color: nextColor }} icon={<RightIcon/>} onClick={this.next}/>]
             : [<RaisedButton disabled={!nextEnabled} label="SAVE" primary onClick={this.createScenario}/>];
 
-        if (this.state.currentStep > 0) {
+        if (this.state.currentStep > -1) {
             actions.unshift(
                 <FlatButton label={<span className='perv-button-label'><LeftIcon style={{ color: prevColor }}/> BACK</span>} labelPosition="before" style={{ color: prevColor }} onClick={this.prev}/>
             );
@@ -122,6 +130,7 @@ class Create extends Component {
     getContent = () => {
         let palette = this.props.muiTheme.palette;
         let titleStyle = { color: palette.primary3Color };
+        let cardTitleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
         let underlineFocusStyle = { borderColor: palette.primary2Color };
         let floatingLabelFocusStyle = { color: palette.primary2Color };
         let iconStyle = { color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px' };
@@ -130,10 +139,36 @@ class Create extends Component {
         let rightIconRedStyle = { color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative' };
 
         switch (this.state.currentStep) {
+            case -1:
+                return <div className='type-selection-wrapper apps-screen-wrapper modal'>
+                    <span className='modal-screen-title' style={titleStyle}>Select a launch scenario type</span>
+                    <Card title='App launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'app' })}>
+                        <CardMedia className='media-wrapper'>
+                            <img style={{ height: '100%' }} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
+                        </CardMedia>
+                        <CardTitle className='card-title' style={cardTitleStyle}>
+                            <h3 className='app-name'>App launch</h3>
+                            <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'app'}/>
+                        </CardTitle>
+                    </Card>
+                    <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'hook' })}>
+                        <CardMedia className='media-wrapper'>
+                            <HooksIcon className='default-hook-icon'/>
+                        </CardMedia>
+                        <CardTitle className='card-title' style={cardTitleStyle}>
+                            <h3 className='app-name'>Hook launch</h3>
+                            <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'hook'}/>
+                        </CardTitle>
+                    </Card>
+                </div>;
             case 0:
                 return <div>
-                    <span className='modal-screen-title' style={titleStyle}><WebIcon style={iconStyle}/> Which app will be launched with this Launch Scenario?</span>
-                    <Apps title=' ' modal onCardClick={selectedApp => this.setState({ selectedApp })} selectedApp={this.state.selectedApp}/>
+                    <span className='modal-screen-title' style={titleStyle}>
+                        {this.state.scenarioType === 'hook'
+                            ? <Fragment>Which hook will be triggered with this Launch Scenario?</Fragment>
+                            : <Fragment><WebIcon style={iconStyle}/> Which app will be launched with this Launch Scenario?</Fragment>}
+                    </span>
+                    <Apps title=' ' hooks={this.state.scenarioType === 'hook'} modal onCardClick={selectedApp => this.setState({ selectedApp })} selectedApp={this.state.selectedApp}/>
                 </div>;
             case 1:
                 let type = PersonaList.TYPES.persona;
