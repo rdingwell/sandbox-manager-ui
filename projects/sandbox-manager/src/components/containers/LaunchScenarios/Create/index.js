@@ -47,6 +47,7 @@ class Create extends Component {
             selectedPersona: props.userPersona || null,
             url: props.smartStyleUrl || '',
             currentStep: -1,
+            requiredHookContext: [],
             scenarioType: undefined
         };
     }
@@ -101,6 +102,11 @@ class Create extends Component {
     };
 
     getActions = () => {
+        let hasAllRequiredHookContext = this.state.scenarioType === 'hook' && Object.keys(this.props.resourceListLoadError).length === 0;
+        hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
+            (!this.state[item] || this.state[item].length === 0) && (hasAllRequiredHookContext = false);
+        });
+
         let nextEnabled = this.state.currentStep === -1
             ? !!this.state.scenarioType
             : this.state.currentStep === 0
@@ -108,8 +114,7 @@ class Create extends Component {
                 : this.state.currentStep === 1
                     ? !!this.state.selectedPersona
                     : this.state.currentStep === 2
-                        ? !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError
-                        && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError
+                        ? (this.state.scenarioType === 'app' && !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError || hasAllRequiredHookContext)
                         : this.state.title.length > 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
@@ -168,14 +173,32 @@ class Create extends Component {
                             ? <Fragment>Which hook will be triggered with this Launch Scenario?</Fragment>
                             : <Fragment><WebIcon style={iconStyle}/> Which app will be launched with this Launch Scenario?</Fragment>}
                     </span>
-                    <Apps title=' ' hooks={this.state.scenarioType === 'hook'} modal onCardClick={selectedApp => this.setState({ selectedApp })} selectedApp={this.state.selectedApp}/>
+                    <Apps title=' ' hooks={this.state.scenarioType === 'hook'} modal onCardClick={this.selectCard} selectedApp={this.state.selectedApp}/>
                 </div>;
             case 1:
                 let type = PersonaList.TYPES.persona;
                 let personaList = this.props.personas;
                 let click = selectedPersona => {
-                    selectedPersona && this.setState({ selectedPersona });
+                    if (selectedPersona) {
+                        let state = { selectedPersona };
+                        if (this.state.scenarioType === 'hook') {
+                            state.requiredHookContext = [];
+                            let hookContext = this.props.hookContexts[this.state.selectedApp.hook];
+                            Object.keys(hookContext).map(key => {
+                                if (key === 'userId') {
+                                    state[key] = selectedPersona.fhirId;
+                                } else if (typeof (hookContext[key].resourceType) !== 'string') {
+                                    state[key] = hookContext[key].resourceType[this.props.sandboxApiEndpointIndex].query
+                                }
+                                if (hookContext[key].required) {
+                                    state.requiredHookContext.push(key);
+                                }
+                            });
+                        }
+                        this.setState(state);
+                    }
                 };
+
                 let props = {
                     type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart, selected: this.state.selectedPersona,
                     search: this.props.fetchPersonas, loading: this.props.personaLoading, pagination: this.props.patientsPagination,
@@ -197,118 +220,18 @@ class Create extends Component {
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
                 return <div>
-                    <span className='modal-screen-title' style={titleStyle}><ContextIcon style={iconStyle}/> What additional launch context will be provided to the app?</span>
+                    <span className='modal-screen-title' style={titleStyle}>
+                        <ContextIcon style={iconStyle}/>
+                        {this.state.scenarioType === 'app'
+                            ? 'What additional launch context will be provided to the app?'
+                            : 'Add the context defined by the hook.'}
+                    </span>
                     <div className='context-selection'>
                         <div className='context-left-column'>
-                            <div className='column-item-wrapper'>
-                                <PatientIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' floatingLabelText='Patient ID'
-                                           onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
-                                           errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
-                                <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
-                                    <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
-                                        <SearchIcon style={iconStyle}/>
-                                    </IconButton>
-                                </div>
-                                {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
-                                    {this.props.fetchingSinglePatient
-                                        ? 'Loading patient data...'
-                                        : <span>
-                                            {getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}
-                                        </span>}
-                                </div>}
-                                <div className='subscript right'>
-                                    {this.props.fetchingSinglePatient && <CircularProgress innerStyle={iconStyleSmaller} size={18}/>}
-                                    {this.props.singlePatient && <CheckIcon style={rightIconGreenStyle}/>}
-                                    {this.props.fetchingSinglePatientError && <CloseIcon style={rightIconRedStyle}/>}
-                                </div>
-                            </div>
-                            <div className='column-item-wrapper'>
-                                <EventIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
-                                           onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)} value={this.state.encounterId}
-                                           errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
-                                {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
-                                    {this.props.fetchingSingleEncounter
-                                        ? 'Loading encounter data...'
-                                        : <span>Encounter FHIR Resource Located</span>}
-                                </div>}
-                                <div className='subscript right'>
-                                    {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={18}/>}
-                                    {this.props.singleEncounter && <CheckIcon style={rightIconGreenStyle}/>}
-                                    {this.props.singleEncounterLoadingError && <CloseIcon style={rightIconRedStyle}/>}
-                                </div>
-                            </div>
-                            <div className='column-item-wrapper'>
-                                <HospitalIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
-                                           onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)} value={this.state.locationId}
-                                           errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
-                                {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
-                                    {this.props.fetchingSingleLocation
-                                        ? 'Loading location data...'
-                                        : <span>Location FHIR Resource Located</span>}
-                                </div>}
-                                <div className='subscript right'>
-                                    {this.props.fetchingSingleLocation && <CircularProgress innerStyle={iconStyle} size={18}/>}
-                                    {this.props.singleLocation && <CheckIcon style={rightIconGreenStyle}/>}
-                                    {this.props.singleLocationLoadingError && <CloseIcon style={rightIconRedStyle}/>}
-                                </div>
-                            </div>
-                            <div className='column-item-wrapper'>
-                                <DescriptionIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' floatingLabelText='Resource'
-                                           onBlur={() => this.blur('resourceId')} onChange={(_, value) => this.onChange('resource', value)}
-                                           errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
-                                {(this.props.singleResource || this.props.fetchingSingleResource) && <div className='subscript'>
-                                    {this.props.fetchingSingleResource
-                                        ? 'Loading resource data...'
-                                        : <span>FHIR Resource Located</span>}
-                                </div>}
-                                <div className='subscript right'>
-                                    {this.props.fetchingSingleResource && <CircularProgress innerStyle={iconStyle} size={18}/>}
-                                    {this.props.singleResource && <CheckIcon style={rightIconGreenStyle}/>}
-                                    {this.props.singleResourceLoadingError && <CloseIcon style={rightIconRedStyle}/>}
-                                </div>
-                            </div>
+                            {this.getLeftColumnContext(palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
                         </div>
                         <div className='context-right-column'>
-                            <div className='column-item-wrapper'>
-                                <BulbIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
-                                           onChange={(_, value) => this.onChange('intent', value)} value={this.state.intent}
-                                           errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
-                                {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
-                                    {this.props.fetchingSingleIntent
-                                        ? 'Loading intent data...'
-                                        : <span>Intent FHIR Resource Located</span>}
-                                </div>}
-                                <div className='subscript right'>
-                                    {this.props.singleIntent && <CheckIcon style={rightIconGreenStyle}/>}
-                                    {this.props.singleIntentLoadingError && <CloseIcon style={rightIconRedStyle}/>}
-                                </div>
-                            </div>
-                            <div className='column-item-wrapper'>
-                                <LinkIcon className='column-item-icon' style={iconStyle}/>
-                                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' floatingLabelText='SMART Style URL'
-                                           onChange={(_, value) => this.onChange('url', value)} value={this.state.url}/>
-                            </div>
-                            <div className='column-item-wrapper'>
-                                <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                                <div>
-                                    <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }}
-                                            trackStyle={{ backgroundColor: palette.primary7Color }} toggled={this.state.patientBanner}
-                                            thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
-                                            onToggle={(_, value) => this.onChange('patientBanner', value)}/>
-                                    <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
-                                </div>
-                            </div>
-                            <div className='column-item-wrapper big-and-centered'>
-                                <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
-                                    <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                                    <div>About SMART Context</div>
-                                </a>
-                            </div>
+                            {this.getRightColumnContext(palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
                             {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent autoScrollBodyContent={true}/>}
@@ -406,6 +329,167 @@ class Create extends Component {
                     </div>
                 </div>;
         }
+    };
+
+    selectCard = (selectedApp) => {
+        this.setState({ selectedApp });
+    };
+
+    getRightColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+        if (this.state.scenarioType === 'app') {
+            return <Fragment>
+                <div className='column-item-wrapper'>
+                    <BulbIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
+                               onChange={(_, value) => this.onChange('intent', value)} value={this.state.intent}
+                               errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
+                    {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
+                        {this.props.fetchingSingleIntent
+                            ? 'Loading intent data...'
+                            : <span>Intent FHIR Resource Located</span>}
+                    </div>}
+                    <div className='subscript right'>
+                        {this.props.singleIntent && <CheckIcon style={rightIconGreenStyle}/>}
+                        {this.props.singleIntentLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                    </div>
+                </div>
+                <div className='column-item-wrapper'>
+                    <LinkIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' floatingLabelText='SMART Style URL'
+                               onChange={(_, value) => this.onChange('url', value)} value={this.state.url}/>
+                </div>
+                <div className='column-item-wrapper'>
+                    <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                    <div>
+                        <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }}
+                                trackStyle={{ backgroundColor: palette.primary7Color }} toggled={this.state.patientBanner}
+                                thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
+                                onToggle={(_, value) => this.onChange('patientBanner', value)}/>
+                        <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
+                    </div>
+                </div>
+                <div className='column-item-wrapper big-and-centered'>
+                    <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
+                        <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                        <div>About SMART Context</div>
+                    </a>
+                </div>
+            </Fragment>
+        } else {
+            return this.getHookContextColumn(0, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
+        }
+    };
+
+    getLeftColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+        if (this.state.scenarioType === 'app') {
+            return <Fragment>
+                <div className='column-item-wrapper'>
+                    <PatientIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' floatingLabelText='Patient ID'
+                               onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
+                               errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
+                    <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
+                        <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
+                            <SearchIcon style={iconStyle}/>
+                        </IconButton>
+                    </div>
+                    {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
+                        {this.props.fetchingSinglePatient
+                            ? 'Loading patient data...'
+                            : <span>
+                                            {getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}
+                                        </span>}
+                    </div>}
+                    <div className='subscript right'>
+                        {this.props.fetchingSinglePatient && <CircularProgress innerStyle={iconStyleSmaller} size={18}/>}
+                        {this.props.singlePatient && <CheckIcon style={rightIconGreenStyle}/>}
+                        {this.props.fetchingSinglePatientError && <CloseIcon style={rightIconRedStyle}/>}
+                    </div>
+                </div>
+                <div className='column-item-wrapper'>
+                    <EventIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
+                               onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)} value={this.state.encounterId}
+                               errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
+                    {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
+                        {this.props.fetchingSingleEncounter
+                            ? 'Loading encounter data...'
+                            : <span>Encounter FHIR Resource Located</span>}
+                    </div>}
+                    <div className='subscript right'>
+                        {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.singleEncounter && <CheckIcon style={rightIconGreenStyle}/>}
+                        {this.props.singleEncounterLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                    </div>
+                </div>
+                <div className='column-item-wrapper'>
+                    <HospitalIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
+                               onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)} value={this.state.locationId}
+                               errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
+                    {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
+                        {this.props.fetchingSingleLocation
+                            ? 'Loading location data...'
+                            : <span>Location FHIR Resource Located</span>}
+                    </div>}
+                    <div className='subscript right'>
+                        {this.props.fetchingSingleLocation && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.singleLocation && <CheckIcon style={rightIconGreenStyle}/>}
+                        {this.props.singleLocationLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                    </div>
+                </div>
+                <div className='column-item-wrapper'>
+                    <DescriptionIcon className='column-item-icon' style={iconStyle}/>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' floatingLabelText='Resource'
+                               onBlur={() => this.blur('resourceId')} onChange={(_, value) => this.onChange('resource', value)}
+                               errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                    {(this.props.singleResource || this.props.fetchingSingleResource) && <div className='subscript'>
+                        {this.props.fetchingSingleResource
+                            ? 'Loading resource data...'
+                            : <span>FHIR Resource Located</span>}
+                    </div>}
+                    <div className='subscript right'>
+                        {this.props.fetchingSingleResource && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.singleResource && <CheckIcon style={rightIconGreenStyle}/>}
+                        {this.props.singleResourceLoadingError && <CloseIcon style={rightIconRedStyle}/>}
+                    </div>
+                </div>
+            </Fragment>;
+        } else {
+            return this.getHookContextColumn(1, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
+        }
+    };
+
+    getHookContextColumn = (comp, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+        return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
+            let context = this.props.hookContexts[this.state.selectedApp.hook][key];
+            let value = this.state[key] || '';
+            let disabled = key === 'userId' || typeof (context.resourceType) !== 'string';
+
+            return index % 2 === comp && <div className='column-item-wrapper' key={index}>
+                <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
+                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} floatingLabelText={context.title}
+                           onBlur={() => this.blurHookContext(key, context)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
+                           errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                {typeof (context.resourceType) === 'string' && <div className='subscript'>
+                    {this.props.resourceListFetching[context.resourceType]
+                        ? 'Loading resource data...'
+                        : this.props.resourceList[context.resourceType]
+                            ? <span>FHIR Resource Located</span>
+                            : null}
+                </div>}
+                <div className='subscript right'>
+                    {this.props.resourceListFetching[context.resourceType] && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                    {this.props.resourceList[context.resourceType] && <CheckIcon style={rightIconGreenStyle}/>}
+                    {this.props.resourceListLoadError[context.resourceType] && <CloseIcon style={rightIconRedStyle}/>}
+                </div>
+            </div>
+        })
+    };
+
+    blurHookContext = (key, context) => {
+        let crit = this.state[key];
+        crit && typeof (context.resourceType) === 'string' && this.props.fetchAnyResource && this.props.fetchAnyResource(context.resourceType, crit);
     };
 
     onChange = (prop, value) => {

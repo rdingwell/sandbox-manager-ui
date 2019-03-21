@@ -132,9 +132,23 @@ export function setFetchSingleResource (fetching) {
     }
 }
 
+export function setFetchAnyResource (fetching, type) {
+    return {
+        type: actionTypes.FETCHING_ANY_RESOURCE,
+        payload: { fetching, type }
+    }
+}
+
 export function setSingleResource (resource) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE,
+        payload: { resource }
+    }
+}
+
+export function addFetchedResource (resource) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE,
         payload: { resource }
     }
 }
@@ -143,6 +157,13 @@ export function setFetchingSingleResourceError (error) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR,
         payload: { error }
+    }
+}
+
+export function setFetchingAnyResourceError (error, type) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE_LOAD_ERROR,
+        payload: { error, type }
     }
 }
 
@@ -821,9 +842,25 @@ export function fetchResource (id) {
                     dispatch(setFetchSingleResource(false))
                 })
                 .fail(e => {
-                    console.log(e);
                     dispatch(setFetchingSingleResourceError(e));
                     dispatch(setFetchSingleResource(false))
+                });
+        }
+    }
+}
+
+export function fetchAnyResource (type, id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchAnyResource(true, type));
+            window.fhirClient.api.read({ type, id })
+                .done(patient => {
+                    dispatch(addFetchedResource(patient.data));
+                    dispatch(setFetchAnyResource(false, type))
+                })
+                .fail(e => {
+                    dispatch(setFetchingAnyResourceError(e, type));
+                    dispatch(setFetchAnyResource(false, type))
                 });
         }
     }

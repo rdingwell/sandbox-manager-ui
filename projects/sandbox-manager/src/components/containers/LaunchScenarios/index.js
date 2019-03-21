@@ -1,34 +1,9 @@
 import React, { Component } from 'react';
 import {
-    app_setScreen,
-    loadLaunchScenarios,
-    fetchPersonas,
-    getPersonasPage,
-    createScenario,
-    deleteScenario,
-    doLaunch,
-    updateLaunchScenario,
-    updateNeedPatientBanner,
-    lookupPersonasStart,
-    addCustomContext,
-    fetchLocation,
-    fetchPatient,
-    setFetchingSinglePatientFailed,
-    setSinglePatientFetched,
-    setFetchSingleEncounter,
-    setSingleEncounter,
-    setFetchingSingleEncounterError,
-    fetchEncounter,
-    deleteCustomContext,
-    setSingleLocation,
-    setFetchingSingleLocationError,
-    setSingleIntent,
-    setFetchingSingleIntentError,
-    setSingleResource,
-    setFetchingSingleResourceError,
-    fetchResource,
-    fetchIntent,
-    getDefaultUserForSandbox
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
+    fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
+    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
+    customSearch, fetchAnyResource
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -493,13 +468,6 @@ class LaunchScenarios extends Component {
         this.buttonClick = false;
     };
 
-    updateScenario = (state) => {
-        let description = state.description !== this.state.scenarioToEdit.description ? state.description : undefined;
-        let title = state.title !== this.state.scenarioToEdit.title ? state.title : undefined;
-        this.props.updateLaunchScenario(this.state.scenarioToEdit, description, title);
-        this.selectScenarioForEditing();
-    };
-
     openInDM = (e, patient) => {
         // e.stopPropagation();
         this.props.doLaunch({
@@ -551,42 +519,22 @@ const mapStateToProps = state => {
         personaLoading: state.persona.loading,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
 
+        hookContexts: state.hooks.hookContexts,
+        sandboxApiEndpointIndex: state.sandbox.sandboxApiEndpointIndex,
+        resourceList: state.sandbox.resourceList,
+        resourceListFetching: state.sandbox.resourceListFetching,
+        resourceListLoadError: state.sandbox.resourceListLoadError,
+
         sandboxApiUrl, ehrUrl, patientDataManagerUrl
     }
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        setFetchingSinglePatientFailed,
-        fetchPatient,
-        app_setScreen,
-        loadLaunchScenarios,
-        fetchPersonas,
-        getPersonasPage,
-        createScenario,
-        deleteScenario,
-        doLaunch,
-        updateLaunchScenario,
-        updateNeedPatientBanner,
-        lookupPersonasStart,
-        setSinglePatientFetched,
-        setFetchSingleEncounter,
-        setSingleEncounter,
-        setFetchingSingleEncounterError,
-        fetchEncounter,
-        addCustomContext,
-        deleteCustomContext,
-        fetchLocation,
-        setFetchingSingleLocationError,
-        setSingleLocation,
-        setSingleIntent,
-        setFetchingSingleIntentError,
-        setSingleResource,
-        setFetchingSingleResourceError,
-        fetchResource,
-        fetchIntent,
-        getDefaultUserForSandbox,
-        getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
+        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario,
+        updateNeedPatientBanner, lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext,
+        deleteCustomContext, fetchLocation, setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError,
+        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },
     dispatch
