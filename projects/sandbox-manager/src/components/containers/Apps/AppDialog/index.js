@@ -167,8 +167,7 @@ class AppDialog extends Component {
                         </div>
                         <div className='image-wrapper'>
                             {this.state.app.logoUri &&
-                            <FloatingActionButton onClick={() => this.onChange('logoUri')} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}
-                                                  disabled={this.state.isReplica}>
+                            <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
                                 <DeleteIcon/>
                             </FloatingActionButton>}
                             <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
@@ -182,6 +181,12 @@ class AppDialog extends Component {
             </Paper>
         </Dialog>
     }
+
+    removeImage = () => {
+        let input = this.refs.image;
+        input.value = '';
+        this.onChange('logoUri')
+    };
 
     createManifest = () => {
         let clientJSON = JSON.parse(this.props.app.clientJSON);
@@ -261,8 +266,6 @@ class AppDialog extends Component {
                 changes.indexOf('logo') === -1 && changes.push('image');
                 this.setState({ app, changes })
             };
-
-            console.log(input.files[0]);
 
             reader.readAsDataURL(input.files[0]);
         }

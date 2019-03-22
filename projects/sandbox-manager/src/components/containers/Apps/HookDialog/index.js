@@ -37,19 +37,25 @@ class AppDialog extends Component {
                             </div>
                         </div>
                         <div className='image-wrapper'>
-                            {this.state.logoURI && <FloatingActionButton onClick={() => this.setState({logoURI: undefined})} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}
-                                                  disabled={this.state.isReplica}>
+                            {this.state.logoURI &&
+                            <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
                                 <DeleteIcon/>
                             </FloatingActionButton>}
                             <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
                             {!this.state.logoURI && <HooksIcon className='default-hook-icon'/>}
-                            {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI} />}
+                            {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI}/>}
                         </div>
                     </form>
                 </div>
             </Paper>
         </Dialog>
     }
+
+    removeImage = () => {
+        let input = this.refs.image;
+        input.value = '';
+        this.setState({ logoURI: undefined });
+    };
 
     handleClose = () => {
         this.setState({ modalOpen: false });
