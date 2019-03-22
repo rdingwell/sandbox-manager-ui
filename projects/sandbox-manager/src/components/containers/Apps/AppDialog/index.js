@@ -103,7 +103,7 @@ class AppDialog extends Component {
                 <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
-                <h3>Registered App Details</h3>
+                <h3>{this.props.app ? 'Registered App Details' : 'App Details'}</h3>
                 <div className='paper-body'>
                     <form>
                         <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}

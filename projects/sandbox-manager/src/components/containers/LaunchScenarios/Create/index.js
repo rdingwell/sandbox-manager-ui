@@ -29,7 +29,7 @@ class Create extends Component {
     constructor (props) {
         super(props);
 
-        this.state = {
+        let initialState = {
             id: props.id,
             description: props.description || '',
             title: props.title || '',
@@ -49,6 +49,11 @@ class Create extends Component {
             currentStep: -1,
             requiredHookContext: [],
             scenarioType: undefined
+        };
+
+        this.state = {
+            ...initialState,
+            initialState
         };
     }
 
@@ -640,7 +645,9 @@ class Create extends Component {
     };
 
     prev = () => {
-        this.setState({ currentStep: this.state.currentStep - 1 })
+        let currentStep = this.state.currentStep - 1;
+        let state = currentStep >= 0 ? { currentStep } : this.state.initialState;
+        this.setState(state)
     };
 
     initPatient = () => {

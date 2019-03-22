@@ -8,13 +8,10 @@
     top: -46px;
 
     .dummy-expander {
-      width: 772px;
+      width: 828px;
       display: inline-block;
-      @media (max-width: 1262px) {
-        width: 462px;
-      }
-      @media (max-width: 927px) {
-        width: 230px;
+      @media (max-width: 1228px) {
+        width: 518px;
       }
     }
 
@@ -31,6 +28,11 @@
   & > div:last-of-type > div:first-of-type {
     width: ~"calc(100% - 88px - 1rem)" !important;
     margin-right: 1rem;
+  }
+
+  .manifest-url {
+    width: 85% !important;
+    margin-right: 1rem !important;
   }
 
   .sub {
@@ -391,7 +393,14 @@
 }
 
 .default-hook-icon {
-  fill: #00749f;
-  height: 100%;
-  width: 100%;
+  fill: #00749f !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+
+.app-creation-type-selection-wrapper {
+  text-align: center;
+  padding-bottom: 20px;
+  padding-top: 10px !important;
 }
