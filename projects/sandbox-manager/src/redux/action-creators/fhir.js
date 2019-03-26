@@ -250,9 +250,20 @@ export function uploadProfile (file, count) {
 
         API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&apiEndpoint=${state.sandbox.sandboxApiEndpointIndex}`, formData, dispatch, true)
             .then(data => {
-                dispatch(fhir_setProfilesUploading(false));
-                dispatch(fhir_setCustomSearchResults(data));
-                dispatch(loadProfiles(count));
+                console.log(data);
+                let timeoutFunction = () => {
+                    API.get(`${url}/profile/profileUploadStatus?id=${data}`, dispatch)
+                        .then(status => {
+                            if (!status.status) {
+                                dispatch(fhir_setProfilesUploading(false));
+                                dispatch(fhir_setCustomSearchResults(data));
+                                dispatch(loadProfiles(count));
+                            } else {
+                                setTimeout(timeoutFunction, 1000);
+                            }
+                        })
+                };
+                setTimeout(timeoutFunction, 1000);
             })
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));

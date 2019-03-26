@@ -239,7 +239,7 @@ class Profiles extends Component {
         return <div>
             <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-            <List>
+            <List className='profiles-list'>
                 {this.props.profiles.map((profile, key) => {
                     if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
@@ -269,7 +269,7 @@ class Profiles extends Component {
     };
 
     loadZip = () => {
-        if (this.refs.fileZip.files && this.refs.fileZip.files[0] && this.refs.fileZip.files[0].type.indexOf('zip') > -1) {
+        if (this.refs.fileZip.files && this.refs.fileZip.files[0] && (this.refs.fileZip.files[0].type.indexOf('zip') > -1 || this.refs.fileZip.files[0].type.indexOf('tar') > -1)) {
             this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit);
         } else {
             this.toggleWarningModal();
