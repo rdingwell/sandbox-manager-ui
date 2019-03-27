@@ -42,12 +42,12 @@ class Profiles extends Component {
         this.setState({ canFit });
         this.props.loadProfiles(canFit);
 
-        let element = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        let element = document.getElementsByClassName('profiles-list')[0];
         element.addEventListener('scroll', this.scroll);
     }
 
     componentWillUnmount () {
-        let element = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        let element = document.getElementsByClassName('profiles-list')[0];
         element && element.removeEventListener('scroll', this.scroll);
     }
 
@@ -77,7 +77,8 @@ class Profiles extends Component {
         };
         let profile = this.props.validationResults && this.props.validationResults.validatedProfile && this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile) || {};
 
-        return <Page title={<span>Profiles <span style={{fontSize: '14px', verticalAlign: 'middle'}}>[BETA]</span></span>} helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
+        return <Page title={<span>Profiles <span style={{ fontSize: '14px', verticalAlign: 'middle' }}>[BETA]</span></span>}
+                     helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.state.showZipWarning && <Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }}>
                 <div className='sandbox-edit-modal'>
                     <div className='screen-title' style={titleStyle}>
@@ -104,10 +105,7 @@ class Profiles extends Component {
                             <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
-                            {!this.props.profilesUploading && this.props.profiles && this.getList(palette)}
-                            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
-                                <CircularProgress size={40} thickness={5}/>
-                            </div>}
+                            {this.getList(palette)}
                         </div>
                         <div className='white-shadow'/>
                     </div>
@@ -145,7 +143,7 @@ class Profiles extends Component {
                                  className={'manual-input tab' + (tab === 'json-input' ? ' active' : '')} onActive={() => this.setActiveTab('json-input')} value='json-input'>
                                 <div>
                                     <span className='tab-title'>JSON</span>
-                                    <RaisedButton className='clear-json-button' disabled={!this.state.manualJson} label='CLEAR' primary onClick={() => this.setState({manualJson: ''})}/>
+                                    <RaisedButton className='clear-json-button' disabled={!this.state.manualJson} label='CLEAR' primary onClick={() => this.setState({ manualJson: '' })}/>
                                     <TextField className='manual-input' hintText='Paste fhir resource json here' {...styleProps} multiLine fullWidth value={this.state.manualJson}
                                                onChange={(_, manualJson) => this.setState({ query: '', file: '', fileJson: '', manualJson })}/>
                                 </div>
@@ -175,13 +173,13 @@ class Profiles extends Component {
     }
 
     calcCanFit = () => {
-        let containerHeight = document.getElementsByClassName('loaded-profiles-wrapper')[0].clientHeight;
+        let containerHeight = document.getElementsByClassName('profiles-list')[0].clientHeight;
         // we calculate how much patients we can show on the screen and get just that much plus two so that we have content below the fold
         return Math.ceil(containerHeight / 55) + 2;
     };
 
     scroll = () => {
-        let stage = document.getElementsByClassName('loaded-profiles-wrapper')[0];
+        let stage = document.getElementsByClassName('profiles-list')[0];
         let dif = stage.scrollHeight - stage.scrollTop - stage.offsetHeight;
 
         let next = this.props.profilePagination && this.props.profilePagination.link && this.props.profilePagination.link.find(i => i.relation === 'next');
@@ -239,14 +237,23 @@ class Profiles extends Component {
         return <div>
             <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-            <List>
-                {this.props.profiles.map((profile, key) => {
+            <List className='profiles-list'>
+                {this.props.profilesUploading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
+                    <CircularProgress size={40} thickness={5}/>
+                    {this.props.profilesUploadingStatus.resourceSavedCount && <div>
+                        {this.props.profilesUploadingStatus.resourceSavedCount} resources processed
+                    </div>}
+                </div>}
+                {!this.props.profilesUploading && this.props.profiles && this.props.profiles.map((profile, key) => {
                     if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
                     }
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
                     return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}/>;
                 })}
+                {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
+                    <CircularProgress size={40} thickness={5}/>
+                </div>}
             </List>
         </div>
     };
@@ -269,7 +276,7 @@ class Profiles extends Component {
     };
 
     loadZip = () => {
-        if (this.refs.fileZip.files && this.refs.fileZip.files[0] && this.refs.fileZip.files[0].type.indexOf('zip') > -1) {
+        if (this.refs.fileZip.files && this.refs.fileZip.files[0] && (this.refs.fileZip.files[0].type.indexOf('zip') > -1 || this.refs.fileZip.files[0].type.indexOf('tar') > -1)) {
             this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit);
         } else {
             this.toggleWarningModal();
@@ -300,7 +307,8 @@ const mapStateToProps = state => {
         profilePagination: state.fhir.profilePagination,
         profilesLoading: state.fhir.profilesLoading,
         profilesUploading: state.fhir.profilesUploading,
-        validationExecuting: state.fhir.validationExecuting
+        validationExecuting: state.fhir.validationExecuting,
+        profilesUploadingStatus: state.fhir.profilesUploadingStatus
     };
 };
 

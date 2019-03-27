@@ -110,6 +110,13 @@ export function fhir_setProfilesUploading (loading) {
     };
 }
 
+export function fhir_setProfilesUploadingStatus (status) {
+    return {
+        type: types.FHIR_SET_PROFDILES_UPLOADING_STATUS,
+        payload: { status }
+    };
+}
+
 export function fhir_setProfiles (profiles) {
     return {
         type: types.FHIR_SET_PROFDILES,
@@ -250,9 +257,21 @@ export function uploadProfile (file, count) {
 
         API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&apiEndpoint=${state.sandbox.sandboxApiEndpointIndex}`, formData, dispatch, true)
             .then(data => {
-                dispatch(fhir_setProfilesUploading(false));
-                dispatch(fhir_setCustomSearchResults(data));
-                dispatch(loadProfiles(count));
+                let timeoutFunction = () => {
+                    API.get(`${url}/profile/profileUploadStatus?id=${data.id}`, dispatch)
+                        .then(status => {
+                            if (!status.status) {
+                                dispatch(fhir_setProfilesUploading(false));
+                                dispatch(fhir_setCustomSearchResults(data));
+                                dispatch(loadProfiles(count));
+                                dispatch(fhir_setProfilesUploadingStatus({}));
+                            } else {
+                                dispatch(fhir_setProfilesUploadingStatus(status));
+                                setTimeout(timeoutFunction, 1000);
+                            }
+                        })
+                };
+                setTimeout(timeoutFunction, 1000);
             })
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));

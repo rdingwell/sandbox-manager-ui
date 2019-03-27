@@ -3,6 +3,7 @@ export default {
     customSearchResults: null,
     customExportResults: null,
     executing: false,
+    profilesUploadingStatus: {},
     parsed: {
         needPatientBanner: true,
         patientDemographics: {

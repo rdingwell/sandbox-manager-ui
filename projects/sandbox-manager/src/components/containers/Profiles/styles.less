@@ -135,12 +135,19 @@
       vertical-align: top;
       height: 100%;
       width: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       box-sizing: border-box;
 
       & > div {
         padding-right: 5px;
+        height: 100%;
+      }
+      .profiles-list {
+        height: ~'calc(100% - 65px)';
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        right: -5px;
       }
     }
 
