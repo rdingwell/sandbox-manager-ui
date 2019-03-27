@@ -130,7 +130,7 @@ class Apps extends Component {
                 }
                 hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
                                  onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
-                    <div className='hook-icon-wrapper'>
+                    <div className={`hook-icon-wrapper ${hook.hook}`}>
                         {this.getHookIcon(hook.hook)}
                     </div>
                     <CardMedia className='media-wrapper'>
@@ -157,7 +157,6 @@ class Apps extends Component {
     };
 
     getHookIcon = (hookType) => {
-
         switch (hookType) {
             case 'patient-view':
                 return <PatientIcon/>;

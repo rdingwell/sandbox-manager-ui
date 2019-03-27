@@ -46,9 +46,9 @@ class Create extends Component {
             personaType: (props.userPersona && props.userPersona.resource) || null,
             selectedPersona: props.userPersona || null,
             url: props.smartStyleUrl || '',
-            currentStep: -1,
+            currentStep: props.app ? 0 : -1,
             requiredHookContext: [],
-            scenarioType: undefined
+            scenarioType: props.app ? 'app' : undefined
         };
 
         this.state = {
@@ -108,6 +108,7 @@ class Create extends Component {
 
     getActions = () => {
         let hasAllRequiredHookContext = this.state.scenarioType === 'hook' && Object.keys(this.props.resourceListLoadError).length === 0;
+
         hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
             let resType = this.props.hookContexts[this.state.selectedApp.hook][item].resourceType;
             if (!this.state[item] || this.state[item].length === 0 || (typeof (resType) === 'string' && !this.props.resourceList[resType])) {
@@ -361,7 +362,7 @@ class Create extends Component {
     };
 
     selectCard = (selectedApp) => {
-        this.setState({ selectedApp });
+        this.setState({ selectedApp, requiredHookContext: [] });
     };
 
     getRightColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
