@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox } from 'material-ui';
+import React, { Component, Fragment } from 'react';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import Page from 'sandbox-manager-lib/components/Page';
 import ListIcon from 'material-ui/svg-icons/action/list';
+import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
 import ReactJson from 'react-json-view';
 
 import './styles.less';
@@ -25,11 +26,15 @@ class Profiles extends Component {
 
         this.state = {
             query: '',
+            project: '',
+            simplifireProjectName: '',
             activeTab: 'browse',
             canFit: 2,
             resultsView: true,
             selectedPersona: undefined,
-            showZipWarning: false
+            showZipWarning: false,
+            menuActive: false,
+            simplifierInputVisible: false
         };
     }
 
@@ -69,6 +74,16 @@ class Profiles extends Component {
                 <RaisedButton label='OK' primary onClick={this.toggleWarningModal}/>
             </div>
         ];
+        let inputModalActions = [
+            <div key={1} className='input-modal-action'>
+                <RaisedButton label='Load' primary onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
+            </div>,
+            <div key={2} className='input-modal-action'>
+                <RaisedButton label='Cancel' onClick={this.toggleInputModal}/>
+            </div>
+        ];
+        !this.state.simplifierInputVisible && inputModalActions.shift();
+
         let titleStyle = {
             backgroundColor: palette.primary2Color,
             color: palette.alternateTextColor,
@@ -94,6 +109,46 @@ class Profiles extends Component {
                     </div>
                 </div>
             </Dialog>}
+            {this.state.inputModalVisible && <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }}
+                                                     bodyClassName='project-input-modal'>
+                <Paper className='paper-card'>
+                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h3>{this.state.simplifierInputVisible ? 'Import "simplifier" project' : 'Import profile'}</h3>
+                    <div className="client-details">
+                        {!this.state.simplifierInputVisible &&
+                        <div className='buttons-wrapper'>
+                            <RaisedButton label='"simplifier" project' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
+                            <RaisedButton label='ZIP file' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
+                        </div>}
+                        {this.state.simplifierInputVisible &&
+                        <div style={{ padding: '20px' }}>
+                            <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({ menuActive: true })}
+                                  backgroundColor={this.state.menuActive ? palette.primary2Color : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
+                                <span ref='project-menu'/>
+                                <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
+                                <span className='icon-wrapper'>
+                                   <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
+                                </span>
+                            </Chip>
+                            {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
+                                                                           id='simplifireProjectName' floatingLabelText='Project id' className='project-name'/>}
+                            <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
+                                <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'US-Core'} onClick={() => this.setState({ menuActive: false, project: 'US-Core' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'QiCore'} onClick={() => this.setState({ menuActive: false, project: 'QiCore' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'DQM'} onClick={() => this.setState({ menuActive: false, project: 'DQM' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'fpar'} onClick={() => this.setState({ menuActive: false, project: 'fpar' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'HEDIS'} onClick={() => this.setState({ menuActive: false, project: 'HEDIS' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'Manual'} onClick={() => this.setState({ menuActive: false, project: 'manual' })}/>
+                                </Menu>
+                            </Popover>
+                        </div>}
+                    </div>
+                </Paper>
+            </Dialog>}
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
                     <CardTitle className='card-title'>
@@ -102,7 +157,7 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
-                            <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
+                            <RaisedButton label='Add profile(s)' primary onClick={this.toggleInputModal}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -171,6 +226,48 @@ class Profiles extends Component {
             </div>
         </Page>
     }
+
+    toggleInputModal = () => {
+        this.setState({ inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
+    };
+
+    loadRemoteFile = () => {
+        let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
+        fetch(`https://simplifier.net/${project}/$download?format=json`)
+            .then(response => response.body)
+            .then(rs => {
+                const reader = rs.getReader();
+                return new ReadableStream({
+                    async start (controller) {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            // When no more data needs to be consumed, break the reading
+                            if (done) {
+                                break;
+                            }
+                            // Enqueue the next data chunk into our target stream
+                            controller.enqueue(value);
+                        }
+                        // Close the stream
+                        controller.close();
+                        reader.releaseLock();
+                    }
+                })
+            })
+            // Create a new response out of the stream
+            .then(rs => new Response(rs))
+            // Create an object URL for the response
+            .then(response => response.blob())
+            .then(blob => {
+                let file = new File([blob], "sample.zip");
+                this.props.uploadProfile(file, this.state.canFit);
+                this.toggleInputModal();
+            })
+            // Update image
+            .catch(() => {
+                this.toggleInputModal();
+            });
+    };
 
     calcCanFit = () => {
         let containerHeight = document.getElementsByClassName('profiles-list')[0].clientHeight;
