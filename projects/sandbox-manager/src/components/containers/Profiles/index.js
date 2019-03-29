@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -233,40 +233,8 @@ class Profiles extends Component {
 
     loadRemoteFile = () => {
         let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
-        fetch(`https://simplifier.net/${project}/$download?format=json`)
-            .then(response => response.body)
-            .then(rs => {
-                const reader = rs.getReader();
-                return new ReadableStream({
-                    async start (controller) {
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            // When no more data needs to be consumed, break the reading
-                            if (done) {
-                                break;
-                            }
-                            // Enqueue the next data chunk into our target stream
-                            controller.enqueue(value);
-                        }
-                        // Close the stream
-                        controller.close();
-                        reader.releaseLock();
-                    }
-                })
-            })
-            // Create a new response out of the stream
-            .then(rs => new Response(rs))
-            // Create an object URL for the response
-            .then(response => response.blob())
-            .then(blob => {
-                let file = new File([blob], "sample.zip");
-                this.props.uploadProfile(file, this.state.canFit);
-                this.toggleInputModal();
-            })
-            // Update image
-            .catch(() => {
-                this.toggleInputModal();
-            });
+        this.props.loadProject(project, this.state.canFit);
+        this.toggleInputModal();
     };
 
     calcCanFit = () => {
@@ -335,13 +303,16 @@ class Profiles extends Component {
             <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
             <List className='profiles-list'>
-                {this.props.profilesUploading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
+                {(this.props.fetchingFile || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                     <CircularProgress size={40} thickness={5}/>
-                    {this.props.profilesUploadingStatus.resourceSavedCount && <div>
+                    {!!this.props.profilesUploadingStatus.resourceSavedCount && <div>
                         {this.props.profilesUploadingStatus.resourceSavedCount} resources processed
                     </div>}
+                    {this.props.fetchingFile && <div>
+                        Fetching project
+                    </div>}
                 </div>}
-                {!this.props.profilesUploading && this.props.profiles && this.props.profiles.map((profile, key) => {
+                {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
                     if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
                     }
@@ -391,7 +362,6 @@ class Profiles extends Component {
 }
 
 const mapStateToProps = state => {
-
     return {
         results: state.fhir.customSearchResults,
         validationResults: state.fhir.validationResults,
@@ -405,13 +375,14 @@ const mapStateToProps = state => {
         profilesLoading: state.fhir.profilesLoading,
         profilesUploading: state.fhir.profilesUploading,
         validationExecuting: state.fhir.validationExecuting,
-        profilesUploadingStatus: state.fhir.profilesUploadingStatus
+        profilesUploadingStatus: state.fhir.profilesUploadingStatus,
+        fetchingFile: state.fhir.fetchingFile
     };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));

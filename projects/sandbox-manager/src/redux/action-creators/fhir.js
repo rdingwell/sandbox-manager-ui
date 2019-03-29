@@ -110,6 +110,13 @@ export function fhir_setProfilesUploading (loading) {
     };
 }
 
+export function fhir_setFetchingFile (loading) {
+    return {
+        type: types.FHIR_SET_FILE_FETCHING,
+        payload: { loading }
+    };
+}
+
 export function fhir_setProfilesUploadingStatus (status) {
     return {
         type: types.FHIR_SET_PROFDILES_UPLOADING_STATUS,
@@ -276,6 +283,46 @@ export function uploadProfile (file, count) {
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));
             });
+    }
+}
+
+export function loadProject (project, canFit) {
+    return dispatch => {
+        dispatch(fhir_setFetchingFile(true));
+        fetch(`https://simplifier.net/${project}/$download?format=json`)
+            .then(response => response.body)
+            .then(rs => {
+                const reader = rs.getReader();
+                return new ReadableStream({
+                    async start (controller) {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            // When no more data needs to be consumed, break the reading
+                            if (done) {
+                                break;
+                            }
+                            // Enqueue the next data chunk into our target stream
+                            controller.enqueue(value);
+                        }
+                        // Close the stream
+                        controller.close();
+                        reader.releaseLock();
+                    }
+                })
+            })
+            // Create a new response out of the stream
+            .then(rs => new Response(rs))
+            // Create an object URL for the response
+            .then(response => response.blob())
+            .then(blob => {
+                let file = new File([blob], `${project}.zip`);
+                dispatch(uploadProfile(file, canFit));
+                dispatch(fhir_setFetchingFile(false));
+            })
+            // Update image
+            .catch(() => {
+                dispatch(fhir_setFetchingFile(false));
+            })
     }
 }
 
