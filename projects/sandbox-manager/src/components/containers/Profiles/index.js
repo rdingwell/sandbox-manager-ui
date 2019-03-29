@@ -142,6 +142,7 @@ class Profiles extends Component {
                                     <MenuItem className='type-filter-menu-item' primaryText={'DQM'} onClick={() => this.setState({ menuActive: false, project: 'DQM' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'fpar'} onClick={() => this.setState({ menuActive: false, project: 'fpar' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'HEDIS'} onClick={() => this.setState({ menuActive: false, project: 'HEDIS' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'Simplifier.Core.STU3.Extensions'} onClick={() => this.setState({ menuActive: false, project: 'Simplifier.Core.STU3.Extensions' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'Manual'} onClick={() => this.setState({ menuActive: false, project: 'manual' })}/>
                                 </Menu>
                             </Popover>
