@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,6 +11,7 @@ import muiThemeable from "material-ui/styles/muiThemeable";
 import Page from 'sandbox-manager-lib/components/Page';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
+import DeleteIcon from "material-ui/svg-icons/action/delete";
 import ReactJson from 'react-json-view';
 
 import './styles.less';
@@ -142,7 +143,8 @@ class Profiles extends Component {
                                     <MenuItem className='type-filter-menu-item' primaryText={'DQM'} onClick={() => this.setState({ menuActive: false, project: 'DQM' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'fpar'} onClick={() => this.setState({ menuActive: false, project: 'fpar' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'HEDIS'} onClick={() => this.setState({ menuActive: false, project: 'HEDIS' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'Simplifier.Core.STU3.Extensions'} onClick={() => this.setState({ menuActive: false, project: 'Simplifier.Core.STU3.Extensions' })}/>
+                                    <MenuItem className='type-filter-menu-item' primaryText={'Simplifier.Core.STU3.Extensions'}
+                                              onClick={() => this.setState({ menuActive: false, project: 'Simplifier.Core.STU3.Extensions' })}/>
                                     <MenuItem className='type-filter-menu-item' primaryText={'Manual'} onClick={() => this.setState({ menuActive: false, project: 'manual' })}/>
                                 </Menu>
                             </Popover>
@@ -318,7 +320,10 @@ class Profiles extends Component {
                         return;
                     }
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
-                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}/>;
+                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}
+                                     rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile, this.state.canFit)}>
+                                         <DeleteIcon color={palette.primary4Color}/>
+                                     </IconButton>}/>;
                 })}
                 {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                     <CircularProgress size={40} thickness={5}/>
@@ -383,7 +388,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));

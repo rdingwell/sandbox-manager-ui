@@ -199,7 +199,7 @@ export function loadProfiles (count, filter) {
             API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
                 .then(data => {
                     data.entry = data.entry ? data.entry : [];
-                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => i.resource), total: data.total, link: data.link }));
+                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => Object.assign({ fullUrl: i.fullUrl }, i.resource)), total: data.total, link: data.link }));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(() => {
@@ -323,6 +323,21 @@ export function loadProject (project, canFit) {
             .catch(() => {
                 dispatch(fhir_setFetchingFile(false));
             })
+    }
+}
+
+export function deleteDefinition (profile, canFit) {
+    return dispatch => {
+        dispatch(fhir_setProfilesUploading(true));
+        API.delete(profile.fullUrl, dispatch)
+            .then(() => {
+                dispatch(fhir_setProfiles({ entry: [], total: 0 }));
+                dispatch(fhir_setProfilesUploading(false));
+                dispatch(loadProfiles(canFit));
+            })
+            .catch(() => {
+                dispatch(fhir_setProfilesUploading(false));
+            });
     }
 }
 
