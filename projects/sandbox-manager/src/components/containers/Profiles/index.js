@@ -19,6 +19,44 @@ import HelpButton from '../../UI/HelpButton';
 import TreeBrowser from './TreeBrowser';
 import ResultsTable from './ResultsTable';
 
+const PROFILES = [
+    {
+        title: 'US-Core',
+        id: 'US-Core',
+        url: 'https://simplifier.net/US-Core'
+    },
+    {
+        title: 'QiCore',
+        id: 'QiCore',
+        url: 'https://simplifier.net/QiCore'
+    },
+    {
+        title: 'DQM',
+        id: 'DQM',
+        url: 'https://simplifier.net/DQM'
+    },
+    {
+        title: 'fpar',
+        id: 'fpar',
+        url: 'https://simplifier.net/fpar'
+    },
+    {
+        title: 'HEDIS',
+        id: 'HEDIS',
+        url: 'https://simplifier.net/HEDIS'
+    },
+    {
+        title: 'Simplifier.Core.STU3.Extensions',
+        id: 'Simplifier.Core.STU3.Extensions',
+        url: 'https://simplifier.net/Simplifier.Core.STU3.Extensions'
+    },
+    {
+        title: 'Manual',
+        id: 'manual',
+        url: 'Manual'
+    }
+];
+
 class Profiles extends Component {
     timer = null;
 
@@ -133,19 +171,15 @@ class Profiles extends Component {
                                    <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
                                 </span>
                             </Chip>
+                            {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Visit project</a>}
                             {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
                                                                            id='simplifireProjectName' floatingLabelText='Project id' className='project-name'/>}
                             <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                      targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
                                 <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'US-Core'} onClick={() => this.setState({ menuActive: false, project: 'US-Core' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'QiCore'} onClick={() => this.setState({ menuActive: false, project: 'QiCore' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'DQM'} onClick={() => this.setState({ menuActive: false, project: 'DQM' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'fpar'} onClick={() => this.setState({ menuActive: false, project: 'fpar' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'HEDIS'} onClick={() => this.setState({ menuActive: false, project: 'HEDIS' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'Simplifier.Core.STU3.Extensions'}
-                                              onClick={() => this.setState({ menuActive: false, project: 'Simplifier.Core.STU3.Extensions' })}/>
-                                    <MenuItem className='type-filter-menu-item' primaryText={'Manual'} onClick={() => this.setState({ menuActive: false, project: 'manual' })}/>
+                                    {PROFILES.map(profile =>
+                                        <MenuItem className='type-filter-menu-item' primaryText={profile.title} onClick={() => this.setState({ menuActive: false, project: profile.id })}/>
+                                    )}
                                 </Menu>
                             </Popover>
                         </div>}
