@@ -9,7 +9,8 @@ import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 import API from '../../../lib/api';
 import {
-    lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, getPersonasPage, resetPersonas, copyToClipboard, launchHook
+    lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, getPersonasPage, resetPersonas, copyToClipboard, launchHook,
+    createService, loadServices, updateHook
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +30,6 @@ import { isUrlValid } from '../../../lib/misc';
 import HelpButton from '../../UI/HelpButton';
 
 const POSTFIX = '/.well-known/smart/manifest.json';
-const POSTFIX_SERVICE = '/cds-services';
 const NEEDED_PROPS = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
 
 class Apps extends Component {
@@ -51,8 +51,7 @@ class Apps extends Component {
             appIsLoading: false,
             manifestURL: '',
             serviceName: '',
-            textSelected: undefined,
-            hooks: props.hooksList || []
+            textSelected: undefined
         };
     }
 
@@ -62,6 +61,7 @@ class Apps extends Component {
             this.props.loadSandboxApps();
         } else {
             this.props.app_setScreen('hooks');
+            this.props.loadServices();
         }
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
@@ -98,7 +98,8 @@ class Apps extends Component {
                         {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && hooks}
                         {!this.props.appDeleting && !this.props.appCreating && !this.props.appLoading && apps.length === 0 && this.props.apps &&
                         <DohMessage message='There are no apps in this sandbox platform yet.'/>}
-                        {(this.props.appDeleting || this.props.appCreating || this.props.appLoading) && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
+                        {(this.props.appDeleting || this.props.appCreating || this.props.appLoading || this.props.servicesLoading) &&
+                        <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}
                     </div>
                 </div>
             </div>
@@ -115,12 +116,13 @@ class Apps extends Component {
 
     getHooks = () => {
         let hooks = [];
-        this.state.hooks.map(service => {
+        this.props.hooksList.map(service => {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
             </div>);
-            return service.hooks.map((hook, index) => {
+            return service.cdsHooks.map((hook, index) => {
+                hook.title = hook.title ? hook.title : '';
                 hook.url = service.url;
                 // hook.id = index;
                 let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
@@ -147,7 +149,7 @@ class Apps extends Component {
                     {!this.props.modal && <CardActions className='card-actions-wrapper'>
                         <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
                                     icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
-                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook)}
+                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook, service.id)}
                                     icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
                     </CardActions>}
                 </Card>);
@@ -166,10 +168,10 @@ class Apps extends Component {
         return null;
     };
 
-    handleHookSelect = (e, hook) => {
+    handleHookSelect = (e, hook, serviceId) => {
         e.stopPropagation();
         e.preventDefault();
-        this.setState({ selectedHook: hook, registerDialogVisible: false, appIsLoading: true });
+        this.setState({ selectedHook: hook, serviceId, registerDialogVisible: false, appIsLoading: true });
     };
 
     getDialog = () => {
@@ -245,7 +247,8 @@ class Apps extends Component {
                             </Paper>
                         </Dialog>
                         : !!this.state.selectedHook
-                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook}/>
+                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.serviceId}
+                                          onSubmit={this.props.updateHook}/>
                             : this.state.selectCreationType
                                 ? <Dialog modal={false} open={!!this.state.selectCreationType} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
                                     <Paper className='paper-card'>
@@ -310,41 +313,12 @@ class Apps extends Component {
 
     loadFromUrl = () => {
         !this.props.hooks && this.loadManifest();
-        this.props.hooks && this.loadServices();
+        this.props.hooks && this.createService();
     };
 
-    loadServices = () => {
-        //Prepare the url
-        let url = this.state.manifestURL;
-
-        // remove trailing slash if present
-        url[url.length - 1] === '/' && (url = url.substr(0, url.length - 1));
-
-        // add the final part of the path if not there
-        url.indexOf(POSTFIX_SERVICE) === -1 && (url += POSTFIX_SERVICE);
-
-        this.setState({ loadingManifest: true });
-        API.getNoAuth(url)
-            .then(result => {
-                let hooks = this.state.hooks.slice();
-                let newHooks = {
-                    title: this.state.serviceName || url,
-                    url,
-                    hooks: []
-                };
-                if (result && result.services) {
-                    result.services.map(service => {
-                        newHooks.hooks.push(service);
-                    });
-                }
-                hooks.push(newHooks);
-
-                this.setState({ hooks, loadingManifest: false });
-                this.closeAll();
-            })
-            .catch(_ => {
-                this.setState({ loadingManifest: false });
-            });
+    createService = () => {
+        this.props.createService(this.state.manifestURL, this.state.serviceName);
+        this.closeAll();
     };
 
     loadManifest = () => {
@@ -484,13 +458,15 @@ const mapStateToProps = state => {
         personaLoading: state.persona.loading,
         pagination: state.persona.patientsPagination,
         copying: state.sandbox.copying,
-        hooksList: state.hooks.hooks
+        hooksList: state.hooks.services,
+        servicesLoading: state.hooks.servicesLoading
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart, resetPersonas, copyToClipboard, launchHook,
+        createService, loadServices, updateHook,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     }, dispatch);

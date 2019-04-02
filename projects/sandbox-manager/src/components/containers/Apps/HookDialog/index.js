@@ -76,7 +76,8 @@ class AppDialog extends Component {
     };
 
     save = () => {
-        this.props.onSubmit && this.props.onSubmit(this.state.app, this.state.changes, this.state.clone);
+        let input = this.refs.image;
+        this.props.onSubmit && this.props.onSubmit(this.props.service, this.props.hook.id, input.files[0]);
     };
 }
 
