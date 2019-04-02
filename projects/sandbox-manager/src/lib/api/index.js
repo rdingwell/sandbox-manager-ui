@@ -25,6 +25,14 @@ export default {
         });
     },
 
+    getNoErrorManagement (url, dispatch) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config("GET"))
+                .then(response => parseResponse(response, dispatch, resolve, reject, true))
+                .catch(e => parseError(e, dispatch, reject));
+        });
+    },
+
     get (url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("GET"))

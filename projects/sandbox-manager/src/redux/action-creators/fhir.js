@@ -335,7 +335,7 @@ export function validateExisting (url, selectedProfile) {
         dispatch(fhir_setValidationExecuting(true));
 
         if (!selectedProfile) {
-            API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
+            API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
                 .then(data => {
                     data.validatedObject = url;
                     dispatch(fhir_setValidationResults(data));
@@ -346,7 +346,7 @@ export function validateExisting (url, selectedProfile) {
                     dispatch(fhir_setValidationExecuting(false));
                 });
         } else {
-            API.get(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
+            API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
                 .then(data => {
                     if (data.resourceType) {
                         !data.meta && (data.meta = {});
