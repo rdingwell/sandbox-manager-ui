@@ -163,6 +163,9 @@ export default function (state = initialState, action) {
             state.lookingForSandbox = false;
             state.lookingForSandboxError = action.error;
             break;
+        case actionTypes.SET_NOTIFICATIONS_LOADING:
+            state.loadingNotifications = action.payload.loading;
+            break;
         case actionTypes.SAVE_ENDPOINT_INDEX:
             state.sandboxApiEndpointIndex = action.index;
             break;
@@ -202,6 +205,7 @@ export default function (state = initialState, action) {
             state.fetchingSingleEncounter = false;
             state.fetchingSingleLocation = false;
             state.fetchingSingleResource = false;
+            state.loadingNotifications = false;
             state.creatingSandbox = false;
             state.deleting = false;
             state.resetting = false;

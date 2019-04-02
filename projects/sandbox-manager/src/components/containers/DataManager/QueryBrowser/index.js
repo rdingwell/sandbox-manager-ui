@@ -156,6 +156,7 @@ export default class QueryBrowser extends Component {
         let query = this.state.query;
         query += (query.indexOf('?') >= 0 ? '&' : '?');
         query += `_count=${this.state.canFit}`;
+        query = encodeURI(query);
         this.props.search(query);
     };
 

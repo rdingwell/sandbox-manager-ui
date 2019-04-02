@@ -110,6 +110,13 @@ export function fhir_setProfilesUploading (loading) {
     };
 }
 
+export function fhir_setProfilesUploadingStatus (status) {
+    return {
+        type: types.FHIR_SET_PROFDILES_UPLOADING_STATUS,
+        payload: { status }
+    };
+}
+
 export function fhir_setProfiles (profiles) {
     return {
         type: types.FHIR_SET_PROFDILES,
@@ -182,7 +189,7 @@ export function loadProfiles (count, filter) {
 
         if (window.fhirClient) {
             let endpoint = window.fhirClient.server.serviceUrl;
-            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name=${filter}` : ''}`, dispatch)
+            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
                 .then(data => {
                     data.entry = data.entry ? data.entry : [];
                     dispatch(fhir_setProfiles({ entry: data.entry.map(i => i.resource), total: data.total, link: data.link }));
@@ -250,9 +257,21 @@ export function uploadProfile (file, count) {
 
         API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&apiEndpoint=${state.sandbox.sandboxApiEndpointIndex}`, formData, dispatch, true)
             .then(data => {
-                dispatch(fhir_setProfilesUploading(false));
-                dispatch(fhir_setCustomSearchResults(data));
-                dispatch(loadProfiles(count));
+                let timeoutFunction = () => {
+                    API.get(`${url}/profile/profileUploadStatus?id=${data.id}`, dispatch)
+                        .then(status => {
+                            if (!status.status) {
+                                dispatch(fhir_setProfilesUploading(false));
+                                dispatch(fhir_setCustomSearchResults(data));
+                                dispatch(loadProfiles(count));
+                                dispatch(fhir_setProfilesUploadingStatus({}));
+                            } else {
+                                dispatch(fhir_setProfilesUploadingStatus(status));
+                                setTimeout(timeoutFunction, 1000);
+                            }
+                        })
+                };
+                setTimeout(timeoutFunction, 1000);
             })
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));
@@ -316,7 +335,7 @@ export function validateExisting (url, selectedProfile) {
         dispatch(fhir_setValidationExecuting(true));
 
         if (!selectedProfile) {
-            API.get(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
+            API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}/$validate`, dispatch)
                 .then(data => {
                     data.validatedObject = url;
                     dispatch(fhir_setValidationResults(data));
@@ -327,7 +346,7 @@ export function validateExisting (url, selectedProfile) {
                     dispatch(fhir_setValidationExecuting(false));
                 });
         } else {
-            API.get(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
+            API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
                 .then(data => {
                     if (data.resourceType) {
                         !data.meta && (data.meta = {});

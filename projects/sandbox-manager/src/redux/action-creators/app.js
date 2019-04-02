@@ -35,6 +35,14 @@ export function setGlobalError (error) {
     }
 }
 
+export function showGlobalSessionModal () {
+    return dispatch => {
+        dispatch({
+            type: types.SET_GLOBAL_SESSION_MODAL
+        });
+    }
+}
+
 export function loadTerms () {
     return (dispatch, getState) => {
         let state = getState();
