@@ -143,8 +143,8 @@ export function loadServices () {
                             "description": "Detects issues with infants and the Kernicterus risk protocol",
                             "hookId": "bilirubin-cds-hook",
                             "prefetch": {
-                                "patient": "Patient/{{Patient.id}}",
-                                "observations": "Observation?patient={{Patient.id}}&code=http://loinc.org|58941-6&_sort:desc=date&count=1"
+                                "patient": "Patient/{{context.patientId}}",
+                                "observations": "Observation?patient={{context.patientId}}&code=http://loinc.org|58941-6&_sort:desc=date&_count=1"
                             },
                             "cdsServiceEndpointId": 2
                         },
@@ -187,8 +187,8 @@ export function loadServices () {
                             "description": "Detects issues with infants and the Kernicterus risk protocol",
                             "hookId": "bilirubin-cds-hook",
                             "prefetch": {
-                                "patient": "Patient/{{Patient.id}}",
-                                "observations": "Observation?patient={{Patient.id}}&code=http://loinc.org|58941-6&_sort:desc=date&count=1"
+                                "patient": "Patient/{{context.patientId}}",
+                                "observations": "Observation?patient={{context.patientId}}&code=http://loinc.org|58941-6&_sort:desc=date&_count=1"
                             },
                             "cdsServiceEndpointId": 4
                         },
@@ -259,7 +259,7 @@ export const launchHook = (hook, launchContext) => {
                         let regex = new RegExp(/\{\{context\.(.*?)\}\}/gi);
                         url = url.replace(regex, (a, b) => context[b]);
                         promises.push(new Promise((resolve, reject) => {
-                            API.get(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
+                            API.get(`${window.fhirClient.server.serviceUrl}/${encodeURI(url)}`, dispatch)
                                 .then(result => {
                                     data.prefetch[key] = result;
                                     resolve();
@@ -271,16 +271,15 @@ export const launchHook = (hook, launchContext) => {
                     });
                     Promise.all(promises)
                         .then(() => {
-
                             // Trigger the hook
-                            API.post(`${hook.url}/${hook.id}`, data)
+                            API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
                                 .then(cards => {
                                     cards && cards.cards && dispatch(setResultCards(cards.cards));
                                 });
                         })
                 } else {
                     // Trigger the hook
-                    API.post(`${hook.url}/${hook.id}`, data)
+                    API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
                         .then(cards => {
                             cards && cards.cards && dispatch(setResultCards(cards.cards));
                         });
