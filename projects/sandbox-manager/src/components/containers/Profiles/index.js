@@ -116,9 +116,6 @@ class Profiles extends Component {
         let inputModalActions = [
             <div key={1} className='input-modal-action'>
                 <RaisedButton label='Load' primary onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
-            </div>,
-            <div key={2} className='input-modal-action'>
-                <RaisedButton label='Cancel' onClick={this.toggleInputModal}/>
             </div>
         ];
         !this.state.simplifierInputVisible && inputModalActions.shift();
@@ -158,8 +155,8 @@ class Profiles extends Component {
                     <div className="client-details">
                         {!this.state.simplifierInputVisible &&
                         <div className='buttons-wrapper'>
-                            <RaisedButton label='"simplifier" project' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
-                            <RaisedButton label='archive' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
+                            <RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
+                            <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
                         </div>}
                         {this.state.simplifierInputVisible &&
                         <div style={{ padding: '20px' }}>
@@ -194,7 +191,7 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
-                            <RaisedButton label='Add profile(s)' primary onClick={this.toggleInputModal}/>
+                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
