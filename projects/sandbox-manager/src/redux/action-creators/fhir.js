@@ -110,6 +110,13 @@ export function fhir_setProfilesUploading (loading) {
     };
 }
 
+export function fhir_setFetchingFile (loading) {
+    return {
+        type: types.FHIR_SET_FILE_FETCHING,
+        payload: { loading }
+    };
+}
+
 export function fhir_setProfilesUploadingStatus (status) {
     return {
         type: types.FHIR_SET_PROFDILES_UPLOADING_STATUS,
@@ -192,7 +199,7 @@ export function loadProfiles (count, filter) {
             API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
                 .then(data => {
                     data.entry = data.entry ? data.entry : [];
-                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => i.resource), total: data.total, link: data.link }));
+                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => Object.assign({ fullUrl: i.fullUrl }, i.resource)), total: data.total, link: data.link }));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(() => {
@@ -272,6 +279,61 @@ export function uploadProfile (file, count) {
                         })
                 };
                 setTimeout(timeoutFunction, 1000);
+            })
+            .catch(() => {
+                dispatch(fhir_setProfilesUploading(false));
+            });
+    }
+}
+
+export function loadProject (project, canFit) {
+    return dispatch => {
+        dispatch(fhir_setFetchingFile(true));
+        fetch(`https://simplifier.net/${project}/$download?format=json`)
+            .then(response => response.body)
+            .then(rs => {
+                const reader = rs.getReader();
+                return new ReadableStream({
+                    async start (controller) {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            // When no more data needs to be consumed, break the reading
+                            if (done) {
+                                break;
+                            }
+                            // Enqueue the next data chunk into our target stream
+                            controller.enqueue(value);
+                        }
+                        // Close the stream
+                        controller.close();
+                        reader.releaseLock();
+                    }
+                })
+            })
+            // Create a new response out of the stream
+            .then(rs => new Response(rs))
+            // Create an object URL for the response
+            .then(response => response.blob())
+            .then(blob => {
+                let file = new File([blob], `${project}.zip`);
+                dispatch(uploadProfile(file, canFit));
+                dispatch(fhir_setFetchingFile(false));
+            })
+            // Update image
+            .catch(() => {
+                dispatch(fhir_setFetchingFile(false));
+            })
+    }
+}
+
+export function deleteDefinition (profile, canFit) {
+    return dispatch => {
+        dispatch(fhir_setProfilesUploading(true));
+        API.delete(profile.fullUrl, dispatch)
+            .then(() => {
+                dispatch(fhir_setProfiles({ entry: [], total: 0 }));
+                dispatch(fhir_setProfilesUploading(false));
+                dispatch(loadProfiles(canFit));
             })
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));
