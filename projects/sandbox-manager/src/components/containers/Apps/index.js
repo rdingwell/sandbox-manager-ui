@@ -2,9 +2,10 @@ import React, { Component, Fragment } from 'react';
 import { CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, Snackbar, TextField } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 import Publish from 'material-ui/svg-icons/editor/publish';
 import LaunchIcon from 'material-ui/svg-icons/av/play-circle-outline';
-import UpdateIcon from 'material-ui/svg-icons/action/update';
+import UpdateIcon from 'material-ui/svg-icons/navigation/refresh';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
@@ -78,7 +79,7 @@ class Apps extends Component {
         let hooks = this.props.hooks && this.getHooks();
         let dialog = this.getDialog();
         let actionClick = this.props.hooks
-            ? () => this.setState({ loadDialogVisible: true })
+            ? () => this.setState({ loadDialogVisible: true, serviceName: '', manifestURL: '' })
             : () => this.setState({ selectCreationType: true });
 
         return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}
@@ -121,7 +122,7 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                <RaisedButton icon={<UpdateIcon/>} primary className='service-update-button' />
+                {!this.props.modal && <RaisedButton icon={<UpdateIcon/>} primary className='service-update-button'/>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';
@@ -152,7 +153,7 @@ class Apps extends Component {
                         <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
                                     icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
                         <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook, service)}
-                                    icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
+                                    icon={<InfoIcon style={{ width: '24px', height: '24px' }}/>} label='Info'/>
                     </CardActions>}
                 </Card>);
             });
@@ -250,7 +251,10 @@ class Apps extends Component {
                         </Dialog>
                         : !!this.state.selectedHook
                             ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.service}
-                                          onSubmit={this.props.updateHook}/>
+                                          onSubmit={(hookId, file) => {
+                                              this.props.updateHook(hookId, file);
+                                              this.closeAll();
+                                          }}/>
                             : this.state.selectCreationType
                                 ? <Dialog modal={false} open={!!this.state.selectCreationType} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
                                     <Paper className='paper-card'>

@@ -92,7 +92,7 @@ class Create extends Component {
     getStepper = () => {
         return <Stepper activeStep={this.state.currentStep}>
             <Step>
-                <StepLabel className='step-label'>{this.state.scenarioType === 'app' ? 'Select App' : 'Select Hook'}</StepLabel>
+                <StepLabel className='step-label'>{this.state.scenarioType === 'app' ? 'Select App' : 'Select CDS Service'}</StepLabel>
             </Step>
             <Step>
                 <StepLabel className='step-label'>Choose Persona</StepLabel>
@@ -179,7 +179,7 @@ class Create extends Component {
                 return <div>
                     <span className='modal-screen-title' style={titleStyle}>
                         {this.state.scenarioType === 'hook'
-                            ? <Fragment>Which hook will be triggered with this Launch Scenario?</Fragment>
+                            ? <Fragment>Which CDS service will be called with this Launch Scenario?</Fragment>
                             : <Fragment><WebIcon style={iconStyle}/> Which app will be launched with this Launch Scenario?</Fragment>}
                     </span>
                     <Apps title=' ' hooks={this.state.scenarioType === 'hook'} modal onCardClick={this.selectCard} selectedApp={this.state.selectedApp}/>
@@ -214,7 +214,11 @@ class Create extends Component {
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
                 return <div>
-                    <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/> Which user will launch the app in this launch scenario?</span>
+                    <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/>
+                        {this.state.scenarioType === 'app'
+                            ? 'Which user will launch the app in this launch scenario?'
+                            : 'Which user invokes the CDS hook in this launch scenario?'}
+                    </span>
                     <div className='persona-selection'>
                         {this.state.selectedPersona && <span className='selected-text'><b>Selected:</b> {this.getSelectedName()}</span>}
                         <PersonaList {...props} noTitle scrollContent/>

@@ -94,7 +94,7 @@ export function updateHook (hookId, newImage) {
         let state = getState();
 
         dispatch(appCreating(true));
-        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/cds-services/${hookId}/image?file=sample.jpg`;
+        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/cds-hook/${hookId}/image`;
 
         if (newImage) {
             let formData = new FormData();

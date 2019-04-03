@@ -57,7 +57,7 @@ export default class Filters extends Component {
                     <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
                             <MenuItem className='type-filter-menu-item' primaryText={'Patient'}  onClick={() => this.filterByType('Patient')}/>
                             <MenuItem className='type-filter-menu-item' primaryText={'Practitioner'}  onClick={() => this.filterByType('Practitioner')}/>
-                            <MenuItem className='type-filter-menu-item' primaryText={'Hook'}  onClick={() => this.filterByType('Hook')}/>
+                            <MenuItem className='type-filter-menu-item' primaryText={'CDS Hook'}  onClick={() => this.filterByType('Hook')}/>
                     </Menu>
                 </Popover>}
             </div>
