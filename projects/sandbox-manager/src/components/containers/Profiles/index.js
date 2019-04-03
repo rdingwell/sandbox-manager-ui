@@ -51,7 +51,7 @@ const PROFILES = [
         url: 'https://simplifier.net/Simplifier.Core.STU3.Extensions'
     },
     {
-        title: 'Manual',
+        title: 'Custom',
         id: 'manual',
         url: 'Manual'
     }
@@ -151,7 +151,7 @@ class Profiles extends Component {
                     <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
                         <i className="material-icons">close</i>
                     </IconButton>
-                    <h3>{this.state.simplifierInputVisible ? 'Import "simplifier" project' : 'Import profile'}</h3>
+                    <h3>{this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile'}</h3>
                     <div className="client-details">
                         {!this.state.simplifierInputVisible &&
                         <div className='buttons-wrapper'>
@@ -168,9 +168,9 @@ class Profiles extends Component {
                                    <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
                                 </span>
                             </Chip>
-                            {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Visit project</a>}
+                            {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
                             {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
-                                                                           id='simplifireProjectName' floatingLabelText='Project id' className='project-name'/>}
+                                                                           id='simplifireProjectName' floatingLabelText='Simplifier.net Project ID' className='project-name'/>}
                             <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
                                      targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
                                 <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
