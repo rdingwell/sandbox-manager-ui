@@ -361,8 +361,8 @@ class Create extends Component {
         }
     };
 
-    selectCard = (selectedApp) => {
-        this.setState({ selectedApp, requiredHookContext: [] });
+    selectCard = (selectedApp, service) => {
+        this.setState({ selectedApp, requiredHookContext: [], service });
     };
 
     getRightColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
@@ -599,17 +599,16 @@ class Create extends Component {
 
     createScenario = () => {
         let data = {
-            app: this.state.selectedApp,
+            createdBy: this.props.user,
             title: this.state.title,
             description: this.state.description,
             lastLaunchSeconds: Date.now(),
             sandbox: this.props.sandbox,
-            userPersona: this.state.selectedPersona,
-            createdBy: this.props.user
+            userPersona: this.state.selectedPersona
         };
-        this.state.id && (data.id = this.state.id);
-
         if (this.state.scenarioType === 'app') {
+            data.app = this.state.selectedApp;
+            this.state.id && (data.id = this.state.id);
             this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
             this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
             this.state.encounterId && (data.encounter = this.state.encounterId);
@@ -619,15 +618,17 @@ class Create extends Component {
             this.state.url && (data.smartStyleUrl = this.state.url);
             this.state.intent && (data.intent = this.state.intent);
         } else {
-            data.context = {};
+            data.cdsHook = this.state.selectedApp;
+            data.cdsServiceEndpoint = this.state.service;
+            data.contextParams = [];
             Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map(key => {
-                let value = this.state[key];
-                value && value.length > 0 && (data.context[key] = value);
+                this.state[key] && this.state[key].length > 0 && data.contextParams.push({ name: key, value: this.state[key] });
             })
         }
 
-        this.props.create && this.props.create(data);
 
+        // console.log(data);
+        this.props.create && this.props.create(data);
         data.id && this.props.close && this.props.close();
     };
 

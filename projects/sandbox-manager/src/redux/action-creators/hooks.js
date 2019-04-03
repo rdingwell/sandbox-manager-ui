@@ -89,12 +89,12 @@ export function createService (url, serviceName) {
     }
 }
 
-export function updateHook (serviceId, hookId, newImage) {
+export function updateHook (hookId, newImage) {
     return (dispatch, getState) => {
         let state = getState();
 
         dispatch(appCreating(true));
-        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/cds-services/${serviceId}/${hookId}/image`;
+        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/cds-services/${hookId}/image?file=sample.jpg`;
 
         if (newImage) {
             let formData = new FormData();
@@ -103,13 +103,13 @@ export function updateHook (serviceId, hookId, newImage) {
                 .finally(() => {
                     setTimeout(() => {
                         dispatch(loadServices());
-                        dispatch(appCreating(true));
+                        dispatch(appCreating(false));
                     }, 550);
                 });
         } else if (!newImage) {
             API.delete(url, dispatch).finally(() => {
                 dispatch(loadServices());
-                dispatch(appCreating(true));
+                dispatch(appCreating(false));
             });
         }
     };
@@ -123,7 +123,98 @@ export function loadServices () {
 
             let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/cds-services?sandboxId=" + sessionStorage.sandboxId;
             API.get(url, dispatch)
-                .then(services => dispatch(setServices(services)))
+            // .then(services => dispatch(setServices(services)))
+                .then(services => {
+                    services[0].cdsHooks = [{
+                        "id": 5,
+                        "logoUri": null,
+                        "hook": "patient-view",
+                        "title": "Demo Suggestion Card",
+                        "description": "Sends a Demo Suggestion Card",
+                        "hookId": "demo-suggestion-card",
+                        "prefetch": null,
+                        "cdsServiceEndpointId": 2
+                    },
+                        {
+                            "id": 6,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Bilirubin CDS Hooks ExecutableService",
+                            "description": "Detects issues with infants and the Kernicterus risk protocol",
+                            "hookId": "bilirubin-cds-hook",
+                            "prefetch": {
+                                "patient": "Patient/{{Patient.id}}",
+                                "observations": "Observation?patient={{Patient.id}}&code=http://loinc.org|58941-6&_sort:desc=date&count=1"
+                            },
+                            "cdsServiceEndpointId": 2
+                        },
+                        {
+                            "id": 7,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Demo Application Link Card",
+                            "description": "Sends a Demo Application Link Card",
+                            "hookId": "demo-app-link-card",
+                            "prefetch": null,
+                            "cdsServiceEndpointId": 2
+                        },
+                        {
+                            "id": 8,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Demo Info Card",
+                            "description": "Sends a Demo Info Card",
+                            "hookId": "demo-info-card",
+                            "prefetch": null,
+                            "cdsServiceEndpointId": 2
+                        }];
+                    services[1].cdsHooks = [
+                        {
+                            "id": 13,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Demo Suggestion Card",
+                            "description": "Sends a Demo Suggestion Card",
+                            "hookId": "demo-suggestion-card",
+                            "prefetch": null,
+                            "cdsServiceEndpointId": 4
+                        },
+                        {
+                            "id": 14,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Bilirubin CDS Hooks ExecutableService",
+                            "description": "Detects issues with infants and the Kernicterus risk protocol",
+                            "hookId": "bilirubin-cds-hook",
+                            "prefetch": {
+                                "patient": "Patient/{{Patient.id}}",
+                                "observations": "Observation?patient={{Patient.id}}&code=http://loinc.org|58941-6&_sort:desc=date&count=1"
+                            },
+                            "cdsServiceEndpointId": 4
+                        },
+                        {
+                            "id": 15,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Demo Application Link Card",
+                            "description": "Sends a Demo Application Link Card",
+                            "hookId": "demo-app-link-card",
+                            "prefetch": null,
+                            "cdsServiceEndpointId": 4
+                        },
+                        {
+                            "id": 16,
+                            "logoUri": null,
+                            "hook": "patient-view",
+                            "title": "Demo Info Card",
+                            "description": "Sends a Demo Info Card",
+                            "hookId": "demo-info-card",
+                            "prefetch": null,
+                            "cdsServiceEndpointId": 4
+                        }
+                    ]
+                    dispatch(setServices(services));
+                })
                 .finally(() => {
                     dispatch(setServicesLoading(false));
                 });

@@ -131,7 +131,7 @@ class Apps extends Component {
                     titleStyle.bottom = '-18%';
                 }
                 hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
-                                 onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook)}>
+                                 onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
                     <div className={`hook-icon-wrapper ${hook.hook}`}>
                         {this.getHookIcon(hook.hook)}
                     </div>
@@ -149,7 +149,7 @@ class Apps extends Component {
                     {!this.props.modal && <CardActions className='card-actions-wrapper'>
                         <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleLaunch(e, hook)}
                                     icon={<LaunchIcon style={{ width: '24px', height: '24px' }}/>} label='Launch'/>
-                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook, service.id)}
+                        <FlatButton labelStyle={{ fontSize: '14px', fontWeight: 700 }} style={{ color: 'whitesmoke' }} onClick={(e) => this.handleHookSelect(e, hook, service)}
                                     icon={<SettingsIcon style={{ width: '24px', height: '24px' }}/>} label='Settings'/>
                     </CardActions>}
                 </Card>);
@@ -168,10 +168,10 @@ class Apps extends Component {
         return null;
     };
 
-    handleHookSelect = (e, hook, serviceId) => {
+    handleHookSelect = (e, hook, service) => {
         e.stopPropagation();
         e.preventDefault();
-        this.setState({ selectedHook: hook, serviceId, registerDialogVisible: false, appIsLoading: true });
+        this.setState({ selectedHook: hook, service, registerDialogVisible: false, appIsLoading: true });
     };
 
     getDialog = () => {
@@ -247,7 +247,7 @@ class Apps extends Component {
                             </Paper>
                         </Dialog>
                         : !!this.state.selectedHook
-                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.serviceId}
+                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.service}
                                           onSubmit={this.props.updateHook}/>
                             : this.state.selectCreationType
                                 ? <Dialog modal={false} open={!!this.state.selectCreationType} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
