@@ -59,6 +59,12 @@
 }
 
 .apps-screen-wrapper {
+  width: 930px;
+  display: inline-block;
+  @media (max-width: 1228px) {
+    width: 620px;
+  }
+
   .screen-content {
     max-width: 1570px;
   }
@@ -120,6 +126,12 @@
   .service-title-wrapper {
     position: relative;
 
+    .service-update-button {
+      position: absolute;
+      right: 32px;
+      top: 10px;
+    }
+
     span {
       font-size: .8rem;
       position: absolute;
@@ -134,6 +146,16 @@
     position: relative;
     overflow: hidden;
     margin: 24px 32px 0 0;
+    @media (max-width: 1228px) {
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+    //@media (max-width: 1227px) {
+    //  &:nth-child(3n) {
+    //    margin-right: 0;
+    //  }
+    //}
 
     .hook-icon-wrapper {
       position: absolute;

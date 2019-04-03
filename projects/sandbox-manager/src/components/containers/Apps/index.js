@@ -4,6 +4,7 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Publish from 'material-ui/svg-icons/editor/publish';
 import LaunchIcon from 'material-ui/svg-icons/av/play-circle-outline';
+import UpdateIcon from 'material-ui/svg-icons/action/update';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
@@ -120,6 +121,7 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
+                <RaisedButton icon={<UpdateIcon/>} primary className='service-update-button' />
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';

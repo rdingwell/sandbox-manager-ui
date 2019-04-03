@@ -229,10 +229,10 @@ class LaunchScenarios extends Component {
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
                                     {!sc.app
-                                        ? <i><HooksIcon /></i>
+                                        ? <i><HooksIcon/></i>
                                         : isPatient
-                                        ? <i><Patient/></i>
-                                        : <i className='fa fa-user-md fa-lg'/>}
+                                            ? <i><Patient/></i>
+                                            : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
                             <div className='title-wrapper'>
@@ -330,10 +330,12 @@ class LaunchScenarios extends Component {
                     <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
-                            <img style={{ height: '100%' }} src={selectedScenario.app && selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                            <img style={{ height: '100%' }} src={selectedScenario.app && selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
+                                 alt='HSPC Logo'/>
                         </CardMedia>
                         <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                             <span className='app-name'>{selectedScenario.app && selectedScenario.app.clientName}</span>
+                            <span className='app-name'>{selectedScenario.cdsHook && selectedScenario.cdsHook.title}</span>
                         </div>
                     </Card>
                 </div>
@@ -341,33 +343,33 @@ class LaunchScenarios extends Component {
             <div className='right-side-wrapper'>
                 <div className='context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
-                    <div>
-                    <span className='section-value' style={lightColor}>
-                        <Patient style={iconStyleLight}/>
-                        {selectedScenario.patientName && <span style={{ cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline" }}
-                                                               onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
-                        {!selectedScenario.patientName && <span>-</span>}
-                    </span>
+                    {selectedScenario.app && <div>
                         <span className='section-value' style={lightColor}>
-                        <EventIcon style={iconStyleLight}/>
+                            <Patient style={iconStyleLight}/>
+                            {selectedScenario.patientName && <span style={{ cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline" }}
+                                                                   onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
+                            {!selectedScenario.patientName && <span>-</span>}
+                        </span>
+                        <span className='section-value' style={lightColor}>
+                            <EventIcon style={iconStyleLight}/>
                             {selectedScenario.encounter ? selectedScenario.encounter : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <HospitalIcon style={iconStyleLight}/>
+                            <HospitalIcon style={iconStyleLight}/>
                             {selectedScenario.location ? selectedScenario.location : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <DescriptionIcon style={iconStyleLight}/>
+                            <DescriptionIcon style={iconStyleLight}/>
                             {selectedScenario.resource ? selectedScenario.resource : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <BulbIcon style={iconStyleLight}/>
+                            <BulbIcon style={iconStyleLight}/>
                             {selectedScenario.intent ? selectedScenario.intent : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <LinkIcon style={iconStyleLight}/>
+                            <LinkIcon style={iconStyleLight}/>
                             {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
                             <FullScreenIcon style={iconStyleLight}/>
                             <Toggle className='toggle' label='Needs Patient Banner' style={{ display: 'inline-block', bottom: '2px' }} labelStyle={needsBanner}
@@ -380,9 +382,11 @@ class LaunchScenarios extends Component {
                                     }}/>
                             {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
                         </span>
-                    </div>
+                    </div>}
+                    {selectedScenario.cdsHook &&
+                    selectedScenario.contextParams.map(param => <span className='section-value' style={lightColor}><ContextIcon style={iconStyleLight}/>{param.name}: {param.value}</span>)}
                 </div>
-                <div className='custom-context-wrapper'>
+                {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
                         <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
@@ -410,7 +414,7 @@ class LaunchScenarios extends Component {
                             </TableBody>
                         </Table>
                     </div>
-                </div>
+                </div>}
                 <div className='description-wrapper'>
                     <span className='section-title' style={darkColor}><DescriptionIcon style={iconStyle}/>Description</span>
                     <div className='description'>
