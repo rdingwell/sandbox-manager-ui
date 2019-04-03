@@ -194,7 +194,7 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
-                            <RaisedButton label='Add profile(s)' primary onClick={this.toggleInputModal}/>
+                            <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -402,6 +402,7 @@ class Profiles extends Component {
 }
 
 const mapStateToProps = state => {
+
     return {
         results: state.fhir.customSearchResults,
         validationResults: state.fhir.validationResults,
