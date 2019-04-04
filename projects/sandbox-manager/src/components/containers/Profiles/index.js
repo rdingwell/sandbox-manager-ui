@@ -1,21 +1,61 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Checkbox } from 'material-ui';
+import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import Page from 'sandbox-manager-lib/components/Page';
 import ListIcon from 'material-ui/svg-icons/action/list';
+import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
+import DeleteIcon from "material-ui/svg-icons/action/delete";
 import ReactJson from 'react-json-view';
 
 import './styles.less';
 import HelpButton from '../../UI/HelpButton';
 import TreeBrowser from './TreeBrowser';
 import ResultsTable from './ResultsTable';
+
+const PROFILES = [
+    {
+        title: 'US-Core',
+        id: 'US-Core',
+        url: 'https://simplifier.net/US-Core'
+    },
+    {
+        title: 'QiCore',
+        id: 'QiCore',
+        url: 'https://simplifier.net/QiCore'
+    },
+    {
+        title: 'DQM',
+        id: 'DQM',
+        url: 'https://simplifier.net/DQM'
+    },
+    {
+        title: 'fpar',
+        id: 'fpar',
+        url: 'https://simplifier.net/fpar'
+    },
+    {
+        title: 'HEDIS',
+        id: 'HEDIS',
+        url: 'https://simplifier.net/HEDIS'
+    },
+    {
+        title: 'Simplifier.Core.STU3.Extensions',
+        id: 'Simplifier.Core.STU3.Extensions',
+        url: 'https://simplifier.net/Simplifier.Core.STU3.Extensions'
+    },
+    {
+        title: 'Custom',
+        id: 'manual',
+        url: 'Manual'
+    }
+];
 
 class Profiles extends Component {
     timer = null;
@@ -25,11 +65,15 @@ class Profiles extends Component {
 
         this.state = {
             query: '',
+            project: '',
+            simplifireProjectName: '',
             activeTab: 'browse',
             canFit: 2,
             resultsView: true,
             selectedPersona: undefined,
-            showZipWarning: false
+            showZipWarning: false,
+            menuActive: false,
+            simplifierInputVisible: false
         };
     }
 
@@ -69,6 +113,13 @@ class Profiles extends Component {
                 <RaisedButton label='OK' primary onClick={this.toggleWarningModal}/>
             </div>
         ];
+        let inputModalActions = [
+            <div key={1} className='input-modal-action'>
+                <RaisedButton label='Load' primary onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
+            </div>
+        ];
+        !this.state.simplifierInputVisible && inputModalActions.shift();
+
         let titleStyle = {
             backgroundColor: palette.primary2Color,
             color: palette.alternateTextColor,
@@ -94,6 +145,44 @@ class Profiles extends Component {
                     </div>
                 </div>
             </Dialog>}
+            {this.state.inputModalVisible && <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }}
+                                                     bodyClassName='project-input-modal'>
+                <Paper className='paper-card'>
+                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h3>{this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile'}</h3>
+                    <div className="client-details">
+                        {!this.state.simplifierInputVisible &&
+                        <div className='buttons-wrapper'>
+                            <RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
+                            <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
+                        </div>}
+                        {this.state.simplifierInputVisible &&
+                        <div style={{ padding: '20px' }}>
+                            <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({ menuActive: true })}
+                                  backgroundColor={this.state.menuActive ? palette.primary2Color : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
+                                <span ref='project-menu'/>
+                                <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
+                                <span className='icon-wrapper'>
+                                   <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
+                                </span>
+                            </Chip>
+                            {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
+                            {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
+                                                                           id='simplifireProjectName' floatingLabelText='Simplifier.net Project ID' className='project-name'/>}
+                            <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
+                                <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
+                                    {PROFILES.map(profile =>
+                                        <MenuItem className='type-filter-menu-item' primaryText={profile.title} onClick={() => this.setState({ menuActive: false, project: profile.id })}/>
+                                    )}
+                                </Menu>
+                            </Popover>
+                        </div>}
+                    </div>
+                </Paper>
+            </Dialog>}
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
                     <CardTitle className='card-title'>
@@ -102,7 +191,7 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
-                            <RaisedButton label='Load Profile (zip file)' primary onClick={() => this.refs.fileZip.click()}/>
+                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -112,7 +201,7 @@ class Profiles extends Component {
                 </Card>
                 <Card className='card validate-card'>
                     <CardTitle className='card-title'>
-                        <span>Validation</span>
+                        <span>Validation target</span>
                     </CardTitle>
                     <div className='validate-wrapper'>
                         <Tabs className='validate-tabs' contentContainerClassName={`validate-tabs-container ${this.state.activeTab === 'browse' ? 'no-padding' : ''}`}
@@ -171,6 +260,16 @@ class Profiles extends Component {
             </div>
         </Page>
     }
+
+    toggleInputModal = () => {
+        this.setState({ inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
+    };
+
+    loadRemoteFile = () => {
+        let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
+        this.props.loadProject(project, this.state.canFit);
+        this.toggleInputModal();
+    };
 
     calcCanFit = () => {
         let containerHeight = document.getElementsByClassName('profiles-list')[0].clientHeight;
@@ -238,18 +337,24 @@ class Profiles extends Component {
             <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
             <List className='profiles-list'>
-                {this.props.profilesUploading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
+                {(this.props.fetchingFile || this.props.profilesUploading) && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                     <CircularProgress size={40} thickness={5}/>
-                    {this.props.profilesUploadingStatus.resourceSavedCount && <div>
+                    {!!this.props.profilesUploadingStatus.resourceSavedCount && <div>
                         {this.props.profilesUploadingStatus.resourceSavedCount} resources processed
                     </div>}
+                    {this.props.fetchingFile && <div>
+                        Fetching project
+                    </div>}
                 </div>}
-                {!this.props.profilesUploading && this.props.profiles && this.props.profiles.map((profile, key) => {
+                {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
                     if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
                     }
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
-                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}/>;
+                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}
+                                     rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile, this.state.canFit)}>
+                                         <DeleteIcon color={palette.primary4Color}/>
+                                     </IconButton>}/>;
                 })}
                 {this.props.profilesLoading && <div className='loader-wrapper' style={{ height: '110px', paddingTop: '20px', margin: 0 }}>
                     <CircularProgress size={40} thickness={5}/>
@@ -294,7 +399,6 @@ class Profiles extends Component {
 }
 
 const mapStateToProps = state => {
-
     return {
         results: state.fhir.customSearchResults,
         validationResults: state.fhir.validationResults,
@@ -308,13 +412,14 @@ const mapStateToProps = state => {
         profilesLoading: state.fhir.profilesLoading,
         profilesUploading: state.fhir.profilesUploading,
         validationExecuting: state.fhir.validationExecuting,
-        profilesUploadingStatus: state.fhir.profilesUploadingStatus
+        profilesUploadingStatus: state.fhir.profilesUploadingStatus,
+        fetchingFile: state.fhir.fetchingFile
     };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));
