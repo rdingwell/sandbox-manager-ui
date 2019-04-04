@@ -160,7 +160,7 @@ export function setFetchingSingleResourceError (error) {
     }
 }
 
-export function setFetchingAnyResourceError (error, type) {
+export function setFetchingAnyResourceError (type, error) {
     return {
         type: actionTypes.SET_ANY_RESOURCE_LOAD_ERROR,
         payload: { error, type }
@@ -859,10 +859,16 @@ export function fetchAnyResource (type, id) {
                     dispatch(setFetchAnyResource(false, type))
                 })
                 .fail(e => {
-                    dispatch(setFetchingAnyResourceError(e, type));
+                    dispatch(setFetchingAnyResourceError(type, e));
                     dispatch(setFetchAnyResource(false, type))
                 });
         }
+    }
+}
+
+export function clearResourceFetchError (type) {
+    return dispatch => {
+        dispatch(setFetchingAnyResourceError(type));
     }
 }
 

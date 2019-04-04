@@ -122,7 +122,8 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <RaisedButton icon={<UpdateIcon/>} primary className='service-update-button'/>}
+                {!this.props.modal && <RaisedButton label='Refresh' icon={<UpdateIcon/>} primary className='service-update-button'/>}
+                {!this.props.modal && <span className='service-last-updated'>Last updated: 2019/03/29</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';

@@ -69,7 +69,7 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.SET_ANY_RESOURCE_LOAD_ERROR:
             delete state.resourceListLoadError[action.payload.type];
-            state.resourceListLoadError[action.payload.type] = action.payload.error;
+            action.payload.error && (state.resourceListLoadError[action.payload.type] = action.payload.error);
             break;
         case actionTypes.SET_ANY_RESOURCE:
             state.resourceList[action.payload.resource.resourceType] = action.payload.resource;

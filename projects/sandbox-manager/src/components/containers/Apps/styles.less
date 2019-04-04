@@ -61,6 +61,7 @@
 .apps-screen-wrapper {
   width: 930px;
   display: inline-block;
+  margin-top: 10px;
   @media (max-width: 1228px) {
     width: 620px;
   }
@@ -128,14 +129,18 @@
 
     .service-update-button {
       position: absolute;
-      right: 32px;
-      top: 10px;
+      right: 47px;
+      top: -8px;
     }
 
-    span {
+    & > span {
       font-size: .8rem;
       position: absolute;
       bottom: -18px;
+
+      &.service-last-updated {
+        right: 30px;
+      }
     }
   }
 
@@ -151,11 +156,6 @@
         margin-right: 0;
       }
     }
-    //@media (max-width: 1227px) {
-    //  &:nth-child(3n) {
-    //    margin-right: 0;
-    //  }
-    //}
 
     .hook-icon-wrapper {
       position: absolute;

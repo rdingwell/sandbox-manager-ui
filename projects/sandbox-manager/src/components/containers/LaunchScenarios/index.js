@@ -3,7 +3,7 @@ import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
-    customSearch, fetchAnyResource
+    customSearch, fetchAnyResource, clearResourceFetchError
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -541,7 +541,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario,
         updateNeedPatientBanner, lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext,
         deleteCustomContext, fetchLocation, setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError,
-        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
+        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, clearResourceFetchError,
+        getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },
     dispatch

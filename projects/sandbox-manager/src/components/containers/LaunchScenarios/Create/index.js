@@ -123,7 +123,7 @@ class Create extends Component {
                 : this.state.currentStep === 1
                     ? !!this.state.selectedPersona
                     : this.state.currentStep === 2
-                        ? (this.state.scenarioType === 'app' && !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError || hasAllRequiredHookContext)
+                        ? (this.state.scenarioType === 'app' && !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError) || hasAllRequiredHookContext
                         : this.state.title.length > 2;
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
@@ -524,6 +524,7 @@ class Create extends Component {
     blurHookContext = (key, context) => {
         let crit = this.state[key];
         crit && typeof (context.resourceType) === 'string' && this.props.fetchAnyResource && this.props.fetchAnyResource(context.resourceType, crit);
+        !crit && this.props.clearResourceFetchError && this.props.clearResourceFetchError(context.resourceType);
     };
 
     onChange = (prop, value) => {
