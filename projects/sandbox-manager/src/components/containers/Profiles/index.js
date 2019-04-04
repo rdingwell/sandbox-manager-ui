@@ -201,7 +201,7 @@ class Profiles extends Component {
                 </Card>
                 <Card className='card validate-card'>
                     <CardTitle className='card-title'>
-                        <span>Validation</span>
+                        <span>Validation target</span>
                     </CardTitle>
                     <div className='validate-wrapper'>
                         <Tabs className='validate-tabs' contentContainerClassName={`validate-tabs-container ${this.state.activeTab === 'browse' ? 'no-padding' : ''}`}
