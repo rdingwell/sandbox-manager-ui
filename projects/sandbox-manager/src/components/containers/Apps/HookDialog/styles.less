@@ -13,6 +13,7 @@
   margin: 10px 0 0 2rem;
   display: inline-block;
   position: relative;
+
   img {
     vertical-align: top;
     max-width: 100%;
@@ -26,14 +27,32 @@
   & > div:first-of-type {
     padding: 0 !important;
   }
+
   .remove-image-button {
     position: absolute;
     right: 10px;
     top: 10px;
   }
+
   .paper-body {
     height: ~'calc(100% - 68px)';
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+
+    & > .view-toggle {
+      position: absolute !important;
+      right: 18px !important;
+      top: 10px;
+      width: 88px !important;
+      z-index: 1000;
+    }
+    .react-json-view {
+      padding: 10px 0;
+    }
   }
+
   .paper-card {
     h3 {
       height: 68px;
@@ -41,9 +60,25 @@
       padding: 0 0 0 24px;
       font-size: 20px;
     }
+
     .close-button {
       width: 68px !important;
       height: 68px !important;
+    }
+  }
+
+  .prefetch-title {
+    text-align: center;
+    padding-top: 10px;
+    color: rgba(0, 0, 0, 0.3);
+  }
+
+  & > div:first-child {
+    border-bottom: 1px solid #f5f5f5 !important;
+    height: 65vh;
+
+    .paper-card {
+      height: 100%;
     }
   }
 }
@@ -52,12 +87,14 @@
   & > a {
     text-decoration: none;
     color: inherit;
+
     & > * {
       font-size: 14px;
       display: inline-block;
       margin-top: 5px;
     }
   }
+
   svg {
     margin-right: 5px;
     position: relative;

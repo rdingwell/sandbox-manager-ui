@@ -123,7 +123,7 @@ export function loadServices () {
 
             let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/cds-services?sandboxId=" + sessionStorage.sandboxId;
             API.get(url, dispatch)
-            .then(services => dispatch(setServices(services)))
+                .then(services => dispatch(setServices(services)))
                 .finally(() => {
                     dispatch(setServicesLoading(false));
                 });
@@ -152,7 +152,7 @@ export const launchHook = (hook, launchContext) => {
                     patient: `Patient/${context.patientId}`,
                     context,
                     fhirAuthorization: {
-                        access_token: authData.token,
+                        access_token: authData.jwt,
                         token_type: "Bearer",
                         scope: "patient/*.* user/*.* launch openid profile online_access",
                         subject: hook.hook
@@ -183,14 +183,26 @@ export const launchHook = (hook, launchContext) => {
                             // Trigger the hook
                             API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
                                 .then(cards => {
-                                    cards && cards.cards && dispatch(setResultCards(cards.cards));
+                                    if (cards && cards.cards) {
+                                        cards.cards.map(card => {
+                                            card.requestData = data;
+                                        });
+                                        console.log(cards.cards);
+                                        dispatch(setResultCards(cards.cards));
+                                    }
                                 });
                         })
                 } else {
                     // Trigger the hook
                     API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
                         .then(cards => {
-                            cards && cards.cards && dispatch(setResultCards(cards.cards));
+                            if (cards && cards.cards) {
+                                cards.cards.map(card => {
+                                    card.requestData = data;
+                                });
+                                console.log(cards.cards);
+                                dispatch(setResultCards(cards.cards));
+                            }
                         });
                 }
             });
