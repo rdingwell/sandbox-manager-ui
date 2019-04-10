@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Card, CardActions, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
+import { Card, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
@@ -495,12 +495,14 @@ class Create extends Component {
     };
 
     getHookContextColumn = (comp, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+        console.log(this.props.hookContexts[this.state.selectedApp.hook]);
+        console.log(this.props.resourceList);
         return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
             let context = this.props.hookContexts[this.state.selectedApp.hook][key];
             let value = this.state[key] || '';
             let disabled = key === 'userId' || typeof (context.resourceType) !== 'string' || this.props.resourceListFetching[context.resourceType];
 
-            return index % 2 === comp && <div className='column-item-wrapper' key={index}>
+            return index % 2 === comp && key !== 'userId' && <div className='column-item-wrapper' key={index}>
                 <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} floatingLabelText={context.title}
                            onBlur={() => this.blurHookContext(key, context)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}

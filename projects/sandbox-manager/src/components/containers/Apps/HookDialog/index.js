@@ -9,14 +9,18 @@ class AppDialog extends Component {
     constructor (props) {
         super(props);
 
+        let logoURI = props.hook ? props.hook.logoUri : '';
+
         this.state = {
-            showJSON: false
+            showJSON: false,
+            hasChanged: false,
+            logoURI,
         }
     }
 
     render () {
         let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} disabled={!this.state.logoURI}/>
+            <RaisedButton primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
         ];
 
         let paperClasses = 'hook-dialog';
@@ -78,7 +82,7 @@ class AppDialog extends Component {
     removeImage = () => {
         let input = this.refs.image;
         input.value = '';
-        this.setState({ logoURI: undefined });
+        this.setState({ logoURI: undefined, hasChanged: true });
     };
 
     handleClose = () => {
@@ -92,7 +96,7 @@ class AppDialog extends Component {
             let reader = new FileReader();
 
             reader.onload = (e) => {
-                this.setState({ logoURI: e.target.result })
+                this.setState({ logoURI: e.target.result, hasChanged: true })
             };
 
             reader.readAsDataURL(input.files[0]);

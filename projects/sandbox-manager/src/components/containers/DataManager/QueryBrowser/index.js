@@ -21,10 +21,16 @@ export default class QueryBrowser extends Component {
     constructor (props) {
         super(props);
 
+        let query = '';
+
+        if (props.query && Object.keys(props.query).length) {
+            query = props.query.q + '&subject=' + props.query.p
+        }
+
         this.state = {
             showDialog: false,
             selectedEntry: undefined,
-            query: '',
+            query,
             activeTab: 'summary',
             canFit: 2
         };
@@ -39,6 +45,8 @@ export default class QueryBrowser extends Component {
 
         let element = document.getElementsByClassName('stage')[0];
         element.addEventListener('scroll', this.scroll);
+
+        this.state.query.length && this.search();
     }
 
     componentWillUnmount () {
@@ -111,8 +119,9 @@ export default class QueryBrowser extends Component {
                                         </ListItem>
                                     })
                                     : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
-                                    : <div>{this.props.results != null && <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: {resource: this.props.results} })} className='result-list-item'>
-                                            {parseEntry({resource: this.props.results}).props.map((item, index) => {
+                                        : <div>{this.props.results != null &&
+                                        <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: { resource: this.props.results } })} className='result-list-item'>
+                                            {parseEntry({ resource: this.props.results }).props.map((item, index) => {
                                                 return <div className='result-item' key={index}>
                                                     <span>{item.label}: </span>
                                                     <span>{item.value}</span>

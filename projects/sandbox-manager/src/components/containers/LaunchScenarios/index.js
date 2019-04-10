@@ -327,11 +327,13 @@ class LaunchScenarios extends Component {
                 <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName || '-'}</span>
                 <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId || '-'}</span>
                 <div className='app-wrapper'>
-                    <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
+                    <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>{selectedScenario.app ? 'App' : 'CDS Hook'}</span>
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
-                            <img style={{ height: '100%' }} src={selectedScenario.app && selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
-                                 alt='HSPC Logo'/>
+                            {selectedScenario.app && <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
+                                                          alt='HSPC Logo'/>}
+                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{ height: '100%' }} src={selectedScenario.cdsHook.logoUri} alt='HSPC Logo'/>}
+                            {selectedScenario.cdsHook && !selectedScenario.cdsHook.logoUri && <HooksIcon className='default-hook-icon'/>}
                         </CardMedia>
                         <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
                             <span className='app-name'>{selectedScenario.app && selectedScenario.app.clientName}</span>
@@ -383,8 +385,16 @@ class LaunchScenarios extends Component {
                             {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
                         </span>
                     </div>}
-                    {selectedScenario.cdsHook &&
-                    selectedScenario.contextParams.map(param => <span className='section-value' style={lightColor}><ContextIcon style={iconStyleLight}/>{param.name}: {param.value}</span>)}
+                    {selectedScenario.cdsHook && selectedScenario.contextParams.map(param => {
+                        if (param.name !== 'userId') {
+                            let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
+                            let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                            return <span className='section-value' style={lightColor}>
+                                <ContextIcon style={iconStyleLight}/>{param.name}:
+                                <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
+                            </span>;
+                        }
+                    })}
                 </div>
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>

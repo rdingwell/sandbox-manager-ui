@@ -108,8 +108,10 @@ export function updateHook (hookId, newImage) {
                 });
         } else if (!newImage) {
             API.delete(url, dispatch).finally(() => {
-                dispatch(loadServices());
-                dispatch(appCreating(false));
+                setTimeout(() => {
+                    dispatch(loadServices());
+                    dispatch(appCreating(false));
+                }, 550);
             });
         }
     };
