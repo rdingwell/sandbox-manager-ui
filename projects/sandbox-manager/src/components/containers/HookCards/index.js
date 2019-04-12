@@ -51,7 +51,7 @@ class HookCards extends Component {
                 <div className='hook-card-content-wrapper' onClick={this.preventClick}>
                     <Tabs className='card-tabs' contentContainerClassName={`card-tabs-container`} inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
                           value={this.state.activeTab}>
-                        <Tab label='Rendering' className={'view tab' + (this.state.activeTab === 'browse' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'view' })} value='view'>
+                        <Tab label='Rendering' className={'view tab' + (this.state.activeTab === 'view' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'view' })} value='view'>
                             <div className='source-wrapper'>
                                 <div className='title'>
                                     <span>Source</span>
@@ -86,14 +86,14 @@ class HookCards extends Component {
                                 </RaisedButton>
                             </div>
                         </Tab>
-                        <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
-                            <div>
-                                <ReactJson src={response} name={false}/>
-                            </div>
-                        </Tab>
                         <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>
                             <div>
                                 <ReactJson src={request} name={false}/>
+                            </div>
+                        </Tab>
+                        <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
+                            <div>
+                                <ReactJson src={response} name={false}/>
                             </div>
                         </Tab>
                     </Tabs>

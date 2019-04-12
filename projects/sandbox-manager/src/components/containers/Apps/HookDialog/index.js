@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { RaisedButton, Paper, Dialog, IconButton, FloatingActionButton, TextField, Toggle } from 'material-ui';
+import React, { Component, Fragment } from 'react';
+import { RaisedButton, Paper, Dialog, IconButton, FloatingActionButton, TextField, Toggle, Tab, Tabs } from 'material-ui';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import './styles.less';
@@ -14,15 +14,12 @@ class AppDialog extends Component {
         this.state = {
             showJSON: false,
             hasChanged: false,
+            activeTab: 'parsed',
             logoURI,
         }
     }
 
     render () {
-        let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
-        ];
-
         let paperClasses = 'hook-dialog';
         let palette = this.props.muiTheme.palette;
         let hook = Object.assign({}, this.props.hook);
@@ -32,48 +29,56 @@ class AppDialog extends Component {
         delete hook.url;
         delete hook.logoUri;
 
-        return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
-                       actionsContainerClassName='app-dialog-actions-wrapper'>
+        return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actionsContainerClassName='app-dialog-actions-wrapper'>
             <Paper className='paper-card'>
                 <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
-                <h3>Service info</h3>
+                <h3>CDS Service Info</h3>
                 <div className='paper-body'>
-                    <Toggle className='view-toggle' label='JSON' labelPosition='right' toggled={this.state.showJSON} thumbStyle={{ backgroundColor: palette.primary5Color }}
-                            trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
-                            trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ showJSON: !this.state.showJSON })}/>
-                    {!this.state.showJSON && <div className='hook-info-wrapper'>
-                        <TextField fullWidth value={this.props.hook.hook} disabled={true} floatingLabelText='Hook'/>
-                        <TextField fullWidth value={this.props.hook.title} disabled={true} floatingLabelText='Title'/>
-                        <TextField fullWidth value={this.props.hook.description} disabled={true} floatingLabelText='Description'/>
-                        <TextField fullWidth value={this.props.hook.hookId} disabled={true} floatingLabelText='Id'/>
-                        {!!this.props.hook.prefetch && <div className='prefetch-title'>Prefetch</div>}
-                        {!!this.props.hook.prefetch && Object.keys(this.props.hook.prefetch).map(key => {
-                            return <TextField key={key} fullWidth value={this.props.hook.prefetch[key]} disabled={true} floatingLabelText={key}/>;
-                        })}
-                    </div>}
-                    {this.state.showJSON && <ReactJson src={hook} name={false}/>}
-                    <form>
-                        <div className='image-button-wrapper'>
-                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()}/>
-                            <div>
-                                <span className='subscript'>(Display size 300px W X 200px H)</span>
-                            </div>
-                            <div>
-                                <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
-                            </div>
-                        </div>
-                        <div className='image-wrapper'>
-                            {this.state.logoURI &&
-                            <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
-                                <DeleteIcon/>
-                            </FloatingActionButton>}
-                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
-                            {!this.state.logoURI && <HooksIcon className='default-hook-icon'/>}
-                            {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI}/>}
-                        </div>
-                    </form>
+                    <Tabs className='info-tabs' contentContainerClassName='info-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
+                          value={this.state.activeTab}>
+                        <Tab label='Rendering' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
+                            <Fragment>
+                                <div className='hook-info-wrapper'>
+                                    <TextField fullWidth value={this.props.hook.hook} disabled={true} floatingLabelText='Hook'/>
+                                    <TextField fullWidth value={this.props.hook.title} disabled={true} floatingLabelText='Title'/>
+                                    <TextField fullWidth value={this.props.hook.description} disabled={true} floatingLabelText='Description'/>
+                                    <TextField fullWidth value={this.props.hook.hookId} disabled={true} floatingLabelText='Id'/>
+                                    {!!this.props.hook.prefetch && <div className='prefetch-title'>Prefetch</div>}
+                                    {!!this.props.hook.prefetch && Object.keys(this.props.hook.prefetch).map(key => {
+                                        return <TextField key={key} fullWidth value={this.props.hook.prefetch[key]} disabled={true} floatingLabelText={key}/>;
+                                    })}
+                                </div>
+                                <form className='image-form'>
+                                    <div className='image-button-wrapper'>
+                                        <RaisedButton label='Select Image' onClick={() => this.refs.image.click()}/>
+                                        <div>
+                                            <span className='subscript'>(Display size 300px W X 200px H)</span>
+                                        </div>
+                                        <div>
+                                            <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
+                                        </div>
+                                    </div>
+                                    <div className='image-wrapper'>
+                                        <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
+                                        {!this.state.logoURI && <HooksIcon className='default-hook-icon'/>}
+                                        {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI}/>}
+                                    </div>
+                                    {this.state.logoURI &&
+                                    <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
+                                        <DeleteIcon/>
+                                    </FloatingActionButton>}
+                                </form>
+                                <div className='save-btn-wrapper'>
+                                    <RaisedButton className='save-btn' primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
+                                </div>
+                            </Fragment>
+                        </Tab>
+                        <Tab label='JSON' className={'json tab' + (this.state.activeTab === 'json' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'json' })} value='json'>
+                            <ReactJson src={hook} name={false}/>
+                        </Tab>
+                    </Tabs>
                 </div>
             </Paper>
         </Dialog>

@@ -156,25 +156,27 @@ class AppDialog extends Component {
                                     trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
                         </div>}
                         < br/>
-                        <div className='image-button-wrapper'>
-                            <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}/>
-                            <div>
-                                <span className='subscript'>(Display size 300px W X 200px H)</span>
+                        <div className='image-form'>
+                            <div className='image-button-wrapper'>
+                                <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}/>
+                                <div>
+                                    <span className='subscript'>(Display size 300px W X 200px H)</span>
+                                </div>
+                                <div>
+                                    <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
+                                </div>
                             </div>
-                            <div>
-                                <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
+                            <div className='image-wrapper'>
+                                <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
+                                {this.state.app.logoUri
+                                    ? <img src={this.state.app.logoUri}/>
+                                    : <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                                }
                             </div>
-                        </div>
-                        <div className='image-wrapper'>
                             {this.state.app.logoUri &&
                             <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
                                 <DeleteIcon/>
                             </FloatingActionButton>}
-                            <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
-                            {this.state.app.logoUri
-                                ? <img src={this.state.app.logoUri}/>
-                                : <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
-                            }
                         </div>
                     </form>
                 </div>

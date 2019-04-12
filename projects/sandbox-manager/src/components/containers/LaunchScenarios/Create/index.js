@@ -495,8 +495,6 @@ class Create extends Component {
     };
 
     getHookContextColumn = (comp, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
-        console.log(this.props.hookContexts[this.state.selectedApp.hook]);
-        console.log(this.props.resourceList);
         return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
             let context = this.props.hookContexts[this.state.selectedApp.hook][key];
             let value = this.state[key] || '';
@@ -507,6 +505,11 @@ class Create extends Component {
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} floatingLabelText={context.title}
                            onBlur={() => this.blurHookContext(key, context)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
                            errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                {key === 'patientId' && <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
+                    <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
+                        <SearchIcon style={iconStyle}/>
+                    </IconButton>
+                </div>}
                 {typeof (context.resourceType) === 'string' && <div className='subscript'>
                     {this.props.resourceListFetching[context.resourceType]
                         ? 'Loading resource data...'

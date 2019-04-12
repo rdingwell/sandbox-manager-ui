@@ -1,8 +1,13 @@
-.image-button-wrapper {
-  display: inline-block;
-  max-width: 250px;
+.image-form {
   position: relative;
-  top: -35px;
+
+  .image-button-wrapper {
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
+    display: inline-block;
+    max-width: 250px;
+  }
 }
 
 .image-wrapper {
@@ -13,6 +18,7 @@
   margin: 10px 0 0 2rem;
   display: inline-block;
   position: relative;
+
   img {
     vertical-align: top;
     max-width: 100%;
@@ -24,13 +30,15 @@
 
 .app-dialog {
   .remove-image-button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
   }
+
   .paper-body {
     height: ~'calc(100% - 68px)';
   }
+
   .paper-card {
     h3 {
       height: 68px;
@@ -38,6 +46,7 @@
       padding: 0 0 0 24px;
       font-size: 20px;
     }
+
     .close-button {
       width: 68px !important;
       height: 68px !important;
@@ -49,12 +58,14 @@
   & > a {
     text-decoration: none;
     color: inherit;
+
     & > * {
       font-size: 14px;
       display: inline-block;
       margin-top: 5px;
     }
   }
+
   svg {
     margin-right: 5px;
     position: relative;

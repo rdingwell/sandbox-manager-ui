@@ -1,8 +1,15 @@
-.image-button-wrapper {
-  display: inline-block;
-  max-width: 250px;
+.image-form {
   position: relative;
-  top: -35px;
+
+  .image-button-wrapper {
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+}
+
+.save-btn-wrapper {
+  text-align: right;
 }
 
 .image-wrapper {
@@ -29,17 +36,30 @@
   }
 
   .remove-image-button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    vertical-align: top;
+    margin-left: 10px;
+    margin-top: 10px;
   }
 
   .paper-body {
     height: ~'calc(100% - 68px)';
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     box-sizing: border-box;
     position: relative;
+    padding: 0 !important;
+
+    .info-tabs {
+      height: 100%;
+      overflow: hidden;
+
+      .info-tabs-container {
+        height: ~'calc(100% - 50px)';
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 10px 10px;
+        box-sizing: border-box;
+      }
+    }
 
     & > .view-toggle {
       position: absolute !important;
@@ -48,6 +68,7 @@
       width: 88px !important;
       z-index: 1000;
     }
+
     .react-json-view {
       padding: 10px 0;
     }
