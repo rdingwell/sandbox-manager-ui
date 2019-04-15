@@ -480,4 +480,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Apps)))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Apps)));

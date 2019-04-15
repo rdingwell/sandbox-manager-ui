@@ -17,12 +17,14 @@ import AfterAuth from '../components/containers/AfterAuth';
 import ResourceBrowser from '../components/containers/ResourceBrowser';
 import CreateSandbox from '../components/containers/CreateSandbox';
 import DataManager from '../components/containers/DataManager';
+import HookCards from '../components/containers/HookCards';
 
 export default <Router>
     <App>
         <Switch>
             <Route path='/:sandboxId/apps' component={Apps} />
             <Route path='/:sandboxId/launch' component={LaunchScenarios} />
+            <Route path='/:sandboxId/hooks/:hookId' component={HookCards} />
             <Route path='/:sandboxId/hooks' component={Hooks} />
             <Route path='/launchApp' component={LaunchApp} />
             <Route path='/:sandboxId/patients' component={Persona} />

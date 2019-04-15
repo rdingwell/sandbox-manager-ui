@@ -1,8 +1,8 @@
 import API from '../../lib/api';
 import * as types from './types';
-import { modifyingCustomContext, random } from './sandbox';
+import { random } from './sandbox';
 import { setGlobalError } from './app';
-import { appCreating, appDeleting, loadSandboxApps, setCreatedApp, setSandboxApps, setSandboxAppsLoading } from './apps';
+import { appCreating } from './apps';
 
 const POSTFIX_SERVICE = '/cds-services';
 
@@ -136,6 +136,8 @@ export function loadServices () {
 export const launchHook = (hook, launchContext) => {
     return (dispatch, getState) => {
         dispatch(hookExecuting(true));
+        let hookInstance = random(64);
+        window.open(`/${sessionStorage.sandboxId}/hooks/${hookInstance}`, '_blank');
 
         let state = getState();
         let context = buildContext(hook.hook, launchContext, state, dispatch);
@@ -147,7 +149,7 @@ export const launchHook = (hook, launchContext) => {
         context && API.post(configuration.sandboxManagerApiUrl + "/userPersona/authenticate", userData, dispatch)
             .then(authData => {
                 let data = {
-                    hookInstance: random(64),
+                    hookInstance,
                     hook: hook.hook,
                     fhirServer: window.fhirClient.server.serviceUrl,
                     user: state.sandbox.defaultUser.resourceUrl,

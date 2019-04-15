@@ -11,7 +11,6 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Layout from 'sandbox-manager-lib/components/Layout';
 import CreateSandbox from '../containers/CreateSandbox';
-import HookCards from '../containers/HookCards';
 
 import Init from '../Init/';
 
@@ -66,10 +65,24 @@ class App extends React.Component {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
         let theme = getMuiTheme(this.props.ui.theme);
+        let pathSplit = this.props.location.pathname.split('/');
+        let isSingeHook = pathSplit[2] === 'hooks' && !!pathSplit[3];
+        let layoutProps = {
+            isSingeHook,
+            CreateSandbox,
+            onAuthInit: this.props.init,
+            signOut: this.props.signOut,
+            selectSandbox: this.props.selectSandbox,
+            path: this.props.history.location.pathname,
+            settings: this.props.config.xsettings.data,
+            hideNotification: this.props.hideNotification,
+            updateSandboxInvite: this.props.updateSandboxInvite,
+            markAllNotificationsSeen: this.props.markAllNotificationsSeen,
+
+        };
+
         return this.props.ui && <MuiThemeProvider muiTheme={theme}>
-            <Layout path={this.props.history.location.pathname} selectSandbox={this.props.selectSandbox} onAuthInit={this.props.init} settings={this.props.config.xsettings.data}
-                    signOut={this.props.signOut} updateSandboxInvite={this.props.updateSandboxInvite} CreateSandbox={CreateSandbox} hideNotification={this.props.hideNotification}
-                    markAllNotificationsSeen={this.props.markAllNotificationsSeen}>
+            <Layout {...layoutProps}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
                     <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
@@ -89,7 +102,6 @@ class App extends React.Component {
                     <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                <HookCards />
             </Layout>
         </MuiThemeProvider>;
     }
