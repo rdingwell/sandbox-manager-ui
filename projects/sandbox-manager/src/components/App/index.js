@@ -15,8 +15,9 @@ import CreateSandbox from '../containers/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
-import { CircularProgress, Dialog, RaisedButton } from "material-ui";
+import { CircularProgress, Dialog, RaisedButton, Tab, Tabs } from "material-ui";
 import Snackbar from '../UI/Snackbar';
+import ReactJson from 'react-json-view';
 
 class App extends React.Component {
     constructor (props) {
@@ -49,7 +50,9 @@ class App extends React.Component {
             }
         }
 
-        this.state = {};
+        this.state = {
+            activeTab: 'parsed'
+        };
     }
 
     componentDidMount () {
@@ -77,9 +80,13 @@ class App extends React.Component {
             settings: this.props.config.xsettings.data,
             hideNotification: this.props.hideNotification,
             updateSandboxInvite: this.props.updateSandboxInvite,
-            markAllNotificationsSeen: this.props.markAllNotificationsSeen,
-
+            markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
+        let open = !!this.props.cards.length;
+        let palette = theme.palette;
+        let request = open ? this.props.cards[0].requestData : {};
+        let response = open ? Object.assign({}, this.props.cards[0]) : {};
+        open && delete response.requestData;
 
         return this.props.ui && <MuiThemeProvider muiTheme={theme}>
             <Layout {...layoutProps}>
@@ -102,9 +109,53 @@ class App extends React.Component {
                     <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
+                {open && <Dialog open={open} paperClassName='hooks-dialog' actions={[<RaisedButton label='Dismiss' onClick={this.dismiss}/>]}>
+                    <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
+                        <Tab label='Rendering' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
+                            <div className='hooks-wrapper'>
+                                {this.getCards()}
+                            </div>
+                        </Tab>
+                        <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>
+                            <div>
+                                <ReactJson className='json-view' src={request} name={false}/>
+                            </div>
+                        </Tab>
+                        <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
+                            <div>
+                                <ReactJson className='json-view' src={response} name={false}/>
+                            </div>
+                        </Tab>
+                    </Tabs>
+                </Dialog>}
             </Layout>
         </MuiThemeProvider>;
     }
+
+    dismiss = () => {
+        this.setState({ activeTab: 'parsed' });
+        this.props.removeResultCards();
+    };
+
+    getCards = () => {
+        return this.props.cards.map((card, i) => {
+            return <div className={`hook-card-wrapper ${card.indicator}`} key={card.requestData.hookInstance + '_' + i}>
+                <span className='card-summary'>{card.summary}</span>
+                {card.source && <div className='hook-source-info'>
+                    <span className='hook-source-title'>Source:</span>
+                    <span className='hook-source'> {card.source.label}</span>
+                </div>}
+                <div className='card-detail' dangerouslySetInnerHTML={{ __html: card.detail }}/>
+                {card.suggestions && <div>
+                    {card.suggestions.map(suggestion => {
+                        return <button className='hook-suggestion-button'>
+                            <span>{suggestion.label}</span>
+                        </button>
+                    })}
+                </div>}
+            </div>
+        });
+    };
 
     setSandboxId = () => {
         let check = this.getCheck();
@@ -134,7 +185,14 @@ App.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    return { ...state, ...lib, ...glib, selecting: state.sandbox.selecting, resetting: state.sandbox.resetting, deleting: state.sandbox.deleting, errorToShow: state.app.errorToShow }
+    return {
+        ...state, ...lib, ...glib,
+        selecting: state.sandbox.selecting,
+        resetting: state.sandbox.resetting,
+        deleting: state.sandbox.deleting,
+        errorToShow: state.app.errorToShow,
+        cards: state.hooks.cards || []
+    }
 };
 const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
 

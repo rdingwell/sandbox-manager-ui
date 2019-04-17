@@ -24,10 +24,9 @@ export const setResultCards = cards => {
     }
 };
 
-export function removeResultCard (cardIndex) {
+export function removeResultCards () {
     return {
-        type: types.HOOKS_REMOVE_CARD,
-        payload: { cardIndex }
+        type: types.HOOKS_REMOVE_CARDS
     }
 }
 
@@ -137,7 +136,6 @@ export const launchHook = (hook, launchContext) => {
     return (dispatch, getState) => {
         dispatch(hookExecuting(true));
         let hookInstance = random(64);
-        window.open(`/${sessionStorage.sandboxId}/hooks/${hookInstance}`, '_blank');
 
         let state = getState();
         let context = buildContext(hook.hook, launchContext, state, dispatch);
@@ -185,26 +183,24 @@ export const launchHook = (hook, launchContext) => {
                     Promise.all(promises)
                         .then(() => {
                             // Trigger the hook
-                            API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
+                            API.post(`${encodeURI(hook.hookUrl)}`, data)
                                 .then(cards => {
                                     if (cards && cards.cards) {
                                         cards.cards.map(card => {
                                             card.requestData = data;
                                         });
-                                        console.log(cards.cards);
                                         dispatch(setResultCards(cards.cards));
                                     }
                                 });
                         })
                 } else {
                     // Trigger the hook
-                    API.post(`${encodeURI(hook.url)}/${hook.hookId}`, data)
+                    API.post(`${encodeURI(hook.hookUrl)}`, data)
                         .then(cards => {
                             if (cards && cards.cards) {
                                 cards.cards.map(card => {
                                     card.requestData = data;
                                 });
-                                console.log(cards.cards);
                                 dispatch(setResultCards(cards.cards));
                             }
                         });

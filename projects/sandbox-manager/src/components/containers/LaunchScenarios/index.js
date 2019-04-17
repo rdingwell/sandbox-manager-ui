@@ -3,7 +3,7 @@ import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
-    customSearch, fetchAnyResource, clearResourceFetchError
+    customSearch, fetchAnyResource, clearResourceFetchError, launchHook
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -141,11 +141,12 @@ class LaunchScenarios extends Component {
 
     launchScenario = (e, sc) => {
         this.preventDefault(e);
-        sc.app && this.props.updateLaunchScenario(sc);
+        (sc.app || sc.cdsHook) && this.props.updateLaunchScenario(sc);
         sc.app && (sc.needPatientBanner === 'T'
             ? this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc)
             : this.openEHRSimulator(sc));
-        !sc.app && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+        !sc.app && !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+        !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, { patientId: sc.userPersona });
     };
 
     openEHRSimulator = (sc) => {
@@ -390,8 +391,7 @@ class LaunchScenarios extends Component {
                             let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
                             let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
                             return <span className='section-value' style={lightColor}>
-                                <ContextIcon style={iconStyleLight}/>{param.name}:
-                                <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
+                                {this.getContextIcon(param.name, iconStyleLight)}<span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
                             </span>;
                         }
                     })}
@@ -433,6 +433,15 @@ class LaunchScenarios extends Component {
                 </div>
             </div>
         </div>
+    };
+
+    getContextIcon = (paramName, iconStyleLight) => {
+        switch (paramName) {
+            case 'patientId':
+                return <Patient style={iconStyleLight}/>;
+            default:
+                return paramName;
+        }
     };
 
     clickingOnTheButton = () => {
@@ -551,7 +560,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario,
         updateNeedPatientBanner, lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext,
         deleteCustomContext, fetchLocation, setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError,
-        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, clearResourceFetchError,
+        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, clearResourceFetchError, launchHook,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },

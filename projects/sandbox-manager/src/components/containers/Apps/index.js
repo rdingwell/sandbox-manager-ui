@@ -122,8 +122,9 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <RaisedButton label='Refresh' backgroundColor="#0E5676" labelColor='white' icon={<UpdateIcon/>} className='service-update-button'/>}
-                {!this.props.modal && <span className='service-last-updated'>Last updated: 2019/03/29</span>}
+                {!this.props.modal && <RaisedButton label='Refresh' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
+                                                    onClick={() => this.props.createService(service.url, service.title)}/>}
+                {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';

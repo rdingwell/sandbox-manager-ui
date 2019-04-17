@@ -45,7 +45,7 @@
 
     position: relative;
 
-    & > div {
+    & > div:not(.hooks-wrapper) {
       //margin: 15px;
       width: 100%;
       //max-width: 1024px;
@@ -150,5 +150,118 @@
       display: block !important;
       -webkit-print-color-adjust: exact;
     }
+  }
+}
+
+.hooks-wrapper {
+  .hook-card-wrapper {
+    padding: 15px;
+    margin: 10px;
+    background: #fcfcfc;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    border-left-width: 3px;
+
+    &.info {
+      border-left-color: rgb(0, 121, 190);
+
+      .card-summary {
+        color: rgb(0, 121, 190);
+      }
+    }
+
+    &.warning {
+      border-left-color: rgb(255, 174, 66);
+
+      .card-summary {
+        color: rgb(255, 174, 66);
+      }
+    }
+
+    &.critical {
+      border-left-color: rgb(204, 0, 0);
+
+      .card-summary {
+        color: rgb(204, 0, 0);
+      }
+    }
+
+    .card-summary {
+      font-size: 1.286rem;
+      font-weight: 700;
+    }
+
+    .card-detail {
+      margin-top: 20px;
+    }
+
+    .hook-suggestion-button {
+      background-color: rgb(0, 121, 190);
+      border-bottom-color: rgb(1, 99, 158);
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-left-color: rgb(1, 99, 158);
+      border-left-style: solid;
+      border-left-width: 1px;
+      border-right-color: rgb(1, 99, 158);
+      border-right-style: solid;
+      border-right-width: 1px;
+      border-top-color: rgb(1, 99, 158);
+      border-top-style: solid;
+      border-top-width: 1px;
+      box-sizing: border-box;
+      color: rgb(255, 255, 255);
+      cursor: pointer;
+      display: inline-block;
+      font-size: 14px;
+      height: 30px;
+      line-height: 20.006px;
+      outline-color: rgb(255, 255, 255);
+      padding: 4px 5px;
+      text-align: center;
+      text-decoration-color: rgb(255, 255, 255);
+      margin: 2px 5px;
+      border-radius: 5px;
+    }
+
+    img {
+      max-width: 200px;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+.hooks-dialog {
+  & > div:first-of-type {
+    padding: 0 !important;
+    height: 60vh;
+    overflow: hidden;
+  }
+
+  & > div:last-of-type {
+    border-top: 1px solid whitesmoke;
+  }
+
+  .cards-tabs-wrapper {
+    height: 100%;
+    overflow: hidden;
+
+    & > div:last-of-type {
+      height: ~'calc(100% - 48px)';
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    & > div:nth-child(2) {
+      background-color: whitesmoke;
+    }
+
+    .object-content div {
+      word-break: break-all;
+    }
+  }
+
+  .react-json-view {
+    padding: 10px;
   }
 }
