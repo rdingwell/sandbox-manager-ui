@@ -31,26 +31,6 @@ const PROFILES = [
         url: 'https://simplifier.net/QiCore'
     },
     {
-        title: 'DQM',
-        id: 'DQM',
-        url: 'https://simplifier.net/DQM'
-    },
-    {
-        title: 'fpar',
-        id: 'fpar',
-        url: 'https://simplifier.net/fpar'
-    },
-    {
-        title: 'HEDIS',
-        id: 'HEDIS',
-        url: 'https://simplifier.net/HEDIS'
-    },
-    {
-        title: 'Simplifier.Core.STU3.Extensions',
-        id: 'Simplifier.Core.STU3.Extensions',
-        url: 'https://simplifier.net/Simplifier.Core.STU3.Extensions'
-    },
-    {
         title: 'Custom',
         id: 'manual',
         url: 'Manual'
