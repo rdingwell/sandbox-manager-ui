@@ -170,7 +170,7 @@ class Profiles extends Component {
                     </CardTitle>
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
-                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
+                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} />
                             <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
