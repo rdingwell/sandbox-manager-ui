@@ -111,7 +111,7 @@ class App extends React.Component {
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
                 {open && <Dialog open={open} paperClassName='hooks-dialog' actions={[<RaisedButton label='Dismiss' onClick={this.dismiss}/>]}>
                     <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
-                        <Tab label='Rendering' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
+                        <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
                             <div className='hooks-wrapper'>
                                 {this.getCards()}
                             </div>
