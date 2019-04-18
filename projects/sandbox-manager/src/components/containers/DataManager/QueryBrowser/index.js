@@ -111,8 +111,9 @@ export default class QueryBrowser extends Component {
                                         </ListItem>
                                     })
                                     : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
-                                    : <div>{this.props.results != null && <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: {resource: this.props.results} })} className='result-list-item'>
-                                            {parseEntry({resource: this.props.results}).props.map((item, index) => {
+                                        : <div>{this.props.results != null &&
+                                        <ListItem key={0} onClick={() => this.setState({ showDialog: true, selectedEntry: { resource: this.props.results } })} className='result-list-item'>
+                                            {parseEntry({ resource: this.props.results }).props.map((item, index) => {
                                                 return <div className='result-item' key={index}>
                                                     <span>{item.label}: </span>
                                                     <span>{item.value}</span>
@@ -154,8 +155,10 @@ export default class QueryBrowser extends Component {
 
     search = () => {
         let query = this.state.query;
-        query += (query.indexOf('?') >= 0 ? '&' : '?');
-        query += `_count=${this.state.canFit}`;
+        if (query.indexOf('_count=') === -1) {
+            query += (query.indexOf('?') >= 0 ? '&' : '?');
+            query += `_count=${this.state.canFit}`;
+        }
         query = encodeURI(query);
         this.props.search(query);
     };
