@@ -31,26 +31,6 @@ const PROFILES = [
         url: 'https://simplifier.net/QiCore'
     },
     {
-        title: 'DQM',
-        id: 'DQM',
-        url: 'https://simplifier.net/DQM'
-    },
-    {
-        title: 'fpar',
-        id: 'fpar',
-        url: 'https://simplifier.net/fpar'
-    },
-    {
-        title: 'HEDIS',
-        id: 'HEDIS',
-        url: 'https://simplifier.net/HEDIS'
-    },
-    {
-        title: 'Simplifier.Core.STU3.Extensions',
-        id: 'Simplifier.Core.STU3.Extensions',
-        url: 'https://simplifier.net/Simplifier.Core.STU3.Extensions'
-    },
-    {
         title: 'Custom',
         id: 'manual',
         url: 'Manual'
@@ -190,7 +170,7 @@ class Profiles extends Component {
                     </CardTitle>
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
-                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} accept='application/zip'/>
+                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} />
                             <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
