@@ -383,10 +383,23 @@ export function createResource (data) {
 export const importData = (data) => {
     return dispatch => {
         dispatch(setDataImporting(true));
+
+        // The promis is a list even though we only have one to get arround the
+        // no "catch" for the returned values from the fhirClient.api
         let promises;
         try {
-            let dataObject = JSON.parse(data);
-            if (dataObject.resourceType === 'Bundle') {
+            let dataObject = undefined;
+            let type = undefined;
+            try {
+                dataObject = JSON.parse(data);
+            } catch (e) {
+                dataObject = data;
+                type = 'application/xml';
+            }
+
+            if (type === 'application/xml') {
+                promises = [API.post(window.fhirClient.server.serviceUrl, dataObject, dispatch, true, type)];
+            } else if (!type && dataObject.resourceType === 'Bundle') {
                 promises = [window.fhirClient.api.transaction({ data })];
             } else if (dataObject.id !== undefined) {
                 promises = [window.fhirClient.api.update({ type: dataObject.resourceType, id: dataObject.id, data: data })];
@@ -400,8 +413,9 @@ export const importData = (data) => {
 
         Promise.all(promises)
             .then(result => {
+                let res = result[0] && result[0].data ? result[0].data : result;
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(result[0].data));
+                dispatch(setImportResults(res));
             })
             .catch(error => {
                 dispatch(setDataImporting(false));
