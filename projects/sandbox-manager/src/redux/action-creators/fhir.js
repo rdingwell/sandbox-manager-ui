@@ -1,6 +1,6 @@
 import * as types from "./types";
 import API from '../../lib/api';
-import { lookupPersonasStart, setPersonas } from './persona';
+import { setGlobalError } from './app';
 
 export function fhir_Reset () {
     return { type: types.FHIR_RESET };
@@ -272,6 +272,7 @@ export function uploadProfile (file, count) {
                                 dispatch(fhir_setCustomSearchResults(data));
                                 dispatch(loadProfiles(count));
                                 dispatch(fhir_setProfilesUploadingStatus({}));
+                                status.error && dispatch(setGlobalError(status.error));
                             } else {
                                 dispatch(fhir_setProfilesUploadingStatus(status));
                                 setTimeout(timeoutFunction, 1000);
