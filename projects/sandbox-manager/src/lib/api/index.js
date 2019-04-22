@@ -1,9 +1,9 @@
 import { goHome, setGlobalError, showGlobalSessionModal } from '../../redux/action-creators';
 
 export default {
-    post (url, data, dispatch, isFormData) {
+    post (url, data, dispatch, isFormData, type = "application/json") {
         return new Promise((resolve, reject) => {
-            fetch(url, get_config("POST", data, isFormData))
+            fetch(url, get_config("POST", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
@@ -60,12 +60,12 @@ export default {
 
 // Helpers
 
-const get_config = (method, data, isFormData) => {
+const get_config = (method, data, isFormData, contentType = "application/json") => {
     let CONFIG = {
         headers: {
             Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `BEARER ${window.fhirClient.server.auth.token}` : undefined,
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": contentType
         },
         method
     };
