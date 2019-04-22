@@ -79,38 +79,47 @@
       .flex-grow(1);
       .flex-basis(10%);
     }
+
     &.col-2 {
       .flex-grow(2);
       .flex-basis(20%);
     }
+
     &.col-3 {
       .flex-grow(3);
       .flex-basis(30%);
     }
+
     &.col-4 {
       .flex-grow(4);
       .flex-basis(40%);
     }
+
     &.col-5 {
       .flex-grow(5);
       .flex-basis(50%);
     }
+
     &.col-6 {
       .flex-grow(6);
       .flex-basis(60%);
     }
+
     &.col-7 {
       .flex-grow(7);
       .flex-basis(70%);
     }
+
     &.col-8 {
       .flex-grow(8);
       .flex-basis(80%);
     }
+
     &.col-9 {
       .flex-grow(9);
       .flex-basis(90%);
     }
+
     &.col-10 {
       .flex-grow(10);
       .flex-basis(100%);
@@ -263,5 +272,14 @@
 
   .react-json-view {
     padding: 10px;
+  }
+
+  .paper-card {
+    height: 100%;
+
+    .paper-body {
+      height: ~'calc(100% - 68px)';
+      padding: 0;
+    }
   }
 }

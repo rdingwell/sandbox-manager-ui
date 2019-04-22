@@ -15,7 +15,7 @@ import CreateSandbox from '../containers/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
-import { CircularProgress, Dialog, RaisedButton, Tab, Tabs } from "material-ui";
+import { CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs } from "material-ui";
 import Snackbar from '../UI/Snackbar';
 import ReactJson from 'react-json-view';
 
@@ -109,24 +109,32 @@ class App extends React.Component {
                     <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && <Dialog open={open} paperClassName='hooks-dialog' actions={[<RaisedButton label='Dismiss' onClick={this.dismiss}/>]}>
-                    <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
-                        <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
-                            <div className='hooks-wrapper'>
-                                {this.getCards()}
-                            </div>
-                        </Tab>
-                        <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>
-                            <div>
-                                <ReactJson className='json-view' src={request} name={false}/>
-                            </div>
-                        </Tab>
-                        <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
-                            <div>
-                                <ReactJson className='json-view' src={response} name={false}/>
-                            </div>
-                        </Tab>
-                    </Tabs>
+                {open && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
+                    <Paper className='paper-card'>
+                        <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.dismiss}>
+                            <i className="material-icons">close</i>
+                        </IconButton>
+                        <h3>CDS Service response</h3>
+                        <div className='paper-body'>
+                            <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
+                                <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
+                                    <div className='hooks-wrapper'>
+                                        {this.getCards()}
+                                    </div>
+                                </Tab>
+                                <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>
+                                    <div>
+                                        <ReactJson className='json-view' src={request} name={false}/>
+                                    </div>
+                                </Tab>
+                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
+                                    <div>
+                                        <ReactJson className='json-view' src={response} name={false}/>
+                                    </div>
+                                </Tab>
+                            </Tabs>
+                        </div>
+                    </Paper>
                 </Dialog>}
             </Layout>
         </MuiThemeProvider>;
