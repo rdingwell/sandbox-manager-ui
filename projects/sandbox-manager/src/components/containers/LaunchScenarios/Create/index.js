@@ -513,7 +513,7 @@ class Create extends Component {
                 {typeof (context.resourceType) === 'string' && <div className='subscript'>
                     {this.props.resourceListFetching[context.resourceType]
                         ? 'Loading resource data...'
-                        : this.props.resourceList[context.resourceType]
+                        : this.props.resourceList[context.resourceType] && !!value
                             ? <span>FHIR Resource Located</span>
                             : null}
                 </div>}
@@ -529,7 +529,7 @@ class Create extends Component {
     blurHookContext = (key, context) => {
         let crit = this.state[key];
         crit && typeof (context.resourceType) === 'string' && this.props.fetchAnyResource && this.props.fetchAnyResource(context.resourceType, crit);
-        !crit && this.props.clearResourceFetchError && this.props.clearResourceFetchError(context.resourceType);
+        !crit && this.props.clearResourceFetch && this.props.clearResourceFetch(context.resourceType);
     };
 
     onChange = (prop, value) => {
@@ -593,6 +593,7 @@ class Create extends Component {
             setTimeout(() => {
                 this.setState({ showPatientSelector: false });
                 this.blur('patientId');
+                this.blurHookContext('patientId', { resourceType: 'Patient' });
             }, 400);
         } else {
             this.props.fetchPersonas(PersonaList.TYPES.patient);
@@ -648,10 +649,12 @@ class Create extends Component {
         if (currentStep === 1) {
             this.props.fetchPersonas(PersonaList.TYPES.persona);
         } else if (this.state.titleIsClean && currentStep === 3 && !this.state.id) {
-            let title = `Launch ${this.state.selectedApp.clientName || this.state.selectedApp.title}`;
-            title += (this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '');
-            title += ` as ${this.getSelectedName()}`;
-            state.title = title;
+            state.title = `Launch ${this.state.selectedApp.clientName || this.state.selectedApp.title}`;
+            let patient = ` with ${getPatientName(this.props.singlePatient)}`;
+            let selectedName = ` as ${this.getSelectedName()}`;
+
+            state.title.length + patient.length <= 75 && (state.title += (this.props.singlePatient ? patient : ''));
+            state.title.length + selectedName.length <= 75 && (state.title += selectedName);
         }
         this.setState(state)
     };

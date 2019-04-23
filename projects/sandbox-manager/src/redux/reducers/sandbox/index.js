@@ -71,6 +71,10 @@ export default function (state = initialState, action) {
             delete state.resourceListLoadError[action.payload.type];
             action.payload.error && (state.resourceListLoadError[action.payload.type] = action.payload.error);
             break;
+        case actionTypes.CLEAR_RESOURCE_FETCH:
+            delete state.resourceListLoadError[action.payload.type];
+            delete state.resourceList[action.payload.type];
+            break;
         case actionTypes.SET_ANY_RESOURCE:
             state.resourceList[action.payload.resource.resourceType] = action.payload.resource;
             break;
