@@ -135,7 +135,7 @@ class Profiles extends Component {
                     <div className="client-details">
                         {!this.state.simplifierInputVisible &&
                         <div className='buttons-wrapper'>
-                            <RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
+                            {/*<RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>*/}
                             <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
                         </div>}
                         {this.state.simplifierInputVisible &&
@@ -171,7 +171,8 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} />
-                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
+                            {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
+                            <RaisedButton label='Import profile' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
