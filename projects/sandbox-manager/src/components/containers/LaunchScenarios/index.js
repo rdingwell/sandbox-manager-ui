@@ -232,7 +232,7 @@ class LaunchScenarios extends Component {
                                     {!sc.app
                                         ? <i><HooksIcon/></i>
                                         : isPatient
-                                            ? <i><Patient/></i>
+                                            ? <i><Patient style={{fill: 'white'}} /></i>
                                             : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
