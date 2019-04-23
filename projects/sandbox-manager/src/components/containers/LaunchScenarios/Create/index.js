@@ -519,7 +519,7 @@ class Create extends Component {
                 </div>}
                 <div className='subscript right'>
                     {this.props.resourceListFetching[context.resourceType] && <CircularProgress innerStyle={iconStyle} size={18}/>}
-                    {this.props.resourceList[context.resourceType] && <CheckIcon style={rightIconGreenStyle}/>}
+                    {this.props.resourceList[context.resourceType] && !!value && <CheckIcon style={rightIconGreenStyle}/>}
                     {this.props.resourceListLoadError[context.resourceType] && <CloseIcon style={rightIconRedStyle}/>}
                 </div>
             </div>
