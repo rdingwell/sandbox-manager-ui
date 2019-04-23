@@ -21,10 +21,16 @@ export default class QueryBrowser extends Component {
     constructor (props) {
         super(props);
 
+        let query = '';
+
+        if (props.query && Object.keys(props.query).length) {
+            query = props.query.q + '&subject=' + props.query.p
+        }
+
         this.state = {
             showDialog: false,
             selectedEntry: undefined,
-            query: '',
+            query,
             activeTab: 'summary',
             canFit: 2
         };
@@ -39,6 +45,8 @@ export default class QueryBrowser extends Component {
 
         let element = document.getElementsByClassName('stage')[0];
         element.addEventListener('scroll', this.scroll);
+
+        this.state.query.length && this.search();
     }
 
     componentWillUnmount () {

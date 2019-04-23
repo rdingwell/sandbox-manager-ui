@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'material-ui';
+import * as QueryString from 'query-string';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage }
     from '../../../redux/action-creators';
@@ -27,11 +28,13 @@ class DataManager extends Component {
     }
 
     render () {
+        let query = QueryString.parse(this.props.history.location.search);
+
         return <div className='data-manager-wrapper page-content-wrapper'>
             <Tabs className='data-tabs' contentContainerClassName='data-tabs-container' inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}>
                 <Tab label="Browser" className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')} onActive={() => this.setActiveTab('browser')}>
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme}
-                                  executing={this.props.executing} next={this.next} gettingNextPage={this.props.gettingNextPage}/>
+                                  executing={this.props.executing} next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>
                 </Tab>
                 <Tab label="Import" className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')} onActive={() => this.setActiveTab('import')}>
                     <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme}

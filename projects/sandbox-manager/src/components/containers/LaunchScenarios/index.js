@@ -1,34 +1,9 @@
 import React, { Component } from 'react';
 import {
-    app_setScreen,
-    loadLaunchScenarios,
-    fetchPersonas,
-    getPersonasPage,
-    createScenario,
-    deleteScenario,
-    doLaunch,
-    updateLaunchScenario,
-    updateNeedPatientBanner,
-    lookupPersonasStart,
-    addCustomContext,
-    fetchLocation,
-    fetchPatient,
-    setFetchingSinglePatientFailed,
-    setSinglePatientFetched,
-    setFetchSingleEncounter,
-    setSingleEncounter,
-    setFetchingSingleEncounterError,
-    fetchEncounter,
-    deleteCustomContext,
-    setSingleLocation,
-    setFetchingSingleLocationError,
-    setSingleIntent,
-    setFetchingSingleIntentError,
-    setSingleResource,
-    setFetchingSingleResourceError,
-    fetchResource,
-    fetchIntent,
-    getDefaultUserForSandbox
+    app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
+    fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
+    setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
+    customSearch, fetchAnyResource, clearResourceFetch, launchHook, clearResourceList
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -47,6 +22,7 @@ import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icon
 import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
 import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
 import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
+import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
@@ -165,11 +141,12 @@ class LaunchScenarios extends Component {
 
     launchScenario = (e, sc) => {
         this.preventDefault(e);
-        sc.app && this.props.updateLaunchScenario(sc);
+        (sc.app || sc.cdsHook) && this.props.updateLaunchScenario(sc);
         sc.app && (sc.needPatientBanner === 'T'
             ? this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc)
             : this.openEHRSimulator(sc));
-        !sc.app && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+        !sc.app && !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+        !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, { patientId: sc.userPersona });
     };
 
     openEHRSimulator = (sc) => {
@@ -246,20 +223,22 @@ class LaunchScenarios extends Component {
                         {this.getDetailsContent(sc)}
                     </div>;
                     let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.clientId) &&
-                        (!this.state.typeFilter || this.state.typeFilter === sc.userPersona.resource);
+                        (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'Hook' && !!sc.cdsHook)));
                     let showMenuForItem = this.state.showMenuForItem === index;
                     if (filter) {
                         return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
-                                    {isPatient
-                                        ? <i><Patient/></i>
-                                        : <i className='fa fa-user-md fa-lg'/>}
+                                    {!sc.app
+                                        ? <i><HooksIcon/></i>
+                                        : isPatient
+                                            ? <i><Patient/></i>
+                                            : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
                             <div className='title-wrapper'>
                                 <span className='launch-scenario-title'>{sc.title || sc.description}</span>
-                                <span className='launch-scenario-app-name'>{sc.app.clientName}</span>
+                                <span className='launch-scenario-app-name'>{sc.app && sc.app.clientName}{'\u00A0'}</span>
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
@@ -349,13 +328,17 @@ class LaunchScenarios extends Component {
                 <span className='persona-name' style={normalColor}>{selectedScenario.userPersona.fhirName || '-'}</span>
                 <span className='persona-id' style={lightColor}>{selectedScenario.userPersona.personaUserId || '-'}</span>
                 <div className='app-wrapper'>
-                    <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>App</span>
+                    <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>{selectedScenario.app ? 'App' : 'CDS Hook'}</span>
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
-                            <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                            {selectedScenario.app && <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
+                                                          alt='HSPC Logo'/>}
+                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{ height: '100%' }} src={selectedScenario.cdsHook.logoUri} alt='HSPC Logo'/>}
+                            {selectedScenario.cdsHook && !selectedScenario.cdsHook.logoUri && <HooksIcon className='default-hook-icon'/>}
                         </CardMedia>
                         <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
-                            <span className='app-name'>{selectedScenario.app.clientName}</span>
+                            <span className='app-name'>{selectedScenario.app && selectedScenario.app.clientName}</span>
+                            <span className='app-name'>{selectedScenario.cdsHook && selectedScenario.cdsHook.title}</span>
                         </div>
                     </Card>
                 </div>
@@ -363,33 +346,33 @@ class LaunchScenarios extends Component {
             <div className='right-side-wrapper'>
                 <div className='context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Context</span>
-                    <div>
-                    <span className='section-value' style={lightColor}>
-                        <Patient style={iconStyleLight}/>
-                        {selectedScenario.patientName && <span style={{ cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline" }}
-                                                               onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
-                        {!selectedScenario.patientName && <span>-</span>}
-                    </span>
+                    {selectedScenario.app && <div>
                         <span className='section-value' style={lightColor}>
-                        <EventIcon style={iconStyleLight}/>
+                            <Patient style={iconStyleLight}/>
+                            {selectedScenario.patientName && <span style={{ cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline" }}
+                                                                   onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
+                            {!selectedScenario.patientName && <span>-</span>}
+                        </span>
+                        <span className='section-value' style={lightColor}>
+                            <EventIcon style={iconStyleLight}/>
                             {selectedScenario.encounter ? selectedScenario.encounter : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <HospitalIcon style={iconStyleLight}/>
+                            <HospitalIcon style={iconStyleLight}/>
                             {selectedScenario.location ? selectedScenario.location : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <DescriptionIcon style={iconStyleLight}/>
+                            <DescriptionIcon style={iconStyleLight}/>
                             {selectedScenario.resource ? selectedScenario.resource : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <BulbIcon style={iconStyleLight}/>
+                            <BulbIcon style={iconStyleLight}/>
                             {selectedScenario.intent ? selectedScenario.intent : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
-                        <LinkIcon style={iconStyleLight}/>
+                            <LinkIcon style={iconStyleLight}/>
                             {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
-                    </span>
+                        </span>
                         <span className='section-value' style={lightColor}>
                             <FullScreenIcon style={iconStyleLight}/>
                             <Toggle className='toggle' label='Needs Patient Banner' style={{ display: 'inline-block', bottom: '2px' }} labelStyle={needsBanner}
@@ -402,9 +385,18 @@ class LaunchScenarios extends Component {
                                     }}/>
                             {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
                         </span>
-                    </div>
+                    </div>}
+                    {selectedScenario.cdsHook && selectedScenario.contextParams.map(param => {
+                        if (param.name !== 'userId') {
+                            let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
+                            let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                            return <span className='section-value' style={lightColor}>
+                                {this.getContextIcon(param.name, iconStyleLight)}<span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
+                            </span>;
+                        }
+                    })}
                 </div>
-                <div className='custom-context-wrapper'>
+                {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
                         <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
@@ -432,7 +424,7 @@ class LaunchScenarios extends Component {
                             </TableBody>
                         </Table>
                     </div>
-                </div>
+                </div>}
                 <div className='description-wrapper'>
                     <span className='section-title' style={darkColor}><DescriptionIcon style={iconStyle}/>Description</span>
                     <div className='description'>
@@ -441,6 +433,15 @@ class LaunchScenarios extends Component {
                 </div>
             </div>
         </div>
+    };
+
+    getContextIcon = (paramName, iconStyleLight) => {
+        switch (paramName) {
+            case 'patientId':
+                return <Patient style={iconStyleLight}/>;
+            default:
+                return paramName;
+        }
     };
 
     clickingOnTheButton = () => {
@@ -491,13 +492,6 @@ class LaunchScenarios extends Component {
     toggleAddContext = () => {
         this.setState({ addContext: !this.state.addContext });
         this.buttonClick = false;
-    };
-
-    updateScenario = (state) => {
-        let description = state.description !== this.state.scenarioToEdit.description ? state.description : undefined;
-        let title = state.title !== this.state.scenarioToEdit.title ? state.title : undefined;
-        this.props.updateLaunchScenario(this.state.scenarioToEdit, description, title);
-        this.selectScenarioForEditing();
     };
 
     openInDM = (e, patient) => {
@@ -551,41 +545,22 @@ const mapStateToProps = state => {
         personaLoading: state.persona.loading,
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
 
+        hookContexts: state.hooks.hookContexts,
+        sandboxApiEndpointIndex: state.sandbox.sandboxApiEndpointIndex,
+        resourceList: state.sandbox.resourceList,
+        resourceListFetching: state.sandbox.resourceListFetching,
+        resourceListLoadError: state.sandbox.resourceListLoadError,
+
         sandboxApiUrl, ehrUrl, patientDataManagerUrl
     }
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        setFetchingSinglePatientFailed,
-        fetchPatient,
-        app_setScreen,
-        loadLaunchScenarios,
-        fetchPersonas,
-        getPersonasPage,
-        createScenario,
-        deleteScenario,
-        doLaunch,
-        updateLaunchScenario,
-        updateNeedPatientBanner,
-        lookupPersonasStart,
-        setSinglePatientFetched,
-        setFetchSingleEncounter,
-        setSingleEncounter,
-        setFetchingSingleEncounterError,
-        fetchEncounter,
-        addCustomContext,
-        deleteCustomContext,
-        fetchLocation,
-        setFetchingSingleLocationError,
-        setSingleLocation,
-        setSingleIntent,
-        setFetchingSingleIntentError,
-        setSingleResource,
-        setFetchingSingleResourceError,
-        fetchResource,
-        fetchIntent,
-        getDefaultUserForSandbox,
+        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario,
+        updateNeedPatientBanner, lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext,
+        deleteCustomContext, fetchLocation, setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError,
+        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, clearResourceFetch, launchHook, clearResourceList,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },
