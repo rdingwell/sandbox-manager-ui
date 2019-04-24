@@ -134,7 +134,7 @@ class Apps extends Component {
                     <DeleteIcon/>
                 </FloatingActionButton>}
                 {!this.props.modal && <RaisedButton label='Refresh' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
-                                                    onClick={() => this.props.createService(service.url, service.title)}/>}
+                                                    onClick={() => this.props.updateService(service)}/>}
                 {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {

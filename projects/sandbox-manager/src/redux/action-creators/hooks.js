@@ -61,6 +61,7 @@ export function updateService (service) {
                 let services = state.hooks.services ? state.hooks.services.slice() : [];
                 let newService = {
                     title: serviceName || url,
+                    id: service.id,
                     url,
                     cdsHooks: [],
                     description: '',
@@ -68,12 +69,16 @@ export function updateService (service) {
                     createdBy: state.users.oauthUser
                 };
                 if (result && result.services) {
-                    result.services.map(service => {
-                        let obj = Object.assign({}, service);
-                        obj.hookId = obj.id;
-                        !obj.title && (obj.title = obj.name ? obj.name : '');
-                        delete obj.id;
-                        newService.cdsHooks.push(obj);
+                    result.services.map((srvc, i) => {
+                        // if (i !== 2) {
+                            let obj = Object.assign({}, srvc);
+                            obj.hookId = obj.id;
+                            !obj.title && (obj.title = obj.name ? obj.name : '');
+                            let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
+                            oldService && (obj.id = oldService.id);
+                            !oldService && (delete obj.id);
+                            newService.cdsHooks.push(obj);
+                        // }
                     });
                 }
                 let configuration = state.config.xsettings.data.sandboxManager;
@@ -127,7 +132,7 @@ export function createService (url, serviceName) {
                     createdBy: state.users.oauthUser
                 };
                 if (result && result.services) {
-                    result.services.map(service => {
+                    result.services.map((service, i) => {
                         let obj = Object.assign({}, service);
                         obj.hookId = obj.id;
                         !obj.title && (obj.title = obj.name ? obj.name : '');
