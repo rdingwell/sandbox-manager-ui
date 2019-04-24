@@ -44,6 +44,52 @@ export function setServicesLoading (loading) {
     }
 }
 
+export function updateService (service) {
+    return (dispatch, getState) => {
+        let url = service.url;
+        let serviceName = service.title;
+        // remove trailing slash if present
+        url[url.length - 1] === '/' && (url = url.substr(0, url.length - 1));
+
+        // add the final part of the path if not there
+        url.indexOf(POSTFIX_SERVICE) === -1 && (url += POSTFIX_SERVICE);
+
+        dispatch(setServicesLoading(true));
+        API.getNoAuth(url)
+            .then(result => {
+                let state = getState();
+                let services = state.hooks.services ? state.hooks.services.slice() : [];
+                let newService = {
+                    title: serviceName || url,
+                    url,
+                    cdsHooks: [],
+                    description: '',
+                    sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
+                    createdBy: state.users.oauthUser
+                };
+                if (result && result.services) {
+                    result.services.map(service => {
+                        let obj = Object.assign({}, service);
+                        obj.hookId = obj.id;
+                        !obj.title && (obj.title = obj.name ? obj.name : '');
+                        delete obj.id;
+                        newService.cdsHooks.push(obj);
+                    });
+                }
+                let configuration = state.config.xsettings.data.sandboxManager;
+
+                API.put(`${configuration.sandboxManagerApiUrl}/cds-services`, newService, dispatch)
+                    .then(() => {
+                        dispatch(loadServices());
+                    });
+                services.push(newService);
+            })
+            .catch(_ => {
+                dispatch(setServicesLoading(false));
+            });
+    }
+}
+
 export function createService (url, serviceName) {
     return (dispatch, getState) => {
         // remove trailing slash if present

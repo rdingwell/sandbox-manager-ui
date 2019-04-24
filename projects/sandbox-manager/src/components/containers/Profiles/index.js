@@ -190,7 +190,7 @@ class Profiles extends Component {
                             <Tab label={<span><ListIcon style={{ color: tab === 'browse' ? palette.primary5Color : palette.primary3Color }}/> Browse</span>}
                                  className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
                                 <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
-                                             selectPatient={this.selectPatient}/>
+                                             selectPatient={this.selectPatient} cleanResults={this.props.cleanValidationResults}/>
                             </Tab>
                             <Tab label={<span><ListIcon style={{ color: tab === 'existing' ? palette.primary5Color : palette.primary3Color }}/> URI</span>}
                                  className={'manual-input tab' + (tab === 'existing' ? ' active' : '')} onActive={() => this.setActiveTab('existing')} value='existing'>
@@ -359,6 +359,7 @@ class Profiles extends Component {
     toggleProfile = (url) => {
         let selectedProfile = this.state.selectedProfile === url ? undefined : url;
         this.setState({ selectedProfile });
+        this.props.cleanValidationResults();
     };
 
     loadZip = () => {

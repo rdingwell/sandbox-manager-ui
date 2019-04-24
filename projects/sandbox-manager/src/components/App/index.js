@@ -120,6 +120,7 @@ class App extends React.Component {
                             <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
                                 <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
                                     <div className='hooks-wrapper'>
+                                        <a ref='openLink' target='_blank'/>
                                         {this.getCards()}
                                     </div>
                                 </Tab>
@@ -164,21 +165,33 @@ class App extends React.Component {
                 </div>}
                 {card.links && <div className='links'>
                     {card.links.map(link => {
-                        let appToLaunch = this.props.apps.apps.find(app => app.launchUri === link.url);
-                        let onClick = appToLaunch && card.requestData && card.requestData.context && card.requestData.context.patientId
-                            ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId)
-                            : null;
+                        if (link.type === 'smart') {
+                            let appToLaunch = this.props.apps.apps.find(app => app.launchUri === link.url);
+                            let onClick = appToLaunch && card.requestData && card.requestData.context && card.requestData.context.patientId
+                                ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId, undefined, undefined, { contextParams: [{ appContext: link.appContext }], needPatientBanner: 'T' })
+                                : null;
 
-                        return <Fragment>
-                            {!appToLaunch && <span className='app-warning'>App not registered!</span> }
-                            <button disabled={!appToLaunch} className='hook-suggestion-button' onClick={onClick}>
+                            return <Fragment>
+                                {!appToLaunch && <span className='app-warning'>App not registered!</span>}
+                                <button disabled={!appToLaunch} className='hook-suggestion-button' onClick={onClick}>
+                                    <span>{link.label}</span>
+                                </button>
+                            </Fragment>
+                        } else {
+                            return <button className='hook-suggestion-button' onClick={() => this.openLink(link.url)}>
                                 <span>{link.label}</span>
                             </button>
-                        </Fragment>
+                        }
                     })}
                 </div>}
             </div>
         });
+    };
+
+    openLink = (link) => {
+        let openLink = this.refs.openLink;
+        openLink.href = link;
+        openLink.click();
     };
 
     setSandboxId = () => {
