@@ -132,6 +132,13 @@ export function setFetchSingleResource (fetching) {
     }
 }
 
+export function setFetchAnyResource (fetching, type) {
+    return {
+        type: actionTypes.FETCHING_ANY_RESOURCE,
+        payload: { fetching, type }
+    }
+}
+
 export function setSingleResource (resource) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE,
@@ -139,10 +146,31 @@ export function setSingleResource (resource) {
     }
 }
 
+export function addFetchedResource (resource) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE,
+        payload: { resource }
+    }
+}
+
+export function clearResourceFetch (type) {
+    return {
+        type: actionTypes.CLEAR_RESOURCE_FETCH,
+        payload: { type }
+    }
+}
+
 export function setFetchingSingleResourceError (error) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR,
         payload: { error }
+    }
+}
+
+export function setFetchingAnyResourceError (type, error) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE_LOAD_ERROR,
+        payload: { error, type }
     }
 }
 
@@ -362,10 +390,23 @@ export function createResource (data) {
 export const importData = (data) => {
     return dispatch => {
         dispatch(setDataImporting(true));
+
+        // The promis is a list even though we only have one to get arround the
+        // no "catch" for the returned values from the fhirClient.api
         let promises;
         try {
-            let dataObject = JSON.parse(data);
-            if (dataObject.resourceType === 'Bundle') {
+            let dataObject = undefined;
+            let type = undefined;
+            try {
+                dataObject = JSON.parse(data);
+            } catch (e) {
+                dataObject = data;
+                type = 'application/xml';
+            }
+
+            if (type === 'application/xml') {
+                promises = [API.post(window.fhirClient.server.serviceUrl, dataObject, dispatch, true, type)];
+            } else if (!type && dataObject.resourceType === 'Bundle') {
                 promises = [window.fhirClient.api.transaction({ data })];
             } else if (dataObject.id !== undefined) {
                 promises = [window.fhirClient.api.update({ type: dataObject.resourceType, id: dataObject.id, data: data })];
@@ -379,8 +420,9 @@ export const importData = (data) => {
 
         Promise.all(promises)
             .then(result => {
+                let res = result[0] && result[0].data ? result[0].data : result;
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(result[0].data));
+                dispatch(setImportResults(res));
             })
             .catch(error => {
                 dispatch(setDataImporting(false));
@@ -821,9 +863,25 @@ export function fetchResource (id) {
                     dispatch(setFetchSingleResource(false))
                 })
                 .fail(e => {
-                    console.log(e);
                     dispatch(setFetchingSingleResourceError(e));
                     dispatch(setFetchSingleResource(false))
+                });
+        }
+    }
+}
+
+export function fetchAnyResource (type, id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchAnyResource(true, type));
+            window.fhirClient.api.read({ type, id })
+                .done(patient => {
+                    dispatch(addFetchedResource(patient.data));
+                    dispatch(setFetchAnyResource(false, type))
+                })
+                .fail(e => {
+                    dispatch(setFetchingAnyResourceError(type, e));
+                    dispatch(setFetchAnyResource(false, type))
                 });
         }
     }
@@ -1132,7 +1190,7 @@ export function copyToClipboard (str) {
     }
 }
 
-function random (length) {
+export function random (length) {
     let result = '';
     for (let i = length; i > 0; --i) {
         result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];

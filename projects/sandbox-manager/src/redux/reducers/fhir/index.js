@@ -51,6 +51,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_METADATA_LOADING:
             state.metadataLoading = action.payload.loading;
             break;
+        case types.FHIR_SET_FILE_FETCHING:
+            state.fetchingFile = action.payload.loading;
+            break;
         case types.FHIR_SET_RESOURCES_LOADING:
             state.resourcesLoading = action.payload.loading;
             if (action.payload.loading) {
@@ -89,6 +92,7 @@ export default function (state = initialState, action) {
             state.customSearchResults = null;
             state.customExportResults = null;
             state.executing = false;
+            state.fetchingFile = false;
             state.resources = false;
             state.profilesLoading = false;
             state.profilesUploading = false;

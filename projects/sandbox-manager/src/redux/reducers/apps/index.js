@@ -37,6 +37,10 @@ export default (state = initialState, action) => {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.apps : state;
+            state.loadingApp = false;
+            state.loading = false;
+            state.creating = false;
+            state.deleting = false;
             break;
     }
 

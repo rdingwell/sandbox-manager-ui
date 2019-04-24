@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 
 import App from '../components/App/';
 import Apps from '../components/containers/Apps';
+import Hooks from '../components/containers/Hooks';
 import Persona from '../components/containers/Persona';
 import Profiles from '../components/containers/Profiles';
 import LaunchScenarios from '../components/containers/LaunchScenarios';
@@ -22,6 +23,7 @@ export default <Router>
         <Switch>
             <Route path='/:sandboxId/apps' component={Apps} />
             <Route path='/:sandboxId/launch' component={LaunchScenarios} />
+            <Route path='/:sandboxId/hooks' component={Hooks} />
             <Route path='/launchApp' component={LaunchApp} />
             <Route path='/:sandboxId/patients' component={Persona} />
             <Route path='/:sandboxId/profiles' component={Profiles} />

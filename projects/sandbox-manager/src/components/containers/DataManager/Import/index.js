@@ -34,12 +34,12 @@ export default class Import extends Component {
                         <div className='loader-wrapper' style={{ paddingTop: '200px' }}><CircularProgress size={80} thickness={5}/></div>
                         : <div>
                             <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({ input })}
-                                       floatingLabelText='JSON' hintText='Paste your FHIR resource JSON here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                       floatingLabelText='DATA' hintText='Paste your FHIR resource JSON/XML here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         </div>}
                     <div>Place a FHIR resource (Patient, Bundle, etc.) in the form above or upload a file containing a resource.</div>
                     <div className='import-button'>
                         <input type='file' id='file' ref='file' style={{ display: 'none' }} onChange={this.readFile}/>
-                        <RaisedButton label='Load JSON from file' primary onClick={() => this.refs.file.click()}/>
+                        <RaisedButton label='Load from file' primary onClick={() => this.refs.file.click()}/>
                         <RaisedButton label='Import' disabled={this.state.input.length === 0 || this.props.dataImporting} primary onClick={this.import}/>
                     </div>
                 </Tab>
@@ -56,10 +56,16 @@ export default class Import extends Component {
         let fr = new FileReader();
 
         fr.onload = (e) => {
-            let result = JSON.parse(e.target.result);
-            let formatted = JSON.stringify(result, null, 2);
+            let formatted = '';
+            try {
+                let result = JSON.parse(e.target.result);
+                formatted = JSON.stringify(result, null, 2);
+            } catch (_e) {
+                formatted = e.target.result;
+            }
+
             this.setState({ input: formatted }, () => {
-                this.props.importData && this.props.importData(this.state.input);
+                this.props.importData && this.props.importData(e.target.result);
                 this.refs.results.handleClick();
             });
         };
