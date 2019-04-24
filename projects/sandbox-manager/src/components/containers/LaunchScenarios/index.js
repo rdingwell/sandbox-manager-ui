@@ -209,12 +209,7 @@ class LaunchScenarios extends Component {
                     let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
                     let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
                     let isPatient = sc.userPersona.resource !== 'Practitioner';
-                    let iconStyle = isPatient
-                        ? {
-                            backgroundColor: this.props.muiTheme.palette.accent1Color,
-                            color: this.props.muiTheme.palette.primary5Color
-                        }
-                        : {
+                    let iconStyle = {
                             backgroundColor: this.props.muiTheme.palette.primary5Color,
                             color: this.props.muiTheme.palette.accent1Color
                         };
@@ -232,7 +227,7 @@ class LaunchScenarios extends Component {
                                     {!sc.app
                                         ? <i><HooksIcon/></i>
                                         : isPatient
-                                            ? <i><Patient style={{fill: 'white'}} /></i>
+                                            ? <i><Patient /></i>
                                             : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>

@@ -12,7 +12,7 @@ import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 import API from '../../../lib/api';
 import {
     lookupPersonasStart, app_setScreen, doLaunch, fetchPersonas, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, getPersonasPage, resetPersonas, copyToClipboard, launchHook,
-    createService, loadServices, updateHook, updateService
+    createService, loadServices, updateHook, updateService, deleteService
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -30,6 +30,7 @@ import './styles.less';
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { isUrlValid } from '../../../lib/misc';
 import HelpButton from '../../UI/HelpButton';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 const POSTFIX = '/.well-known/smart/manifest.json';
 const NEEDED_PROPS = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -109,13 +110,16 @@ class Apps extends Component {
                 </div>
             </div>
             {this.state.showConfirmModal && <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
-                <p>
+                {this.state.serviceToDelete && <p>
+                    Are you sure you want to delete this service?<br/>
+                    Deleting this service will result in the deletion of all the launch scenarios connected to it.
+                </p>}
+                {!this.state.serviceToDelete && <p>
                     Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.clientName : ''}"?<br/>
                     Deleting this app will result in the deletion of all the launch scenarios connected to it.
-                </p>
+                </p>}
             </ConfirmModal>}
-            <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000}
-                      bodyStyle={{ margin: '0 auto', backgroundColor: palette.primary2Color, textAlign: 'center' }}/>
+            <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000} bodyStyle={{ margin: '0 auto', backgroundColor: palette.primary2Color, textAlign: 'center' }}/>
         </Page>
     }
 
@@ -125,6 +129,10 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
+                {!this.props.modal && <FloatingActionButton onClick={() => this.toggleDeleteService(service)} mini className='remove-service-button'
+                                                            backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
+                    <DeleteIcon/>
+                </FloatingActionButton>}
                 {!this.props.modal && <RaisedButton label='Refresh' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
                                                     onClick={() => this.props.createService(service.url, service.title)}/>}
                 {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
@@ -164,6 +172,11 @@ class Apps extends Component {
             });
         });
         return hooks;
+    };
+
+    toggleDeleteService = service => {
+        this.setState({ serviceToDelete: service });
+        this.toggleConfirmation();
     };
 
     getHookIcon = (hookType) => {
@@ -396,7 +409,8 @@ class Apps extends Component {
     };
 
     delete = () => {
-        this.props.deleteApp(this.state.selectedApp);
+        this.state.selectedApp && this.props.deleteApp(this.state.selectedApp);
+        this.state.serviceToDelete && this.props.deleteService(this.state.serviceToDelete);
         this.closeAll();
     };
 
@@ -477,7 +491,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         fetchPersonas, doLaunch, app_setScreen, loadSandboxApps, createApp, updateApp, deleteApp, loadApp, getDefaultUserForSandbox, lookupPersonasStart, resetPersonas, copyToClipboard, launchHook,
-        createService, loadServices, updateHook, updateService,
+        createService, loadServices, updateHook, updateService, deleteService,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     }, dispatch);

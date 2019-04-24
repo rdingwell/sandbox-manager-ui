@@ -78,11 +78,26 @@ export function updateService (service) {
                 }
                 let configuration = state.config.xsettings.data.sandboxManager;
 
-                API.put(`${configuration.sandboxManagerApiUrl}/cds-services`, newService, dispatch)
+                API.put(`${configuration.sandboxManagerApiUrl}/cds-services/${service.id}`, newService, dispatch)
                     .then(() => {
                         dispatch(loadServices());
                     });
                 services.push(newService);
+            })
+            .catch(_ => {
+                dispatch(setServicesLoading(false));
+            });
+    }
+}
+
+export function deleteService (service) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(setServicesLoading(true));
+        API.delete(`${configuration.sandboxManagerApiUrl}/cds-services/${service.id}`, dispatch)
+            .then(() => {
+                dispatch(loadServices());
             })
             .catch(_ => {
                 dispatch(setServicesLoading(false));
