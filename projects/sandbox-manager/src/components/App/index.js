@@ -18,6 +18,7 @@ import './style.less';
 import { CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs } from "material-ui";
 import Snackbar from '../UI/Snackbar';
 import ReactJson from 'react-json-view';
+import { Fragment } from 'react';
 
 class App extends React.Component {
     constructor (props) {
@@ -109,7 +110,7 @@ class App extends React.Component {
                     <p>Your session has expired. You will be redirected to the dashboard in 3 seconds.</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
+                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
                     <Paper className='paper-card'>
                         <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
@@ -159,6 +160,21 @@ class App extends React.Component {
                         return <button className='hook-suggestion-button'>
                             <span>{suggestion.label}</span>
                         </button>
+                    })}
+                </div>}
+                {card.links && <div className='links'>
+                    {card.links.map(link => {
+                        let appToLaunch = this.props.apps.apps.find(app => app.launchUri === link.url);
+                        let onClick = appToLaunch && card.requestData && card.requestData.context && card.requestData.context.patientId
+                            ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId)
+                            : null;
+
+                        return <Fragment>
+                            {!appToLaunch && <span className='app-warning'>App not registered!</span> }
+                            <button disabled={!appToLaunch} className='hook-suggestion-button' onClick={onClick}>
+                                <span>{link.label}</span>
+                            </button>
+                        </Fragment>
                     })}
                 </div>}
             </div>
