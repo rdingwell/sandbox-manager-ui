@@ -17,9 +17,9 @@ export default {
         });
     },
 
-    put (url, data, dispatch) {
+    put (url, data, dispatch, isFormData, type = "application/json") {
         return new Promise((resolve, reject) => {
-            fetch(url, get_config("PUT", data))
+            fetch(url, get_config("PUT", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
@@ -73,7 +73,7 @@ const get_config = (method, data, isFormData, contentType = "application/json") 
     if (data) {
         CONFIG.body = JSON.stringify(data);
         if (isFormData) {
-            delete CONFIG.headers['Content-Type'];
+            contentType === "application/json" && delete CONFIG.headers['Content-Type'];
             CONFIG.body = data;
         }
     }

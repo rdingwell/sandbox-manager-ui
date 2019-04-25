@@ -650,7 +650,7 @@ class Create extends Component {
             this.props.fetchPersonas(PersonaList.TYPES.persona);
         } else if (this.state.titleIsClean && currentStep === 3 && !this.state.id) {
             state.title = `Launch ${this.state.selectedApp.clientName || this.state.selectedApp.title}`;
-            let patient = ` with ${getPatientName(this.props.singlePatient)}`;
+            let patient = this.props.singlePatient ? ` with ${getPatientName(this.props.singlePatient)}` : '';
             let selectedName = ` as ${this.getSelectedName()}`;
 
             state.title.length + patient.length <= 75 && (state.title += (this.props.singlePatient ? patient : ''));

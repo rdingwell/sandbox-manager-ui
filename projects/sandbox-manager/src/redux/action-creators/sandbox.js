@@ -397,15 +397,23 @@ export const importData = (data) => {
         try {
             let dataObject = undefined;
             let type = undefined;
+            let xmlDoc = undefined;
+
             try {
                 dataObject = JSON.parse(data);
             } catch (e) {
                 dataObject = data;
+                let parser = new DOMParser();
+                xmlDoc = parser.parseFromString(dataObject, 'text/xml');
                 type = 'application/xml';
             }
 
-            if (type === 'application/xml') {
+            if (type === 'application/xml' && xmlDoc.querySelector('Bundle')) {
                 promises = [API.post(window.fhirClient.server.serviceUrl, dataObject, dispatch, true, type)];
+            } else if (type === 'application/xml' && !xmlDoc.querySelector('Bundle')) {
+                let id = xmlDoc.querySelector('id');
+                id = id.getAttribute('value');
+                promises = [API.put(`${window.fhirClient.server.serviceUrl}/${xmlDoc.firstChild.tagName}/${id}`, dataObject, dispatch, true, type)];
             } else if (!type && dataObject.resourceType === 'Bundle') {
                 promises = [window.fhirClient.api.transaction({ data })];
             } else if (dataObject.id !== undefined) {
@@ -1122,11 +1130,11 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         let params = {};
         if (scenario) {
             persona && (params = { patient: persona });
-            if (scenario.encounter) params.encounter = scenario.encounter;
-            if (scenario.location) params.location = scenario.location;
-            if (scenario.resource) params.resource = scenario.resource;
-            if (scenario.smartStyleUrl) params.smartStyleUrl = scenario.smartStyleUrl;
-            if (scenario.intent) params.intent = scenario.intent;
+            scenario.encounter && (params.encounter = scenario.encounter);
+            scenario.location && (params.location = scenario.location);
+            scenario.resource && (params.resource = scenario.resource);
+            scenario.smartStyleUrl && (params.smartStyleUrl = scenario.smartStyleUrl);
+            scenario.intent && (params.intent = scenario.intent);
             if (scenario.contextParams) {
                 for (let i = 0; i < scenario.contextParams.length; i++) {
                     let name = scenario.contextParams[i]['name'];

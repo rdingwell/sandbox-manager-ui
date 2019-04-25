@@ -44,6 +44,72 @@ export function setServicesLoading (loading) {
     }
 }
 
+export function updateService (service) {
+    return (dispatch, getState) => {
+        let url = service.url;
+        let serviceName = service.title;
+        // remove trailing slash if present
+        url[url.length - 1] === '/' && (url = url.substr(0, url.length - 1));
+
+        // add the final part of the path if not there
+        url.indexOf(POSTFIX_SERVICE) === -1 && (url += POSTFIX_SERVICE);
+
+        dispatch(setServicesLoading(true));
+        API.getNoAuth(url)
+            .then(result => {
+                let state = getState();
+                let services = state.hooks.services ? state.hooks.services.slice() : [];
+                let newService = {
+                    title: serviceName || url,
+                    id: service.id,
+                    url,
+                    cdsHooks: [],
+                    description: '',
+                    sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
+                    createdBy: state.users.oauthUser
+                };
+                if (result && result.services) {
+                    result.services.map((srvc, i) => {
+                        // if (i !== 2) {
+                            let obj = Object.assign({}, srvc);
+                            obj.hookId = obj.id;
+                            !obj.title && (obj.title = obj.name ? obj.name : '');
+                            let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
+                            oldService && (obj.id = oldService.id);
+                            !oldService && (delete obj.id);
+                            newService.cdsHooks.push(obj);
+                        // }
+                    });
+                }
+                let configuration = state.config.xsettings.data.sandboxManager;
+
+                API.put(`${configuration.sandboxManagerApiUrl}/cds-services/${service.id}`, newService, dispatch)
+                    .then(() => {
+                        dispatch(loadServices());
+                    });
+                services.push(newService);
+            })
+            .catch(_ => {
+                dispatch(setServicesLoading(false));
+            });
+    }
+}
+
+export function deleteService (service) {
+    return (dispatch, getState) => {
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(setServicesLoading(true));
+        API.delete(`${configuration.sandboxManagerApiUrl}/cds-services/${service.id}`, dispatch)
+            .then(() => {
+                dispatch(loadServices());
+            })
+            .catch(_ => {
+                dispatch(setServicesLoading(false));
+            });
+    }
+}
+
 export function createService (url, serviceName) {
     return (dispatch, getState) => {
         // remove trailing slash if present
@@ -66,7 +132,7 @@ export function createService (url, serviceName) {
                     createdBy: state.users.oauthUser
                 };
                 if (result && result.services) {
-                    result.services.map(service => {
+                    result.services.map((service, i) => {
                         let obj = Object.assign({}, service);
                         obj.hookId = obj.id;
                         !obj.title && (obj.title = obj.name ? obj.name : '');
