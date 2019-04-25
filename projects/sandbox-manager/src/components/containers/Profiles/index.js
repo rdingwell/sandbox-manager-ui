@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Tabs, Tab, Card, CardTitle, RaisedButton, List, ListItem, TextField, CircularProgress, Dialog, Toggle, IconButton, Paper, Menu, MenuItem, Popover, Chip } from 'material-ui';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError
 } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -46,6 +46,8 @@ class Profiles extends Component {
         this.state = {
             query: '',
             project: '',
+            profileName: '',
+            profileId: '',
             simplifireProjectName: '',
             activeTab: 'browse',
             canFit: 2,
@@ -53,7 +55,8 @@ class Profiles extends Component {
             selectedPersona: undefined,
             showZipWarning: false,
             menuActive: false,
-            simplifierInputVisible: false
+            simplifierInputVisible: false,
+            profileInputModalVisible: false
         };
     }
 
@@ -64,15 +67,15 @@ class Profiles extends Component {
         let canFit = this.calcCanFit();
 
         this.setState({ canFit });
-        this.props.loadProfiles(canFit);
+        this.props.loadProfiles();
 
-        let element = document.getElementsByClassName('profiles-list')[0];
-        element.addEventListener('scroll', this.scroll);
+        // let element = document.getElementsByClassName('profiles-list')[0];
+        // element.addEventListener('scroll', this.scroll);
     }
 
     componentWillUnmount () {
-        let element = document.getElementsByClassName('profiles-list')[0];
-        element && element.removeEventListener('scroll', this.scroll);
+        // let element = document.getElementsByClassName('profiles-list')[0];
+        // element && element.removeEventListener('scroll', this.scroll);
     }
 
     render () {
@@ -88,81 +91,12 @@ class Profiles extends Component {
         let typeButton = <Toggle className='view-toggle' label='Show as table' labelPosition='right' toggled={this.state.resultsView} thumbStyle={{ backgroundColor: palette.primary5Color }}
                                  trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                  trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ resultsView: !this.state.resultsView })}/>;
-        let actions = [
-            <div className='warning-modal-action'>
-                <RaisedButton label='OK' primary onClick={this.toggleWarningModal}/>
-            </div>
-        ];
-        let inputModalActions = [
-            <div key={1} className='input-modal-action'>
-                <RaisedButton label='Load' primary onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
-            </div>
-        ];
-        !this.state.simplifierInputVisible && inputModalActions.shift();
 
-        let titleStyle = {
-            backgroundColor: palette.primary2Color,
-            color: palette.alternateTextColor,
-            paddingLeft: '10px',
-            marginLeft: '0'
-        };
         let profile = this.props.validationResults && this.props.validationResults.validatedProfile && this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile) || {};
 
         return <Page title={<span>Profiles <span style={{ fontSize: '14px', verticalAlign: 'middle' }}>[BETA]</span></span>}
                      helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
-            {this.state.showZipWarning && <Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }}>
-                <div className='sandbox-edit-modal'>
-                    <div className='screen-title' style={titleStyle}>
-                        <IconButton className="close-button" onClick={this.toggleWarningModal}>
-                            <i className="material-icons">close</i>
-                        </IconButton>
-                        <h1 style={titleStyle}>Incorrect file type</h1>
-                    </div>
-                    <div>
-                        <p>
-                            Only zip files are allowed!
-                        </p>
-                    </div>
-                </div>
-            </Dialog>}
-            {this.state.inputModalVisible && <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }}
-                                                     bodyClassName='project-input-modal'>
-                <Paper className='paper-card'>
-                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
-                        <i className="material-icons">close</i>
-                    </IconButton>
-                    <h3>{this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile'}</h3>
-                    <div className="client-details">
-                        {!this.state.simplifierInputVisible &&
-                        <div className='buttons-wrapper'>
-                            {/*<RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>*/}
-                            <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
-                        </div>}
-                        {this.state.simplifierInputVisible &&
-                        <div style={{ padding: '20px' }}>
-                            <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({ menuActive: true })}
-                                  backgroundColor={this.state.menuActive ? palette.primary2Color : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
-                                <span ref='project-menu'/>
-                                <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
-                                <span className='icon-wrapper'>
-                                   <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
-                                </span>
-                            </Chip>
-                            {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
-                            {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
-                                                                           id='simplifireProjectName' floatingLabelText='Simplifier.net Project ID' className='project-name'/>}
-                            <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
-                                <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
-                                    {PROFILES.map(profile =>
-                                        <MenuItem className='type-filter-menu-item' primaryText={profile.title} onClick={() => this.setState({ menuActive: false, project: profile.id })}/>
-                                    )}
-                                </Menu>
-                            </Popover>
-                        </div>}
-                    </div>
-                </Paper>
-            </Dialog>}
+            {this.getModals()}
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
                     <CardTitle className='card-title'>
@@ -170,7 +104,7 @@ class Profiles extends Component {
                     </CardTitle>
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
-                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip} />
+                            <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
                             {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
                             <RaisedButton label='Import profile' primary onClick={() => this.refs.fileZip.click()}/>
                         </div>
@@ -242,6 +176,134 @@ class Profiles extends Component {
         </Page>
     }
 
+    getModals = () => {
+        let modals = [];
+        let palette = this.props.muiTheme.palette;
+        let titleStyle = {
+            backgroundColor: palette.primary2Color,
+            color: palette.alternateTextColor,
+            paddingLeft: '10px',
+            marginLeft: '0'
+        };
+        let actions = [
+            <div className='warning-modal-action'>
+                <RaisedButton label='OK' primary onClick={this.toggleWarningModal}/>
+            </div>
+        ];
+        let inputActions = [
+            <div className='warning-modal-action'>
+                <RaisedButton label='OK' primary onClick={this.saveProfile}/>
+            </div>
+        ];
+        let inputModalActions = [
+            <div key={1} className='input-modal-action'>
+                <RaisedButton label='Load' primary onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
+            </div>
+        ];
+        !this.state.simplifierInputVisible && inputModalActions.shift();
+        let closeInputModal = () => this.setState({ profileInputModalVisible: false });
+
+
+        this.state.showZipWarning &&
+        modals.push(<Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{ width: '350px' }} key={1}>
+            <div className='sandbox-edit-modal'>
+                <div className='screen-title' style={titleStyle}>
+                    <IconButton className="close-button" onClick={this.toggleWarningModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h1 style={titleStyle}>Incorrect file type</h1>
+                </div>
+                <div>
+                    <p>
+                        Only zip files are allowed!
+                    </p>
+                </div>
+            </div>
+        </Dialog>);
+
+        this.state.inputModalVisible &&
+        modals.push(
+            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }} bodyClassName='project-input-modal' key={2}>
+                <Paper className='paper-card'>
+                    <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    {this.getModalContent(palette)}
+                </Paper>
+            </Dialog>);
+
+        this.state.profileInputModalVisible &&
+        modals.push(<Dialog open={this.state.profileInputModalVisible} modal={false} onRequestClose={closeInputModal} actions={inputActions} contentStyle={{ width: '412px' }} key={3}>
+            <div className='sandbox-edit-modal'>
+                <div className='screen-title' style={titleStyle}>
+                    <IconButton className="close-button" onClick={closeInputModal}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h1 style={titleStyle}>Profile name</h1>
+                </div>
+                <div>
+                    <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
+                        <span>{this.refs.fileZip.files[0].name}</span>
+                    </div>
+                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
+                    <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
+                </div>
+            </div>
+        </Dialog>);
+
+        return modals;
+    };
+
+    saveProfile = () => {
+        this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
+        this.setState({ profileInputModalVisible: false });
+    };
+
+    setProfileName = (_, profileName) => {
+        let profileId = profileName.replace(/[^a-z0-9]/gi, '');
+        if (profileId.length > 20) {
+            profileId = value.substring(0, 20);
+        }
+        this.setState({ profileName, profileId });
+    };
+
+    getModalContent = (palette) => {
+        let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
+        let content = !this.state.simplifierInputVisible
+            ? <div className='buttons-wrapper'>
+                {/*<RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>*/}
+                <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
+            </div>
+            : <div style={{ padding: '20px' }}>
+                <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({ menuActive: true })}
+                      backgroundColor={this.state.menuActive ? palette.primary2Color : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
+                    <span ref='project-menu'/>
+                    <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
+                    <span className='icon-wrapper'>
+                                   <DownIcon style={{ position: 'relative', top: '5px' }} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
+                                </span>
+                </Chip>
+                {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
+                {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({ simplifireProjectName })}
+                                                               id='simplifireProjectName' floatingLabelText='Simplifier.net Project ID' className='project-name'/>}
+                <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                         targetOrigin={{ horizontal: 'left', vertical: 'top' }} className='left-margin' onRequestClose={() => this.setState({ menuActive: false })}>
+                    <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
+                        {PROFILES.map(profile =>
+                            <MenuItem className='type-filter-menu-item' primaryText={profile.title} onClick={() => this.setState({ menuActive: false, project: profile.id })}/>
+                        )}
+                    </Menu>
+                </Popover>
+            </div>;
+
+        return <Fragment>
+            <h3>{title}</h3>
+            <div className="client-details">
+                {content}
+            </div>
+        </Fragment>
+    };
+
     toggleInputModal = () => {
         this.setState({ inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
     };
@@ -289,18 +351,30 @@ class Profiles extends Component {
     };
 
     validate = () => {
-        this.state.fileJson
-            ? this.props.validate(this.prepareJSON(JSON.parse(this.state.fileJson)))
-            : this.state.manualJson
-            ? this.props.validate(this.prepareJSON(JSON.parse(this.state.manualJson)))
-            : this.props.validateExisting(this.state.query, this.state.selectedProfile);
+        let manualJSON = this.state.fileJson || this.state.manualJson;
+        manualJSON && (manualJSON = this.prepareJSON(JSON.parse(manualJSON)));
+        manualJSON && this.props.validate();
+        !manualJSON && this.state.query && this.props.validateExisting(this.state.query, this.state.selectedProfile);
         this.state.activeTab === 'browse' && this.setState({ query: '' });
     };
 
     prepareJSON = (json) => {
+        if (!json.resourceType) {
+            this.props.setGlobalError('No "resourceType" found in the provided object!');
+            return;
+        }
+
         if (this.state.selectedProfile) {
+            let type = json.resourceType;
+            let SD = this.props.sds.find(i => i.profileType === type);
+
+            if (!SD) {
+                this.props.setGlobalError(`Unable to validate resource "${type}" against this profile.`);
+                return;
+            }
+
             !json.meta && (json.meta = {});
-            json.meta.profile = [this.state.selectedProfile];
+            json.meta.profile = [SD.fullUrl];
         }
         return json;
     };
@@ -328,12 +402,12 @@ class Profiles extends Component {
                     </div>}
                 </div>}
                 {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
-                    if (this.state.filter && profile.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
+                    if (this.state.filter && profile.profileName.toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1) {
                         return;
                     }
-                    let classes = 'profile-list-item' + (this.state.selectedProfile === profile.url ? ' active' : '');
-                    return <ListItem key={key} className={classes} primaryText={profile.name} hoverColor='transparent' onClick={() => this.toggleProfile(profile.url)}
-                                     rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile, this.state.canFit)}>
+                    let classes = 'profile-list-item' + (this.state.selectedProfile === profile.profileId ? ' active' : '');
+                    return <ListItem key={key} className={classes} primaryText={profile.profileName} hoverColor='transparent' onClick={() => this.toggleProfile(profile.profileId)}
+                                     rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile.id, this.state.canFit)}>
                                          <DeleteIcon color={palette.primary4Color}/>
                                      </IconButton>}/>;
                 })}
@@ -356,15 +430,19 @@ class Profiles extends Component {
         this.props.loadProfiles(this.state.canFit, value);
     };
 
-    toggleProfile = (url) => {
-        let selectedProfile = this.state.selectedProfile === url ? undefined : url;
+    toggleProfile = (id) => {
+        let selectedProfile = this.state.selectedProfile === id ? undefined : id;
         this.setState({ selectedProfile });
         this.props.cleanValidationResults();
+        if (selectedProfile) {
+            let profile = this.props.profiles.find(i => i.profileId === id);
+            profile && this.props.loadProfileSDs(profile.id);
+        }
     };
 
     loadZip = () => {
         if (this.refs.fileZip.files && this.refs.fileZip.files[0] && (this.refs.fileZip.files[0].type.indexOf('zip') > -1 || this.refs.fileZip.files[0].type.indexOf('tar') > -1)) {
-            this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit);
+            this.setState({ profileInputModalVisible: true })
         } else {
             this.toggleWarningModal();
         }
@@ -382,6 +460,7 @@ class Profiles extends Component {
 
 const mapStateToProps = state => {
     return {
+        sds: state.fhir.sds,
         results: state.fhir.customSearchResults,
         validationResults: state.fhir.validationResults,
         gettingNextPage: state.fhir.gettingNextPage,
@@ -401,7 +480,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError
 }, dispatch);
 
 export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles)));

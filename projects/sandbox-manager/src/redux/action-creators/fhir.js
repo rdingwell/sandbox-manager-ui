@@ -103,6 +103,13 @@ export function fhir_setProfilesLoading (loading) {
     };
 }
 
+export function fhir_setProfileSDsLoading (loading) {
+    return {
+        type: types.FHIR_SET_PROFDILESDS_LOADING,
+        payload: { loading }
+    };
+}
+
 export function fhir_setProfilesUploading (loading) {
     return {
         type: types.FHIR_SET_PROFDILES_UPLOADING,
@@ -128,6 +135,13 @@ export function fhir_setProfiles (profiles) {
     return {
         type: types.FHIR_SET_PROFDILES,
         payload: { profiles }
+    };
+}
+
+export function fhir_setProfileSDs (sds) {
+    return {
+        type: types.FHIR_SET_PROFDILESDS,
+        payload: { sds }
     };
 }
 
@@ -190,20 +204,40 @@ export function customSearch (query, endpoint) {
     }
 }
 
-export function loadProfiles (count, filter) {
-    return dispatch => {
+export function loadProfiles () {
+    return (dispatch, getState) => {
         dispatch(fhir_setProfilesLoading(true));
 
         if (window.fhirClient) {
-            let endpoint = window.fhirClient.server.serviceUrl;
-            API.get(`${endpoint}/StructureDefinition?_count=${count}${filter ? `&name:contains=${filter}` : ''}`, dispatch)
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
+            API.get(`${configuration.sandboxManagerApiUrl}/profile?sandboxId=${sessionStorage.sandboxId}`, dispatch)
                 .then(data => {
-                    data.entry = data.entry ? data.entry : [];
-                    dispatch(fhir_setProfiles({ entry: data.entry.map(i => Object.assign({ fullUrl: i.fullUrl }, i.resource)), total: data.total, link: data.link }));
+                    data = data || [];
+                    dispatch(fhir_setProfiles({ entry: data }));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(() => {
                     dispatch(fhir_setProfilesLoading(false));
+                });
+        }
+    }
+}
+
+export function loadProfileSDs (id) {
+    return (dispatch, getState) => {
+        dispatch(fhir_setProfileSDsLoading(true));
+
+        if (window.fhirClient) {
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
+            API.get(`${configuration.sandboxManagerApiUrl}/profile/getProfileSDs?fhirProfileId=${id}`, dispatch)
+                .then(data => {
+                    dispatch(fhir_setProfileSDs(data));
+                    dispatch(fhir_setProfileSDsLoading(false));
+                })
+                .catch(() => {
+                    dispatch(fhir_setProfileSDsLoading(false));
                 });
         }
     }
@@ -241,31 +275,19 @@ export function getProfilesPagination () {
     }
 }
 
-export function uploadProfile (file, count) {
+export function uploadProfile (file, count, name, id) {
     return (dispatch, getState) => {
-        let state = getState();
-        let config = state.config.xsettings.data.sandboxManager;
         let formData = new FormData();
         formData.append("file", file);
         dispatch(fhir_setProfilesUploading(true));
 
-        let url = config.baseServiceUrl_5;
-        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
-            url = config.baseServiceUrl_6;
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "7") {
-            url = config.baseServiceUrl_7;
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "8") {
-            url = config.baseServiceUrl_8;
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "9") {
-            url = config.baseServiceUrl_9;
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "10") {
-            url = config.baseServiceUrl_10;
-        }
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
 
-        API.post(`${url}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&apiEndpoint=${state.sandbox.sandboxApiEndpointIndex}`, formData, dispatch, true)
+        API.post(`${configuration.sandboxManagerApiUrl}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&profileName=${encodeURI(name)}&profileId=${id}`, formData, dispatch, true)
             .then(data => {
                 let timeoutFunction = () => {
-                    API.get(`${url}/profile/profileUploadStatus?id=${data.id}`, dispatch)
+                    API.get(`${configuration.sandboxManagerApiUrl}/profile/profileUploadStatus?id=${data.id}`, dispatch)
                         .then(status => {
                             if (!status.status) {
                                 dispatch(fhir_setProfilesUploading(false));
@@ -327,14 +349,18 @@ export function loadProject (project, canFit) {
     }
 }
 
-export function deleteDefinition (profile, canFit) {
-    return dispatch => {
+export function deleteDefinition (id) {
+    return (dispatch, getState) => {
         dispatch(fhir_setProfilesUploading(true));
-        API.delete(profile.fullUrl, dispatch)
+
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        API.delete(`${configuration.sandboxManagerApiUrl}/profile?fhirProfileId=${id}&sandboxId=${sessionStorage.sandboxId}`, dispatch)
             .then(() => {
-                dispatch(fhir_setProfiles({ entry: [], total: 0 }));
+                dispatch(fhir_setProfiles([]));
                 dispatch(fhir_setProfilesUploading(false));
-                dispatch(loadProfiles(canFit));
+                dispatch(loadProfiles());
             })
             .catch(() => {
                 dispatch(fhir_setProfilesUploading(false));
@@ -393,7 +419,7 @@ export function validate (object) {
 }
 
 export function validateExisting (url, selectedProfile) {
-    return dispatch => {
+    return (dispatch, getState) => {
         dispatch(fhir_setValidationResults(null));
         dispatch(fhir_setValidationExecuting(true));
 
@@ -412,9 +438,19 @@ export function validateExisting (url, selectedProfile) {
             API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
                 .then(data => {
                     if (data.resourceType) {
-                        !data.meta && (data.meta = {});
-                        data.meta.profile = [selectedProfile];
-                        dispatch(validate(data));
+                        let state = getState();
+                        let sds = state.fhir.sds;
+                        let SD = sds.find(i => i.profileType === data.resourceType);
+
+                        if (!SD) {
+                            dispatch(setGlobalError(`Unable to validate resource "${data.resourceType}" against this profile.`));
+                            dispatch(fhir_setValidationExecuting(false));
+                            a
+                        } else {
+                            !data.meta && (data.meta = {});
+                            data.meta.profile = [SD.fullUrl];
+                            dispatch(validate(data));
+                        }
                     }
                 })
                 .catch((e) => {
