@@ -106,7 +106,12 @@ class Profiles extends Component {
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
                             {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
-                            <RaisedButton label='Import profile' primary onClick={() => this.refs.fileZip.click()}/>
+                            <RaisedButton label='Import profile' primary onClick={() => {
+                                this.setState({ profileName: '', profileId: '' }, () => {
+                                    this.refs.fileZip.value = [];
+                                    this.refs.fileZip.click();
+                                });
+                            }}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -242,7 +247,7 @@ class Profiles extends Component {
                     <h1 style={titleStyle}>Profile name</h1>
                 </div>
                 <div>
-                    <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
+                    <div style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '5px' }}>
                         <span>{this.refs.fileZip.files[0].name}</span>
                     </div>
                     <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
