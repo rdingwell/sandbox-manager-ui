@@ -92,7 +92,7 @@ class Profiles extends Component {
                                  trackStyle={{ backgroundColor: palette.primary7Color }} thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }}
                                  trackSwitchedStyle={{ backgroundColor: palette.primary2Color }} onToggle={() => this.setState({ resultsView: !this.state.resultsView })}/>;
 
-        let profile = this.props.validationResults && this.props.validationResults.validatedProfile && this.props.profiles.find(i => i.url === this.props.validationResults.validatedProfile) || {};
+        let profile = this.state.selectedProfile && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
 
         return <Page title={<span>Profiles <span style={{ fontSize: '14px', verticalAlign: 'middle' }}>[BETA]</span></span>}
                      helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
@@ -162,7 +162,7 @@ class Profiles extends Component {
                         <span className='validate-by-title'>
                             {this.props.validationResults && <span>Validated <strong>{this.props.validationResults.validatedObject}</strong> </span>}
                             {this.props.validationResults && this.props.validationResults.validatedProfile
-                                ? <span>against <strong>{profile.name}</strong></span>
+                                ? <span>against <strong>{profile.profileName}</strong></span>
                                 : ''}
                         </span>
                     </CardTitle>
