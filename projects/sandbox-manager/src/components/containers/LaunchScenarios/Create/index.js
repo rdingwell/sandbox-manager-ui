@@ -632,9 +632,10 @@ class Create extends Component {
             sandbox: this.props.sandbox,
             userPersona: this.state.selectedPersona
         };
+        this.state.id && (data.id = this.state.id);
+
         if (this.state.scenarioType === 'app') {
             data.app = this.state.selectedApp;
-            this.state.id && (data.id = this.state.id);
             this.state.patientBanner && (data.needPatientBanner = this.state.patientBanner ? 'T' : 'F');
             this.props.singlePatient && (data.patientName = getPatientName(this.props.singlePatient));
             this.state.encounterId && (data.encounter = this.state.encounterId);
