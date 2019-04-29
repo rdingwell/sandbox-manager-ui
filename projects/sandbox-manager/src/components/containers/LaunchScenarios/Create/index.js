@@ -29,8 +29,6 @@ class Create extends Component {
     constructor (props) {
         super(props);
 
-        console.log(props);
-
         let initialState = {
             id: props.id,
             description: props.description || '',
@@ -52,11 +50,11 @@ class Create extends Component {
             requiredHookContext: [],
             scenarioType: props.app ? 'app' : props.cdsHook ? 'hook' : undefined
         };
-        (props.contextParams || []).map(p => {
-            initialState[p.name] = p.value;
-        });
-        props.contextParams && (initialState = this.addContexts(initialState, props, props.userPersona));
         if (props.cdsHook) {
+            (props.contextParams || []).map(p => {
+                initialState[p.name] = p.value;
+            });
+            props.contextParams && (initialState = this.addContexts(initialState, props, props.userPersona));
             let hook = props.hookContexts[props.cdsHook.hook];
             props.contextParams.map(param => {
                 this.blurHookContext(param.name, hook[param.name], initialState);
