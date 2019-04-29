@@ -159,7 +159,7 @@ class Apps extends Component {
                         <h3 className='app-name'>{hook.title}</h3>
                         <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
                         {this.props.modal && <RadioButton className='app-radio' value="selected"
-                                                          checked={this.props.selectedApp ? hook.url === this.props.selectedApp.url && hook.id === this.props.selectedApp.id : false}/>}
+                                                          checked={this.props.selectedApp ? hook.hookUrl === this.props.selectedApp.hookUrl && hook.hookId === this.props.selectedApp.hookId : false}/>}
                         <div className='app-description'>{hook.description}</div>
                     </CardTitle>
                     {!this.props.modal && <CardActions className='card-actions-wrapper'>

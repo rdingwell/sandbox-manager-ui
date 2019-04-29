@@ -29,11 +29,13 @@ class Create extends Component {
     constructor (props) {
         super(props);
 
+        console.log(props);
+
         let initialState = {
             id: props.id,
             description: props.description || '',
             title: props.title || '',
-            selectedApp: props.app || null,
+            selectedApp: props.app || props.cdsHook || null,
             encounterId: props.encounter || '',
             patientBanner: props.needPatientBanner === 'T' || null,
             showPatientSelectorWrapper: false,
@@ -46,10 +48,20 @@ class Create extends Component {
             personaType: (props.userPersona && props.userPersona.resource) || null,
             selectedPersona: props.userPersona || null,
             url: props.smartStyleUrl || '',
-            currentStep: props.app ? 0 : -1,
+            currentStep: props.app || props.cdsHook ? 0 : -1,
             requiredHookContext: [],
-            scenarioType: props.app ? 'app' : undefined
+            scenarioType: props.app ? 'app' : props.cdsHook ? 'hook' : undefined
         };
+        (props.contextParams || []).map(p => {
+            initialState[p.name] = p.value;
+        });
+        props.contextParams && (initialState = this.addContexts(initialState, props, props.userPersona));
+        if (props.cdsHook) {
+            let hook = props.hookContexts[props.cdsHook.hook];
+            props.contextParams.map(param => {
+                this.blurHookContext(param.name, hook[param.name], initialState);
+            });
+        }
 
         this.state = {
             ...initialState,
@@ -191,18 +203,7 @@ class Create extends Component {
                     if (selectedPersona) {
                         let state = { selectedPersona };
                         if (this.state.scenarioType === 'hook') {
-                            state.requiredHookContext = [];
-                            let hookContext = this.props.hookContexts[this.state.selectedApp.hook];
-                            Object.keys(hookContext).map(key => {
-                                if (key === 'userId') {
-                                    state[key] = selectedPersona.fhirId;
-                                } else if (typeof (hookContext[key].resourceType) !== 'string') {
-                                    state[key] = hookContext[key].resourceType[this.props.sandboxApiEndpointIndex].query
-                                }
-                                if (hookContext[key].required) {
-                                    state.requiredHookContext.push(key);
-                                }
-                            });
+                            state = this.addContexts(state, this.props, selectedPersona);
                         }
                         this.setState(state);
                     }
@@ -301,6 +302,22 @@ class Create extends Component {
                     </div>
                 </div>;
         }
+    };
+
+    addContexts = (state, props, selectedPersona) => {
+        state.requiredHookContext = [];
+        let hookContext = props.hookContexts[state.selectedApp.hook];
+        Object.keys(hookContext).map(key => {
+            if (key === 'userId') {
+                state[key] = selectedPersona.fhirId;
+            } else if (typeof (hookContext[key].resourceType) !== 'string') {
+                state[key] = hookContext[key].resourceType[props.sandboxApiEndpointIndex].query
+            }
+            if (hookContext[key].required) {
+                state.requiredHookContext.push(key);
+            }
+        });
+        return state;
     };
 
     getContextSummary = (iconStyle) => {
@@ -503,7 +520,7 @@ class Create extends Component {
             return index % 2 === comp && key !== 'userId' && <div className='column-item-wrapper' key={index}>
                 <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} floatingLabelText={context.title}
-                           onBlur={() => this.blurHookContext(key, context)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
+                           onBlur={() => this.blurHookContext(key, context, this.state)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
                            errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
                 {key === 'patientId' && <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
                     <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
@@ -526,8 +543,8 @@ class Create extends Component {
         })
     };
 
-    blurHookContext = (key, context) => {
-        let crit = this.state[key];
+    blurHookContext = (key, context, state) => {
+        let crit = state[key];
         crit && typeof (context.resourceType) === 'string' && this.props.fetchAnyResource && this.props.fetchAnyResource(context.resourceType, crit);
         !crit && this.props.clearResourceFetch && this.props.clearResourceFetch(context.resourceType);
     };
@@ -638,7 +655,6 @@ class Create extends Component {
         }
 
 
-        // console.log(data);
         this.props.create && this.props.create(data);
         data.id && this.props.close && this.props.close();
     };
