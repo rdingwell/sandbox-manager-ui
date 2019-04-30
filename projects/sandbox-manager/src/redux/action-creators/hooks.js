@@ -205,7 +205,6 @@ export const launchHook = (hook, launchContext) => {
 
         let state = getState();
         let context = buildContext(hook.hook, launchContext, state, dispatch);
-
         // Authorize the hook
         let userData = { username: state.sandbox.defaultUser.personaUserId, password: state.sandbox.defaultUser.password };
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -216,8 +215,6 @@ export const launchHook = (hook, launchContext) => {
                     hookInstance,
                     hook: hook.hook,
                     fhirServer: window.fhirClient.server.serviceUrl,
-                    user: state.sandbox.defaultUser.resourceUrl,
-                    patient: `Patient/${context.patientId}`,
                     context,
                     fhirAuthorization: {
                         access_token: authData.jwt,
@@ -282,12 +279,12 @@ function buildContext (hook, launchContext, state, dispatch) {
     if (params) {
         Object.keys(params).map(key => {
             let required = params[key].required;
-            let val = launchContext[key] ? launchContext[key] : GETTERS[key] ? GETTERS[key](state) : undefined;
+            let val = launchContext.find(x => x.name === key);
             if ((!val || val.length === 0) && required) {
                 dispatch(setGlobalError(`Hook can not be launched! Missing required context "${key}".`));
                 hasMissingContext = true;
-            } else if (val && val.length > 0) {
-                context[key] = val;
+            } else if (val) {
+                context[key] = val.value;
             }
         });
     }

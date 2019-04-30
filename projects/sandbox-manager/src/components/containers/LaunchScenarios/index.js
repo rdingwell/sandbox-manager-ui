@@ -146,7 +146,7 @@ class LaunchScenarios extends Component {
             ? this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc)
             : this.openEHRSimulator(sc));
         !sc.app && !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
-        !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, { patientId: sc.userPersona });
+        !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, sc.contextParams);
     };
 
     openEHRSimulator = (sc) => {
@@ -386,7 +386,8 @@ class LaunchScenarios extends Component {
                             let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
                             let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
                             return <span className='section-value' style={lightColor}>
-                                {this.getContextIcon(param.name, iconStyleLight)}<span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
+                                {/*{this.getContextIcon(param.name, iconStyleLight)} <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>*/}
+                                {param.name}: <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
                             </span>;
                         }
                     })}

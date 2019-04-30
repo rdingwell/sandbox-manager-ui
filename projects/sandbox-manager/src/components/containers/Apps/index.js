@@ -111,12 +111,10 @@ class Apps extends Component {
             </div>
             {this.state.showConfirmModal && <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
                 {this.state.serviceToDelete && <p>
-                    Are you sure you want to delete this service?<br/>
-                    Deleting this service will result in the deletion of all the launch scenarios connected to it.
+                    Are you sure you want to delete this service? Deleting this service will result in the deletion of all the launch scenarios connected to it.
                 </p>}
                 {!this.state.serviceToDelete && <p>
-                    Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.clientName : ''}"?<br/>
-                    Deleting this app will result in the deletion of all the launch scenarios connected to it.
+                    Are you sure you want to delete app "{this.state.selectedApp ? this.state.selectedApp.clientName : ''}"? Deleting this app will result in the deletion of all the launch scenarios connected to it.
                 </p>}
             </ConfirmModal>}
             <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000} bodyStyle={{ margin: '0 auto', backgroundColor: palette.primary2Color, textAlign: 'center' }}/>

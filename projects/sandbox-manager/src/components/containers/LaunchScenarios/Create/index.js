@@ -307,7 +307,7 @@ class Create extends Component {
         let hookContext = props.hookContexts[state.selectedApp.hook];
         Object.keys(hookContext).map(key => {
             if (key === 'userId') {
-                state[key] = selectedPersona.fhirId;
+                state[key] = selectedPersona.resource + '/' + selectedPersona.fhirId;
             } else if (typeof (hookContext[key].resourceType) !== 'string') {
                 state[key] = hookContext[key].resourceType[props.sandboxApiEndpointIndex].query
             }
@@ -368,7 +368,6 @@ class Create extends Component {
             return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
                 let context = this.props.hookContexts[this.state.selectedApp.hook][key];
                 let value = this.state[key] || '';
-
                 return <div className='summary-item' key={index}>
                     <div className='summary-item-icon-left'>
                         <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
