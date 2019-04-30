@@ -199,7 +199,7 @@ class Create extends Component {
                 let personaList = this.props.personas;
                 let click = selectedPersona => {
                     if (selectedPersona) {
-                        let state = { selectedPersona };
+                        let state = Object.assign({}, this.state, { selectedPersona });
                         if (this.state.scenarioType === 'hook') {
                             state = this.addContexts(state, this.props, selectedPersona);
                         }
@@ -608,7 +608,7 @@ class Create extends Component {
             setTimeout(() => {
                 this.setState({ showPatientSelector: false });
                 this.blur('patientId');
-                this.blurHookContext('patientId', { resourceType: 'Patient' });
+                this.blurHookContext('patientId', { resourceType: 'Patient' }, this.state);
             }, 400);
         } else {
             this.props.fetchPersonas(PersonaList.TYPES.patient);
