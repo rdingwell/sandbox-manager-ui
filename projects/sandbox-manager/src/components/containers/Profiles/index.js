@@ -94,7 +94,7 @@ class Profiles extends Component {
 
         let profile = this.state.selectedProfile && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
 
-        return <Page title={<span>Profiles <span style={{ fontSize: '14px', verticalAlign: 'middle' }}>[BETA]</span></span>}
+        return <Page title={<span>Profiles</span>}
                      helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.getModals()}
             <div className='profiles-wrapper'>
