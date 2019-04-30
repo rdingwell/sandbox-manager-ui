@@ -358,7 +358,7 @@ class Profiles extends Component {
     validate = () => {
         let manualJSON = this.state.fileJson || this.state.manualJson;
         manualJSON && (manualJSON = this.prepareJSON(JSON.parse(manualJSON)));
-        manualJSON && this.props.validate();
+        manualJSON && this.props.validate(manualJSON);
         !manualJSON && this.state.query && this.props.validateExisting(this.state.query, this.state.selectedProfile);
         this.state.activeTab === 'browse' && this.setState({ query: '' });
     };
