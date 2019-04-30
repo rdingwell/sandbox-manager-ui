@@ -382,14 +382,15 @@ class LaunchScenarios extends Component {
                         </span>
                     </div>}
                     {selectedScenario.cdsHook && selectedScenario.contextParams.map(param => {
-                        if (param.name !== 'userId') {
                             let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
-                            let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                            let isPatient = param.name === 'patientId';
+                            // let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                            let click = isPatient ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
                             return <span className='section-value' style={lightColor}>
                                 {/*{this.getContextIcon(param.name, iconStyleLight)} <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>*/}
-                                {param.name}: <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>
+                                {param.name}: <span className={`context-value ${isPatient ? 'context-link' : ''}`} onClick={isPatient ? e => this.openInDM(e, patient) : null}>{param.value}</span>
                             </span>;
-                        }
+
                     })}
                 </div>
                 {selectedScenario.app && <div className='custom-context-wrapper'>
@@ -490,7 +491,7 @@ class LaunchScenarios extends Component {
         this.buttonClick = false;
     };
 
-    openInDM = (e, patient) => {
+    openInDM = (patient) => {
         // e.stopPropagation();
         this.props.doLaunch({
             'launchUri': `${this.props.patientDataManagerUrl}/launch.html`
