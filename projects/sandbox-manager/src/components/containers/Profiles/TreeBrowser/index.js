@@ -176,6 +176,7 @@ class TreeBrowser extends Component {
 const mapStateToProps = state => {
 
     return {
+        sds: state.fhir.sds,
         metadata: state.fhir.metadata,
         loadingResources: state.patient.loadingResources,
         patientResources: state.patient.resources,

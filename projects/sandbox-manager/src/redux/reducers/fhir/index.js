@@ -26,11 +26,18 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_PROFDILES_LOADING:
             state.profilesLoading = action.payload.loading;
             break;
+        case types.FHIR_SET_PROFDILESDS_LOADING:
+            state.profileSDsLoading = action.payload.loading;
+            action.payload.loading && (state.sds = undefined);
+            break;
         case types.FHIR_SET_PROFDILES_UPLOADING:
             state.profilesUploading = action.payload.loading;
             break;
         case types.FHIR_SET_PROFDILES_UPLOADING_STATUS:
             state.profilesUploadingStatus = action.payload.status;
+            break;
+        case types.FHIR_SET_PROFDILESDS:
+            state.sds = action.payload.sds;
             break;
         case types.FHIR_SET_PROFDILES:
             state.profiles = action.payload.profiles.entry;
@@ -89,12 +96,15 @@ export default function (state = initialState, action) {
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
             state.validationResults = null;
+            state.sds = null;
             state.customSearchResults = null;
             state.customExportResults = null;
             state.executing = false;
             state.fetchingFile = false;
             state.resources = false;
+            state.profileSDsLoading = false;
             state.profilesLoading = false;
+            state.validationExecuting = false;
             state.profilesUploading = false;
             state.resourcesLoading = false;
             state.profilesUploadingStatus = {};

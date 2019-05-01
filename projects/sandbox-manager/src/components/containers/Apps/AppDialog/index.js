@@ -199,7 +199,7 @@ class AppDialog extends Component {
             logo_uri: this.props.app.logoUri,
             launch_url: this.props.app.launchUri,
             redirect_uris: clientJSON.redirectUris,
-            scope: clientJSON.scope.concat(' '),
+            scope: clientJSON.scope.join(' '),
             token_endpoint_auth_method: clientJSON.tokenEndpointAuthMethod,
             grant_types: clientJSON.grant_types,
             fhirVersions: this.props.app.fhirVersions,
