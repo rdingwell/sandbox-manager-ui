@@ -279,12 +279,19 @@ function buildContext (hook, launchContext, state, dispatch) {
     if (params) {
         Object.keys(params).map(key => {
             let required = params[key].required;
-            let val = launchContext.find(x => x.name === key);
+            let val;
+            if (launchContext instanceof Array) {
+                val = launchContext.find(x => x.name === key);
+            } else {
+                val = launchContext[key] ? launchContext[key] : GETTERS[key] ? GETTERS[key](state) : undefined;
+            }
             if ((!val || val.length === 0) && required) {
                 dispatch(setGlobalError(`Hook can not be launched! Missing required context "${key}".`));
                 hasMissingContext = true;
-            } else if (val) {
+            } else if (val && val.value) {
                 context[key] = val.value;
+            } else if (val) {
+                context[key] = val;
             }
         });
     }
