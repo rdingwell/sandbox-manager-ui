@@ -93,25 +93,36 @@ export default class Export extends Component {
             content = {"any": status.content.entry};
         }
         Object.keys(content).map(key => {
-            content[key].map(item => {
-                entry.push({
-                    "resource": item.resource,
-                    "request": {
-                        "method": "PUT",
-                        "url": item.resource.resourceType + "/" + item.resource.id
-                    }
+            if (content[key] > 1 || Object.keys(content).length > 1) {
+                content[key].map(item => {
+                    entry.push({
+                        "resource": item.resource,
+                        "request": {
+                            "method": "PUT",
+                            "url": item.resource.resourceType + "/" + item.resource.id
+                        }
+                    })
                 })
-            })
+            } else {
+                entry.push(content[key])
+            }
         });
+        let blob;
+        if (entry.length === 1 && entry[0].length === 1) {
+            blob = new Blob([JSON.stringify(entry[0][0])],
+                { type: 'text/json' }
+            );
+        } else {
+            blob = new Blob(
+                [JSON.stringify({
+                    "resourceType": "Bundle",
+                    "type": "transaction",
+                    "entry": entry
+                }, undefined, 2)],
+                { type: 'text/json' }
+            );
+        }
 
-        let blob = new Blob(
-            [JSON.stringify({
-                "resourceType": "Bundle",
-                "type": "transaction",
-                "entry": entry
-            }, undefined, 2)],
-            { type: 'text/json' }
-        );
 
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
             window.navigator.msSaveOrOpenBlob(blob, 'sandbox-export.json');
