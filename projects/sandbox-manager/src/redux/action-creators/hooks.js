@@ -217,9 +217,9 @@ export const launchHook = (hook, launchContext) => {
                     fhirServer: window.fhirClient.server.serviceUrl,
                     context,
                     fhirAuthorization: {
-                        access_token: authData.jwt,
+                        access_token: JSON.parse(sessionStorage.getItem('tokenResponse')).access_token,
                         token_type: "Bearer",
-                        scope: "patient/*.* user/*.* launch openid profile online_access",
+                        scope: "patient/*.read user/*.read",
                         subject: hook.hook
                     },
                     prefetch: {}
