@@ -13,7 +13,7 @@ cd /var/cache/apt/archives/
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 echo "Installing chrome"
-apt-get install google-chrome-stable_current_amd64
+apt-get install google-chrome
 
 echo "Chrome check:"
 google-chrome --version
