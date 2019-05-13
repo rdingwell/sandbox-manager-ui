@@ -2,6 +2,6 @@
 cd ../
 echo "Starting the server in test mode"
 npm run smt &
-sleep 30s
+sleep 50s
 echo "Running the tests"
 npm run test
