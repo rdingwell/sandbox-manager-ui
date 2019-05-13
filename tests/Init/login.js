@@ -31,24 +31,13 @@ exports.login = describe('Login into the system', function () {
     });
 
     it('should redirect to the dashboard after login', async () => {
-        let print = async () => {
-            let source = await UTILS.driver.getPageSource();
-            console.log(source);
-        };
-
-        await print();
         await UTILS.wait(5000);
-        await print();
 
         let handles = await UTILS.driver.getAllWindowHandles();
         await UTILS.driver.switchTo().window(handles[0]);
 
-        let timer = setInterval(print, 10000);
-
         await UTILS.waitForElementCSS('[data-qa="dashboard-page"]');
         let dashboard = UTILS.getElementByCss('[data-qa="dashboard-page"]');
         expect(dashboard).not.toBeNull();
-
-        clearInterval(timer);
     });
 });
