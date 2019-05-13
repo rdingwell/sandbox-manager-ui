@@ -3,7 +3,7 @@
 echo "Setting up the ENV"
 printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
 apt-get update
-apt-cache search firefox
+apt-cache search chrome
 echo "Installing xvfb..."
 #apt-get install -y xvfb
 
