@@ -18,4 +18,5 @@ ser -e;
 echo "Chrome check:"
 google-chrome --version
 
-Xvfb :99 -ac &
+#Xvfb :99 -ac &
+Xvfb :0 -ac -screen 0 1024x768x24 &

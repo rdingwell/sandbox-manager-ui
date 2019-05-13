@@ -21,3 +21,5 @@ export FIREFOX_VERSION="45.0"
 export FIREFOX_DIR="/usr/bin/firefox"
 
 export FIREFOX_FILENAME="$FIREFOX_DIR/firefox.tar.bz2"
+
+export DISPLAY=0:0
