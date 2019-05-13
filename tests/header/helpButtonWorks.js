@@ -8,7 +8,7 @@ exports.helpMenuButtonTest = () => describe('Testing if the help button is there
         //Wait for the animation
         await UTILS.wait(500);
 
-        let menu = await UTILS.getElementByCss('[data-qa="help-menu-popover"]');
+        let menu = await UTILS.getElementByCss('.help-menu-popover');
         expect(menu).not.toBeNull();
     });
     it('should close the menu by clicking on the invisible overlay', async () => {

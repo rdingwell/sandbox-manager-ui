@@ -5,6 +5,7 @@ const waitUntilTime = 500;
 
 exports.setDriver = function (newDriver) {
     driver = newDriver;
+    exports.driver = driver;
 };
 
 exports.getElementByCss = async function getElementByCss (selector, waitTime = waitUntilTime, shouldWaitForVisibility = true) {
@@ -62,9 +63,16 @@ exports.waitForLoad = async function waitForLoad () {
     return await driver.wait(() => driver.executeScript('return document.readyState').then(state => state === 'complete'));
 };
 
-exports.waitForLoader = async function waitForLoader (loaderSelector) {
+exports.waitForElementCSS = async function waitForElementCSS (loaderSelector) {
     return await driver.wait(async () => {
         let loader = await this.getElementByCss(loaderSelector);
+        return !!loader;
+    });
+};
+
+exports.waitForElementXPATH = async function waitForElementXPATH (xPath) {
+    return await driver.wait(async () => {
+        let loader = await this.getElementByXPath(xPath, undefined, false);
         return !!loader;
     });
 };

@@ -39,30 +39,30 @@ const TEST_SUITE = [
             'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', '__helpMenuItemsTest'
         ]
     },
-    {
-        title: 'Test dashboard functionality',
-        tests: [
-            'createSandbox', 'testHomeButton', 'testSandboxSelection'
-        ]
-    },
-    {
-        title: 'Test the side menu and navigation',
-        tests: [
-            'toggleSideMenu', 'testNavigation'
-        ]
-    },
-    {
-        title: 'Test apps screen functionality',
-        tests: [
-            'testAppCreation'
-        ]
-    },
-    {
-        title: 'Cleanup after the testing',
-        tests: [
-            'deleteSandbox', 'signOut'
-        ]
-    }
+    // {
+    //     title: 'Test dashboard functionality',
+    //     tests: [
+    //         'createSandbox', 'testHomeButton', 'testSandboxSelection'
+    //     ]
+    // },
+    // {
+    //     title: 'Test the side menu and navigation',
+    //     tests: [
+    //         'toggleSideMenu', 'testNavigation'
+    //     ]
+    // },
+    // {
+    //     title: 'Test apps screen functionality',
+    //     tests: [
+    //         'testAppCreation'
+    //     ]
+    // },
+    // {
+    //     title: 'Cleanup after the testing',
+    //     tests: [
+    //         'deleteSandbox', 'signOut'
+    //     ]
+    // }
 ];
 
 //Initialize the app

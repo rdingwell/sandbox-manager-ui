@@ -91,6 +91,7 @@ body {
       display: inline-block;
       max-width: 100%;
       word-break: break-all;
+      font-size: 14px;
     }
   }
 }
@@ -150,4 +151,15 @@ body {
   z-index: 100;
   width: 68px !important;
   height: 68px !important;
+}
+
+:global(.copy-button) {
+  width: 16px !important;
+  height: 16px !important;
+  padding: 0 !important;
+  opacity: .75;
+  margin-bottom: -2px;
+  &:hover {
+    cursor: pointer;
+  }
 }

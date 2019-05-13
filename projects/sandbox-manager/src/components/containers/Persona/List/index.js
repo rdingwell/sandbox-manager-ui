@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Badge, CircularProgress, FloatingActionButton, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
 import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import LaunchIcon from "material-ui/svg-icons/action/launch";
+import LaunchIcon from 'material-ui/svg-icons/image/edit';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
 import FilterList from "material-ui/svg-icons/content/filter-list";
@@ -14,6 +14,7 @@ import Page from 'sandbox-manager-lib/components/Page';
 import { BarChart } from 'react-chartkick';
 import CreatePersona from "../Create";
 import moment from 'moment';
+import HelpButton from '../../../UI/HelpButton';
 
 import './styles.less';
 import { bindActionCreators } from "redux";
@@ -94,7 +95,13 @@ class PersonaList extends Component {
 
         let personaList = this.getPersonaList(isPatient, isPractitioner);
 
-        return <Page noTitle={this.props.noTitle} title={title} titleLeft={this.props.titleLeft} close={this.props.close} scrollContent={this.props.scrollContent}>
+        let helpIcon = <HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/79364100/Sandbox+Persona'/>;
+        let pageProps = {
+            noTitle: this.props.noTitle, title, titleLeft: this.props.titleLeft, close: this.props.close, scrollContent: this.props.scrollContent
+        };
+        !isPatient && !isPractitioner && (pageProps.helpIcon = helpIcon);
+
+        return <Page {...pageProps}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({ showConfirmModal: false, personaToDelete: undefined })}>
                 <p>
@@ -103,7 +110,7 @@ class PersonaList extends Component {
             </ConfirmModal>
             {!this.props.modal && <div className='create-resource-button'>
                 <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
-                               personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} search={this.props.search}/>
+                               personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} existingPersonas={this.getFilteredList()} search={this.props.search}/>
             </div>}
             <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')} data-qa={`${this.props.type}-wrapper`}>
                 {!this.props.noFilter && <div className='filter-wrapper'>
@@ -214,9 +221,13 @@ class PersonaList extends Component {
                 </TableRowColumn>}
                 {isPractitioner && <TableRowColumn className={'persona-info' + (isPractitioner ? ' pract' : '')}>{persona.id}</TableRowColumn>}
                 {!this.props.modal && !isPractitioner && <TableRowColumn className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''} style={{ textAlign: 'right' }}>
-                    {!isPatient && <IconButton onClick={e => this.toggleMenuForItem(e, i)}>
+                    {!isPatient && <IconButton onClick={() => {
+                        this.toggleMenuForItem();
+                        this.deletePersona(persona);
+                    }}>
                         <span className='anchor' ref={'anchor' + i}/>
-                        <MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                        {/*<MoreIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>*/}
+                        <DeleteIcon color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
@@ -257,7 +268,8 @@ class PersonaList extends Component {
                     <TableRow>
                         <TableHeaderColumn> </TableHeaderColumn>
                         <TableHeaderColumn className={'name' + (isPractitioner ? ' pract' : '')} style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>Name</TableHeaderColumn>
-                        {isPractitioner && <TableHeaderColumn className='pract' style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
+                        {isPractitioner &&
+                        <TableHeaderColumn className='pract' style={{ color: this.props.theme.primary6Color, paddingLeft: '24px', fontWeight: 'bold', fontSize: '14px' }}>FHIR id</TableHeaderColumn>}
                         {isPatient && <TableHeaderColumn style={{ color: this.props.theme.primary6Color, fontWeight: 'bold', fontSize: '14px' }}>
                             Identifier
                         </TableHeaderColumn>}
@@ -336,15 +348,7 @@ class PersonaList extends Component {
     openInDM = (e, persona) => {
         e.stopPropagation();
         this.props.doLaunch({
-            "authClient": {
-                "clientName": "Patient Data Manager",
-                "clientId": "patient_data_manager",
-                "redirectUri": "http://localhost:8096/index.html"
-            },
-            "appUri": "http://localhost:8096/",
-            "launchUri": "http://localhost:8096/launch.html",
-            "logoUri": "https://content.hspconsortium.org/images/hspc-patient-data-manager/logo/pdm.png",
-            "briefDescription": "The HSPC Patient Data Manager app is a SMART on FHIR application that is used for managing the data of a single patient."
+            "launchUri": `${this.props.patientDataManagerUrl}/launch.html`
         }, persona.id, undefined, true);
     };
 
@@ -373,7 +377,7 @@ class PersonaList extends Component {
             let selection = getSelection();
             let node = selection.baseNode || selection.anchorNode;
             let parentNodeClass = node && node.parentNode && node.parentNode.classList && node.parentNode.classList.value;
-            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || node.classList.contains('fa');
+            let actualClick = (parentNodeClass && parentNodeClass.indexOf('persona-info') >= 0 && selection.toString().length === 0) || !node || (node.classList && node.classList.contains('fa'));
             if (actualClick || event) {
                 let selected = this.state.selected !== row ? row : undefined;
                 selected !== undefined && this.props.patientDetailsFetchStarted();
@@ -387,6 +391,9 @@ class PersonaList extends Component {
 }
 
 const mapStateToProps = state => {
+    let patientDataManagerUrl = state.config.xsettings.data.sandboxManager
+        ? state.config.xsettings.data.sandboxManager.patientDataManager
+        : '';
     return {
         patients: state.persona.patients,
         practitioners: state.persona.practitioners,
@@ -409,7 +416,8 @@ const mapStateToProps = state => {
         immunizationCount: state.patient.details.Immunization || 0,
         carePlanCount: state.patient.details.CarePlan || 0,
         careTeamCount: state.patient.details.CareTeam || 0,
-        goalCount: state.patient.details.Goal || 0
+        goalCount: state.patient.details.Goal || 0,
+        patientDataManagerUrl
     };
 };
 

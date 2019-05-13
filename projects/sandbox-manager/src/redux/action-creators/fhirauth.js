@@ -34,16 +34,17 @@ export function setServerUrl () {
     const server = { ...fhirClient.server };
     const sandboxId = action.sandboxId;
     const fhirVersion = state.fhirVersion;
+    debugger
     if (sandboxId !== undefined && sandboxId !== "") {
         server.serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
         if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.6.0") {
             server.serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.8.0") {
-            server.serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "1.0.2") {
+            server.serviceUrl = config.baseServiceUrl_8 + "/" + sandboxId + "/data";
         } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.0.1") {
-            server.serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
-        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "3.4.0") {
-            server.serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+            server.serviceUrl = config.baseServiceUrl_9 + "/" + sandboxId + "/data";
+        } else if (fhirVersion !== undefined && fhirVersion !== "" && fhirVersion === "4.0.0") {
+            server.serviceUrl = config.baseServiceUrl_10 + "/" + sandboxId + "/data";
         }
     }
     server.serviceUrl = "http://localhost:8075/" + action.sandboxId + "/data";
@@ -153,22 +154,25 @@ export function authorize (url, state, sandboxId) {
     let serviceUrl = config.defaultServiceUrl;
 
     const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-    document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+    if (isIE11) {
+        document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    } else {
+        document.cookie = `${config.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+    }
 
     if (sandboxId !== undefined && sandboxId !== "") {
-        serviceUrl = config.baseServiceUrl_1 + "/" + sandboxId + "/data";
-        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "2") {
-            serviceUrl = config.baseServiceUrl_2 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "3") {
-            serviceUrl = config.baseServiceUrl_3 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "4") {
-            serviceUrl = config.baseServiceUrl_4 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "5") {
-            serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
-        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
+        serviceUrl = config.baseServiceUrl_5 + "/" + sandboxId + "/data";
+        if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "6") {
             serviceUrl = config.baseServiceUrl_6 + "/" + sandboxId + "/data";
         } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "7") {
             serviceUrl = config.baseServiceUrl_7 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "8") {
+            serviceUrl = config.baseServiceUrl_8 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "9") {
+            serviceUrl = config.baseServiceUrl_9 + "/" + sandboxId + "/data";
+        } else if (state.sandbox.sandboxApiEndpointIndex !== undefined && state.sandbox.sandboxApiEndpointIndex !== "" && state.sandbox.sandboxApiEndpointIndex === "10") {
+            serviceUrl = config.baseServiceUrl_10 + "/" + sandboxId + "/data";
         }
     }
 
@@ -220,24 +224,28 @@ export function fhirauth_setSmart (smart, redirect = null) {
         window.fhirClient = smart;
         queryFhirVersion(dispatch, fhirClient, state);
 
-        API.post(configuration.oauthUserInfoUrl, dispatch)
-            .then(data => {
-                dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
-                API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
-                    .then(data2 => {
-                        dispatch(saveSandboxManagerUser(data2));
-                        let state = getState();
-                        redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
-                        redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
-                        dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
-                        window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
-                        dispatch(loadInvites());
-                        dispatch(fetchUserNotifications());
-                    })
-                    .catch(() => {})
-            })
-            .catch(() => {
-                goHome();
-            });
+        configuration && configuration.oauthUserInfoUrl
+            ? API.post(configuration.oauthUserInfoUrl, dispatch)
+                .then(data => {
+                    dispatch(setOauthUserInfo(data.sub, data.preferred_username, data.name));
+                    API.get(configuration.sandboxManagerApiUrl + '/user?sbmUserId=' + encodeURIComponent(data.sub), dispatch)
+                        .then(data2 => {
+                            dispatch(saveSandboxManagerUser(data2));
+                            let state = getState();
+                            redirect && sessionStorage.sandboxId && redirect.push(`/${sessionStorage.sandboxId}/${state.app.screen}`);
+                            redirect && sessionStorage.sandboxId && state.sandbox.sandboxes.length &&
+                            dispatch(saveSandboxApiEndpointIndex(state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId).apiEndpointIndex));
+                            window.location.pathname !== '/dashboard' && dispatch(fetchSandboxes());
+                            dispatch(loadInvites());
+                            dispatch(fetchUserNotifications());
+                        })
+                        .catch(() => {
+                            goHome();
+                        })
+                })
+                .catch(() => {
+                    goHome();
+                })
+            : goHome();
     }
 }

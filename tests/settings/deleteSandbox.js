@@ -21,9 +21,9 @@ exports.deleteSandbox = () => describe('Testing sandbox deletion', function () {
         let sandboxDeleteButton = await UTILS.getElementByCss('[data-qa="sandbox-delete-button"]');
         sandboxDeleteButton.click();
 
-        // await UTILS.waitForLoader('[data-qa="full-page-loader"]');
+        // await UTILS.waitForElementCSS('[data-qa="full-page-loader"]');
         await UTILS.wait(500);
-        // await UTILS.waitForLoader('[data-qa="sandbox-loading-loader"]');
+        // await UTILS.waitForElementCSS('[data-qa="sandbox-loading-loader"]');
         // await UTILS.wait(1500);
 
         let currentUrl = await UTILS.getCurrentURL();

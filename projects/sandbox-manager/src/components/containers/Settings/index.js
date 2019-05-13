@@ -31,15 +31,17 @@ class Settings extends Component {
 
     render () {
         return <div className='settings-wrapper' data-qa='settings-wrapper'>
-            <Tabs className='settings-tabs' contentContainerClassName='settings-tabs-container' inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
+            <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')} contentContainerClassName='settings-tabs-container'
+                  inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
                   tabItemContainerStyle={{ backgroundColor: this.props.muiTheme.palette.canvasColor, borderBottom: '1px solid ' + this.props.muiTheme.palette.primary7Color }}>
                 <Tab label="Sandbox" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} onActive={() => this.setActiveTab('details')}
                      buttonStyle={{ backgroundColor: 'transparent' }}>
                     <SandboxDetails theme={this.props.muiTheme.palette} sandbox={this.props.sandbox}/>
                 </Tab>
+                {this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' &&
                 <Tab label="Users" className={'sandbox-reset tab' + (this.state.activeTab === 'reset' ? ' active' : '')} onActive={() => this.setActiveTab('reset')}>
                     <UserManagement/>
-                </Tab>
+                </Tab>}
             </Tabs>
         </div>;
     };

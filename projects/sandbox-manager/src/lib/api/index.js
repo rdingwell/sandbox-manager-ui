@@ -1,18 +1,34 @@
-import { setGlobalError } from '../../redux/action-creators';
+import { goHome, setGlobalError, showGlobalSessionModal } from '../../redux/action-creators';
 
 export default {
-    post (url, data, dispatch, isFormData) {
+    post (url, data, dispatch, isFormData, type = "application/json") {
         return new Promise((resolve, reject) => {
-            fetch(url, get_config("POST", data, isFormData))
+            fetch(url, get_config("POST", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
     },
 
-    put (url, data, dispatch) {
+    postNoErrorManagement (url, data, dispatch, isFormData) {
         return new Promise((resolve, reject) => {
-            fetch(url, get_config("PUT", data))
+            fetch(url, get_config("POST", data, isFormData))
+                .then(response => parseResponse(response, dispatch, resolve, reject, true))
+                .catch(e => parseError(e, dispatch, reject, true));
+        });
+    },
+
+    put (url, data, dispatch, isFormData, type = "application/json") {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config("PUT", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
+                .catch(e => parseError(e, dispatch, reject));
+        });
+    },
+
+    getNoErrorManagement (url, dispatch) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config("GET"))
+                .then(response => parseResponse(response, dispatch, resolve, reject, true))
                 .catch(e => parseError(e, dispatch, reject));
         });
     },
@@ -25,10 +41,18 @@ export default {
         });
     },
 
+    getNoAuth (url, dispatch) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config_no_auth("GET"))
+                .then(response => parseResponse(response, dispatch, resolve, reject))
+                .catch(e => reject(e));
+        });
+    },
+
     delete (url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("DELETE"))
-                .then(() => resolve())
+                .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
     }
@@ -36,10 +60,30 @@ export default {
 
 // Helpers
 
-const get_config = (method, data, isFormData) => {
+const get_config = (method, data, isFormData, contentType = "application/json") => {
     let CONFIG = {
         headers: {
             Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `BEARER ${window.fhirClient.server.auth.token}` : undefined,
+            Accept: "application/json",
+            "Content-Type": contentType
+        },
+        method
+    };
+
+    if (data) {
+        CONFIG.body = JSON.stringify(data);
+        if (isFormData) {
+            contentType === "application/json" && delete CONFIG.headers['Content-Type'];
+            CONFIG.body = data;
+        }
+    }
+
+    return CONFIG;
+};
+
+const get_config_no_auth = (method, data, isFormData) => {
+    let CONFIG = {
+        headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
@@ -57,34 +101,70 @@ const get_config = (method, data, isFormData) => {
     return CONFIG;
 };
 
-const parseResponse = (response, dispatch, resolve, reject) => {
+const parseResponse = (response, dispatch, resolve, reject, noGlobalError = false) => {
+
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    if (response.status === 500) {
+        // check the sandbox version
+        fetch(sessionStorage.sandboxApiEndpointCheck)
+            .then(tmp => tmp.json()
+                .then(indexData => {
+                    if (indexData.apiEndpointIndex !== sessionStorage.sandboxApiEndpointIndex) {
+                        goHome();
+                    }
+                }));
+    }
+    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+
     if (response.status === 404) {
         dispatch(setGlobalError(`Resource "${url}" not found!`));
-        reject();
-    } else if (response.status >= 300) {
+        reject('Not found!');
+    } else if (!noGlobalError && response.status >= 300) {
         response.text()
             .then(a => {
-                dispatch(setGlobalError(a));
+                try {
+                    let parsed = JSON.parse(a);
+                    if (parsed.error && parsed.error === 'invalid_token') {
+                        dispatch(showGlobalSessionModal());
+                        setTimeout(goHome, 3000);
+                    } else if (parsed.message) {
+                        !noGlobalError && dispatch(setGlobalError(JSON.stringify(parsed)));
+                    } else if (parsed.issue) {
+                        let issue = parsed.issue.map(i => i.diagnostics) || [];
+                        !noGlobalError && dispatch(setGlobalError(issue.join('\n')));
+                    }
+                    reject();
+                } catch (e) {
+                    if (a.indexOf('User not authorized to perform this action') >= 0) {
+                        dispatch(showGlobalSessionModal());
+                        setTimeout(goHome, 3000);
+                    } else {
+                        !noGlobalError && dispatch(setGlobalError(a));
+                    }
+                    reject();
+                }
             })
             .catch(e => {
-                dispatch(setGlobalError(e));
+                !noGlobalError && dispatch(setGlobalError(e));
+                reject();
             });
-        reject();
     } else {
         response.json()
             .then(terms => resolve(terms))
             .catch(e => {
                 if (response.status < 300) {
-                    resolve();
+                    resolve(e);
                 } else {
-                    dispatch(setGlobalError(e));
-                    reject();
+                    !noGlobalError && dispatch(setGlobalError(e));
+                    reject(e);
                 }
             })
     }
 };
 
-const parseError = (error, dispatch, reject) => {
-    dispatch(setGlobalError(error));
-    reject();
+const parseError = (error, dispatch, reject, noGlobalError = false) => {
+    !noGlobalError && dispatch(setGlobalError(error));
+    reject(error);
 };

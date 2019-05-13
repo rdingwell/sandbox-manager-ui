@@ -6,6 +6,8 @@ export function resetState () {
 }
 
 export function app_setScreen (screen) {
+    ga && ga('set', 'page', screen);
+    ga && ga('send', 'pageview');
     return { type: types.SET_APP_SCREEN, payload: screen }
 }
 
@@ -29,6 +31,14 @@ export function setGlobalError (error) {
         dispatch({
             type: types.SET_ERROR_TO_SHOW,
             payload: { error }
+        });
+    }
+}
+
+export function showGlobalSessionModal () {
+    return dispatch => {
+        dispatch({
+            type: types.SET_GLOBAL_SESSION_MODAL
         });
     }
 }

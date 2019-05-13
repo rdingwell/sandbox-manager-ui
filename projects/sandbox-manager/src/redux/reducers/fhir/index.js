@@ -20,19 +20,95 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_SMART:
             state.smart = action.payload;
             break;
+        case types.FHIR_CLEAN_VALIDATION_RESULTS:
+            state.validationResults = undefined;
+            break;
+        case types.FHIR_SET_PROFDILES_LOADING:
+            state.profilesLoading = action.payload.loading;
+            break;
+        case types.FHIR_SET_PROFDILESDS_LOADING:
+            state.profileSDsLoading = action.payload.loading;
+            action.payload.loading && (state.sds = undefined);
+            break;
+        case types.FHIR_SET_PROFDILES_UPLOADING:
+            state.profilesUploading = action.payload.loading;
+            break;
+        case types.FHIR_SET_PROFDILES_UPLOADING_STATUS:
+            state.profilesUploadingStatus = action.payload.status;
+            break;
+        case types.FHIR_SET_PROFDILESDS:
+            state.sds = action.payload.sds;
+            break;
+        case types.FHIR_SET_PROFDILES:
+            state.profiles = action.payload.profiles.entry;
+            state.profilePagination = {
+                total: action.payload.profiles.total,
+                link: action.payload.profiles.link
+            };
+            break;
         case types.APP_RESET_STATE:
             state = initialState;
+            break;
+        case types.FHIR_SET_VALIDATION_EXECUTING:
+            state.validationExecuting = action.payload.executing;
+            break;
+        case types.FHIR_SET_VALIDATION_RESULTS:
+            state.validationResults = action.payload.results;
+            break;
+        case types.FHIR_SET_METADATA_LOADING:
+            state.metadataLoading = action.payload.loading;
+            break;
+        case types.FHIR_SET_FILE_FETCHING:
+            state.fetchingFile = action.payload.loading;
+            break;
+        case types.FHIR_SET_RESOURCES_LOADING:
+            state.resourcesLoading = action.payload.loading;
+            if (action.payload.loading) {
+                state.resources = undefined;
+            }
+            break;
+        case types.FHIR_SET_METADATA:
+            state.metadata = action.payload.data;
+            break;
+        case types.FHIR_SET_RESOURCES:
+            state.resources = action.payload.data;
+            break;
+        case types.FHIR_SET_RESOURCES_COUNT:
+            state.metadataCounts = action.payload.data;
             break;
         case types.FHIR_SET_CUSTOM_SEARCH_EXECUTING:
             state.executing = action.payload.executing;
             break;
+        case types.FHIR_SET_CUSTOM_SEARCH_GETTING_NEXT_PAGE:
+            state.gettingNextPage = action.payload.executing;
+            break;
         case types.FHIR_SET_CUSTOM_SEARCH_RESULTS:
             state.customSearchResults = action.payload.results;
             break;
+        case types.FHIR_SET_CUSTOM_SEARCH_RESULTS_NEXT:
+            let results = action.payload.results;
+            results.entry = state.customSearchResults.entry.concat(results.entry);
+            state.customSearchResults = results;
+            break;
+        case types.FHIR_SET_EXPORT_SEARCH_RESULTS:
+            state.customExportResults = action.payload.exportResults;
+            break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
+            state.validationResults = null;
+            state.sds = null;
             state.customSearchResults = null;
+            state.customExportResults = null;
             state.executing = false;
+            state.fetchingFile = false;
+            state.resources = false;
+            state.profileSDsLoading = false;
+            state.profilesLoading = false;
+            state.validationExecuting = false;
+            state.profilesUploading = false;
+            state.resourcesLoading = false;
+            state.profilesUploadingStatus = {};
+            state.profiles = [];
             break;
     }
 

@@ -16,18 +16,21 @@ export default class CreatePersona extends Component {
             fName: '',
             birthDate: '',
             suffix: '',
-            speciality: '',
-            role: '',
-            gender: ''
+            gender: '',
+            personaUserId: ''
         };
     }
 
+    handleUserPersonaId  = (personaUserId) => {
+        this.setState({personaUserId: personaUserId})
+    };
+
     render () {
         let createEnabled = this.props.type === PersonaList.TYPES.patient
-            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1
+            ? this.state.name.length >= 1 && this.state.fName.length >= 1 && this.state.gender.length >= 1 && moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid()
             : this.props.type === PersonaList.TYPES.practitioner
                 ? this.state.name.length >= 1 && this.state.fName.length >= 1
-                : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1;
+                : this.state.username && this.state.username.length >= 1 && this.state.password && this.state.password.length >= 1 && !this.userIdDuplicate();
 
         return <div>
             <Dialog bodyClassName='create-persona-dialog' open={this.props.open} onRequestClose={this.props.close}
@@ -47,8 +50,8 @@ export default class CreatePersona extends Component {
 
         return this.state.selectedForCreation
             ? <div className='persona-inputs'>
-                <PersonaInputs persona={this.state.selectedForCreation} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
-                               theme={this.props.theme}/>
+                <PersonaInputs persona={this.state.selectedForCreation} existingPersonas={this.props.existingPersonas} sandbox={sessionStorage.sandboxId} onChange={(username, password) => this.setState({ username, password })}
+                               onInputUserPersonaId={this.handleUserPersonaId} theme={this.props.theme} userIdDuplicate={this.userIdDuplicate()}/>
             </div>
             : <PersonaList click={selectedForCreation => this.setState({ selectedForCreation })} type={this.props.personaType} key={this.props.personaType} personaList={this.props.personas}
                            next={() => this.props.getNextPersonasPage(this.props.personaType, pagination)} modal theme={this.props.theme} pagination={pagination}
@@ -73,9 +76,9 @@ export default class CreatePersona extends Component {
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Birth date" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                               floatingLabelText="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                onChange={(_, birthDate) => this.setState({ birthDate })} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
-                    <h4>Gender</h4>
+                    <h4>Gender*</h4>
                     <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({ gender })}>
                         <RadioButton value="male" label="Male"/>
                         <RadioButton value="female" label="Female"/>
@@ -85,11 +88,6 @@ export default class CreatePersona extends Component {
                 <div>
                     <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({ suffix })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Speciality" hintText='Cardiology ...' fullWidth value={this.state.speciality}
-                               onChange={(_, speciality) => this.setState({ speciality })}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                               floatingLabelText="Role" hintText='Doctor ...' fullWidth value={this.state.role} onChange={(_, role) => this.setState({ role })}/>
                 </div>}
             </div>
         </Paper>
@@ -99,6 +97,10 @@ export default class CreatePersona extends Component {
         let isValid = moment(this.state.birthDate, 'YYYY-MM-DD', true).isValid();
         let birthDateError = isValid || this.state.birthDate.length === 0 ? undefined : 'Invalid birth date. Needs to be in format: YYYY-MM-DD';
         this.setState({ birthDateError });
+    };
+
+    userIdDuplicate = () => {
+        return this.props.existingPersonas.find(i => i.personaUserId.toLowerCase().split('@')[0] === this.state.personaUserId.toLowerCase());
     };
 
     create = () => {
@@ -115,26 +117,6 @@ export default class CreatePersona extends Component {
             data.birthDate = this.state.birthDate;
         } else if (this.props.type === PersonaList.TYPES.practitioner) {
             this.state.suffix && (data.name[0].suffix = [this.state.suffix]);
-            data.practitionerRole = [
-                {
-                    role: {
-                        coding: [
-                            {
-                                display: this.state.role
-                            }
-                        ]
-                    },
-                    specialty: [
-                        {
-                            coding: [
-                                {
-                                    display: this.state.speciality
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
         } else {
             data.userId = this.state.username;
             data.password = this.state.password;

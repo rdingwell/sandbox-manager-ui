@@ -40,8 +40,8 @@ class Index extends Component {
         if (!this.props.loading) {
             let list = this.sortSandboxes();
             sandboxes = list.map((sandbox, index) => {
-                let isThree = ['1', '2', '5'].indexOf(sandbox.apiEndpointIndex) === -1;
-                let isFour = sandbox.apiEndpointIndex === '7';
+                let isThree = ['5', '8'].indexOf(sandbox.apiEndpointIndex) === -1;
+                let isFour = sandbox.apiEndpointIndex === '7' || sandbox.apiEndpointIndex === '10';
                 let avatarClasses = 'sandbox-avatar';
                 let avatarText = 'STU3';
                 let backgroundColor = this.props.muiTheme.palette.accent1Color;

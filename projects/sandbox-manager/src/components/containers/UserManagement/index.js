@@ -31,7 +31,7 @@ class Users extends Component {
     }
 
     componentDidMount () {
-        this.props.fetchSandboxInvites();
+        // this.props.fetchSandboxInvites();
     }
 
     render () {
@@ -134,6 +134,7 @@ class Users extends Component {
     };
 
     showInvitationsModal = () => {
+        this.props.fetchSandboxInvites();
         this.setState({ invitationsModal: true });
     };
 
@@ -158,7 +159,7 @@ class Users extends Component {
         return keys.map(key => {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
-
+            
             let canRemoveUser = keys.length > 1 && (
                 (currentIsAdmin && user.sbmUserId !== this.props.user.sbmUserId) ||
                 (user.sbmUserId === this.props.user.sbmUserId && (!currentIsAdmin || adminCount > 1))
@@ -188,7 +189,9 @@ class Users extends Component {
                             <Menu desktop autoWidth={false} width='100px'>
                                 {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' primaryText='Remove user' onClick={() => this.handleOpen(user.sbmUserId)}/>
+                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item'
+                                          primaryText={user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
+                                          onClick={() => this.handleOpen(user.sbmUserId)}/>
                             </Menu>
                         </Popover>}
                     </IconButton>
@@ -207,9 +210,17 @@ class Users extends Component {
         let revokeStyle = { width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color };
 
         return this.props.invitations.map((invitation, key) => {
+            let timestamp = invitation.inviteTimestamp;
+            if (timestamp !== undefined) {
+                timestamp = new Date(timestamp);
+                timestamp = timestamp.getFullYear() + '-' + ('0' + (timestamp.getMonth() + 1)).slice(-2) + '-'
+                    + ('0' + timestamp.getDate()).slice(-2);;
+            } else {
+                timestamp = '';
+            }
             return <TableRow key={key}>
                 <TableRowColumn>{invitation.invitee.email}</TableRowColumn>
-                <TableRowColumn>Jul 2, 2018</TableRowColumn>
+                <TableRowColumn>{timestamp}</TableRowColumn>
                 <TableRowColumn className='invite-buttons-wrapper'>
                     <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
                         <Redo/>

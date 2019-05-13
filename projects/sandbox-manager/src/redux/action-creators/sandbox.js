@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
+import { fhir_setCustomSearchExecuting, fhir_setExportSearchResults } from './fhir';
 import { fetchPersonas } from "./persona";
 import { resetState, setGlobalError } from "./app";
 import API from '../../lib/api';
@@ -131,6 +132,13 @@ export function setFetchSingleResource (fetching) {
     }
 }
 
+export function setFetchAnyResource (fetching, type) {
+    return {
+        type: actionTypes.FETCHING_ANY_RESOURCE,
+        payload: { fetching, type }
+    }
+}
+
 export function setSingleResource (resource) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE,
@@ -138,10 +146,31 @@ export function setSingleResource (resource) {
     }
 }
 
+export function addFetchedResource (resource) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE,
+        payload: { resource }
+    }
+}
+
+export function clearResourceFetch (type) {
+    return {
+        type: actionTypes.CLEAR_RESOURCE_FETCH,
+        payload: { type }
+    }
+}
+
 export function setFetchingSingleResourceError (error) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR,
         payload: { error }
+    }
+}
+
+export function setFetchingAnyResourceError (type, error) {
+    return {
+        type: actionTypes.SET_ANY_RESOURCE_LOAD_ERROR,
+        payload: { error, type }
     }
 }
 
@@ -204,6 +233,13 @@ export function setUserInviting (inviting) {
     return {
         type: actionTypes.SET_USER_INVITING,
         payload: { inviting }
+    }
+}
+
+export function setCopying (copying) {
+    return {
+        type: actionTypes.SET_COPYING,
+        payload: { copying }
     }
 }
 
@@ -354,15 +390,51 @@ export function createResource (data) {
 export const importData = (data) => {
     return dispatch => {
         dispatch(setDataImporting(true));
-        let promises = [window.fhirClient.api.transaction({ data })];
+
+        // The promis is a list even though we only have one to get arround the
+        // no "catch" for the returned values from the fhirClient.api
+        let promises;
+        try {
+            let dataObject = undefined;
+            let type = undefined;
+            let xmlDoc = undefined;
+
+            try {
+                dataObject = JSON.parse(data);
+            } catch (e) {
+                dataObject = data;
+                let parser = new DOMParser();
+                xmlDoc = parser.parseFromString(dataObject, 'text/xml');
+                type = 'application/xml';
+            }
+
+            if (type === 'application/xml' && xmlDoc.querySelector('Bundle')) {
+                promises = [API.post(window.fhirClient.server.serviceUrl, dataObject, dispatch, true, type)];
+            } else if (type === 'application/xml' && !xmlDoc.querySelector('Bundle')) {
+                let id = xmlDoc.querySelector('id');
+                id = id.getAttribute('value');
+                promises = [API.put(`${window.fhirClient.server.serviceUrl}/${xmlDoc.firstChild.tagName}/${id}`, dataObject, dispatch, true, type)];
+            } else if (!type && dataObject.resourceType === 'Bundle') {
+                promises = [window.fhirClient.api.transaction({ data })];
+            } else if (dataObject.id !== undefined) {
+                promises = [window.fhirClient.api.update({ type: dataObject.resourceType, id: dataObject.id, data: data })];
+            } else {
+                promises = [window.fhirClient.api.create({ type: dataObject.resourceType, data: data })];
+            }
+        } catch (err) {
+            // This will take care of informing the user that the JSON was not formatted correctly
+            promises = [window.fhirClient.api.transaction({ data })];
+        }
+
         Promise.all(promises)
             .then(result => {
+                let res = result[0] && result[0].data ? result[0].data : result;
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(result));
+                dispatch(setImportResults(res));
             })
             .catch(error => {
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(error));
+                dispatch(setImportResults(error.error.responseJSON));
             });
     }
 };
@@ -424,7 +496,13 @@ export const selectSandbox = (sandbox) => {
         let configuration = state.config.xsettings.data.sandboxManager;
 
         const domain = window.location.host.split(":")[0].split(".").slice(-2).join(".");
-        document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+
+        let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        if (isIE11) {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        } else {
+            document.cookie = `${configuration.personaCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${domain}; path=/`;
+        }
 
         if (sandbox !== undefined) {
             let sandboxId = sandbox.sandboxId;
@@ -563,6 +641,15 @@ export function authorizeSandbox (sandbox) {
         if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
             const state = getState();
+
+            // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+            let managerUrl = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl;
+            sessionStorage.sandboxApiEndpointIndex = sandbox.apiEndpointIndex;
+            sessionStorage.sandboxApiEndpointCheck = `${managerUrl}/sandbox?sandboxId=${sandbox.sandboxId}`;
+            // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+            // TMP CODE HERE TO EASE THE USERS DURING THE UPGRADE PROCESS
             authorize(window.location, state, sandbox.sandboxId);
         }
     }
@@ -574,17 +661,17 @@ export const createSandbox = (sandboxDetails) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         dispatch(setCreatingSandbox(true));
         let clonedSandbox = {};
-        if (sandboxDetails.apiEndpointIndex === "5") {
+        if (sandboxDetails.apiEndpointIndex === "8") {
             clonedSandbox.sandboxId = "MasterDstu2Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterDstu2Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex === "6") {
+        } else if (sandboxDetails.apiEndpointIndex === "9") {
             clonedSandbox.sandboxId = "MasterStu3Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterStu3Empty";
             }
-        } else if (sandboxDetails.apiEndpointIndex === "7") {
+        } else if (sandboxDetails.apiEndpointIndex === "10") {
             clonedSandbox.sandboxId = "MasterR4Smart";
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterR4Empty";
@@ -643,6 +730,7 @@ export const fetchSandboxInvites = () => {
 
         API.get(configuration.sandboxManagerApiUrl + '/sandboxinvite' + queryParams, dispatch)
             .then(res => {
+
                 const invitations = [];
                 for (let key in res) {
                     invitations.push({ ...res[key] });
@@ -681,8 +769,15 @@ export const hideNotification = (notification) => {
 
         notification.hidden = true;
 
+        dispatch(setNotificationLoading(true));
         API.put(configuration.sandboxManagerApiUrl + `/notification/${notification.id}` + queryParams, notification, dispatch)
-            .then(() => dispatch(fetchUserNotifications()));
+            .then(() => {
+                dispatch(fetchUserNotifications());
+                dispatch(setNotificationLoading(false));
+            })
+            .catch(() => {
+                dispatch(setNotificationLoading(false));
+            });
     };
 };
 
@@ -766,22 +861,36 @@ export function fetchIntent (id) {
     }
 }
 
-export function fetchResource (res) {
+export function fetchResource (id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleResource(true));
-            let url = `${window.fhirClient.server.serviceUrl}/${res}`;
-
-            API.get(url, dispatch)
-                .then(res => {
-                    if (!res.issue) {
-                        dispatch(setSingleResource(res));
-                    } else {
-                        dispatch(setFetchingSingleResourceError(res));
-                    }
+            window.fhirClient.api.read({ type: 'Resource', id })
+                .done(patient => {
+                    dispatch(setSingleResource(patient.data));
+                    dispatch(setFetchSingleResource(false))
                 })
-                .catch(e => dispatch(setFetchingSingleResourceError(e)))
-                .finally(() => dispatch(setFetchSingleResource(false)));
+                .fail(e => {
+                    dispatch(setFetchingSingleResourceError(e));
+                    dispatch(setFetchSingleResource(false))
+                });
+        }
+    }
+}
+
+export function fetchAnyResource (type, id) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchAnyResource(true, type));
+            window.fhirClient.api.read({ type, id })
+                .done(patient => {
+                    dispatch(addFetchedResource(patient.data));
+                    dispatch(setFetchAnyResource(false, type))
+                })
+                .fail(e => {
+                    dispatch(setFetchingAnyResourceError(type, e));
+                    dispatch(setFetchAnyResource(false, type))
+                });
         }
     }
 }
@@ -898,7 +1007,7 @@ export function getUserLoginInfo () {
     }
 }
 
-export function loadExportResources () {
+export function loadExportResources (query) {
     return (dispatch, getState) => {
         let state = getState();
         let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
@@ -910,61 +1019,105 @@ export function loadExportResources () {
             API.get(`/data/export-resources_${sandboxVersion.fhirTag}.json`, dispatch)
                 .then(resourceList => {
                     dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
-                    dispatch(getTotalItemsToExport(resourceList));
+                    dispatch(getTotalItemsToExport(resourceList, query));
                 });
         } else {
             dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
         }
+
     }
 }
 
-export function getTotalItemsToExport (resourceList) {
-    return dispatch => {
-        let promises = [];
+export function getTotalItemsToExport (resourceList, query) {
+    return (dispatch, getState) => {
         let content = {};
         let details = {};
 
-        resourceList.map(resource => {
-            let params = { type: resource, count: 50 };
-
-            promises.push(window.fhirClient.api.search(params));
-        });
-
         let getNext = function (data, type) {
-            window.fhirClient.api.nextPage({ bundle: data })
-                .then(d => {
-                    if (d.data) {
-                        let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
-                        content[type] = content[type].concat(d.data.entry);
-                        hasNext && getNext(d.data, type);
+            if (getState().sandbox.exportStatus.loading) {
+                window.fhirClient.api.nextPage({ bundle: data })
+                    .then(d => {
+                        if (d.data) {
+                            let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
+                            content[type] = content[type].concat(d.data.entry);
+                            hasNext && getNext(d.data, type);
 
-                        //We need to check if we have the total amount of items in the DB
-                        //for longer list FHIR does not return the total on the first search
-                        //and we need to update the data when the total is first returned
-                        !details[type].total && (details[type].total = d.data.total);
-                        !hasNext && (details[type].loading = false);
-                    }
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-                });
+                            //We need to check if we have the total amount of items in the DB
+                            //for longer list FHIR does not return the total on the first search
+                            //and we need to update the data when the total is first returned
+                            !details[type].total && (details[type].total = d.data.total);
+                            !hasNext && (details[type].loading = false);
+                        }
+                        if (getState().sandbox.exportStatus.loading) {
+                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
+                        }
+                    });
+            }
         };
 
-        Promise.all(promises)
-            .then(data => {
-                data.map(d => {
-                    if (d.data && d.data.entry && d.data.entry.length) {
-                        let hasNext = !!d.data.link[1];
+        if (query.length === 0) {
+            let promises = [];
+            resourceList.map(resource => {
+                let params = { type: resource, count: 50 };
 
-                        details[d.config.type] = {
-                            total: d.data.total,
+                promises.push(window.fhirClient.api.search(params));
+            });
+
+            Promise.all(promises)
+                .then(data => {
+                    data.map(d => {
+                        if (d.data && d.data.entry && d.data.entry.length) {
+                            let hasNext = !!d.data.link[1];
+
+                            details[d.config.type] = {
+                                total: d.data.total,
+                                loading: hasNext
+                            };
+
+                            content[d.config.type] = d.data.entry;
+                            hasNext && getNext(d.data, d.config.type);
+                        }
+                    });
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+        } else {
+            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details, content: {} }));
+            let endpoint = window.fhirClient.server.serviceUrl;
+            API.get(`${endpoint}/${query}`, dispatch)
+                .then(data => {
+                    if (data && data.entry && data.entry.length) {
+                        let type = data.entry[0].resource.resourceType;
+                        let hasNext = !!data.link[1];
+
+                        details[type] = {
+                            total: data.total,
                             loading: hasNext
                         };
 
-                        content[d.config.type] = d.data.entry;
-                        hasNext && getNext(d.data, d.config.type);
+                        content[type] = data.entry;
+                        !hasNext && resourceList.push(1);
+                        hasNext && getNext(data, type);
+                    } else {
+                        let type = data.resourceType;
+                        let dataList = [];
+                        dataList.push(data);
+                        content[type] = dataList;
                     }
+                    dispatch(fhir_setExportSearchResults(data));
+                    dispatch(fhir_setCustomSearchExecuting(false));
+                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                })
+                .catch(() => {
+                    dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined }));
+                    dispatch(fhir_setCustomSearchExecuting(false));
                 });
-                dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
-            })
+        }
+    }
+}
+
+export function cancelDownload () {
+    return dispatch => {
+        dispatch(setSandboxExportStatus({ loading: false, error: false, resourceList: [], details: undefined, content: undefined }));
     }
 }
 
@@ -974,17 +1127,14 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         let configuration = state.config.xsettings.data.sandboxManager;
         user = user ? user : state.sandbox.defaultUser;
 
-        let key = random(32);
-        window.localStorage[key] = "requested-launch";
-
         let params = {};
         if (scenario) {
             persona && (params = { patient: persona });
-            if (scenario.encounter) params.encounter = scenario.encounter;
-            if (scenario.location) params.location = scenario.location;
-            if (scenario.resource) params.resource = scenario.resource;
-            if (scenario.smartStyleUrl) params.smartStyleUrl = scenario.smartStyleUrl;
-            if (scenario.intent) params.intent = scenario.intent;
+            scenario.encounter && (params.encounter = scenario.encounter);
+            scenario.location && (params.location = scenario.location);
+            scenario.resource && (params.resource = scenario.resource);
+            scenario.smartStyleUrl && (params.smartStyleUrl = scenario.smartStyleUrl);
+            scenario.intent && (params.intent = scenario.intent);
             if (scenario.contextParams) {
                 for (let i = 0; i < scenario.contextParams.length; i++) {
                     let name = scenario.contextParams[i]['name'];
@@ -997,6 +1147,14 @@ export function doLaunch (app, persona, user, noUser, scenario) {
         }
 
         params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
+        let embedded = !params["need_patient_banner"];
+
+        let key = random(32);
+        window.localStorage[key] = {
+            status: "requested-launch",
+            embedded
+        };
+
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let data = {};
         user && !noUser && (data = { username: user.personaUserId, password: user.password });
@@ -1010,7 +1168,12 @@ export function doLaunch (app, persona, user, noUser, scenario) {
                     const url = window.location.host.split(":")[0].split(".").slice(-2).join(".");
                     const date = new Date();
                     date.setTime(date.getTime() + (3 * 60 * 1000));
-                    document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+                    if (isIE11) {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.toUTCString()}; domain=${url}; path=/`;
+                    } else {
+                        document.cookie = `hspc-persona-token=${data.jwt}; expires=${date.getTime()}; domain=${url}; path=/`;
+                    }
                 });
             registerAppContext(app, params, launchDetails, key, dispatch);
         } catch (e) {
@@ -1020,7 +1183,22 @@ export function doLaunch (app, persona, user, noUser, scenario) {
     }
 }
 
-function random (length) {
+export function copyToClipboard (str) {
+    return dispatch => {
+        dispatch(setCopying(true));
+        let el = document.createElement('textarea');
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setTimeout(function () {
+            dispatch(setCopying(false));
+        }, 1500);
+    }
+}
+
+export function random (length) {
     let result = '';
     for (let i = length; i > 0; --i) {
         result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];
@@ -1048,6 +1226,7 @@ function callRegisterContext (appToLaunch, params, issuer, launchDetails, key, d
                 app: appToLaunch,
                 iss: issuer,
                 launchDetails: launchDetails,
-                context
+                context,
+                embedded: !params["need_patient_banner"]
             }))
 }

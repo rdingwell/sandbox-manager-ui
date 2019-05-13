@@ -5,10 +5,10 @@ export default function (state = initialState, action) {
     state = Object.assign({}, state);
 
     switch (action.type) {
-        case actionTypes.FETCH_SANDBOXES_START :
+        case actionTypes.FETCH_SANDBOXES_START:
             state.loading = true;
             break;
-        case actionTypes.SET_SANDBOX_SELECTING :
+        case actionTypes.SET_SANDBOX_SELECTING:
             state.selecting = action.payload.selecting;
             break;
         case actionTypes.FHIR_SET_SMART:
@@ -21,62 +21,81 @@ export default function (state = initialState, action) {
             state.fetchingUserLoginInfo = action.payload.fetching;
             break;
 
-        case actionTypes.FETCHING_SINGLE_ENCOUNTER :
+        case actionTypes.FETCHING_SINGLE_ENCOUNTER:
             state.fetchingSingleEncounter = action.payload.fetching;
             if (action.payload.fetching) {
                 state.singleEncounter = null;
                 state.singleEncounterLoadingError = null;
             }
             break;
-        case actionTypes.SET_SINGLE_ENCOUNTER :
+        case actionTypes.SET_SINGLE_ENCOUNTER:
             state.singleEncounter = action.payload.encounter;
             break;
-        case actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR :
+        case actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR:
             state.singleEncounterLoadingError = action.payload.error;
             break;
 
-        case actionTypes.FETCHING_SINGLE_INTENT :
+        case actionTypes.FETCHING_SINGLE_INTENT:
             state.fetchingSingleIntent = action.payload.fetching;
             if (action.payload.fetching) {
                 state.singleIntent = null;
                 state.singleIntentLoadingError = null;
             }
             break;
-        case actionTypes.SET_SINGLE_INTENT :
+        case actionTypes.SET_SINGLE_INTENT:
             state.singleIntent = action.payload.intent;
             break;
-        case actionTypes.SET_SINGLE_INTENT_LOAD_ERROR :
+        case actionTypes.SET_SINGLE_INTENT_LOAD_ERROR:
             state.singleIntentLoadingError = action.payload.error;
             break;
-
-        case actionTypes.FETCHING_SINGLE_RESOURCE :
+        case actionTypes.FETCHING_SINGLE_RESOURCE:
             state.fetchingSingleResource = action.payload.fetching;
             if (action.payload.fetching) {
                 state.singleResource = null;
                 state.singleResourceLoadingError = null;
             }
             break;
-        case actionTypes.SET_SINGLE_RESOURCE :
+        case actionTypes.FETCHING_ANY_RESOURCE:
+            if (action.payload.fetching) {
+                state.resourceListFetching[action.payload.type] = action.payload.fetching;
+                delete state.resourceList[action.payload.type];
+                delete state.resourceListLoadError[action.payload.type];
+            } else {
+                delete state.resourceListFetching[action.payload.type];
+            }
+            break;
+        case actionTypes.SET_SINGLE_RESOURCE:
             state.singleResource = action.payload.resource;
             break;
-        case actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR :
+        case actionTypes.SET_ANY_RESOURCE_LOAD_ERROR:
+            delete state.resourceListLoadError[action.payload.type];
+            action.payload.error && (state.resourceListLoadError[action.payload.type] = action.payload.error);
+            break;
+        case actionTypes.CLEAR_RESOURCE_FETCH:
+            delete state.resourceListLoadError[action.payload.type];
+            delete state.resourceList[action.payload.type];
+            break;
+        case actionTypes.SET_ANY_RESOURCE:
+            state.resourceList[action.payload.resource.resourceType] = action.payload.resource;
+            break;
+        case actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR:
             state.singleResourceLoadingError = action.payload.error;
             break;
 
-        case actionTypes.FETCHING_SINGLE_LOCATION :
+        case actionTypes.FETCHING_SINGLE_LOCATION:
             state.fetchingSingleLocation = action.payload.fetching;
             if (action.payload.fetching) {
                 state.singleLocation = null;
                 state.singleLocationLoadingError = null;
             }
             break;
-        case actionTypes.SET_SINGLE_LOCATION :
+        case actionTypes.SET_SINGLE_LOCATION:
             state.singleLocation = action.payload.location;
             break;
-        case actionTypes.SET_SINGLE_LOCATION_LOAD_ERROR :
+        case actionTypes.SET_SINGLE_LOCATION_LOAD_ERROR:
             state.singleLocationLoadingError = action.payload.error;
             break;
-        case actionTypes.ADDING_CUSTOM_CONTENT :
+        case actionTypes.ADDING_CUSTOM_CONTENT:
             state.modifyingCustomContext = action.payload.modifying;
             break;
         case actionTypes.FETCH_SANDBOXES_SUCCESS:
@@ -89,12 +108,15 @@ export default function (state = initialState, action) {
         case actionTypes.SET_USER_INVITING:
             state.inviting = action.payload.inviting;
             break;
-        case actionTypes.DELETE_SANDBOX :
+        case actionTypes.SET_COPYING:
+            state.copying = action.payload.copying;
+            break;
+        case actionTypes.DELETE_SANDBOX:
             const sandboxes = state.sandboxes.filter(sandbox => sandbox.id !== action.sandboxId);
             state.sandboxes = sandboxes;
             break;
-        case actionTypes.UPDATE_SANDBOX :
-        case actionTypes.RESET_SANDBOX :
+        case actionTypes.UPDATE_SANDBOX:
+        case actionTypes.RESET_SANDBOX:
         case actionTypes.CREATE_SANDBOX_SUCCESS:
             state = updateSandbox(state, action);
             break;
@@ -160,11 +182,14 @@ export default function (state = initialState, action) {
             state.lookingForSandbox = false;
             state.lookingForSandboxError = action.error;
             break;
+        case actionTypes.SET_NOTIFICATIONS_LOADING:
+            state.loadingNotifications = action.payload.loading;
+            break;
         case actionTypes.SAVE_ENDPOINT_INDEX:
             state.sandboxApiEndpointIndex = action.index;
             break;
         case actionTypes.SET_DEFAULT_SANDBOX_USER:
-            state.defaultUser = action.payload.user;
+            state.defaultUser = action.payload.user && action.payload.user.id ? action.payload.user : undefined;
             break;
         case actionTypes.SET_LAUNCH_SCENARIOS_LOADING:
             state.launchScenariosLoading = action.payload.loading;
@@ -199,10 +224,14 @@ export default function (state = initialState, action) {
             state.fetchingSingleEncounter = false;
             state.fetchingSingleLocation = false;
             state.fetchingSingleResource = false;
+            state.loadingNotifications = false;
             state.creatingSandbox = false;
             state.deleting = false;
             state.resetting = false;
             state.loading = false;
+            state.resourceList = {};
+            state.resourceListFetching = {};
+            state.resourceListLoadError = {};
             state.exportStatus = initialState.exportStatus;
             state.createSandboxError = undefined;
             state.singleResource = undefined;

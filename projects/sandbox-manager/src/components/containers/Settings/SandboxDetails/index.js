@@ -48,8 +48,7 @@ class SandboxDetails extends Component {
         let [actions, content] = this.getModalContent();
 
         return <Card className='sandbox-details-wrapper'>
-            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog'
-                    contentStyle={{ maxWidth: '450px' }}>
+            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{ maxWidth: '450px' }}>
                 {content}
             </Dialog>
             <CardHeader className='details-header' style={titleStyle}>
@@ -78,10 +77,6 @@ class SandboxDetails extends Component {
                     <div className='label-value'>
                         <span>Sandbox ID: </span>
                         <span>{this.props.sandboxId}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>Sandbox URL: </span>
-                        <span>{`${window.location.origin}/${this.props.sandboxId}`}</span>
                     </div>
                     <div className='label-value'>
                         <span>Secured FHIR Server URL: </span>

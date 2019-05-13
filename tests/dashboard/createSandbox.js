@@ -48,9 +48,9 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
         let createButton = await UTILS.getElementByCss('[data-qa="sandbox-submit-button"]');
         createButton.click();
 
-        await UTILS.waitForLoader('[data-qa="sandbox-creating-loader"]');
+        await UTILS.waitForElementCSS('[data-qa="sandbox-creating-loader"]');
         await UTILS.wait(500);
-        await UTILS.waitForLoader('[data-qa="sandbox-loading-loader"]');
+        await UTILS.waitForElementCSS('[data-qa="sandbox-loading-loader"]');
         await UTILS.wait(1500);
 
         let currentUrl = await UTILS.getCurrentURL();
