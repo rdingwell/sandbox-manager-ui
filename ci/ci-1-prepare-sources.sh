@@ -25,6 +25,6 @@ echo "::: Running NPM INSTALL"
 npm install
 npm link sandbox-manager-lib
 
-cd ci
+#cd ci
 
 echo "finished prepare_build.sh"
