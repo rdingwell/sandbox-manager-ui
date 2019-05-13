@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Installing xvfb..."
+apt-get update
 apt-get install -y wget xvfb
 
 echo "Creating FF folder"
