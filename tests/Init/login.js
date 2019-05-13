@@ -28,32 +28,23 @@ exports.login = describe('Login into the system', function () {
         let password = await UTILS.getElementByXPath('//*[@id="password"]/div[1]/div/div[1]/input');
         expect(password).not.toBeNull();
         await password.sendKeys('Fuck_Off86', Key.ENTER);
-        await UTILS.wait(5000);
     });
 
     it('should redirect to the dashboard after login', async () => {
-        await UTILS.wait(5000);
         let handles = await UTILS.driver.getAllWindowHandles();
         await UTILS.driver.switchTo().window(handles[0]);
-        let currentUrl = await UTILS.getCurrentURL();
-        console.log('Current URL is');
-        console.log(currentUrl);
-        await UTILS.wait(5000);
 
-        let source = await UTILS.driver.getPageSource();
-        console.log(source);
+        let print = async () => {
+            let source = await UTILS.driver.getPageSource();
+            console.log(source);
+        };
 
-        //Check for error
-        let errorMessage = await UTILS.getElementByXPath('//*[@id="root"]/div/div/div/div[2]/div[1]/div/div[3]/div[1]/div/form/p');
-        let error = await errorMessage.getText();
-        console.log('Error displayed:');
-        console.log(error);
+        let timer = setInterval(print, 1000);
 
         await UTILS.waitForElementCSS('[data-qa="dashboard-page"]');
         let dashboard = UTILS.getElementByCss('[data-qa="dashboard-page"]');
-        currentUrl = await UTILS.getCurrentURL();
-        console.log('Current URL is');
-        console.log(currentUrl);
         expect(dashboard).not.toBeNull();
+
+        clearInterval(timer);
     });
 });
