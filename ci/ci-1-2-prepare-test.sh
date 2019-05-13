@@ -20,5 +20,5 @@ google-chrome --version
 
 #Xvfb :99 -ac &
 #Xvfb :0 -ac -screen 0 1024x768x24 &
-Xvfb :99 -screen 0 1280x1024x24
+Xvfb :99 -screen 0 1280x1024x24 &
 echo "Xvfb started"
