@@ -9,11 +9,12 @@ echo "Installing needed libs"
 apt-get install -y wget
 
 echo "Fetching chrome"
-cd /var/cache/apt/archives/
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
+set +e;
 echo "Installing chrome"
-apt-get install google-chrome-stable
+dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
+ser -e;
 
 echo "Chrome check:"
 google-chrome --version
