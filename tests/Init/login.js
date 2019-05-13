@@ -34,8 +34,14 @@ exports.login = describe('Login into the system', function () {
     it('should redirect to the dashboard after login', async () => {
         let handles = await UTILS.driver.getAllWindowHandles();
         await UTILS.driver.switchTo().window(handles[0]);
+        let currentUrl = await UTILS.getCurrentURL();
+        console.log('Current URL is');
+        console.log(currentUrl);
         await UTILS.waitForElementCSS('[data-qa="dashboard-page"]');
         let dashboard = UTILS.getElementByCss('[data-qa="dashboard-page"]');
+        currentUrl = await UTILS.getCurrentURL();
+        console.log('Current URL is');
+        console.log(currentUrl);
         expect(dashboard).not.toBeNull();
     });
 });
