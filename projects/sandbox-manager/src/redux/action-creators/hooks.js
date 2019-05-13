@@ -71,13 +71,13 @@ export function updateService (service) {
                 if (result && result.services) {
                     result.services.map((srvc, i) => {
                         // if (i !== 2) {
-                            let obj = Object.assign({}, srvc);
-                            obj.hookId = obj.id;
-                            !obj.title && (obj.title = obj.name ? obj.name : '');
-                            let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
-                            oldService && (obj.id = oldService.id);
-                            !oldService && (delete obj.id);
-                            newService.cdsHooks.push(obj);
+                        let obj = Object.assign({}, srvc);
+                        obj.hookId = obj.id;
+                        !obj.title && (obj.title = obj.name ? obj.name : '');
+                        let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
+                        oldService && (obj.id = oldService.id);
+                        !oldService && (delete obj.id);
+                        newService.cdsHooks.push(obj);
                         // }
                     });
                 }
@@ -248,9 +248,28 @@ export const launchHook = (hook, launchContext) => {
                             // Trigger the hook
                             API.post(`${encodeURI(hook.hookUrl)}`, data)
                                 .then(cards => {
-                                    if (cards && cards.cards) {
+                                    if (cards) {
+                                        cards.cards = cards.cards || [{ noCardsReturned: true }];
                                         cards.cards.map(card => {
                                             card.requestData = data;
+                                            card.suggestions = [
+                                                {
+                                                    "label": "Add Complimentary",
+                                                    "uuid": "123",
+                                                    "actions": [
+                                                        {
+                                                            "type": "create",
+                                                            "description": "Add XYZ",
+                                                            "resource": {}
+                                                        },
+                                                        {
+                                                            "type": "delete",
+                                                            "description": "Cancel ABC",
+                                                            "resource": "MedicationRequest/ABC"
+                                                        }
+                                                    ]
+                                                }
+                                            ];
                                         });
                                         dispatch(setResultCards(cards.cards));
                                     }
@@ -263,6 +282,24 @@ export const launchHook = (hook, launchContext) => {
                             if (cards && cards.cards) {
                                 cards.cards.map(card => {
                                     card.requestData = data;
+                                    card.suggestions = [
+                                        {
+                                            "label": "Add Complimentary",
+                                            "uuid": "123",
+                                            "actions": [
+                                                {
+                                                    "type": "create",
+                                                    "description": "Add XYZ",
+                                                    "resource": {}
+                                                },
+                                                {
+                                                    "type": "delete",
+                                                    "description": "Cancel ABC",
+                                                    "resource": "MedicationRequest/ABC"
+                                                }
+                                            ]
+                                        }
+                                    ];
                                 });
                                 dispatch(setResultCards(cards.cards));
                             }

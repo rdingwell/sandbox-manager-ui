@@ -88,6 +88,7 @@ class App extends React.Component {
         let request = open ? this.props.cards[0].requestData : {};
         let response = open ? Object.assign({}, this.props.cards[0]) : {};
         open && delete response.requestData;
+        open && delete response.noCardsReturned;
 
         return this.props.ui && <MuiThemeProvider muiTheme={theme}>
             <Layout {...layoutProps}>
@@ -121,7 +122,10 @@ class App extends React.Component {
                                 <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
                                     <div className='hooks-wrapper'>
                                         <a ref='openLink' target='_blank'/>
-                                        {this.getCards()}
+                                        {!this.props.cards[0].noCardsReturned && this.getCards()}
+                                        {this.props.cards[0].noCardsReturned && <div className='no-cards-message'>
+                                            <span>No cards were returned by the service</span>
+                                        </div>}
                                     </div>
                                 </Tab>
                                 <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>

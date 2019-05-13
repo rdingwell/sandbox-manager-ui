@@ -29,7 +29,7 @@ class AppDialog extends Component {
             copyType: props.app ? props.app.copyType : 'MASTER',
         };
 
-        let isReplica = app.copyType === 'REPLICA' || !!manifest;
+        let isReplica = app.copyType === 'REPLICA';
 
         this.state = {
             value: 'PublicClient',

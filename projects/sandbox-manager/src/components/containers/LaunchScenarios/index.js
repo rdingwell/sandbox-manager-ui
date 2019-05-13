@@ -543,6 +543,7 @@ const mapStateToProps = state => {
         sandbox: state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId),
 
         hookContexts: state.hooks.hookContexts,
+        hooks: state.hooks.services,
         sandboxApiEndpointIndex: state.sandbox.sandboxApiEndpointIndex,
         resourceList: state.sandbox.resourceList,
         resourceListFetching: state.sandbox.resourceListFetching,
