@@ -89,6 +89,7 @@ pipelines:
             - export TARGET_ENV=test
             - export CREDENTIALS=${ENC_PW_TEST}
             - cd ci
+            - . ci-0-set-properties.sh
             - . ci-1-2-test-project.sh
     release/*:
       - step:
