@@ -1,6 +1,5 @@
 const { Key } = require('selenium-webdriver');
 const UTILS = require('../utils');
-let handles = undefined;
 
 exports.login = describe('Login into the system', function () {
     it('should open the login page', async () => {
@@ -12,7 +11,7 @@ exports.login = describe('Login into the system', function () {
 
     it('should click the see the login credentials form', async () => {
         await UTILS.wait(2000);
-        handles = await UTILS.driver.getAllWindowHandles();
+        let handles = await UTILS.driver.getAllWindowHandles();
         expect(handles.length).toBe(2);
         await UTILS.driver.switchTo().window(handles[1]);
     });
@@ -29,9 +28,11 @@ exports.login = describe('Login into the system', function () {
         let password = await UTILS.getElementByXPath('//*[@id="password"]/div[1]/div/div[1]/input');
         expect(password).not.toBeNull();
         await password.sendKeys('Fuck_Off86', Key.ENTER);
+        await UTILS.wait(4000);
     });
 
     it('should redirect to the dashboard after login', async () => {
+        let handles = await UTILS.driver.getAllWindowHandles();
         await UTILS.driver.switchTo().window(handles[0]);
         await UTILS.waitForElementCSS('[data-qa="dashboard-page"]');
         let dashboard = UTILS.getElementByCss('[data-qa="dashboard-page"]');

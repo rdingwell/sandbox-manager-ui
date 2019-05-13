@@ -2,6 +2,8 @@
 cd ../
 echo "Starting the server in test mode"
 npm run smt &
+echo "Process to kill:"
+echo $!
 sleep 50s
 echo "Running the tests"
 npm run test
