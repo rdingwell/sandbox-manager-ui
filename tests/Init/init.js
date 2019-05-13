@@ -12,7 +12,7 @@ cap.set('chromeOptions', {
 const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
 const rootURL = 'http://localhost:3001';
 let driver;
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60 * 2;
 
 exports.init = describe('Initialize the test suite', function () {
     it('should wait for the driver to start', () => d.then(_d => driver = _d));
