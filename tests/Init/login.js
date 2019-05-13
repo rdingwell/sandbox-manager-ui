@@ -41,7 +41,7 @@ exports.login = describe('Login into the system', function () {
         await UTILS.wait(5000);
 
         //Check for error
-        let errorMessage = UTILS.getElementByXPath('//*[@id="root"]/div/div/div/div[2]/div[1]/div/div[3]/div[1]/div/form/p');
+        let errorMessage = await UTILS.getElementByXPath('//*[@id="root"]/div/div/div/div[2]/div[1]/div/div[3]/div[1]/div/form/p');
         let error = await errorMessage.getText();
         console.log('Error displayed:');
         console.log(error);
