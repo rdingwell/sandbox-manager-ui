@@ -2,7 +2,7 @@ const UTILS = require('../utils');
 
 exports.helpMenuButtonTest = () => describe('Testing if the help button is there', function () {
     it('should show the menu when help button is clicked', async () => {
-        let button = await UTILS.getElementByCss('[data-qa="header-help-button2"]');
+        let button = await UTILS.getElementByCss('[data-qa="header-help-button"]');
         button.click();
 
         //Wait for the animation
