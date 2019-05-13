@@ -82,9 +82,16 @@ pipelines:
             - . ci-5-aws-service-update.sh
     feature/*:
       - step:
-          name: build the source code
+          name: build docker and test the project
+          caches:
+            - node
           script:
-            - echo "success"
+            - export TARGET_ENV=test
+            - export CREDENTIALS=${ENC_PW_TEST}
+            - cd ci
+            - . ci-0-set-properties.sh
+            - . ci-1-prepare-sources.sh
+            - . ci-2-build-project.sh
     release/*:
       - step:
           name: build the source code
