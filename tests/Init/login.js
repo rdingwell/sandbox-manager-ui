@@ -40,6 +40,9 @@ exports.login = describe('Login into the system', function () {
         console.log(currentUrl);
         await UTILS.wait(5000);
 
+        let source = await UTILS.driver.getPageSource();
+        console.log(source);
+
         //Check for error
         let errorMessage = await UTILS.getElementByXPath('//*[@id="root"]/div/div/div/div[2]/div[1]/div/div[3]/div[1]/div/form/p');
         let error = await errorMessage.getText();
