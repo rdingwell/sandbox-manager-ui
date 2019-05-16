@@ -265,7 +265,7 @@ class Profiles extends Component {
     };
 
     setProfileName = (_, profileName) => {
-        let profileId = profileName.replace(/[^a-z0-9]/gi, '');
+        let profileId = profileName.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (profileId.length > 20) {
             profileId = value.substring(0, 20);
         }
