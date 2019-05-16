@@ -252,24 +252,6 @@ export const launchHook = (hook, launchContext) => {
                                         cards.cards = cards.cards || [{ noCardsReturned: true }];
                                         cards.cards.map(card => {
                                             card.requestData = data;
-                                            card.suggestions = [
-                                                {
-                                                    "label": "Add Complimentary",
-                                                    "uuid": "123",
-                                                    "actions": [
-                                                        {
-                                                            "type": "create",
-                                                            "description": "Add XYZ",
-                                                            "resource": {}
-                                                        },
-                                                        {
-                                                            "type": "delete",
-                                                            "description": "Cancel ABC",
-                                                            "resource": "MedicationRequest/ABC"
-                                                        }
-                                                    ]
-                                                }
-                                            ];
                                         });
                                         dispatch(setResultCards(cards.cards));
                                     }
@@ -282,30 +264,29 @@ export const launchHook = (hook, launchContext) => {
                             if (cards && cards.cards) {
                                 cards.cards.map(card => {
                                     card.requestData = data;
-                                    card.suggestions = [
-                                        {
-                                            "label": "Add Complimentary",
-                                            "uuid": "123",
-                                            "actions": [
-                                                {
-                                                    "type": "create",
-                                                    "description": "Add XYZ",
-                                                    "resource": {}
-                                                },
-                                                {
-                                                    "type": "delete",
-                                                    "description": "Cancel ABC",
-                                                    "resource": "MedicationRequest/ABC"
-                                                }
-                                            ]
-                                        }
-                                    ];
                                 });
                                 dispatch(setResultCards(cards.cards));
                             }
                         });
                 }
             });
+    }
+};
+
+export const executeAction = (action) => {
+    return dispatch => {
+        let promise = undefined;
+        switch (action.type) {
+            case 'create':
+                promise = window.fhirClient.api.create({ type: action.resource.resourceType, data: action.resource });
+                break;
+            case 'delete':
+                action.resource && API.delete(window.fhirClient.server.serviceUrl + '/' + action.resource, dispatch);
+                break;
+            case 'update':
+                promise = window.fhirClient.api.update({ type: action.resource.resourceType, id: action.resource.id, data: action.resource });
+                break;
+        }
     }
 };
 

@@ -133,7 +133,8 @@ class App extends React.Component {
                                         <ReactJson className='json-view' src={request} name={false}/>
                                     </div>
                                 </Tab>
-                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })} value='response'>
+                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })}
+                                     value='response'>
                                     <div>
                                         <ReactJson className='json-view' src={response} name={false}/>
                                     </div>
@@ -161,34 +162,41 @@ class App extends React.Component {
                 </div>}
                 <div className='card-detail' dangerouslySetInnerHTML={{ __html: card.detail }}/>
                 {card.suggestions && <div>
-                    {card.suggestions.map(suggestion => {
-                        return <button className='hook-suggestion-button'>
+                    {card.suggestions.map((suggestion, i) => {
+                        return <button key={i} className='hook-suggestion-button' onClick={() => this.executeSuggestion(suggestion)}>
                             <span>{suggestion.label}</span>
                         </button>
                     })}
                 </div>}
                 {card.links && <div className='links'>
-                    {card.links.map(link => {
+                    {card.links.map((link, i) => {
                         if (link.type === 'smart') {
                             let appToLaunch = this.props.apps.apps.find(app => app.launchUri === link.url);
                             let onClick = appToLaunch && card.requestData && card.requestData.context && card.requestData.context.patientId
                                 ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId, undefined, undefined, { contextParams: [{ appContext: link.appContext }], needPatientBanner: 'T' })
                                 : null;
 
-                            return <Fragment>
+                            return <Fragment key={i}>
                                 {!appToLaunch && <span className='app-warning'>App not registered!</span>}
                                 <button disabled={!appToLaunch} className='hook-suggestion-button' onClick={onClick}>
                                     <span>{link.label}</span>
                                 </button>
                             </Fragment>
                         } else {
-                            return <button className='hook-suggestion-button' onClick={() => this.openLink(link.url)}>
+                            return <button key={i} className='hook-suggestion-button' onClick={() => this.openLink(link.url)}>
                                 <span>{link.label}</span>
                             </button>
                         }
                     })}
                 </div>}
             </div>
+        });
+    };
+
+    executeSuggestion = (suggestion) => {
+        suggestion.actions.map(action => {
+            console.log(action);
+            this.props.executeAction(action);
         });
     };
 
