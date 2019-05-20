@@ -32,7 +32,7 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>User Id</span>
                     <div>
-                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId)}
+                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId.replace(/[^a-z0-9]/gi, ''))}
                                    errorText={this.props.userIdDuplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         {!this.props.userIdDuplicate && <span className='additional-info'>Your persona userId will be {this.state.userId}{this.state.userId && `@${this.props.sandbox}`}</span>}
                     </div>
