@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardHeader, CardMedia } from 'material-ui';
+import { Card, CardActions, CardHeader, CardMedia, CardTitle, FlatButton, RadioButton } from 'material-ui';
 import Page from 'sandbox-manager-lib/components/Page';
 import HelpButton from '../../UI/HelpButton';
 import { app_setScreen } from '../../../redux/action-creators';
@@ -10,59 +10,55 @@ import { bindActionCreators } from 'redux';
 
 import './styles.less';
 
+const TOOLS = [
+    {
+        title: 'clinFHIR',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.',
+        image: '/img/icon-fhir.png',
+        link: 'http://clinfhir.com'
+    },
+    {
+        title: 'INFERNO',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.',
+        image: '/img/inferno_logo.png',
+        link: 'https://inferno.healthit.gov/inferno/'
+    },
+    {
+        title: 'Crucible',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.',
+        image: '/img/crucible_logo.png',
+        link: 'https://projectcrucible.org/'
+    },
+    {
+        title: 'CDS HOOKS',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.',
+        image: '/img/cds_hooks_logo.png',
+        link: 'https://sandbox.cds-hooks.org/'
+    }
+];
+
 class Tools extends Component {
     componentDidMount () {
         this.props.app_setScreen('tools');
     }
 
     render () {
+        let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
+
         return <Page title='3d Party Tools' helpIcon={<HelpButton style={{ marginLeft: '10px' }}/>}>
             <a ref='openLink' target='_blank'/>
             <div className='tools'>
-                <Card className='tool-card' onClick={() => this.openLink('http://clinfhir.com')}>
-                    <CardHeader>
-                        clinFHIR
-                    </CardHeader>
-                    <div style={{ padding: '5px' }}>
-                        <img className='tool-icon' src='/img/icon-fhir.png'/>
-                        <span className='text'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.
-                    </span>
-                    </div>
-                </Card>
-                <Card className='tool-card' onClick={() => this.openLink('https://inferno.healthit.gov/inferno/')}>
-                    <CardHeader>
-                        INFERNO
-                    </CardHeader>
-                    <div style={{ padding: '5px' }}>
-                        <img className='tool-icon' src='/img/inferno_logo.png'/>
-                        <span className='text'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.
-                        </span>
-                    </div>
-                </Card>
-                <Card className='tool-card' onClick={() => this.openLink('https://projectcrucible.org/')}>
-                    <CardHeader>
-                        Crucible
-                    </CardHeader>
-                    <div style={{ padding: '5px' }}>
-                        <img className='tool-icon' src='/img/crucible_logo.png'/>
-                        <span className='text'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.
-                    </span>
-                    </div>
-                </Card>
-                <Card className='tool-card' onClick={() => this.openLink('https://sandbox.cds-hooks.org/')}>
-                    <CardHeader>
-                        CDS HOOKS
-                    </CardHeader>
-                    <div style={{ padding: '5px' }}>
-                        <img className='tool-icon' src='/img/cds_hooks_logo.png'/>
-                        <span className='text'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non ligula dui. Sed et vestibulum risus.
-                    </span>
-                    </div>
-                </Card>
+                {TOOLS.map(t =>
+                    <Card title={t.title} className='tool-card' onClick={() => this.openLink(t.link)} key={t.link}>
+                        <CardMedia className='media-wrapper'>
+                            <img className='tool-icon' src={t.image}/>
+                        </CardMedia>
+                        <CardTitle className='card-title' style={titleStyle}>
+                            <h3 className='tool-name'>{t.title}</h3>
+                            <div className='tool-description'>{t.description}</div>
+                        </CardTitle>
+                    </Card>
+                )}
             </div>
         </Page>
     }

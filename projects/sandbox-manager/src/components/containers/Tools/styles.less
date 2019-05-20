@@ -8,17 +8,48 @@
     cursor: pointer;
     display: inline-block;
     margin: 24px 32px 0 0;
+
     &:hover {
-      transform: scale(1.05);
+      .card-title {
+        bottom: 60%;
+        transition: all .5s;
+      }
     }
 
-    .tool-icon {
-      width: 120px;
-      height: auto;
-      display: inline-block;
-      vertical-align: top;
-      float: left;
-      margin-right: 5px;
+    & > div {
+      height: 100%;
+      overflow: hidden;
+      padding: 0 !important;
+      position: relative;
+
+      & > div {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .card-title {
+        bottom: 20%;
+        height: 60%;
+        color: white;
+        transition: all .5s;
+
+        h3 {
+          margin-top: 0;
+        }
+      }
+
+      .media-wrapper {
+        & > div {
+          height: 100%;
+          text-align: center;
+
+          .tool-icon {
+            min-width: initial !important;
+            width: auto !important;
+            height: 100% !important;
+          }
+        }
+      }
     }
 
     .text {
