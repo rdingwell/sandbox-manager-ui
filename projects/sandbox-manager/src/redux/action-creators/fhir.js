@@ -309,7 +309,7 @@ export function uploadProfile (file, count, name, id) {
     }
 }
 
-export function loadProject (project, canFit) {
+export function loadProject (project, canFit, profileName, profileId) {
     return dispatch => {
         dispatch(fhir_setFetchingFile(true));
         fetch(`https://simplifier.net/${project}/$download?format=json`)
@@ -339,7 +339,7 @@ export function loadProject (project, canFit) {
             .then(response => response.blob())
             .then(blob => {
                 let file = new File([blob], `${project}.zip`);
-                dispatch(uploadProfile(file, canFit));
+                dispatch(uploadProfile(file, canFit, profileName, profileId));
                 dispatch(fhir_setFetchingFile(false));
             })
             // Update image

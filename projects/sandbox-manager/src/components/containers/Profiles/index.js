@@ -228,7 +228,8 @@ class Profiles extends Component {
 
         this.state.inputModalVisible &&
         modals.push(
-            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }} bodyClassName='project-input-modal' key={2}>
+            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }} bodyClassName='project-input-modal'
+                    key={2}>
                 <Paper className='paper-card'>
                     <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
                         <i className="material-icons">close</i>
@@ -248,7 +249,7 @@ class Profiles extends Component {
                 </div>
                 <div>
                     <div style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '5px' }}>
-                        <span>{this.refs.fileZip.files[0].name}</span>
+                        <span>{this.refs.fileZip.files[0] ? this.refs.fileZip.files[0].name : this.state.sfProject}</span>
                     </div>
                     <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
                     <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
@@ -260,7 +261,8 @@ class Profiles extends Component {
     };
 
     saveProfile = () => {
-        this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
+        !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
+        this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.profileName, this.state.profileId);
         this.setState({ profileInputModalVisible: false });
     };
 
@@ -310,28 +312,20 @@ class Profiles extends Component {
     };
 
     toggleInputModal = () => {
-        this.setState({ inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
+        this.setState({ profileName: '', profileId: '', inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
     };
 
     loadRemoteFile = () => {
-        let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
-        this.props.loadProject(project, this.state.canFit);
-        this.toggleInputModal();
+        let sfProject = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
+        this.setState({ profileInputModalVisible: true, sfProject, simplifierInputVisible: false, inputModalVisible: false });
+        // this.props.loadProject(project, this.state.canFit);
+        // this.toggleInputModal();
     };
 
     calcCanFit = () => {
         let containerHeight = document.getElementsByClassName('profiles-list')[0].clientHeight;
         // we calculate how much patients we can show on the screen and get just that much plus two so that we have content below the fold
         return Math.ceil(containerHeight / 55) + 2;
-    };
-
-    scroll = () => {
-        let stage = document.getElementsByClassName('profiles-list')[0];
-        let dif = stage.scrollHeight - stage.scrollTop - stage.offsetHeight;
-
-        let next = this.props.profilePagination && this.props.profilePagination.link && this.props.profilePagination.link.find(i => i.relation === 'next');
-        let shouldFetch = dif <= 50 && next && !this.props.profilesLoading;
-        shouldFetch && this.props.getProfilesPagination(next);
     };
 
     toggleTree = (query) => {
