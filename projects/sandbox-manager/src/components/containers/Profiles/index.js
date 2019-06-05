@@ -105,13 +105,13 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
-                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
-                            {/*<RaisedButton label='Import profile' primary onClick={() => {*/}
-                            {/*    this.setState({ profileName: '', profileId: '' }, () => {*/}
-                            {/*        this.refs.fileZip.value = [];*/}
-                            {/*        this.refs.fileZip.click();*/}
-                            {/*    });*/}
-                            {/*}}/>*/}
+                            {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
+                            <RaisedButton label='Import profile' primary onClick={() => {
+                                this.setState({ profileName: '', profileId: '' }, () => {
+                                    this.refs.fileZip.value = [];
+                                    this.refs.fileZip.click();
+                                });
+                            }}/>
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -266,7 +266,7 @@ class Profiles extends Component {
             this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
             this.setState({ profileInputModalVisible: false });
         } else {
-            this.setState({nameError: 'The profile name has to be at least 2 characters!'})
+            this.setState({ nameError: 'The profile name has to be at least 2 characters!' })
         }
     };
 
