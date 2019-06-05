@@ -105,13 +105,13 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
-                            {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
-                            <RaisedButton label='Import profile' primary onClick={() => {
-                                this.setState({ profileName: '', profileId: '' }, () => {
-                                    this.refs.fileZip.value = [];
-                                    this.refs.fileZip.click();
-                                });
-                            }}/>
+                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
+                            {/*<RaisedButton label='Import profile' primary onClick={() => {*/}
+                            {/*    this.setState({ profileName: '', profileId: '' }, () => {*/}
+                            {/*        this.refs.fileZip.value = [];*/}
+                            {/*        this.refs.fileZip.click();*/}
+                            {/*    });*/}
+                            {/*}}/>*/}
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -276,7 +276,7 @@ class Profiles extends Component {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = !this.state.simplifierInputVisible
             ? <div className='buttons-wrapper'>
-                {/*<RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>*/}
+                <RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
                 <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
             </div>
             : <div style={{ padding: '20px' }}>
