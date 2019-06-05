@@ -251,7 +251,7 @@ class Profiles extends Component {
                     <div style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '5px' }}>
                         <span>{this.refs.fileZip.files[0] ? this.refs.fileZip.files[0].name : this.state.sfProject}</span>
                     </div>
-                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
+                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} errorText={this.state.nameError}/>
                     <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
@@ -261,9 +261,13 @@ class Profiles extends Component {
     };
 
     saveProfile = () => {
-        !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
-        this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
-        this.setState({ profileInputModalVisible: false });
+        if (this.state.profileName && this.state.profileName.length >= 2) {
+            !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
+            this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
+            this.setState({ profileInputModalVisible: false });
+        } else {
+            this.setState({nameError: 'The profile name has to be at least 2 characters!'})
+        }
     };
 
     setProfileName = (_, profileName) => {
@@ -312,7 +316,8 @@ class Profiles extends Component {
     };
 
     toggleInputModal = () => {
-        this.setState({ profileName: '', profileId: '', inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
+        this.refs.fileZip.value = '';
+        this.setState({ profileName: '', profileId: '', inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, nameError: '' });
     };
 
     loadRemoteFile = () => {
