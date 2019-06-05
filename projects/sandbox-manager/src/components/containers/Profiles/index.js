@@ -262,7 +262,7 @@ class Profiles extends Component {
 
     saveProfile = () => {
         !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
-        this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.profileName, this.state.profileId);
+        this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
         this.setState({ profileInputModalVisible: false });
     };
 
