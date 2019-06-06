@@ -111,6 +111,10 @@
           bottom: 0 !important;
 
           .app-name {
+            &.disabled {
+              display: none;
+            }
+
             &:not(.long) {
               display: none;
             }
@@ -135,7 +139,7 @@
 
     .service-update-button {
       position: absolute;
-      right: 47px;
+      right: 30px;
       top: -8px;
     }
 
@@ -157,11 +161,6 @@
     position: relative;
     overflow: hidden;
     margin: 24px 32px 0 0;
-    @media (max-width: 1228px) {
-      &:nth-child(3n) {
-        margin-right: 0;
-      }
-    }
 
     .hook-icon-wrapper {
       position: absolute;
@@ -254,7 +253,7 @@
       .app-name {
         font-weight: 400;
         margin-top: 5px;
-        margin-bottom: 14px;
+        margin-bottom: 5px;
         font-size: 20px;
         text-align: left;
         min-height: 3rem;
@@ -329,9 +328,19 @@
       height: 148px;
       min-height: 188px;
 
-      &:hover {
+      &:hover:not(.disabled) {
         cursor: pointer;
         box-shadow: rgba(0, 0, 0, 0.28) 0 1px 16px, rgba(0, 0, 0, 0.28) 0 8px 16px !important;
+      }
+
+      &.disabled:hover {
+        .app-name:not(.disabled) {
+          display: none;
+        }
+
+        .app-name.disabled {
+          display: block;
+        }
       }
     }
   }

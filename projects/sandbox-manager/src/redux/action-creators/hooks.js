@@ -71,13 +71,13 @@ export function updateService (service) {
                 if (result && result.services) {
                     result.services.map((srvc, i) => {
                         // if (i !== 2) {
-                            let obj = Object.assign({}, srvc);
-                            obj.hookId = obj.id;
-                            !obj.title && (obj.title = obj.name ? obj.name : '');
-                            let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
-                            oldService && (obj.id = oldService.id);
-                            !oldService && (delete obj.id);
-                            newService.cdsHooks.push(obj);
+                        let obj = Object.assign({}, srvc);
+                        obj.hookId = obj.id;
+                        !obj.title && (obj.title = obj.name ? obj.name : '');
+                        let oldService = service.cdsHooks.find(i => i.hookId === obj.hookId);
+                        oldService && (obj.id = oldService.id);
+                        !oldService && (delete obj.id);
+                        newService.cdsHooks.push(obj);
                         // }
                     });
                 }
@@ -119,7 +119,7 @@ export function createService (url, serviceName) {
         url.indexOf(POSTFIX_SERVICE) === -1 && (url += POSTFIX_SERVICE);
 
         dispatch(setServicesLoading(true));
-        API.getNoAuth(url)
+        API.get(url)
             .then(result => {
                 let state = getState();
                 let services = state.hooks.services ? state.hooks.services.slice() : [];
@@ -248,7 +248,8 @@ export const launchHook = (hook, launchContext) => {
                             // Trigger the hook
                             API.post(`${encodeURI(hook.hookUrl)}`, data)
                                 .then(cards => {
-                                    if (cards && cards.cards) {
+                                    if (cards) {
+                                        cards.cards = cards.cards || [{ noCardsReturned: true }];
                                         cards.cards.map(card => {
                                             card.requestData = data;
                                         });
@@ -269,6 +270,23 @@ export const launchHook = (hook, launchContext) => {
                         });
                 }
             });
+    }
+};
+
+export const executeAction = (action) => {
+    return dispatch => {
+        let promise = undefined;
+        switch (action.type) {
+            case 'create':
+                promise = window.fhirClient.api.create({ type: action.resource.resourceType, data: action.resource });
+                break;
+            case 'delete':
+                action.resource && API.delete(window.fhirClient.server.serviceUrl + '/' + action.resource, dispatch);
+                break;
+            case 'update':
+                promise = window.fhirClient.api.update({ type: action.resource.resourceType, id: action.resource.id, data: action.resource });
+                break;
+        }
     }
 };
 
