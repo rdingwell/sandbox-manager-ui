@@ -264,7 +264,7 @@ class Profiles extends Component {
         if (this.state.profileName && this.state.profileName.length >= 2) {
             !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
             this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
-            this.setState({ profileInputModalVisible: false });
+            this.setState({ profileInputModalVisible: false, sfProject: undefined });
         } else {
             this.setState({ nameError: 'The profile name has to be at least 2 characters!' })
         }
