@@ -25,11 +25,11 @@ const PROFILES = [
         id: 'US-Core',
         url: 'https://simplifier.net/US-Core'
     },
-    {
-        title: 'QiCore',
-        id: 'QiCore',
-        url: 'https://simplifier.net/QiCore'
-    },
+    // {
+    //     title: 'QiCore',
+    //     id: 'QiCore',
+    //     url: 'https://simplifier.net/QiCore'
+    // },
     {
         title: 'Custom',
         id: 'manual',
@@ -105,13 +105,13 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
-                            {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
-                            <RaisedButton label='Import profile' primary onClick={() => {
-                                this.setState({ profileName: '', profileId: '' }, () => {
-                                    this.refs.fileZip.value = [];
-                                    this.refs.fileZip.click();
-                                });
-                            }}/>
+                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
+                            {/*<RaisedButton label='Import profile' primary onClick={() => {*/}
+                            {/*    this.setState({ profileName: '', profileId: '' }, () => {*/}
+                            {/*        this.refs.fileZip.value = [];*/}
+                            {/*        this.refs.fileZip.click();*/}
+                            {/*    });*/}
+                            {/*}}/>*/}
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
