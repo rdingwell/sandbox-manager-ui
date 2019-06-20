@@ -33,18 +33,18 @@ const ACTIONS = {
 const UTILS = require('./tests/utils');
 
 const TEST_SUITE = [
-    {
-        title: 'Test the header bar',
-        tests: [
-            'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', '__helpMenuItemsTest'
-        ]
-    },
     // {
-    //     title: 'Test dashboard functionality',
+    //     title: 'Test the header bar',
     //     tests: [
-    //         'createSandbox', 'testHomeButton', 'testSandboxSelection'
+    //         'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', 'helpMenuItemsTest'
     //     ]
     // },
+    {
+        title: 'Test dashboard functionality',
+        tests: [
+            'createSandbox', 'testHomeButton', 'testSandboxSelection'
+        ]
+    },
     // {
     //     title: 'Test the side menu and navigation',
     //     tests: [
@@ -81,6 +81,6 @@ TEST_SUITE.map(testCase => {
 
 describe('Finish the testing', function () {
     it('should close the browser and finish the tests', async () => {
-        await UTILS.closeTab();
+        // await UTILS.closeTab();
     });
 });

@@ -7,12 +7,12 @@ require('selenium-webdriver/chrome');
 
 const cap = Capabilities.chrome();
 cap.set('chromeOptions', {
-    'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
+    'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--headless"]
 });
 const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
 const rootURL = 'http://localhost:3001';
 let driver;
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 60;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 30;
 
 exports.init = describe('Initialize the test suite', function () {
     it('should wait for the driver to start', () => d.then(_d => driver = _d));
