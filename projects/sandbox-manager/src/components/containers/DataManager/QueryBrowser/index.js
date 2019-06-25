@@ -72,7 +72,7 @@ export default class QueryBrowser extends Component {
                         Details
                     </h3>
                     <IconButton className="close-button" onClick={this.toggle}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <div className='paper-body'>
                         <div className='result-wrapper'>

@@ -59,7 +59,7 @@ class SandboxDetails extends Component {
                     <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
                         <Redo color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
-                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin}>
+                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
                         <Delete color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
                     </IconButton>
                 </div>
@@ -114,14 +114,14 @@ class SandboxDetails extends Component {
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
-                                  label='Delete sandbox' onClick={this.deleteSandbox}/>
+                                  label='Delete sandbox' onClick={this.deleteSandbox} data-qa='sandbox-delete-button'/>
                 </div>;
 
         let content = this.state.modalToShow === MODALS.edit
             ? <div className='sandbox-edit-modal' key={this.state.modalToShow}>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={() => this.toggleModal()}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>

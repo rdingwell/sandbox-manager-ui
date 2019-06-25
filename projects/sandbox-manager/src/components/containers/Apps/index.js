@@ -89,7 +89,7 @@ class Apps extends Component {
 
         return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}
                      helpIcon={<HelpButton style={{ marginLeft: '10px' }} url={url}/>}>
-            <div className='apps-page-wrapper'>
+            <div className='apps-page-wrapper' data-qa='app-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
                         <span className='dummy-expander'/>
@@ -218,14 +218,14 @@ class Apps extends Component {
                 </Dialog>
                 : this.state.createdApp
                     ? <Dialog modal={false} open={!!this.state.createdApp} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
-                        <Paper className='paper-card'>
+                        <Paper className='paper-card' data-qa='created-app-modal'>
                             <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.closeAll}>
-                                <i className="material-icons">close</i>
+                                <i className="material-icons" data-qa="modal-close-button">close</i>
                             </IconButton>
                             <h3>Registered App Details</h3>
                             <div className="client-details">
                                 <div className="label-value">
-                                    <span>Client Id:</span> <span className='client-id'>{this.state.createdApp.clientId}</span>
+                                    <span>Client Id:</span> <span className='client-id' data-qa='new-app-client-id'>{this.state.createdApp.clientId}</span>
                                     <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.state.createdApp.clientId)}/>
                                 </div>
                                 {createAppClientJSON.clientSecret && <div>
@@ -314,7 +314,7 @@ class Apps extends Component {
                 titleStyle.bottom = '-18%';
             }
             return <Card title={app.clientName} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
-                         onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)}>
+                         onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
                     <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>

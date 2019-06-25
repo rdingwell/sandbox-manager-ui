@@ -30,7 +30,7 @@ class Settings extends Component {
     }
 
     render () {
-        return <div className='settings-wrapper'>
+        return <div className='settings-wrapper' data-qa='settings-wrapper'>
             <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')} contentContainerClassName='settings-tabs-container'
                   inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
                   tabItemContainerStyle={{ backgroundColor: this.props.muiTheme.palette.canvasColor, borderBottom: '1px solid ' + this.props.muiTheme.palette.primary7Color }}>

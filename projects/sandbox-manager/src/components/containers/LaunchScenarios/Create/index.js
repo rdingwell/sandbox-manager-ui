@@ -88,7 +88,7 @@ class Create extends Component {
                        actionsContainerClassName='create-modal-actions'>
             <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
             <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
-                <i className="material-icons">close</i>
+                <i className="material-icons" data-qa="modal-close-button">close</i>
             </IconButton>
             {this.state.currentStep >= 0 && <div className='stepper'>
                 {this.getStepper()}

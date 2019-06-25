@@ -86,7 +86,7 @@ class AppDialog extends Component {
             ? this.state.changes.length > 0
             : sApp.clientName.length > 2 && sApp.launchUri.length > 2 && sApp.redirectUris.length > 2;
         let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled}/>
+            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'/>
         ];
 
         this.props.app && !this.state.clone && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
@@ -99,9 +99,9 @@ class AppDialog extends Component {
 
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
-            <Paper className='paper-card'>
+            <Paper className='paper-card' data-qa='create-app-modal-wrapper'>
                 <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
-                    <i className="material-icons">close</i>
+                    <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>
                 <h3>{this.props.app ? 'Registered App Details' : 'App Details'}</h3>
                 <div className='paper-body'>
@@ -119,14 +119,14 @@ class AppDialog extends Component {
                         </div>
                         {clientId}
                         {clientSecret}
-                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest}
+                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest}  data-qa='description-input'
                                    onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
                                    hintText='e.g.: https://mydomain.com/growth-chart/launch.html' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                   onBlur={this.launchBlur} disabled={this.state.isReplica}/>
+                                   onBlur={this.launchBlur} disabled={this.state.isReplica} data-qa='launch-uri-input'/>
                         <br/>
                         <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs*' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica} data-qa='redirect-uris-input'
                                    onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.

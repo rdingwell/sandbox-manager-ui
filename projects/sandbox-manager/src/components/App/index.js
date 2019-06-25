@@ -103,7 +103,7 @@ class App extends React.Component {
                         <span style={{ position: 'relative', top: '-5px', marginRight: '10px', color: 'white' }}>Submit feedback</span><FeedbackIcon style={{ color: 'white', marginTop: '5px' }}/>
                     </RaisedButton>
                 </div>}
-                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader}>
+                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}

@@ -16,7 +16,7 @@ export default class SandboxReset extends Component {
         return <div className='delete-wrapper'>
             <div className='screen-title' style={titleStyle}>
                 <IconButton className="close-button" onClick={this.props.onClose}>
-                    <i className="material-icons">close</i>
+                    <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>
                 <h1 style={titleStyle}>DELETE SANDBOX</h1>
             </div>
@@ -30,7 +30,7 @@ export default class SandboxReset extends Component {
                 </ul>
                 <p>This is NOT reversible!</p>
                 {this.props.sandbox && <Checkbox label={"Are you sure you want to delete sandbox " + this.props.sandbox.name + "?"} onCheck={(_e, del) => this.props.toggleDelete(del)}
-                                                 labelStyle={{ color: this.props.theme.primary2Color }} iconStyle={{ fill: this.props.theme.primary2Color }}/>}
+                                                 labelStyle={{ color: this.props.theme.primary2Color }} iconStyle={{ fill: this.props.theme.primary2Color }} data-qa='delete-sure-checkbox'/>}
             </div>
         </div>;
     }

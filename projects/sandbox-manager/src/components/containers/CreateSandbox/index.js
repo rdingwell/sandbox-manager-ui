@@ -28,17 +28,17 @@ class Index extends Component {
         let duplicate = this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase());
 
         let actions = [
-            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate || !this.state.apiEndpointIndex} className='button' primary onClick={this.handleCreateSandbox}/>
+            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate || !this.state.apiEndpointIndex} className='button' primary onClick={this.handleCreateSandbox} data-qa='sandbox-submit-button'/>
         ];
 
         let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
         let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
 
         return <Dialog paperClassName='create-sandbox-dialog' open={this.props.open} actions={actions} autoScrollBodyContent onRequestClose={this.handleCancel}>
-            <div className='create-sandbox-wrapper'>
+            <div className='create-sandbox-wrapper' data-qa='create-sandbox-dialog'>
                 <Paper className='paper-card'>
                     <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <h3>
                         Create Sandbox
@@ -46,7 +46,7 @@ class Index extends Component {
                     <div className='paper-body'>
                         <form>
                             <TextField id='name' floatingLabelText='Sandbox Name*' value={this.state.name} onChange={this.sandboxNameChangedHandler}
-                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/> <br/>
+                                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} data-qa='sandbox-create-name'/> <br/>
                             <div className='subscript'>Must be fewer than 50 characters. e.g., NewCo Sandbox</div>
                             <TextField id='id' floatingLabelText='Sandbox Id*' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler}
                                        errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
@@ -65,7 +65,7 @@ class Index extends Component {
                                 <Checkbox label='Import sample patients and practitioners' className='checkbox' defaultChecked onCheck={this.applyDefaultChangeHandler}/>
                                 <Checkbox label='Import sample applications' className='checkbox' defaultChecked onCheck={this.applyDefaultAppsChangeHandler}/>
                             </div>
-                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange}
+                            <TextField id='description' floatingLabelText='Description' onChange={this.sandboxDescriptionChange} data-qa='sandbox-create-description'
                                        underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>e.g., This sandbox is the QA environment for NewCo.</div>
                         </form>

@@ -96,7 +96,7 @@ class LaunchScenarios extends Component {
                     Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
                 </p>
             </ConfirmModal>
-            <div className='launch-scenarios-wrapper'>
+            <div className='launch-scenarios-wrapper' data-qa='launch-scenarios-wrapper'>
                 <a ref='openLink' target='_blank'/>
                 <div className='filter-wrapper'>
                     <IconButton onClick={() => this.setState({ desc: !this.state.desc })} className='sort-button'>

@@ -37,7 +37,7 @@ export default class CreatePersona extends Component {
                     actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
                 {this.props.type === PersonaList.TYPES.persona && <IconButton style={{ color: this.state.selectedForCreation ? this.props.theme.primary5Color : this.props.theme.primary3Color }}
                                                                               className="close-button" onClick={this.props.close}>
-                    <i className="material-icons">close</i>
+                    <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>}
                 {this.props.type !== PersonaList.TYPES.persona && this.getDefaultContent()}
                 {this.props.type === PersonaList.TYPES.persona && this.getPersonaContent()}
@@ -64,7 +64,7 @@ export default class CreatePersona extends Component {
 
         return <Paper className='paper-card'>
             <IconButton style={{ color: this.props.theme.primary5Color }} className="close-button" onClick={this.props.close}>
-                <i className="material-icons">close</i>
+                <i className="material-icons" data-qa="modal-close-button">close</i>
             </IconButton>
             <h3>Create {this.props.type.toLowerCase().charAt(0).toUpperCase() + this.props.type.toLowerCase().slice(1)}</h3>
             <div className='paper-body'>
