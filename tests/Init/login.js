@@ -40,14 +40,14 @@ exports.login = describe('Login into the system', function () {
         await UTILS.waitForElementXPATH('//*[@id="identifierId"]');
         let username = await UTILS.getElementByXPath('//*[@id="identifierId"]');
         expect(username).not.toBeNull();
-        await username.sendKeys('dimitar@interopion.com', Key.ENTER);
+        await username.sendKeys(process.env.USERNAME, Key.ENTER);
     });
 
     it('should find the password fields and enter the data in it', async () => {
         await UTILS.waitForElementXPATH('//*[@id="password"]/div[1]/div/div[1]/input');
         let password = await UTILS.getElementByXPath('//*[@id="password"]/div[1]/div/div[1]/input');
         expect(password).not.toBeNull();
-        await password.sendKeys('Fuck_Off86', Key.ENTER);
+        await password.sendKeys(process.env.PASSWORD, Key.ENTER);
     });
 
     it('should redirect to the dashboard after login', async () => {
