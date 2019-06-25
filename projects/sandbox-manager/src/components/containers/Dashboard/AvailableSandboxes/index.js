@@ -61,8 +61,10 @@ class Index extends Component {
                     : <IconButton tooltip='Authorization required'>
                         <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>;
-                return <ListItem key={index} primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'} data-qa={`sandbox-${sandbox.sandboxId}`}
-                                 leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} id={sandbox.name}/>
+                return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
+                    <ListItem primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'} data-qa={`sandbox-${sandbox.sandboxId}`}
+                              leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} id={sandbox.name}/>
+                </a>
             });
 
         }
@@ -113,8 +115,8 @@ class Index extends Component {
             });
         } else {
             return this.props.sandboxes.sort((a, b) => {
-                let timeA = (this.props.loginInfo || []).find(i => i.sandboxId === a.sandboxId) || {accessTimestamp: parseInt(a.id)};
-                let timeB = (this.props.loginInfo || []).find(i => i.sandboxId === b.sandboxId) || {accessTimestamp: parseInt(b.id)};
+                let timeA = (this.props.loginInfo || []).find(i => i.sandboxId === a.sandboxId) || { accessTimestamp: parseInt(a.id) };
+                let timeB = (this.props.loginInfo || []).find(i => i.sandboxId === b.sandboxId) || { accessTimestamp: parseInt(b.id) };
                 let val = timeA.accessTimestamp >= timeB.accessTimestamp ? -1 : 1;
                 if (!this.state.desc) {
                     val *= -1;

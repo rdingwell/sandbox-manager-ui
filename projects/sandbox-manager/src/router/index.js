@@ -17,6 +17,7 @@ import AfterAuth from '../components/containers/AfterAuth';
 import ResourceBrowser from '../components/containers/ResourceBrowser';
 import CreateSandbox from '../components/containers/CreateSandbox';
 import DataManager from '../components/containers/DataManager';
+import Tools from '../components/containers/Tools';
 
 export default <Router>
     <App>
@@ -28,6 +29,7 @@ export default <Router>
             <Route path='/:sandboxId/patients' component={Persona} />
             <Route path='/:sandboxId/profiles' component={Profiles} />
             <Route path='/:sandboxId/practitioners' component={Persona} />
+            <Route path='/:sandboxId/tools' component={Tools} />
             <Route path='/:sandboxId/personas' component={Persona} />
             <Route path='/:sandboxId/data-manager' component={DataManager} />
             <Route path='/:sandboxId/resource-browser' component={ResourceBrowser} />

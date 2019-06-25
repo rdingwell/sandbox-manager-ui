@@ -175,7 +175,7 @@ class Create extends Component {
                             <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'app'}/>
                         </CardTitle>
                     </Card>
-                    <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'hook' })}>
+                    {!!this.props.hooks.length && <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'hook' })}>
                         <CardMedia className='media-wrapper'>
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
@@ -183,7 +183,16 @@ class Create extends Component {
                             <h3 className='app-name'>CDS Hook</h3>
                             <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'hook'}/>
                         </CardTitle>
-                    </Card>
+                    </Card>}
+                    {!this.props.hooks.length && <Card title='Hook launch' className={`app-card small disabled`}>
+                        <CardMedia className='media-wrapper'>
+                            <HooksIcon className='default-hook-icon'/>
+                        </CardMedia>
+                        <CardTitle className='card-title' style={cardTitleStyle}>
+                            <h3 className='app-name'>CDS Hook</h3>
+                            <h3 className='app-name disabled'>No services</h3>
+                        </CardTitle>
+                    </Card>}
                 </div>;
             case 0:
                 return <div>

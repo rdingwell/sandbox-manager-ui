@@ -25,11 +25,11 @@ const PROFILES = [
         id: 'US-Core',
         url: 'https://simplifier.net/US-Core'
     },
-    {
-        title: 'QiCore',
-        id: 'QiCore',
-        url: 'https://simplifier.net/QiCore'
-    },
+    // {
+    //     title: 'QiCore',
+    //     id: 'QiCore',
+    //     url: 'https://simplifier.net/QiCore'
+    // },
     {
         title: 'Custom',
         id: 'manual',
@@ -105,13 +105,13 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{ display: 'none' }} onChange={this.loadZip}/>
-                            {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
-                            <RaisedButton label='Import profile' primary onClick={() => {
-                                this.setState({ profileName: '', profileId: '' }, () => {
-                                    this.refs.fileZip.value = [];
-                                    this.refs.fileZip.click();
-                                });
-                            }}/>
+                            <RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>
+                            {/*<RaisedButton label='Import profile' primary onClick={() => {*/}
+                            {/*    this.setState({ profileName: '', profileId: '' }, () => {*/}
+                            {/*        this.refs.fileZip.value = [];*/}
+                            {/*        this.refs.fileZip.click();*/}
+                            {/*    });*/}
+                            {/*}}/>*/}
                         </div>
                         <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
                             {this.getList(palette)}
@@ -228,7 +228,8 @@ class Profiles extends Component {
 
         this.state.inputModalVisible &&
         modals.push(
-            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }} bodyClassName='project-input-modal' key={2}>
+            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{ width: '412px' }} bodyClassName='project-input-modal'
+                    key={2}>
                 <Paper className='paper-card'>
                     <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.toggleInputModal}>
                         <i className="material-icons">close</i>
@@ -248,9 +249,9 @@ class Profiles extends Component {
                 </div>
                 <div>
                     <div style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '5px' }}>
-                        <span>{this.refs.fileZip.files[0].name}</span>
+                        <span>{this.refs.fileZip.files[0] ? this.refs.fileZip.files[0].name : this.state.sfProject}</span>
                     </div>
-                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
+                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} errorText={this.state.nameError}/>
                     <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
@@ -260,12 +261,17 @@ class Profiles extends Component {
     };
 
     saveProfile = () => {
-        this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
-        this.setState({ profileInputModalVisible: false });
+        if (this.state.profileName && this.state.profileName.length >= 2) {
+            !this.state.sfProject && this.props.uploadProfile(this.refs.fileZip.files[0], this.state.canFit, this.state.profileName, this.state.profileId);
+            this.state.sfProject && this.props.loadProject(this.state.sfProject, this.state.canFit, this.state.profileName, this.state.profileId);
+            this.setState({ profileInputModalVisible: false, sfProject: undefined });
+        } else {
+            this.setState({ nameError: 'The profile name has to be at least 2 characters!' })
+        }
     };
 
     setProfileName = (_, profileName) => {
-        let profileId = profileName.replace(/[^a-z0-9]/gi, '');
+        let profileId = profileName.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (profileId.length > 20) {
             profileId = value.substring(0, 20);
         }
@@ -276,7 +282,7 @@ class Profiles extends Component {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = !this.state.simplifierInputVisible
             ? <div className='buttons-wrapper'>
-                {/*<RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>*/}
+                <RaisedButton label='Simplifier.net' primary onClick={() => this.setState({ simplifierInputVisible: true })}/>
                 <RaisedButton label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
             </div>
             : <div style={{ padding: '20px' }}>
@@ -310,28 +316,21 @@ class Profiles extends Component {
     };
 
     toggleInputModal = () => {
-        this.setState({ inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false });
+        this.refs.fileZip.value = '';
+        this.setState({ profileName: '', profileId: '', inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, nameError: '' });
     };
 
     loadRemoteFile = () => {
-        let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
-        this.props.loadProject(project, this.state.canFit);
-        this.toggleInputModal();
+        let sfProject = this.state.project !== 'manual' ? this.state.project : this.state.simplifireProjectName;
+        this.setState({ profileInputModalVisible: true, sfProject, simplifierInputVisible: false, inputModalVisible: false });
+        // this.props.loadProject(project, this.state.canFit);
+        // this.toggleInputModal();
     };
 
     calcCanFit = () => {
         let containerHeight = document.getElementsByClassName('profiles-list')[0].clientHeight;
         // we calculate how much patients we can show on the screen and get just that much plus two so that we have content below the fold
         return Math.ceil(containerHeight / 55) + 2;
-    };
-
-    scroll = () => {
-        let stage = document.getElementsByClassName('profiles-list')[0];
-        let dif = stage.scrollHeight - stage.scrollTop - stage.offsetHeight;
-
-        let next = this.props.profilePagination && this.props.profilePagination.link && this.props.profilePagination.link.find(i => i.relation === 'next');
-        let shouldFetch = dif <= 50 && next && !this.props.profilesLoading;
-        shouldFetch && this.props.getProfilesPagination(next);
     };
 
     toggleTree = (query) => {

@@ -33,12 +33,12 @@ const ACTIONS = {
 const UTILS = require('./tests/utils');
 
 const TEST_SUITE = [
-    // {
-    //     title: 'Test the header bar',
-    //     tests: [
-    //         'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', 'helpMenuItemsTest'
-    //     ]
-    // },
+    {
+        title: 'Test the header bar',
+        tests: [
+            'helpMenuButtonTest', 'notificationsWork', 'userMenuWorks', '__helpMenuItemsTest'
+        ]
+    },
     {
         title: 'Test dashboard functionality',
         tests: [

@@ -61,11 +61,12 @@ class Apps extends Component {
     componentDidMount () {
         if (!this.props.hooks) {
             this.props.app_setScreen('apps');
-            this.props.loadSandboxApps();
         } else {
             this.props.app_setScreen('hooks');
-            this.props.loadServices();
         }
+
+        this.props.loadSandboxApps();
+        this.props.loadServices();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
