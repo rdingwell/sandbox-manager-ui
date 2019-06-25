@@ -82,6 +82,11 @@ pipelines:
             - . ci-5-aws-service-update.sh
     feature/*:
       - step:
+          name: build the source code
+          script:
+            - echo "success"
+    qa/*:
+      - step:
           name: build docker and test the project
           caches:
             - node
