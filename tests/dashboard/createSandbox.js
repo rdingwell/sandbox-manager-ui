@@ -44,6 +44,16 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
         description.sendKeys('Sample auto description');
     });
 
+    it('should select the correct FHIR version', async () => {
+        let versionSelect = await UTILS.getElementByCss('[data-qa="sandbox-version"]');
+        versionSelect.click();
+
+        await UTILS.waitForElementCSS('[data-qa="fhir-stu3"]');
+        let stu3 = await UTILS.getElementByCss('[data-qa="fhir-stu3"]');
+        stu3.click();
+        await UTILS.wait(500);
+    });
+
     it('should create a sandbox', async () => {
         let createButton = await UTILS.getElementByCss('[data-qa="sandbox-submit-button"]');
         createButton.click();

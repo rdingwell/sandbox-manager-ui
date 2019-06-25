@@ -28,7 +28,8 @@ class Index extends Component {
         let duplicate = this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase());
 
         let actions = [
-            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate || !this.state.apiEndpointIndex} className='button' primary onClick={this.handleCreateSandbox} data-qa='sandbox-submit-button'/>
+            <RaisedButton key={1} label='Create' disabled={this.state.createDisabled || !!duplicate || !this.state.apiEndpointIndex} className='button' primary onClick={this.handleCreateSandbox}
+                          data-qa='sandbox-submit-button'/>
         ];
 
         let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
@@ -53,10 +54,10 @@ class Index extends Component {
                             <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
                             <SelectField value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
-                                          className='fhirVersion' floatingLabelText='FHIR version'>
-                                <MenuItem value='8' primaryText='FHIR DSTU2 (v1.0.2)'/>
-                                <MenuItem value='9' primaryText='FHIR STU3 (v3.0.1)'/>
-                                <MenuItem value='10' primaryText='FHIR R4 (v4.0.0)'/>
+                                         className='fhirVersion' floatingLabelText='FHIR version' data-qa='sandbox-version'>
+                                <MenuItem value='8' primaryText='FHIR DSTU2 (v1.0.2)' data-qa='fhir-dstu2'/>
+                                <MenuItem value='9' primaryText='FHIR STU3 (v3.0.1)' data-qa='fhir-stu3'/>
+                                <MenuItem value='10' primaryText='FHIR R4 (v4.0.0)' data-qa='fhir-r4'/>
                             </SelectField>
                             <div className='subscript'>Choose a version of the FHIR Standard</div>
                             <br/>
