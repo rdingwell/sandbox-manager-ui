@@ -7,8 +7,8 @@ require('selenium-webdriver/chrome');
 
 const cap = Capabilities.chrome();
 cap.set('chromeOptions', {
-    // 'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--headless"]
-    'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
+    'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--headless"]
+    // 'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
 });
 const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
 // const rootURL = 'http://localhost:3001';
