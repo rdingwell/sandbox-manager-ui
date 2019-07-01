@@ -96,7 +96,7 @@ class LaunchScenarios extends Component {
                     Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
                 </p>
             </ConfirmModal>
-            <div className='launch-scenarios-wrapper' data-qa='launch-scenarios-wrapper'>
+            <div className='launch-scenarios-wrapper'>
                 <a ref='openLink' target='_blank'/>
                 <div className='filter-wrapper'>
                     <IconButton onClick={() => this.setState({ desc: !this.state.desc })} className='sort-button'>
@@ -217,7 +217,7 @@ class LaunchScenarios extends Component {
                     let details = <div key={1} className='expanded-content'>
                         {this.getDetailsContent(sc)}
                     </div>;
-                    let filter = (!this.state.appIdFilter || this.state.appIdFilter === sc.app.clientId) &&
+                    let filter = (!this.state.appIdFilter || (sc.app && this.state.appIdFilter === sc.app.clientId)) &&
                         (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'Hook' && !!sc.cdsHook)));
                     let showMenuForItem = this.state.showMenuForItem === index;
                     if (filter) {
