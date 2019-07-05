@@ -26,7 +26,9 @@ class Users extends Component {
             userToRemove: '',
             email: '',
             action: '',
-            open: false
+            open: false,
+            usersToImport: '',
+            importUsersModal: false
         };
     }
 
@@ -49,6 +51,7 @@ class Users extends Component {
                 <div className='invitation-buttons-wrapper'>
                     <RaisedButton label='MANAGE INVITES' backgroundColor={this.props.muiTheme.palette.primary2Color} labelColor='#FFF' onClick={this.showInvitationsModal}/>
                     <RaisedButton label='EXPORT USERS' primary onClick={this.exportUsers}/>
+                    <RaisedButton label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
                 </div>
                 {this.state.inviteModal && <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
                                                    paperClassName='invitations-modal' actions={[<RaisedButton label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
@@ -100,6 +103,22 @@ class Users extends Component {
                         Are you sure you want to remove {(this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove) || {user: {email: '"not found"'}}).user.email}?
                     </div>
                 </Dialog>}
+                {this.state.importUsersModal &&
+                <Dialog modal={false} open={this.state.importUsersModal} onRequestClose={this.toggleImportUsersModal} actionsContainerClassName='user-remove-dialog-actions-wrapper'
+                        actions={[<RaisedButton label="Import" style={{marginRight: '10px'}} onClick={this.importUsers} primary/>,
+                            <RaisedButton label='Load from file (csv)' primary onClick={() => this.refs.file.click()}/>]}>
+                    <div className='screen-title imports' style={titleStyle}>
+                        <h1 style={titleStyle}>Import users</h1>
+                        <IconButton className="close-button" onClick={this.toggleImportUsersModal}>
+                            <i className="material-icons" data-qa="modal-close-button">close</i>
+                        </IconButton>
+                    </div>
+                    <div className='screen-content-import-modal'>
+                        <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
+                        <TextField multiLine fullWidth floatingLabelText='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
+                                   value={this.state.usersToImport}/>
+                    </div>
+                </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
                     <TableHeader className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} style={{backgroundColor: this.props.muiTheme.palette.primary7Color}}>
                         <TableRow>
@@ -126,6 +145,28 @@ class Users extends Component {
         </div>;
     }
 
+    readFile = () => {
+        let fr = new FileReader();
+
+        fr.onload = (e) => {
+            this.setState({usersToImport: e.target.result});
+        };
+
+        fr.readAsText(this.refs.file.files.item(0));
+    };
+
+    importUsers = () => {
+        let users = this.state.usersToImport.split(',') || [];
+        users.map(user => {
+            this.props.inviteNewUser(user);
+        });
+        this.toggleImportUsersModal();
+    };
+
+    toggleImportUsersModal = () => {
+        this.setState({importUsersModal: !this.state.importUsersModal});
+    };
+
     exportUsers = () => {
         let users = [];
         this.props.sandbox.userRoles.map(r => {
@@ -134,7 +175,7 @@ class Users extends Component {
 
         users = [...new Set(users)];
 
-        let blob = new Blob([users.concat(',')], { type: 'text/csv' });
+        let blob = new Blob([users.concat(',')], {type: 'text/csv'});
 
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
             window.navigator.msSaveOrOpenBlob(blob, 'usersExport.csv');
