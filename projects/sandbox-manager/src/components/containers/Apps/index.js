@@ -142,8 +142,8 @@ class Apps extends Component {
                 // hook.id = index;
                 let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
                 if (!this.props.modal && !hook.description) {
-                    titleStyle.height = '39%';
-                    titleStyle.bottom = '-18%';
+                    // titleStyle.height = '39%';
+                    // titleStyle.bottom = '-18%';
                 }
                 hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
                                  onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
@@ -310,8 +310,8 @@ class Apps extends Component {
         return appsList.map((app, index) => {
             let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
             if (!this.props.modal && !app.briefDescription) {
-                titleStyle.height = '39%';
-                titleStyle.bottom = '-18%';
+                // titleStyle.height = '39%';
+                // titleStyle.bottom = '-18%';
             }
             return <Card title={app.clientName} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>

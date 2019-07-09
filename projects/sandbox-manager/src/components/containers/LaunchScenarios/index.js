@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
     customSearch, fetchAnyResource, clearResourceFetch, launchHook, clearResourceList
 } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
     CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
     TextField, SelectField, Toggle
 } from 'material-ui';
-import { ContentSort } from "material-ui/svg-icons/index";
+import {ContentSort} from "material-ui/svg-icons/index";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import EditIcon from 'material-ui/svg-icons/image/edit';
@@ -44,8 +44,8 @@ import './styles.less';
 import HelpButton from '../../UI/HelpButton';
 
 const SORT_VALUES = [
-    { val: 'last_used', label: 'Last Used' },
-    { val: 'alphabetical', label: 'Alphabetical' }
+    {val: 'last_used', label: 'Last Used'},
+    {val: 'alphabetical', label: 'Alphabetical'}
 ];
 
 class LaunchScenarios extends Component {
@@ -53,7 +53,7 @@ class LaunchScenarios extends Component {
     createKey = 0;
     buttonClick = false;
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -70,28 +70,30 @@ class LaunchScenarios extends Component {
             description: '',
             key: '',
             val: '',
-            sort: SORT_VALUES[0].val
+            sort: SORT_VALUES[0].val,
+            lastLaunch: undefined
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
+        this.setState({lastLaunch: undefined});
         this.props.app_setScreen('launch');
         this.props.loadLaunchScenarios();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         this.props.deleting && !nextProps.deleting && this.props.loadLaunchScenarios();
     }
 
-    render () {
-        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{ marginLeft: '10px' }} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
+    render() {
+        return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
             <ConfirmModal open={this.state.showConfirmModal} red confirmLabel='Delete' onConfirm={() => {
                 this.props.deleteScenario(this.state.scenarioToDelete);
-                this.setState({ showConfirmModal: false })
-            }} onCancel={() => this.setState({ showConfirmModal: false, scenarioToDelete: undefined })} title='Confirm'>
+                this.setState({showConfirmModal: false})
+            }} onCancel={() => this.setState({showConfirmModal: false, scenarioToDelete: undefined})} title='Confirm'>
                 <p>
                     Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
                 </p>
@@ -99,12 +101,12 @@ class LaunchScenarios extends Component {
             <div className='launch-scenarios-wrapper'>
                 <a ref='openLink' target='_blank'/>
                 <div className='filter-wrapper'>
-                    <IconButton onClick={() => this.setState({ desc: !this.state.desc })} className='sort-button'>
+                    <IconButton onClick={() => this.setState({desc: !this.state.desc})} className='sort-button'>
                         <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>
-                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary6Color }} underlineStyle={{ display: 'none' }}
+                    <SelectField style={{width: '140px', marginLeft: '16px'}} labelStyle={{color: this.props.muiTheme.palette.primary6Color}} underlineStyle={{display: 'none'}}
                                  value={this.state.sort}
-                                 className='sort-select' onChange={(_, sort) => this.setState({ sort: SORT_VALUES[sort].val })}>
+                                 className='sort-select' onChange={(_, sort) => this.setState({sort: SORT_VALUES[sort].val})}>
                         <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
                     </SelectField>
@@ -130,7 +132,7 @@ class LaunchScenarios extends Component {
 
     selectScenarioForEditing = (scenarioToEdit) => {
         this.toggleMenuForItem();
-        this.setState({ scenarioToEdit, showModal: false });
+        this.setState({scenarioToEdit, showModal: false});
     };
 
     onFilter = (type, appId) => {
@@ -147,6 +149,7 @@ class LaunchScenarios extends Component {
             : this.openEHRSimulator(sc));
         !sc.app && !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
         !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, sc.contextParams);
+        this.setState({lastLaunch: sc});
     };
 
     openEHRSimulator = (sc) => {
@@ -178,7 +181,7 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({ selectedScenario: selection, addContext: false, key: '', val: '' });
+        this.setState({selectedScenario: selection, addContext: false, key: '', val: ''});
     };
 
     createScenario = (data) => {
@@ -188,7 +191,7 @@ class LaunchScenarios extends Component {
 
     showDeleteScenario = (sc) => {
         this.toggleMenuForItem();
-        this.setState({ showConfirmModal: true, scenarioToDelete: sc });
+        this.setState({showConfirmModal: true, scenarioToDelete: sc});
     };
 
     toggleCreateModal = () => {
@@ -197,7 +200,7 @@ class LaunchScenarios extends Component {
         showModal && !selectedScenario && !this.props.personas && this.props.fetchPersonas(PersonaList.TYPES.persona);
         showModal && !selectedScenario && !this.props.patients.length && this.props.fetchPersonas(PersonaList.TYPES.patient);
         showModal && !selectedScenario && this.state.selectedPersona && this.props.fetchPersonas(PersonaList.TYPES.patient);
-        this.setState({ showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: '' });
+        this.setState({showModal, selectedScenario, selectedPatient: undefined, selectedPersona: undefined, selectedApp: undefined, description: ''});
         this.createKey++;
     };
 
@@ -206,13 +209,14 @@ class LaunchScenarios extends Component {
         return <div className='scenarios-list'>
             {sorted.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
-                    let itemStyles = { backgroundColor: this.props.muiTheme.palette.canvasColor };
-                    let contentStyles = isSelected ? { borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color } : {};
+                    let isLast = this.state.lastLaunch && this.state.lastLaunch.id === sc.id;
+                    let itemStyles = {backgroundColor: this.props.muiTheme.palette.canvasColor};
+                    let contentStyles = isSelected ? {borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color} : {};
                     let isPatient = sc.userPersona.resource !== 'Practitioner';
                     let iconStyle = {
-                            backgroundColor: this.props.muiTheme.palette.primary5Color,
-                            color: this.props.muiTheme.palette.accent1Color
-                        };
+                        backgroundColor: this.props.muiTheme.palette.primary5Color,
+                        color: this.props.muiTheme.palette.accent1Color
+                    };
 
                     let details = <div key={1} className='expanded-content'>
                         {this.getDetailsContent(sc)}
@@ -221,13 +225,13 @@ class LaunchScenarios extends Component {
                         (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'Hook' && !!sc.cdsHook)));
                     let showMenuForItem = this.state.showMenuForItem === index;
                     if (filter) {
-                        return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '')}>
+                        return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '') + (isLast ? ' last' : '')}>
                             <div className='left-icon-wrapper' style={iconStyle}>
                                 <span className='left-icon'>
                                     {!sc.app
                                         ? <i><HooksIcon/></i>
                                         : isPatient
-                                            ? <i><Patient /></i>
+                                            ? <i><Patient/></i>
                                             : <i className='fa fa-user-md fa-lg'/>}
                                 </span>
                             </div>
@@ -237,22 +241,22 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
-                                    <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                    <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                                 <IconButton onClick={e => this.toggleMenuForItem(e, index)}>
                                     <span className='anchor' ref={'anchor' + index.toString()}/>
-                                    <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                    <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                                 {showMenuForItem &&
-                                <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + index]} anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                                         targetOrigin={{ horizontal: 'right', vertical: 'top' }} onRequestClose={this.toggleMenuForItem}>
+                                <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + index]} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                                         targetOrigin={{horizontal: 'right', vertical: 'top'}} onRequestClose={this.toggleMenuForItem}>
                                     <Menu desktop autoWidth={false} width='100px'>
                                         <MenuItem className='scenario-menu-item' primaryText='Edit' leftIcon={<EditIcon/>} onClick={() => this.selectScenarioForEditing(sc)}/>
                                         <MenuItem className='scenario-menu-item' primaryText='Delete' leftIcon={<DeleteIcon/>} onClick={() => this.showDeleteScenario(sc)}/>
                                     </Menu>
                                 </Popover>}
                                 <IconButton className='expanded-toggle'>
-                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                             </div>
                             <div className='content' style={contentStyles} onClick={e => e.stopPropagation()}>
@@ -301,21 +305,21 @@ class LaunchScenarios extends Component {
 
     toggleMenuForItem = (e, itemIndex) => {
         this.preventDefault(e);
-        this.setState({ showMenuForItem: itemIndex });
+        this.setState({showMenuForItem: itemIndex});
     };
 
     getDetailsContent = (selectedScenario) => {
-        let lightColor = { color: this.props.muiTheme.palette.primary3Color, alpha: '.7' };
-        let needsBanner = { color: this.props.muiTheme.palette.primary3Color, alpha: '.7', width: '58%' };
-        let normalColor = { color: this.props.muiTheme.palette.primary3Color };
-        let darkColor = { color: this.props.muiTheme.palette.primary6Color };
-        let iconStyle = { color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px' };
-        let iconStyleLight = { color: this.props.muiTheme.palette.primary3Color, fill: this.props.muiTheme.palette.primary3Color, width: '24px', height: '24px' };
+        let lightColor = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7'};
+        let needsBanner = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7', width: '58%'};
+        let normalColor = {color: this.props.muiTheme.palette.primary3Color};
+        let darkColor = {color: this.props.muiTheme.palette.primary6Color};
+        let iconStyle = {color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px'};
+        let iconStyleLight = {color: this.props.muiTheme.palette.primary3Color, fill: this.props.muiTheme.palette.primary3Color, width: '24px', height: '24px'};
         let disabled = this.props.modifyingCustomContext || (this.state.addContext && (!this.state.key.length || !this.state.val.length));
         let deleteEnabled = this.state.selectedCustomContent !== undefined;
         let onClick = this.state.addContext ? this.addContext : deleteEnabled ? this.deleteCustomContext : this.toggleAddContext;
-        let underlineFocusStyle = { borderColor: this.props.muiTheme.palette.primary2Color };
-        let floatingLabelFocusStyle = { color: this.props.muiTheme.palette.primary2Color };
+        let underlineFocusStyle = {borderColor: this.props.muiTheme.palette.primary2Color};
+        let floatingLabelFocusStyle = {color: this.props.muiTheme.palette.primary2Color};
 
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
@@ -326,12 +330,12 @@ class LaunchScenarios extends Component {
                     <span className='section-title' style={darkColor}><WebIcon style={iconStyle}/>{selectedScenario.app ? 'App' : 'CDS Hook'}</span>
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
-                            {selectedScenario.app && <img style={{ height: '100%' }} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
+                            {selectedScenario.app && <img style={{height: '100%'}} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
                                                           alt='HSPC Logo'/>}
-                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{ height: '100%' }} src={selectedScenario.cdsHook.logoUri} alt='HSPC Logo'/>}
+                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{height: '100%'}} src={selectedScenario.cdsHook.logoUri} alt='HSPC Logo'/>}
                             {selectedScenario.cdsHook && !selectedScenario.cdsHook.logoUri && <HooksIcon className='default-hook-icon'/>}
                         </CardMedia>
-                        <div className='card-title' style={{ backgroundColor: 'rgba(0,87,120, 0.75)' }}>
+                        <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                             <span className='app-name'>{selectedScenario.app && selectedScenario.app.clientName}</span>
                             <span className='app-name'>{selectedScenario.cdsHook && selectedScenario.cdsHook.title}</span>
                         </div>
@@ -344,7 +348,7 @@ class LaunchScenarios extends Component {
                     {selectedScenario.app && <div>
                         <span className='section-value' style={lightColor}>
                             <Patient style={iconStyleLight}/>
-                            {selectedScenario.patientName && <span style={{ cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline" }}
+                            {selectedScenario.patientName && <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline"}}
                                                                    onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
                             {!selectedScenario.patientName && <span>-</span>}
                         </span>
@@ -370,11 +374,11 @@ class LaunchScenarios extends Component {
                         </span>
                         <span className='section-value' style={lightColor}>
                             <FullScreenIcon style={iconStyleLight}/>
-                            <Toggle className='toggle' label='Needs Patient Banner' style={{ display: 'inline-block', bottom: '2px' }} labelStyle={needsBanner}
-                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
-                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary7Color }} toggled={selectedScenario.needPatientBanner === 'T'}
-                                    thumbSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}
-                                    trackSwitchedStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5' }}
+                            <Toggle className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} labelStyle={needsBanner}
+                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
+                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary7Color}} toggled={selectedScenario.needPatientBanner === 'T'}
+                                    thumbSwitchedStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}
+                                    trackSwitchedStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5'}}
                                     onToggle={e => {
                                         this.toggleNeedsPatientBanner(e, selectedScenario)
                                     }}/>
@@ -382,13 +386,13 @@ class LaunchScenarios extends Component {
                         </span>
                     </div>}
                     {selectedScenario.cdsHook && selectedScenario.contextParams.map(param => {
-                            let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
-                            let isPatient = param.name === 'patientId';
-                            // let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
-                            let click = isPatient ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
-                            return <span className='section-value' style={lightColor}>
+                        let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
+                        let isPatient = param.name === 'patientId';
+                        // let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                        let click = isPatient ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
+                        return <span className='section-value' style={lightColor}>
                                 {/*{this.getContextIcon(param.name, iconStyleLight)} <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>*/}
-                                {param.name}: <span className={`context-value ${isPatient ? 'context-link' : ''}`} onClick={isPatient ? e => this.openInDM(e, patient) : null}>{param.value}</span>
+                            {param.name}: <span className={`context-value ${isPatient ? 'context-link' : ''}`} onClick={isPatient ? e => this.openInDM(e, patient) : null}>{param.value}</span>
                             </span>;
 
                     })}
@@ -402,18 +406,18 @@ class LaunchScenarios extends Component {
                         <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
                             <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                                 <TableRow>
-                                    <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Key</TableHeaderColumn>
-                                    <TableHeaderColumn style={{ color: this.props.muiTheme.palette.primary3Color }}>Value</TableHeaderColumn>
+                                    <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Key</TableHeaderColumn>
+                                    <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Value</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
                             <TableBody displayRowCheckbox={false} className='table-body'>
                                 {this.state.addContext && <TableRow selectable={false}>
                                     <TableRowColumn>
-                                        <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({ key })}
+                                        <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({key})}
                                                    underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                                     </TableRowColumn>
                                     <TableRowColumn>
-                                        <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({ val })}
+                                        <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({val})}
                                                    underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                                     </TableRowColumn>
                                 </TableRow>}
@@ -446,18 +450,18 @@ class LaunchScenarios extends Component {
     };
 
     handleContextSelection = (selection) => {
-        !this.buttonClick && this.setState({ selectedCustomContent: selection[0] });
+        !this.buttonClick && this.setState({selectedCustomContent: selection[0]});
     };
 
     deleteCustomContext = () => {
         this.props.deleteCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.selectedCustomContent);
-        this.setState({ selectedCustomContent: undefined });
+        this.setState({selectedCustomContent: undefined});
         this.buttonClick = false;
     };
 
     addContext = () => {
         this.props.addCustomContext(this.props.scenarios[this.state.selectedScenario], this.state.key, this.state.val);
-        this.setState({ addContext: false, key: '', val: '' });
+        this.setState({addContext: false, key: '', val: ''});
         this.buttonClick = false;
     };
 
@@ -480,14 +484,14 @@ class LaunchScenarios extends Component {
                 </TableRow>
             })
             : <TableRow key={1}>
-                <TableRowColumn colSpan={2} style={{ textAlign: 'center' }}>
+                <TableRowColumn colSpan={2} style={{textAlign: 'center'}}>
                     <CircularProgress/>
                 </TableRowColumn>
             </TableRow>;
     };
 
     toggleAddContext = () => {
-        this.setState({ addContext: !this.state.addContext });
+        this.setState({addContext: !this.state.addContext});
         this.buttonClick = false;
     };
 
