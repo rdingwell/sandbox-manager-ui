@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton } from 'material-ui';
+import React, {Component} from 'react';
+import {MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton} from 'material-ui';
 import DeleteIcon from "material-ui/svg-icons/action/delete";
 import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import './styles.less';
 
 class AppDialog extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let clientJSON = props.app && props.app.clientJSON && JSON.parse(props.app.clientJSON);
@@ -42,28 +42,32 @@ class AppDialog extends Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.manifest && this.state.app.logoUri && this.loadImageFromWeb();
+        setTimeout(() => {
+            let defaulInput = document.getElementById('appName');
+            defaulInput && defaulInput.focus();
+        }, 200);
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if ((this.props.app && !this.props.app.clientJSON && nextProps.app.clientJSON) ||
             (this.props.app && this.props.app.clientJSON && nextProps.app.clientJSON && this.props.app.clientJSON.length !== nextProps.app.clientJSON.length)) {
             let clientJSON = nextProps.app && nextProps.app.clientJSON && JSON.parse(nextProps.app.clientJSON);
             let redirectUris = clientJSON && clientJSON.redirectUris && clientJSON.redirectUris.join(',');
             let scope = clientJSON && clientJSON.scope && clientJSON.scope.join(' ');
 
-            let app = Object.assign({}, this.state.app, { scope, redirectUris, clientJSON });
+            let app = Object.assign({}, this.state.app, {scope, redirectUris, clientJSON});
 
-            this.setState({ app });
+            this.setState({app});
         }
     }
 
-    render () {
+    render() {
         let clientId = null;
         let clientSecret = null;
         let theme = this.props.muiTheme.palette;
-        let iconStyle = { color: theme.primary3Color, fill: theme.primary3Color, width: '24px', height: '24px' };
+        let iconStyle = {color: theme.primary3Color, fill: theme.primary3Color, width: '24px', height: '24px'};
 
         if (this.props.app && !this.state.clone) {
             clientId = <div className='label-value'>
@@ -80,11 +84,8 @@ class AppDialog extends Component {
                 </div>
                 : null;
         }
-        let sApp = this.state.app;
 
-        let saveEnabled = (this.props.app && !this.state.clone)
-            ? this.state.changes.length > 0
-            : sApp.clientName.length > 2 && sApp.launchUri.length > 2 && sApp.redirectUris.length > 2;
+        let saveEnabled = this.checkSaveEnabled();
         let actions = [
             <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'/>
         ];
@@ -94,45 +95,47 @@ class AppDialog extends Component {
         this.props.app && actions.unshift(<RaisedButton label='Download manifest' onClick={this.createManifest}/>,);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
-        let underlineFocusStyle = { borderColor: theme.primary2Color };
-        let floatingLabelFocusStyle = { color: theme.primary2Color };
+        let underlineFocusStyle = {borderColor: theme.primary2Color};
+        let floatingLabelFocusStyle = {color: theme.primary2Color};
 
         return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actions={actions}
                        actionsContainerClassName='app-dialog-actions-wrapper'>
             <Paper className='paper-card' data-qa='create-app-modal-wrapper'>
-                <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
+                <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.handleClose}>
                     <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>
                 <h3>{this.props.app ? 'Registered App Details' : 'App Details'}</h3>
                 <div className='paper-body'>
                     <form>
                         <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}
-                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                   id='appName' onKeyPress={this.submitMaybe}/>
                         <br/>
                         <div>
-                            <div style={{ color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)' }}>Client Type</div>
+                            <div style={{color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)'}}>Client Type</div>
                             <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
-                                          style={{ top: '16px' }} disabled={this.state.isReplica}>
+                                          style={{top: '16px'}} disabled={this.state.isReplica}>
                                 <MenuItem value='NONE' primaryText='Public Client'/>
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
                             </DropDownMenu>
                         </div>
                         {clientId}
                         {clientSecret}
-                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest}  data-qa='description-input'
-                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                        <TextField multiLine floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest} data-qa='description-input'
+                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                   onKeyPress={this.submitMaybe}/>
                         <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
                                    hintText='e.g.: https://mydomain.com/growth-chart/launch.html' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                   onBlur={this.launchBlur} disabled={this.state.isReplica} data-qa='launch-uri-input'/>
+                                   onBlur={this.launchBlur} disabled={this.state.isReplica} data-qa='launch-uri-input' onKeyPress={this.submitMaybe}/>
                         <br/>
                         <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs*' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica} data-qa='redirect-uris-input'
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica} data-qa='redirect-uris-input' onKeyPress={this.submitMaybe}
                                    onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
                         <span className='subscript'>
                             Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
                         </span>
                         <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} disabled={this.state.isReplica}
-                                   hintText='eg: launch patient/*.* openid profile' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                   hintText='eg: launch patient/*.* openid profile' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}/>
                         <span className='subscript'>
                             Space separated list of scopes. Note: If you do not provide scopes, defaults will be set.
                         </span>
@@ -143,17 +146,17 @@ class AppDialog extends Component {
                             </a>
                         </div>
                         <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799' underlineFocusStyle={underlineFocusStyle}
-                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica && !this.props.manifest}
+                                   floatingLabelFocusStyle={floatingLabelFocusStyle} disabled={this.state.isReplica && !this.props.manifest} onKeyPress={this.submitMaybe}
                                    value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
                             <Toggle label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}
-                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
-                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
+                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
+                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
                             <Toggle label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}
-                                    thumbStyle={{ backgroundColor: this.props.muiTheme.palette.primary5Color }}
-                                    trackStyle={{ backgroundColor: this.props.muiTheme.palette.primary3Color }}/>
+                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
+                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
                         </div>}
                         < br/>
                         <div className='image-form'>
@@ -167,10 +170,10 @@ class AppDialog extends Component {
                                 </div>
                             </div>
                             <div className='image-wrapper'>
-                                <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
+                                <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
                                 {this.state.app.logoUri
                                     ? <img src={this.state.app.logoUri}/>
-                                    : <img style={{ height: '100%' }} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                                    : <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                                 }
                             </div>
                             {this.state.app.logoUri &&
@@ -183,6 +186,18 @@ class AppDialog extends Component {
             </Paper>
         </Dialog>
     }
+
+    checkSaveEnabled = () => {
+        let sApp = this.state.app;
+
+        return (this.props.app && !this.state.clone)
+            ? this.state.changes.length > 0
+            : sApp.clientName.length > 2 && sApp.launchUri.length > 2 && sApp.redirectUris.length > 2;
+    };
+
+    submitMaybe = (event) => {
+        [10, 13].indexOf(event.charCode) >= 0 && this.checkSaveEnabled() && this.save();
+    };
 
     removeImage = () => {
         let input = this.refs.image;
@@ -222,7 +237,7 @@ class AppDialog extends Component {
     clone = () => {
         let app = Object.assign({}, this.state.app);
         app.clientName = `Copy of ${app.clientName}`;
-        this.setState({ clone: true, isReplica: false, app });
+        this.setState({clone: true, isReplica: false, app});
         this.loadImageFromWeb();
     };
 
@@ -234,20 +249,20 @@ class AppDialog extends Component {
             let host = pathArray[2];
             let url = protocol + '//' + host;
             app.redirectUris = url;
-            this.setState({ app });
+            this.setState({app});
         } else if (app.redirectUris.length === 0) {
             let pathArray = this.state.app.launchUri.split('/');
             app.redirectUris = pathArray[0];
-            this.setState({ app });
+            this.setState({app});
         }
     };
 
     handleLaunch = () => {
-        this.setState({ modalOpen: true });
+        this.setState({modalOpen: true});
     };
 
     handleClose = () => {
-        this.setState({ modalOpen: false });
+        this.setState({modalOpen: false});
         this.props.onClose();
     };
 
@@ -266,7 +281,7 @@ class AppDialog extends Component {
                 app.logoFile = input.files[0];
                 let changes = this.state.changes.slice();
                 changes.indexOf('logo') === -1 && changes.push('image');
-                this.setState({ app, changes })
+                this.setState({app, changes})
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -279,7 +294,7 @@ class AppDialog extends Component {
         request.onload = () => {
             let app = Object.assign({}, this.state.app);
             app.logoFile = request.response;
-            this.setState({ app });
+            this.setState({app});
         };
 
         request.open("GET", this.state.app.logoUri);
@@ -302,7 +317,7 @@ class AppDialog extends Component {
             prop === 'logoUri' && changes.push('image');
         }
 
-        this.setState({ app, changes });
+        this.setState({app, changes});
     };
 
     save = () => {

@@ -53,8 +53,9 @@ class Users extends Component {
                     <RaisedButton label='EXPORT USERS' primary onClick={this.exportUsers}/>
                     <RaisedButton label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
                 </div>
-                {this.state.inviteModal && <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
-                                                   paperClassName='invitations-modal' actions={[<RaisedButton label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
+                {this.state.inviteModal &&
+                <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
+                        paperClassName='invitations-modal' actions={[<RaisedButton label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITE</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -63,7 +64,7 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-invite-modal'>
                         <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}
-                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe} id='newEmailAddress'/>
                     </div>
                 </Dialog>}
                 {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onRequestClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
@@ -116,7 +117,7 @@ class Users extends Component {
                     <div className='screen-content-import-modal'>
                         <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
                         <TextField multiLine fullWidth floatingLabelText='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
-                                   value={this.state.usersToImport}/>
+                                   value={this.state.usersToImport} onKeyUp={this.importMaybe} id='emailList'/>
                     </div>
                 </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
@@ -145,6 +146,14 @@ class Users extends Component {
         </div>;
     }
 
+    submitMaybe = (event) => {
+        [10, 13].indexOf(event.charCode) >= 0 && this.handleSendInvite();
+    };
+
+    importMaybe = (event) => {
+        [10, 13].indexOf(event.keyCode) >= 0 && event.ctrlKey && this.importUsers();
+    };
+
     readFile = () => {
         let fr = new FileReader();
 
@@ -164,7 +173,13 @@ class Users extends Component {
     };
 
     toggleImportUsersModal = () => {
-        this.setState({importUsersModal: !this.state.importUsersModal});
+
+        this.setState({importUsersModal: !this.state.importUsersModal}, () => {
+            setTimeout(() => {
+                let field = document.getElementById('emailList');
+                field && field.focus();
+            }, 200);
+        });
     };
 
     exportUsers = () => {
@@ -192,11 +207,12 @@ class Users extends Component {
     };
 
     toggleCreateModal = () => {
-        this.setState({inviteModal: true, invitationsModal: false});
-    };
-
-    showInviteModal = () => {
-        this.setState({inviteModal: true});
+        this.setState({inviteModal: true, invitationsModal: false}, () => {
+            setTimeout(() => {
+                let field = document.getElementById('newEmailAddress');
+                field && field.focus();
+            }, 200);
+        });
     };
 
     showInvitationsModal = () => {
@@ -272,11 +288,11 @@ class Users extends Component {
 
     getInvitations = () => {
         if (this.props.userInvitesLoading) {
-         return <TableRow>
-             <TableRowColumn colSpan={3} style={{textAlign: 'center'}}>
-                 <CircularProgress />
-             </TableRowColumn>
-         </TableRow>
+            return <TableRow>
+                <TableRowColumn colSpan={3} style={{textAlign: 'center'}}>
+                    <CircularProgress/>
+                </TableRowColumn>
+            </TableRow>
         } else {
             let buttonStyles = {width: '30px', height: '30px', color: this.props.muiTheme.palette.primary3Color};
             let style = {width: '55px', height: '55px'};

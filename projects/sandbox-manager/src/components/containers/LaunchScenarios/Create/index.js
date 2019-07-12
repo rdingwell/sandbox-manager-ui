@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { Card, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle } from "material-ui";
+import React, {Component, Fragment} from 'react';
+import {Card, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle} from "material-ui";
 import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
 import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import AccountIcon from "material-ui/svg-icons/action/account-box";
@@ -17,7 +17,7 @@ import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/ba
 import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
 import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import WebIcon from "material-ui/svg-icons/av/web";
-import { getPatientName, getAge } from "sandbox-manager-lib/utils/fhir";
+import {getPatientName, getAge} from "sandbox-manager-lib/utils/fhir";
 import PersonaList from "../../Persona/List";
 import Apps from '../../Apps';
 import muiThemeable from "material-ui/styles/muiThemeable";
@@ -26,7 +26,7 @@ import './styles.less';
 
 class Create extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let initialState = {
@@ -67,7 +67,7 @@ class Create extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.initPatient();
         this.initEncounter();
         this.initLocation();
@@ -79,15 +79,15 @@ class Create extends Component {
         this.props.locationId && this.blur('locationId');
     }
 
-    render () {
+    render() {
         let palette = this.props.muiTheme.palette;
-        let titleStyle = { backgroundColor: palette.primary2Color, color: palette.primary5Color };
+        let titleStyle = {backgroundColor: palette.primary2Color, color: palette.primary5Color};
         let actions = this.getActions();
 
         return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
                        actionsContainerClassName='create-modal-actions'>
             <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
-            <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.props.close}>
+            <IconButton style={{color: palette.primary5Color}} className="close-button" onClick={this.props.close}>
                 <i className="material-icons" data-qa="modal-close-button">close</i>
             </IconButton>
             {this.state.currentStep >= 0 && <div className='stepper'>
@@ -117,34 +117,17 @@ class Create extends Component {
     };
 
     getActions = () => {
-        let hasAllRequiredHookContext = this.state.scenarioType === 'hook' && Object.keys(this.props.resourceListLoadError).length === 0;
-
-        hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
-            let resType = this.props.hookContexts[this.state.selectedApp.hook][item].resourceType;
-            if (!this.state[item] || this.state[item].length === 0 || (typeof (resType) === 'string' && !this.props.resourceList[resType])) {
-                hasAllRequiredHookContext = false;
-            }
-        });
-
-        let nextEnabled = this.state.currentStep === -1
-            ? !!this.state.scenarioType
-            : this.state.currentStep === 0
-                ? !!this.state.selectedApp
-                : this.state.currentStep === 1
-                    ? !!this.state.selectedPersona
-                    : this.state.currentStep === 2
-                        ? (this.state.scenarioType === 'app' && !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError) || hasAllRequiredHookContext
-                        : this.state.title.length > 2;
+        let nextEnabled = this.checkNext();
         let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
         let prevColor = this.props.muiTheme.palette.primary2Color;
 
         let actions = this.state.currentStep !== 3
-            ? [<FlatButton disabled={!nextEnabled} label="NEXT" labelPosition="before" style={{ color: nextColor }} icon={<RightIcon/>} onClick={this.next}/>]
+            ? [<FlatButton disabled={!nextEnabled} label="NEXT" labelPosition="before" style={{color: nextColor}} icon={<RightIcon/>} onClick={this.next}/>]
             : [<RaisedButton disabled={!nextEnabled} label="SAVE" primary onClick={this.createScenario}/>];
 
         if (this.state.currentStep > -1) {
             actions.unshift(
-                <FlatButton label={<span className='perv-button-label'><LeftIcon style={{ color: prevColor }}/> BACK</span>} labelPosition="before" style={{ color: prevColor }} onClick={this.prev}/>
+                <FlatButton label={<span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>} labelPosition="before" style={{color: prevColor}} onClick={this.prev}/>
             );
         }
 
@@ -153,29 +136,29 @@ class Create extends Component {
 
     getContent = () => {
         let palette = this.props.muiTheme.palette;
-        let titleStyle = { color: palette.primary3Color };
-        let cardTitleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
-        let underlineFocusStyle = { borderColor: palette.primary2Color };
-        let floatingLabelFocusStyle = { color: palette.primary2Color };
-        let iconStyle = { color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px' };
-        let iconStyleSmaller = { color: palette.primary3Color, fill: palette.primary3Color, width: '18px', height: '18px' };
-        let rightIconGreenStyle = { color: palette.primary1Color, fill: palette.primary1Color, width: '16px', height: '16px' };
-        let rightIconRedStyle = { color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative' };
+        let titleStyle = {color: palette.primary3Color};
+        let cardTitleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
+        let underlineFocusStyle = {borderColor: palette.primary2Color};
+        let floatingLabelFocusStyle = {color: palette.primary2Color};
+        let iconStyle = {color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px'};
+        let iconStyleSmaller = {color: palette.primary3Color, fill: palette.primary3Color, width: '18px', height: '18px'};
+        let rightIconGreenStyle = {color: palette.primary1Color, fill: palette.primary1Color, width: '16px', height: '16px'};
+        let rightIconRedStyle = {color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative'};
 
         switch (this.state.currentStep) {
             case -1:
                 return <div className='type-selection-wrapper apps-screen-wrapper modal'>
                     <span className='modal-screen-title' style={titleStyle}>Select a launch scenario type</span>
-                    <Card title='App launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'app' })}>
+                    <Card title='App launch' className={`app-card small`} onClick={() => this.setState({scenarioType: 'app'})}>
                         <CardMedia className='media-wrapper'>
-                            <img style={{ height: '100%' }} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
+                            <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
                         </CardMedia>
                         <CardTitle className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>SMART App</h3>
                             <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'app'}/>
                         </CardTitle>
                     </Card>
-                    {!!this.props.hooks.length && <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({ scenarioType: 'hook' })}>
+                    {!!this.props.hooks.length && <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({scenarioType: 'hook'})}>
                         <CardMedia className='media-wrapper'>
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
@@ -208,7 +191,7 @@ class Create extends Component {
                 let personaList = this.props.personas;
                 let click = selectedPersona => {
                     if (selectedPersona) {
-                        let state = Object.assign({}, this.state, { selectedPersona });
+                        let state = Object.assign({}, this.state, {selectedPersona});
                         if (this.state.scenarioType === 'hook') {
                             state = this.addContexts(state, this.props, selectedPersona);
                         }
@@ -297,11 +280,12 @@ class Create extends Component {
                             </div>
                             <div className='summary-item'>
                                 <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'
-                                           onChange={(_, val) => this.onChange('title', val)} value={this.state.title}/>
+                                           onChange={(_, val) => this.onChange('title', val)} value={this.state.title} onKeyPress={this.submitMaybe}/>
                                 <span className='subscript'>{this.state.title.length} / 75</span>
                             </div>
                             <div className='summary-item'>
                                 <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
+                                           onKeyUp={e => this.submitMaybe(e, true)}
                                            floatingLabelText='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
                                 <span className='subscript'>{this.state.description.length} / 250</span>
                             </div>
@@ -309,6 +293,32 @@ class Create extends Component {
                     </div>
                 </div>;
         }
+    };
+
+    checkNext = () => {
+        let hasAllRequiredHookContext = this.state.scenarioType === 'hook' && Object.keys(this.props.resourceListLoadError).length === 0;
+
+        hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
+            let resType = this.props.hookContexts[this.state.selectedApp.hook][item].resourceType;
+            if (!this.state[item] || this.state[item].length === 0 || (typeof (resType) === 'string' && !this.props.resourceList[resType])) {
+                hasAllRequiredHookContext = false;
+            }
+        });
+
+        return this.state.currentStep === -1
+            ? !!this.state.scenarioType
+            : this.state.currentStep === 0
+                ? !!this.state.selectedApp
+                : this.state.currentStep === 1
+                    ? !!this.state.selectedPersona
+                    : this.state.currentStep === 2
+                        ? (this.state.scenarioType === 'app' && !this.props.singleEncounterLoadingError && !this.props.singleLocationLoadingError && !this.props.singleIntentLoadingError && !this.props.singleResourceLoadingError && !this.props.fetchingSinglePatientError) || hasAllRequiredHookContext
+                        : this.state.title.length > 2;
+    };
+
+    submitMaybe = (event, multiLine) => {
+        let nextEnabled = this.checkNext();
+        ([10, 13].indexOf(event.charCode) >= 0 || [10, 13].indexOf(event.keyCode) >= 0) && nextEnabled && (!multiLine || (multiLine && event.ctrlKey)) && this.createScenario();
     };
 
     addContexts = (state, props, selectedPersona) => {
@@ -389,7 +399,7 @@ class Create extends Component {
     };
 
     selectCard = (selectedApp, service) => {
-        this.setState({ selectedApp, requiredHookContext: [], service });
+        this.setState({selectedApp, requiredHookContext: [], service});
     };
 
     getRightColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
@@ -418,9 +428,9 @@ class Create extends Component {
                 <div className='column-item-wrapper'>
                     <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                     <div>
-                        <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{ backgroundColor: palette.primary5Color }}
-                                trackStyle={{ backgroundColor: palette.primary7Color }} toggled={this.state.patientBanner}
-                                thumbSwitchedStyle={{ backgroundColor: palette.primary2Color }} trackSwitchedStyle={{ backgroundColor: palette.primary2Color }}
+                        <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: palette.primary5Color}}
+                                trackStyle={{backgroundColor: palette.primary7Color}} toggled={this.state.patientBanner}
+                                thumbSwitchedStyle={{backgroundColor: palette.primary2Color}} trackSwitchedStyle={{backgroundColor: palette.primary2Color}}
                                 onToggle={(_, value) => this.onChange('patientBanner', value)}/>
                         <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
                     </div>
@@ -607,27 +617,27 @@ class Create extends Component {
 
     personaType = (_, personaType) => {
         this.props.fetchPersonas(PersonaList.TYPES.persona);
-        this.setState({ personaType, selectedPersona: null, showPersonaSelector: true });
+        this.setState({personaType, selectedPersona: null, showPersonaSelector: true});
     };
 
     togglePatientSearch = (patient) => {
         if (patient) {
-            this.setState({ selectedPatient: patient, showPatientSelectorWrapper: false, patientId: patient.id });
+            this.setState({selectedPatient: patient, showPatientSelectorWrapper: false, patientId: patient.id});
             setTimeout(() => {
-                this.setState({ showPatientSelector: false });
+                this.setState({showPatientSelector: false});
                 this.blur('patientId');
-                this.blurHookContext('patientId', { resourceType: 'Patient' }, this.state);
+                this.blurHookContext('patientId', {resourceType: 'Patient'}, this.state);
             }, 400);
         } else {
             this.props.fetchPersonas(PersonaList.TYPES.patient);
-            this.setState({ selectedPatient: null, showPatientSelector: true, showPatientSelectorWrapper: true });
+            this.setState({selectedPatient: null, showPatientSelector: true, showPatientSelectorWrapper: true});
         }
     };
 
     closePatientSearch = () => {
-        this.setState({ showPatientSelectorWrapper: false });
+        this.setState({showPatientSelectorWrapper: false});
         setTimeout(() => {
-            this.setState({ showPatientSelector: false });
+            this.setState({showPatientSelector: false});
         }, 400);
     };
 
@@ -657,7 +667,7 @@ class Create extends Component {
             data.cdsServiceEndpoint = this.state.service;
             data.contextParams = [];
             Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map(key => {
-                this.state[key] && this.state[key].length > 0 && data.contextParams.push({ name: key, value: this.state[key] });
+                this.state[key] && this.state[key].length > 0 && data.contextParams.push({name: key, value: this.state[key]});
             })
         }
 
@@ -668,7 +678,7 @@ class Create extends Component {
 
     next = () => {
         let currentStep = this.state.currentStep + 1;
-        let state = { currentStep };
+        let state = {currentStep};
         if (currentStep === 1) {
             this.props.fetchPersonas(PersonaList.TYPES.persona);
         } else if (this.state.titleIsClean && currentStep === 3 && !this.state.id) {
@@ -684,7 +694,7 @@ class Create extends Component {
 
     prev = () => {
         let currentStep = this.state.currentStep - 1;
-        let state = currentStep >= 0 ? { currentStep } : this.state.initialState;
+        let state = currentStep >= 0 ? {currentStep} : this.state.initialState;
         this.setState(state)
     };
 
