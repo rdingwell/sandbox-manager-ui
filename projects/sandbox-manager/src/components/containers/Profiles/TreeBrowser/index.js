@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient } from '../../../../redux/action-creators';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { Dialog, ListItem, RaisedButton, List } from 'material-ui';
-import Remove from 'material-ui/svg-icons/content/remove';
-import Folder from 'material-ui/svg-icons/file/folder';
-import Description from 'material-ui/svg-icons/action/description';
+import { Dialog, ListItem, RaisedButton, List } from '@material-ui/core';
+import Remove from '@material-ui/icons/Remove';
+import Folder from '@material-ui/icons/Folder';
+import Description from '@material-ui/icons/Description';
 import PersonaList from '../../Persona/List';
 import { getPatientName } from "sandbox-manager-lib/utils/fhir";
 
@@ -194,4 +193,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
 }, dispatch);
 
-export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(TreeBrowser)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(TreeBrowser));

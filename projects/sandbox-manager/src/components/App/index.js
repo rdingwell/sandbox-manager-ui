@@ -1,12 +1,12 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
-import {CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs} from "material-ui";
+import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme} from "@material-ui/core";
+import {ThemeProvider} from '@material-ui/styles';
+import {Feedback} from '@material-ui/icons';
 import Snackbar from '../UI/Snackbar';
 import ReactJson from 'react-json-view';
 import {Fragment} from 'react';
-import {getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
-import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
@@ -66,7 +66,7 @@ class App extends React.Component {
     render() {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
-        let theme = getMuiTheme(this.props.ui.theme);
+        let theme = createMuiTheme(this.props.ui.theme);
         let pathSplit = this.props.location.pathname.split('/');
         let isSingeHook = pathSplit[2] === 'hooks' && !!pathSplit[3];
         let layoutProps = {
@@ -88,7 +88,7 @@ class App extends React.Component {
         open && delete response.requestData;
         open && delete response.noCardsReturned;
 
-        return this.props.ui && <MuiThemeProvider muiTheme={theme}>
+        return this.props.ui && <ThemeProvider theme={theme}>
             <Layout {...layoutProps}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
@@ -97,9 +97,9 @@ class App extends React.Component {
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <RaisedButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
-                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><FeedbackIcon style={{color: 'white', marginTop: '5px'}}/>
-                    </RaisedButton>
+                    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
+                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>
+                    </Button>
                 </div>}
                 {showLoader && <Dialog className='loader-wrapper' modal open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
@@ -142,7 +142,7 @@ class App extends React.Component {
                     </Paper>
                 </Dialog>}
             </Layout>
-        </MuiThemeProvider>;
+        </ThemeProvider>;
     }
 
     dismiss = () => {

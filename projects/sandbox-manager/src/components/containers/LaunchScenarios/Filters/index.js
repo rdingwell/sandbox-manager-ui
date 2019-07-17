@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import DownIcon from "material-ui/svg-icons/navigation/arrow-drop-down";
-import { Chip, Menu, MenuItem, Popover } from 'material-ui';
+import DownIcon from '@material-ui/icons/ArrowDropDown';
+import { Chip, Menu, MenuItem, Popover } from '@material-ui/core';
 
 import './styles.less';
 

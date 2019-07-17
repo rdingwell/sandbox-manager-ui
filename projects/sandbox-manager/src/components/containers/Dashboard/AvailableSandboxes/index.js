@@ -1,23 +1,22 @@
-import React, { Component } from 'react';
-import { Paper, RaisedButton, List, ListItem, Avatar, IconButton, CircularProgress, SelectField, MenuItem } from 'material-ui';
-import { fetchSandboxes, selectSandbox, getLoginInfo } from '../../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {Paper, Button, List, ListItem, Avatar, IconButton, CircularProgress, Select, MenuItem} from '@material-ui/core';
+import {fetchSandboxes, selectSandbox, getLoginInfo} from '../../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { withRouter } from 'react-router';
-import { ActionLock, SocialPublic, ContentSort } from "material-ui/svg-icons/index";
-import muiThemeable from "material-ui/styles/muiThemeable";
+import {withRouter} from 'react-router';
+import {Lock, Public, Sort} from "@material-ui/icons";
 
 import './styles.less';
 
 const SORT_VALUES = [
-    { val: 'last_used', label: 'Last Used' },
-    { val: 'alphabetical', label: 'Alphabetical' }
+    {val: 'last_used', label: 'Last Used'},
+    {val: 'alphabetical', label: 'Alphabetical'}
 ];
 
 class Index extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -26,16 +25,16 @@ class Index extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         sessionStorage.clear();
     }
 
-    componentDidUpdate (prevProps) {
+    componentDidUpdate(prevProps) {
         let check = !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient;
         check && this.props.fetchSandboxes();
     }
 
-    render () {
+    render() {
         let sandboxes = null;
         if (!this.props.loading) {
             let list = this.sortSandboxes();
@@ -56,10 +55,10 @@ class Index extends Component {
                 let leftAvatar = <Avatar className={avatarClasses} backgroundColor={backgroundColor}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
                     ? <IconButton tooltip='Open endpoint'>
-                        <SocialPublic color={this.props.muiTheme.palette.primary3Color}/>
+                        <Public color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>
                     : <IconButton tooltip='Authorization required'>
-                        <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
+                        <Lock color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>;
                 return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
                     <ListItem primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'} data-qa={`sandbox-${sandbox.sandboxId}`}
@@ -72,16 +71,16 @@ class Index extends Component {
         return <Paper className='sandboxes-wrapper paper-card'>
             <h3>
                 <div className='sandbox-sort-wrapper'>
-                    <IconButton onClick={() => this.setState({ desc: !this.state.desc })}>
-                        <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary5Color}/>
+                    <IconButton onClick={() => this.setState({desc: !this.state.desc})}>
+                        <Sort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary5Color}/>
                     </IconButton>
-                    <SelectField style={{ width: '140px', marginLeft: '16px' }} labelStyle={{ color: this.props.muiTheme.palette.primary5Color }} underlineStyle={{ display: 'none' }} value={this.state.sort}
-                                 className='select' onChange={(_, sort) => this.setState({ sort: SORT_VALUES[sort].val })}>
+                    <Select style={{width: '140px', marginLeft: '16px'}} labelStyle={{color: this.props.muiTheme.palette.primary5Color}} underlineStyle={{display: 'none'}} value={this.state.sort}
+                            className='select' onChange={(_, sort) => this.setState({sort: SORT_VALUES[sort].val})}>
                         <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
-                    </SelectField>
+                    </Select>
                 </div>
-                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' data-qa='create-sandbox'/>
+                <Button variant='contained' id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' data-qa='create-sandbox'/>
             </h3>
             <div>
                 {!this.props.loading && <List>
@@ -115,8 +114,8 @@ class Index extends Component {
             });
         } else {
             return this.props.sandboxes.sort((a, b) => {
-                let timeA = (this.props.loginInfo || []).find(i => i.sandboxId === a.sandboxId) || { accessTimestamp: parseInt(a.id) };
-                let timeB = (this.props.loginInfo || []).find(i => i.sandboxId === b.sandboxId) || { accessTimestamp: parseInt(b.id) };
+                let timeA = (this.props.loginInfo || []).find(i => i.sandboxId === a.sandboxId) || {accessTimestamp: parseInt(a.id)};
+                let timeB = (this.props.loginInfo || []).find(i => i.sandboxId === b.sandboxId) || {accessTimestamp: parseInt(b.id)};
                 let val = timeA.accessTimestamp >= timeB.accessTimestamp ? -1 : 1;
                 if (!this.state.desc) {
                     val *= -1;
@@ -136,7 +135,7 @@ class Index extends Component {
         this.props.selectSandbox(sandbox);
     };
 
-    fetchSandboxes () {
+    fetchSandboxes() {
         window.fhirClient && this.props.fetchSandboxes();
     }
 }
@@ -151,7 +150,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchSandboxes, selectSandbox, getLoginInfo }, dispatch);
+    return bindActionCreators({fetchSandboxes, selectSandbox, getLoginInfo}, dispatch);
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Index))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));

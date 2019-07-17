@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { RaisedButton, Paper } from 'material-ui';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { Button, Paper } from '@material-ui/core';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from '@material-ui/core';
 import { fetchSandboxInvites } from '../../../../redux/action-creators';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -33,8 +33,8 @@ class SandboxInvites extends Component {
                             {invite.sandbox.name}
                         </TableRowColumn>
                         <TableRowColumn>
-                            <RaisedButton backgroundColor='#0186d5' label='Accept' className='button' onClick={this.handleAccept} labelColor='#fff' />
-                            <RaisedButton backgroundColor='#fe824c' label='Reject' className='button' onClick={this.handleReject} labelColor='#fff' />
+                            <Button variant='contained' backgroundColor='#0186d5' label='Accept' className='button' onClick={this.handleAccept} labelColor='#fff' />
+                            <Button variant='contained' backgroundColor='#fe824c' label='Reject' className='button' onClick={this.handleReject} labelColor='#fff' />
                         </TableRowColumn>
                     </TableRow>
                 ));

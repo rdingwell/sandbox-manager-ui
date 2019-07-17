@@ -1,16 +1,12 @@
 import React, {Component} from 'react';
-import {
-    Dialog, RaisedButton, IconButton, CircularProgress, TableRowColumn, TableRow, TableBody, Table, TableHeader, TableHeaderColumn, Popover, Menu, MenuItem, FloatingActionButton, TextField, Snackbar
-} from 'material-ui';
-import muiThemeable from "material-ui/styles/muiThemeable";
-import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
-import Redo from 'material-ui/svg-icons/content/redo';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import {Dialog, Button, IconButton, CircularProgress, TableRowColumn, TableRow, TableBody, Table, TableHeader, TableHeaderColumn, Popover, Menu, MenuItem, Fab, TextField, Snackbar} from '@material-ui/core';
+import MoreIcon from "@material-ui/icons/MoreVert";
+import Redo from '@material-ui/icons/Redo';
+import ContentAdd from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {inviteNewUser, removeInvitation, fetchSandboxInvites, removeUser, toggleUserAdminRights} from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import moment from 'moment';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import './styles.less';
 import {withRouter} from "react-router";
@@ -49,13 +45,13 @@ class Users extends Component {
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <RaisedButton label='MANAGE INVITES' backgroundColor={this.props.muiTheme.palette.primary2Color} labelColor='#FFF' onClick={this.showInvitationsModal}/>
-                    <RaisedButton label='EXPORT USERS' primary onClick={this.exportUsers}/>
-                    <RaisedButton label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
+                    <Button variant='contained' label='MANAGE INVITES' backgroundColor={this.props.muiTheme.palette.primary2Color} labelColor='#FFF' onClick={this.showInvitationsModal}/>
+                    <Button variant='contained' label='EXPORT USERS' primary onClick={this.exportUsers}/>
+                    <Button variant='contained' label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
                 </div>
                 {this.state.inviteModal &&
                 <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
-                        paperClassName='invitations-modal' actions={[<RaisedButton label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
+                        paperClassName='invitations-modal' actions={[<Button variant='contained' label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITE</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -68,7 +64,7 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onRequestClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
-                                                        actions={[<FloatingActionButton onClick={this.toggleCreateModal}><ContentAdd/></FloatingActionButton>]} paperClassName='invitations-modal'>
+                                                        actions={[<Fab onClick={this.toggleCreateModal}><ContentAdd/></Fab>]} paperClassName='invitations-modal'>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITES</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -92,8 +88,9 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {this.state.userToRemove && <Dialog modal={false} open={this.state.open} onRequestClose={this.handleClose} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                                                    actions={<RaisedButton label="Remove" labelColor={this.props.muiTheme.palette.primary5Color} backgroundColor={this.props.muiTheme.palette.primary4Color}
-                                                                           keyboardFocused onClick={this.deleteSandboxUserHandler}/>}>
+                                                    actions={<Button variant='contained' label="Remove" labelColor={this.props.muiTheme.palette.primary5Color}
+                                                                     backgroundColor={this.props.muiTheme.palette.primary4Color}
+                                                                     keyboardFocused onClick={this.deleteSandboxUserHandler}/>}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>Remove User from Sandbox</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -106,8 +103,8 @@ class Users extends Component {
                 </Dialog>}
                 {this.state.importUsersModal &&
                 <Dialog modal={false} open={this.state.importUsersModal} onRequestClose={this.toggleImportUsersModal} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                        actions={[<RaisedButton label="Import" style={{marginRight: '10px'}} onClick={this.importUsers} primary/>,
-                            <RaisedButton label='Load from file (csv)' primary onClick={() => this.refs.file.click()}/>]}>
+                        actions={[<Button variant='contained' label="Import" style={{marginRight: '10px'}} onClick={this.importUsers} primary/>,
+                            <Button variant='contained' label='Load from file (csv)' primary onClick={() => this.refs.file.click()}/>]}>
                     <div className='screen-title imports' style={titleStyle}>
                         <h1 style={titleStyle}>Import users</h1>
                         <IconButton className="close-button" onClick={this.toggleImportUsersModal}>
@@ -384,4 +381,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({fetchSandboxInvites, removeUser, toggleUserAdminRights, inviteNewUser, removeInvitation}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(withRouter(Users))));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(Users)));

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { TextField, Paper, FloatingActionButton, List, ListItem } from 'material-ui';
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { TextField, Paper, FloatingActionButton, List, ListItem } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 
 import './styles.less';
 import { parseEntry } from "sandbox-manager-lib/utils";

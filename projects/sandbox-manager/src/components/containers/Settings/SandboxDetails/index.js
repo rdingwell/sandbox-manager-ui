@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {CircularProgress, Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog} from 'material-ui';
-import Redo from 'material-ui/svg-icons/content/redo';
-import Delete from 'material-ui/svg-icons/action/delete';
-import Edit from 'material-ui/svg-icons/image/edit';
+import {Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog} from '@material-ui/core';
+import Redo from '@material-ui/icons/Redo';
+import Delete from '@material-ui/icons/Delete';
+import Edit from '@material-ui/icons/Edit';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {bindActionCreators} from 'redux';

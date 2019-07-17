@@ -9,35 +9,34 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import {
-    CircularProgress, Card, IconButton, FloatingActionButton, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
-    TextField, SelectField, Toggle
-} from 'material-ui';
-import {ContentSort} from "material-ui/svg-icons/index";
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import CheckIcon from 'material-ui/svg-icons/navigation/check';
-import EditIcon from 'material-ui/svg-icons/image/edit';
+    CircularProgress, Card, IconButton, Fab, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
+    TextField, Select, Switch
+} from '@material-ui/core';
 import PersonaList from '../Persona/List';
-import LaunchIcon from "material-ui/svg-icons/av/play-circle-outline";
-import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
-import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
-import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
-import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
-import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
-import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
-import WebIcon from "material-ui/svg-icons/av/web";
-import AccountIcon from "material-ui/svg-icons/action/account-box";
-import DeleteIcon from "material-ui/svg-icons/action/delete";
-import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
-import EventIcon from "material-ui/svg-icons/action/event";
-import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
-import FilterList from "material-ui/svg-icons/content/filter-list";
-import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
-import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
+import ContentSort from '@material-ui/icons/Sort';
+import ContentAdd from '@material-ui/icons/Add';
+import CheckIcon from '@material-ui/icons/Check';
+import EditIcon from '@material-ui/icons/Edit';
+import LaunchIcon from '@material-ui/icons/PlayCircleOutline';
+import WebIcon from '@material-ui/icons/Web';
+import AccountIcon from '@material-ui/icons/AccountBox';
+import DeleteIcon from '@material-ui/icons/Delete';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import EventIcon from '@material-ui/icons/Event';
+import DownIcon from '@material-ui/icons/KeyboardArrowDown';
+import FilterList from '@material-ui/icons/FilterList';
+import HospitalIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg';
+import DescriptionIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg';
+import LinkIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg';
+import FullScreenIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg';
+import HooksIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg';
+import BulbIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg';
+import Patient from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg';
+import ContextIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg';
 import Page from 'sandbox-manager-lib/components/Page';
-import DohMessage from "sandbox-manager-lib/components/DohMessage";
-import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
+import DohMessage from 'sandbox-manager-lib/components/DohMessage';
+import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 import Filters from './Filters';
-import muiThemeable from "material-ui/styles/muiThemeable";
 import Create from './Create';
 
 import './styles.less';
@@ -95,7 +94,7 @@ class LaunchScenarios extends Component {
                 this.setState({showConfirmModal: false})
             }} onCancel={() => this.setState({showConfirmModal: false, scenarioToDelete: undefined})} title='Confirm'>
                 <p>
-                    Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '"' + this.state.scenarioToDelete.title + '"' : 'this launch scenario'}?
+                    Are you sure you want to delete {this.state.scenarioToDelete && this.state.scenarioToDelete.title ? '' + this.state.scenarioToDelete.title + '' : 'this launch scenario'}?
                 </p>
             </ConfirmModal>
             <div className='launch-scenarios-wrapper'>
@@ -104,19 +103,19 @@ class LaunchScenarios extends Component {
                     <IconButton onClick={() => this.setState({desc: !this.state.desc})} className='sort-button'>
                         <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>
-                    <SelectField style={{width: '140px', marginLeft: '16px'}} labelStyle={{color: this.props.muiTheme.palette.primary6Color}} underlineStyle={{display: 'none'}}
-                                 value={this.state.sort}
-                                 className='sort-select' onChange={(_, sort) => this.setState({sort: SORT_VALUES[sort].val})}>
+                    <Select style={{width: '140px', marginLeft: '16px'}} labelStyle={{color: this.props.muiTheme.palette.primary6Color}} underlineStyle={{display: 'none'}}
+                            value={this.state.sort}
+                            className='sort-select' onChange={(_, sort) => this.setState({sort: SORT_VALUES[sort].val})}>
                         <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
-                    </SelectField>
+                    </Select>
                     <FilterList color={this.props.muiTheme.palette.primary3Color}/>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>}
                     <div className='actions'>
-                        <FloatingActionButton onClick={this.toggleCreateModal}>
+                        <Fab onClick={this.toggleCreateModal}>
                             <ContentAdd/>
-                        </FloatingActionButton>
+                        </Fab>
                     </div>
                 </div>
                 <div>
@@ -153,7 +152,7 @@ class LaunchScenarios extends Component {
     };
 
     openEHRSimulator = (sc) => {
-        const cookieUrl = window.location.host.split(":")[0].split(".").slice(-2).join(".");
+        const cookieUrl = window.location.host.split(':')[0].split('.').slice(-2).join('.');
         const date = new Date();
         const token = {
             sandboxId: this.props.sandbox.sandboxId, sandboxApiUrl: this.props.sandboxApiUrl, appId: sc.app.id, personaId: sc.userPersona.id, patientId: sc.patient,
@@ -348,7 +347,7 @@ class LaunchScenarios extends Component {
                     {selectedScenario.app && <div>
                         <span className='section-value' style={lightColor}>
                             <Patient style={iconStyleLight}/>
-                            {selectedScenario.patientName && <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: "underline"}}
+                            {selectedScenario.patientName && <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: 'underline'}}
                                                                    onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
                             {!selectedScenario.patientName && <span>-</span>}
                         </span>
@@ -374,7 +373,7 @@ class LaunchScenarios extends Component {
                         </span>
                         <span className='section-value' style={lightColor}>
                             <FullScreenIcon style={iconStyleLight}/>
-                            <Toggle className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} labelStyle={needsBanner}
+                            <Switch className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} labelStyle={needsBanner}
                                     thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
                                     trackStyle={{backgroundColor: this.props.muiTheme.palette.primary7Color}} toggled={selectedScenario.needPatientBanner === 'T'}
                                     thumbSwitchedStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}
@@ -400,9 +399,9 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <FloatingActionButton onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
+                        <Fab onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
                             {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
-                        </FloatingActionButton>
+                        </Fab>
                         <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
                             <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
                                 <TableRow>
@@ -570,4 +569,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 );
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(LaunchScenarios)))
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(LaunchScenarios));

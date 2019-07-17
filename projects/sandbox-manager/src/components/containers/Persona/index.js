@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import { createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart, getDefaultUserForSandbox } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {createResource, getPersonasPage, fetchPersonas, deletePersona, app_setScreen, createPersona, lookupPersonasStart, getDefaultUserForSandbox} from '../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 import PersonaList from './List';
-import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
 class Persona extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let type = getType(props);
@@ -24,20 +23,20 @@ class Persona extends Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         let type = this.state.type;
         type === PersonaList.TYPES.persona && this.props.fetchPersonas(type);
         this.props.app_setScreen(type === PersonaList.TYPES.patient ? 'patients' : type === PersonaList.TYPES.practitioner ? 'practitioners' : 'personas');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         let type = getType(nextProps);
-        type !== this.state.type && this.setState({ type, createPersona: false });
+        type !== this.state.type && this.setState({type, createPersona: false});
         (type !== this.state.type || (this.props.creatingPersona && !nextProps.creatingPersona)) && type === PersonaList.TYPES.persona && this.props.fetchPersonas(type);
     }
 
-    render () {
+    render() {
         let type = this.state.type;
         let props = {
             key: type, type,
@@ -59,7 +58,7 @@ class Persona extends Component {
     }
 
     closeDialog = () => {
-        this.setState({ selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined });
+        this.setState({selectPractitioner: false, selectPatient: false, selectedForCreation: undefined, username: undefined, password: undefined, viewPersona: undefined});
     };
 
     createPersona = () => {
@@ -75,11 +74,11 @@ class Persona extends Component {
     selectPersonHandler = (persona) => {
         this.props.doLaunch && this.props.doLaunch(persona);
         this.props.doLaunch && this.closeDialog();
-        !this.props.doLaunch && this.setState({ viewPersona: persona });
+        !this.props.doLaunch && this.setState({viewPersona: persona});
     };
 }
 
-function getType (props) {
+function getType(props) {
     return (props.location && props.location.pathname.indexOf('/patients') >= 0) || (props.type === 'Patient')
         ? PersonaList.TYPES.patient
         : (props.location && props.location.pathname.indexOf('/practitioners') >= 0) || (props.type === 'Practitioner')
@@ -87,7 +86,7 @@ function getType (props) {
             : PersonaList.TYPES.persona;
 }
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps(state, ownProps) {
     let type = getType(ownProps);
 
     let currentPersonas = type === PersonaList.TYPES.patient ? state.persona.patients
@@ -115,4 +114,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 
-export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona));

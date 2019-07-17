@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { IconButton } from 'material-ui';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 import './index.less';
 

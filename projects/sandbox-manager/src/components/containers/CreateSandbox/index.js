@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Checkbox, RaisedButton, Paper, TextField, SelectField, MenuItem, IconButton, Dialog} from 'material-ui';
+import {Checkbox, Button, Paper, TextField, Select, MenuItem, IconButton, Dialog} from '@material-ui/core';
 import * as  actions from '../../../redux/action-creators';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import muiThemeable from "material-ui/styles/muiThemeable";
 import {withRouter} from 'react-router';
 import './styles.less';
 
@@ -36,8 +35,7 @@ class Index extends Component {
         let submittable = this.checkSubmittable();
 
         let actions = [
-            <RaisedButton key={1} label='Create' disabled={!submittable} className='button' primary onClick={this.handleCreateSandbox}
-                          data-qa='sandbox-submit-button' ref='submitButton'/>
+            <Button variant='contained' key={1} label='Create' disabled={!submittable} className='button' primary onClick={this.handleCreateSandbox} data-qa='sandbox-submit-button' ref='submitButton'/>
         ];
 
         let underlineFocusStyle = {borderColor: this.props.muiTheme.palette.primary2Color};
@@ -61,12 +59,12 @@ class Index extends Component {
                                        errorText={duplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/><br/>
                             <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
-                            <SelectField value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
-                                         className='fhirVersion' floatingLabelText='FHIR version' data-qa='sandbox-version'>
+                            <Select value={this.state.apiEndpointIndex} onChange={(_e, _k, value) => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', value)}
+                                    className='fhirVersion' floatingLabelText='FHIR version' data-qa='sandbox-version'>
                                 <MenuItem value='8' primaryText='FHIR DSTU2 (v1.0.2)' data-qa='fhir-dstu2'/>
                                 <MenuItem value='9' primaryText='FHIR STU3 (v3.0.1)' data-qa='fhir-stu3'/>
                                 <MenuItem value='10' primaryText='FHIR R4 (v4.0.0)' data-qa='fhir-r4'/>
-                            </SelectField>
+                            </Select>
                             <div className='subscript'>Choose a version of the FHIR Standard</div>
                             <br/>
                             <div className='checkboxes'>
@@ -180,4 +178,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Index))));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index)));

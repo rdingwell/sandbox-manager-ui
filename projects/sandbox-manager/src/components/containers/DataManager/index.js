@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-import { Tabs, Tab } from 'material-ui';
+import React, {Component} from 'react';
+import {Tabs, Tab} from '@material-ui/core';
 import * as QueryString from 'query-string';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage }
+import {importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage}
     from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import QueryBrowser from './QueryBrowser';
 import Import from "./Import";
 import Export from './Export';
-import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
 class DataManager extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -22,16 +21,16 @@ class DataManager extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.app_setScreen('data-manager');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
-    render () {
+    render() {
         let query = QueryString.parse(this.props.history.location.search);
 
         return <div className='data-manager-wrapper page-content-wrapper' data-qa='data-manager-wrapper'>
-            <Tabs className='data-tabs' contentContainerClassName='data-tabs-container' inkBarStyle={{ backgroundColor: this.props.muiTheme.palette.primary2Color }}>
+            <Tabs className='data-tabs' contentContainerClassName='data-tabs-container' inkBarStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}>
                 <Tab label="Browser" className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')} onActive={() => this.setActiveTab('browser')}>
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme}
                                   executing={this.props.executing} next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>
@@ -55,7 +54,7 @@ class DataManager extends Component {
     };
 
     setActiveTab = (tab) => {
-        this.setState({ activeTab: tab });
+        this.setState({activeTab: tab});
     };
 
     next = (link) => {
@@ -82,4 +81,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload
 }, dispatch);
 
-export default muiThemeable()(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager));

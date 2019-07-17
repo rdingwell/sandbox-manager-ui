@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import { Card, CardMedia, CardTitle } from 'material-ui';
+import React, {Component} from 'react';
+import {Card, CardMedia} from '@material-ui/core';
 import Page from 'sandbox-manager-lib/components/Page';
 import HelpButton from '../../UI/HelpButton';
-import { app_setScreen } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
+import {app_setScreen} from '../../../redux/action-creators';
+import {connect} from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { bindActionCreators } from 'redux';
+import {bindActionCreators} from 'redux';
 
 import './styles.less';
 
@@ -38,14 +37,14 @@ const TOOLS = [
 ];
 
 class Tools extends Component {
-    componentDidMount () {
+    componentDidMount() {
         this.props.app_setScreen('tools');
     }
 
-    render () {
-        let titleStyle = { backgroundColor: 'rgba(0,87,120, 0.75)' };
+    render() {
+        let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
 
-        return <Page title='Third Party Tools' helpIcon={<HelpButton style={{ marginLeft: '10px' }}/>}>
+        return <Page title='Third Party Tools' helpIcon={<HelpButton style={{marginLeft: '10px'}}/>}>
             <a ref='openLink' target='_blank'/>
             <div className='tools'>
                 {TOOLS.map(t =>
@@ -53,10 +52,10 @@ class Tools extends Component {
                         <CardMedia className='media-wrapper'>
                             <img className='tool-icon' src={t.image}/>
                         </CardMedia>
-                        <CardTitle className='card-title' style={titleStyle}>
+                        <div className='card-title' style={titleStyle}>
                             <h3 className='tool-name'>{t.title}</h3>
                             <div className='tool-description'>{t.description}</div>
-                        </CardTitle>
+                        </div>
                     </Card>
                 )}
             </div>
@@ -73,6 +72,6 @@ class Tools extends Component {
 const mapStateToProps = state => {
     return {}
 };
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Tools)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Tools));

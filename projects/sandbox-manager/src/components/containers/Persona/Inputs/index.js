@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Paper, TextField} from 'material-ui';
+import {Paper, TextField} from '@material-ui/core';
 import {parseNames} from 'sandbox-manager-lib/utils/fhir';
 
 import './styles.less';

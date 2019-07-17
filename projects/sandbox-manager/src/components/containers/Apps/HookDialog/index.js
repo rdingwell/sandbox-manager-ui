@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { RaisedButton, Paper, Dialog, IconButton, FloatingActionButton, TextField, Toggle, Tab, Tabs } from 'material-ui';
-import DeleteIcon from "material-ui/svg-icons/action/delete";
+import { Button, Paper, Dialog, IconButton, Fab, TextField, Tab, Tabs } from '@material-ui/core';
+import DeleteIcon from "@material-ui/icons/Delete";
 import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
 import './styles.less';
 import ReactJson from 'react-json-view';
@@ -52,7 +52,7 @@ class AppDialog extends Component {
                                 </div>
                                 <form className='image-form'>
                                     <div className='image-button-wrapper'>
-                                        <RaisedButton label='Select Image' onClick={() => this.refs.image.click()}/>
+                                        <Button variant='contained' label='Select Image' onClick={() => this.refs.image.click()}/>
                                         <div>
                                             <span className='subscript'>(Display size 300px W X 200px H)</span>
                                         </div>
@@ -66,12 +66,12 @@ class AppDialog extends Component {
                                         {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI}/>}
                                     </div>
                                     {this.state.logoURI &&
-                                    <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
+                                    <Fab onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
                                         <DeleteIcon/>
-                                    </FloatingActionButton>}
+                                    </Fab>}
                                 </form>
                                 <div className='save-btn-wrapper'>
-                                    <RaisedButton className='save-btn' primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
+                                    <Button variant='contained' className='save-btn' primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
                                 </div>
                             </Fragment>
                         </Tab>

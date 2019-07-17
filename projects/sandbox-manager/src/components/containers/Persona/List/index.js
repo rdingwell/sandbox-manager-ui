@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Badge, CircularProgress, FloatingActionButton, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui';
-import DownIcon from "material-ui/svg-icons/hardware/keyboard-arrow-down";
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import LaunchIcon from 'material-ui/svg-icons/image/edit';
-import DeleteIcon from "material-ui/svg-icons/action/delete";
-import MoreIcon from "material-ui/svg-icons/navigation/more-vert";
-import FilterList from "material-ui/svg-icons/content/filter-list";
+import { Badge, CircularProgress, Fab, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from '@material-ui/core';
+import DownIcon from "@material-ui/icons/KeyboardArrowDown";
+import ContentAdd from '@material-ui/icons/Add';
+import LaunchIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@material-ui/icons/Delete";
+import FilterList from "@material-ui/icons/FilterList";
 import Filters from '../Filters';
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
 import ConfirmModal from "sandbox-manager-lib/components/ConfirmModal";
@@ -117,15 +116,15 @@ class PersonaList extends Component {
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
-                        {(isPractitioner || isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal()}>
+                        {(isPractitioner || isPatient) && !this.props.modal && <Fab onClick={() => this.toggleCreateModal()}>
                             <ContentAdd/>
-                        </FloatingActionButton>}
-                        {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.patient)} style={{ marginRight: '16px' }}>
+                        </Fab>}
+                        {(!isPractitioner && !isPatient) && !this.props.modal && <Fab onClick={() => this.toggleCreateModal(TYPES.patient)} style={{ marginRight: '16px' }}>
                             <Patient style={{ width: '26px', fill: this.props.theme.primary5Color }}/>
-                        </FloatingActionButton>}
-                        {(!isPractitioner && !isPatient) && !this.props.modal && <FloatingActionButton onClick={() => this.toggleCreateModal(TYPES.practitioner)}>
+                        </Fab>}
+                        {(!isPractitioner && !isPatient) && !this.props.modal && <Fab onClick={() => this.toggleCreateModal(TYPES.practitioner)}>
                             <i className='fa fa-user-md fa-lg'/>
-                        </FloatingActionButton>}
+                        </Fab>}
                     </div>
                 </div>}
                 <div style={{ position: this.props.modal ? 'relative' : 'absolute', width: '100%' }}>

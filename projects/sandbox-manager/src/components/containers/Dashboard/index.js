@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import AvailableSandboxes from './AvailableSandboxes';
-import { Dialog, IconButton, Paper, RaisedButton } from 'material-ui';
+import {Dialog, IconButton, Paper, Button} from '@material-ui/core';
 import CreateSandbox from '../CreateSandbox';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
-import { app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite } from '../../../redux/action-creators';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite} from '../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import './styles.less';
 import Footer from "sandbox-manager-lib/components/Navigation/Footer";
 import Page from 'sandbox-manager-lib/components/Page';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { NavigationCheck, NavigationClose } from 'material-ui/svg-icons';
 
 class Dashboard extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -23,31 +21,31 @@ class Dashboard extends Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.app_setScreen('dashboard');
         this.props.fetchSandboxes();
     }
 
-    componentWillUpdate (nextProps) {
+    componentWillUpdate(nextProps) {
         let invitationToAccept = this.getInvitationToAccept();
         if (this.props.loading && !nextProps.loading && invitationToAccept) {
-            this.setState({ showAccept: true, invitationToAccept });
+            this.setState({showAccept: true, invitationToAccept});
         }
     }
 
-    render () {
+    render() {
         let invite = this.state.showAccept && this.props.userInvites.find(i => i.id == this.state.invitationToAccept);
         let dialog = this.state.open
             ? <CreateSandbox onCancel={this.toggle} open={this.state.open}/>
             : this.state.showAccept && invite
                 ? <Dialog open={this.state.showAccept} bodyClassName='invitation-dialog'
                           actions={[
-                              <RaisedButton style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
-                              <RaisedButton secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
-                              ]}>
+                              <Button variant='contained' style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
+                              <Button variant='contained' secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
+                          ]}>
                     <div className='sandbox-invitation-wrapper'>
                         <Paper className='paper-card'>
-                            <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleCancel}>
+                            <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.handleCancel}>
                                 <i className="material-icons">close</i>
                             </IconButton>
                             <h3>
@@ -59,7 +57,7 @@ class Dashboard extends Component {
                                 </div>
                             </div>
                         </Paper>
-                        <div style={{ clear: 'both' }}/>
+                        <div style={{clear: 'both'}}/>
                     </div>
                 </Dialog>
                 : null;
@@ -74,7 +72,7 @@ class Dashboard extends Component {
     }
 
     toggle = () => {
-        this.setState({ open: !this.state.open });
+        this.setState({open: !this.state.open});
     };
 
     getInvitationToAccept = () => {
@@ -100,7 +98,7 @@ class Dashboard extends Component {
         } else {
             document.cookie = "hspc-invitation-id=;expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.hspconsortium.org; path=/";
         }
-        this.setState({ showAccept: false, invitationToAccept: undefined });
+        this.setState({showAccept: false, invitationToAccept: undefined});
     };
 }
 
@@ -111,6 +109,6 @@ const mapStateToProps = state => {
         userInvites: state.sandbox.userInvites
     }
 };
-const mapDispatchToProps = dispatch => bindActionCreators({ app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Dashboard)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Dashboard));

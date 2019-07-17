@@ -1,26 +1,25 @@
 import React, {Component, Fragment} from 'react';
-import {Card, CardMedia, CardTitle, CircularProgress, Dialog, FlatButton, IconButton, RadioButton, RaisedButton, Step, StepLabel, Stepper, TextField, Toggle} from "material-ui";
-import RightIcon from "material-ui/svg-icons/hardware/keyboard-arrow-right";
-import LeftIcon from "material-ui/svg-icons/hardware/keyboard-arrow-left";
-import AccountIcon from "material-ui/svg-icons/action/account-box";
-import SearchIcon from "material-ui/svg-icons/action/search";
-import EventIcon from "material-ui/svg-icons/action/event";
-import CheckIcon from "material-ui/svg-icons/navigation/check";
-import CloseIcon from "material-ui/svg-icons/navigation/close";
-import PatientIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
-import HospitalIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg";
-import DescriptionIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg";
-import BulbIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg";
-import LinkIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg";
-import FullScreenIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg";
-import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
-import ContextIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg";
-import HooksIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg";
-import WebIcon from "material-ui/svg-icons/av/web";
-import {getPatientName, getAge} from "sandbox-manager-lib/utils/fhir";
-import PersonaList from "../../Persona/List";
+import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch} from '@material-ui/core';
+import RightIcon from '@material-ui/icons/KeyboardArrowRight';
+import LeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import AccountIcon from '@material-ui/icons/AccountBox';
+import SearchIcon from '@material-ui/icons/Search';
+import EventIcon from '@material-ui/icons/Event';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import WebIcon from '@material-ui/icons/Web';
+import PatientIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg';
+import HospitalIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg';
+import DescriptionIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg';
+import BulbIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg';
+import LinkIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg';
+import FullScreenIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg';
+import InfoIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg';
+import ContextIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg';
+import HooksIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg';
+import {getPatientName, getAge} from 'sandbox-manager-lib/utils/fhir';
+import PersonaList from '../../Persona/List';
 import Apps from '../../Apps';
-import muiThemeable from "material-ui/styles/muiThemeable";
 
 import './styles.less';
 
@@ -87,8 +86,8 @@ class Create extends Component {
         return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
                        actionsContainerClassName='create-modal-actions'>
             <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
-            <IconButton style={{color: palette.primary5Color}} className="close-button" onClick={this.props.close}>
-                <i className="material-icons" data-qa="modal-close-button">close</i>
+            <IconButton style={{color: palette.primary5Color}} className='close-button' onClick={this.props.close}>
+                <i className='material-icons' data-qa='modal-close-button'>close</i>
             </IconButton>
             {this.state.currentStep >= 0 && <div className='stepper'>
                 {this.getStepper()}
@@ -122,12 +121,12 @@ class Create extends Component {
         let prevColor = this.props.muiTheme.palette.primary2Color;
 
         let actions = this.state.currentStep !== 3
-            ? [<FlatButton disabled={!nextEnabled} label="NEXT" labelPosition="before" style={{color: nextColor}} icon={<RightIcon/>} onClick={this.next}/>]
-            : [<RaisedButton disabled={!nextEnabled} label="SAVE" primary onClick={this.createScenario}/>];
+            ? [<Button variant='outlined' disabled={!nextEnabled} label='NEXT' labelPosition='before' style={{color: nextColor}} icon={<RightIcon/>} onClick={this.next}/>]
+            : [<Button variant='contained' disabled={!nextEnabled} label='SAVE' primary onClick={this.createScenario}/>];
 
         if (this.state.currentStep > -1) {
             actions.unshift(
-                <FlatButton label={<span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>} labelPosition="before" style={{color: prevColor}} onClick={this.prev}/>
+                <Button variant='outlined' label={<span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>} labelPosition='before' style={{color: prevColor}} onClick={this.prev}/>
             );
         }
 
@@ -153,28 +152,28 @@ class Create extends Component {
                         <CardMedia className='media-wrapper'>
                             <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
                         </CardMedia>
-                        <CardTitle className='card-title' style={cardTitleStyle}>
+                        <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>SMART App</h3>
-                            <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'app'}/>
-                        </CardTitle>
+                            <Switch className='app-radio' value='selected' checked={this.state.scenarioType === 'app'}/>
+                        </div>
                     </Card>
                     {!!this.props.hooks.length && <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({scenarioType: 'hook'})}>
                         <CardMedia className='media-wrapper'>
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
-                        <CardTitle className='card-title' style={cardTitleStyle}>
+                        <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>CDS Hook</h3>
-                            <RadioButton className='app-radio' value="selected" checked={this.state.scenarioType === 'hook'}/>
-                        </CardTitle>
+                            <Switch className='app-radio' value='selected' checked={this.state.scenarioType === 'hook'}/>
+                        </div>
                     </Card>}
                     {!this.props.hooks.length && <Card title='Hook launch' className={`app-card small disabled`}>
                         <CardMedia className='media-wrapper'>
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
-                        <CardTitle className='card-title' style={cardTitleStyle}>
+                        <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>CDS Hook</h3>
                             <h3 className='app-name disabled'>No services</h3>
-                        </CardTitle>
+                        </div>
                     </Card>}
                 </div>;
             case 0:
@@ -266,7 +265,7 @@ class Create extends Component {
                                 <div className='summary-item-icon-right'>
                                     {this.state.selectedPersona.type === 'Patient'
                                         ? <PatientIcon style={iconStyle}/>
-                                        : <i className="fa fa-user-md fa-2x"/>}
+                                        : <i className='fa fa-user-md fa-2x'/>}
                                 </div>
                             </div>
                             <div className='summary-item'>
@@ -428,7 +427,7 @@ class Create extends Component {
                 <div className='column-item-wrapper'>
                     <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                     <div>
-                        <Toggle className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: palette.primary5Color}}
+                        <Switch className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: palette.primary5Color}}
                                 trackStyle={{backgroundColor: palette.primary7Color}} toggled={this.state.patientBanner}
                                 thumbSwitchedStyle={{backgroundColor: palette.primary2Color}} trackSwitchedStyle={{backgroundColor: palette.primary2Color}}
                                 onToggle={(_, value) => this.onChange('patientBanner', value)}/>
@@ -724,4 +723,4 @@ class Create extends Component {
     };
 }
 
-export default muiThemeable()(Create);
+export default Create;

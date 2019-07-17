@@ -1,12 +1,13 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Card, CardMedia, CardTitle, Dialog, CardActions, FlatButton, RaisedButton, IconButton, FloatingActionButton, RadioButton, Paper, Snackbar, TextField} from 'material-ui';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import InfoIcon from 'material-ui/svg-icons/action/info-outline';
-import Publish from 'material-ui/svg-icons/editor/publish';
-import LaunchIcon from 'material-ui/svg-icons/av/play-circle-outline';
-import UpdateIcon from 'material-ui/svg-icons/navigation/refresh';
-import ContentCopy from 'material-ui/svg-icons/content/content-copy';
+import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio} from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ContentAdd from '@material-ui/icons/Add';
+import InfoIcon from '@material-ui/icons/Info';
+import Publish from '@material-ui/icons/Publish';
+import LaunchIcon from '@material-ui/icons/Launch';
+import UpdateIcon from '@material-ui/icons/Update';
+import ContentCopy from '@material-ui/icons/FileCopy';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Page from 'sandbox-manager-lib/components/Page';
 import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
 import API from '../../../lib/api';
@@ -27,10 +28,8 @@ import PersonaList from "../Persona/List";
 import DohMessage from "sandbox-manager-lib/components/DohMessage";
 
 import './styles.less';
-import muiThemeable from "material-ui/styles/muiThemeable";
 import {isUrlValid} from '../../../lib/misc';
 import HelpButton from '../../UI/HelpButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 const POSTFIX = '/.well-known/smart/manifest.json';
 const NEEDED_PROPS = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -92,15 +91,14 @@ class Apps extends Component {
             ? 'https://cds-hooks.org/specification/1.0/'
             : 'https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/60915727/Sandbox+Registered+Apps';
 
-        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'}
-                     helpIcon={<HelpButton style={{marginLeft: '10px'}} url={url}/>}>
+        return <Page noTitle={this.props.modal} title={this.props.title ? this.props.title : 'Registered Apps'} helpIcon={<HelpButton style={{marginLeft: '10px'}} url={url}/>}>
             <div className='apps-page-wrapper' data-qa='app-page-wrapper'>
                 {!this.props.modal && <div className='filter-wrapper'>
                     <div className='actions'>
                         <span className='dummy-expander'/>
-                        <FloatingActionButton onClick={actionClick}>
+                        <Fab onClick={actionClick}>
                             <ContentAdd/>
-                        </FloatingActionButton>
+                        </Fab>
                     </div>
                 </div>}
                 <div className={'apps-screen-wrapper' + (this.props.modal ? ' modal' : '')}>
@@ -134,12 +132,12 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <FloatingActionButton onClick={() => this.toggleDeleteService(service)} mini className='remove-service-button'
-                                                            backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
+                {!this.props.modal && <Fab onClick={() => this.toggleDeleteService(service)} mini className='remove-service-button'
+                                           backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
                     <DeleteIcon/>
-                </FloatingActionButton>}
-                {!this.props.modal && <RaisedButton label='Refresh' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
-                                                    onClick={() => this.props.updateService(service)}/>}
+                </Fab>}
+                {!this.props.modal && <Button label='Refresh' variant='contained' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
+                                              onClick={() => this.props.updateService(service)}/>}
                 {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
@@ -160,18 +158,18 @@ class Apps extends Component {
                         {hook.logoUri && <img style={{height: '100%'}} src={hook.logoUri} alt='HSPC Logo'/>}
                         {!hook.logoUri && <HooksIcon className='default-hook-icon'/>}
                     </CardMedia>
-                    <CardTitle className='card-title' style={titleStyle}>
+                    <div className='card-title' style={titleStyle}>
                         <h3 className='app-name'>{hook.title}</h3>
                         <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
-                        {this.props.modal && <RadioButton className='app-radio' value="selected"
-                                                          checked={this.props.selectedApp ? hook.hookUrl === this.props.selectedApp.hookUrl && hook.hookId === this.props.selectedApp.hookId : false}/>}
+                        {this.props.modal && <Radio className='app-radio' value="selected"
+                                                    checked={this.props.selectedApp ? hook.hookUrl === this.props.selectedApp.hookUrl && hook.hookId === this.props.selectedApp.hookId : false}/>}
                         <div className='app-description'>{hook.description}</div>
-                    </CardTitle>
+                    </div>
                     {!this.props.modal && <CardActions className='card-actions-wrapper'>
-                        <FlatButton labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleLaunch(e, hook)}
-                                    icon={<LaunchIcon style={{width: '24px', height: '24px'}}/>} label='Launch'/>
-                        <FlatButton labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleHookSelect(e, hook, service)}
-                                    icon={<InfoIcon style={{width: '24px', height: '24px'}}/>} label='Info'/>
+                        <Button variant='outlined' labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleLaunch(e, hook)}
+                                icon={<LaunchIcon style={{width: '24px', height: '24px'}}/>} label='Launch'/>
+                        <Button variant='outlined' labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleHookSelect(e, hook, service)}
+                                icon={<InfoIcon style={{width: '24px', height: '24px'}}/>} label='Info'/>
                     </CardActions>}
                 </Card>);
             });
@@ -217,7 +215,7 @@ class Apps extends Component {
             : this.state.appToLaunch || this.state.hookToLaunch
                 ? <Dialog modal={false} open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onRequestClose={this.handleLaunch} className='launch-app-dialog' autoScrollBodyContent>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
-                        <RaisedButton labelStyle={{fontSize: '14px', fontWeight: 700}} primary onClick={() => this.doLaunch()} label='Launch without a patient'/>
+                        <Button variant='contained' labelStyle={{fontSize: '14px', fontWeight: 700}} primary onClick={() => this.doLaunch()} label='Launch without a patient'/>
                     </div>}
                     {this.props.defaultUser && <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
@@ -262,7 +260,7 @@ class Apps extends Component {
                                                    onKeyPress={event => {
                                                        [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
                                                    }}/>
-                                        <RaisedButton primary label='Load' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}/>
+                                        <Button variant='contained' primary label='Load' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}/>
                                         {!this.props.hooks && <span className='sub'>Example: https://bilirubin-risk-chart.hspconsortium.org(/.well-known/smart/manifest.json)</span>}
                                         {this.props.hooks && <span className='sub'>Example: https://bilirubin-cdshooks.hspconsortium.org(/cds-services)</span>}
                                     </div>
@@ -271,7 +269,7 @@ class Apps extends Component {
                                             <span>or</span>
                                         </div>
                                         <div style={{width: '100%', verticalAlign: 'middle', textAlign: 'center'}}>
-                                            <RaisedButton label='Load from file' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}/>
+                                            <Button variant='contained' label='Load from file' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}/>
                                             <input ref='file' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
                                         </div>
                                     </Fragment>}
@@ -297,9 +295,9 @@ class Apps extends Component {
                                                 <CardMedia className='media-wrapper'>
                                                     <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
                                                 </CardMedia>
-                                                <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
+                                                <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                                                     <h3 className='app-name'>Manually</h3>
-                                                </CardTitle>
+                                                </div>
                                             </Card>
                                             <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, loadDialogVisible: true}, () => {
                                                 setTimeout(() => {
@@ -310,9 +308,9 @@ class Apps extends Component {
                                                 <CardMedia className='media-wrapper'>
                                                     <Publish className='default-hook-icon'/>
                                                 </CardMedia>
-                                                <CardTitle className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
+                                                <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                                                     <h3 className='app-name'>Through a manifest</h3>
-                                                </CardTitle>
+                                                </div>
                                             </Card>
                                         </div>
                                     </Paper>
@@ -335,17 +333,17 @@ class Apps extends Component {
                 <CardMedia className='media-wrapper'>
                     <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>
-                <CardTitle className='card-title' style={titleStyle}>
+                <div className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
                     <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
-                    {this.props.modal && <RadioButton className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
+                    {this.props.modal && <Radio className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
-                </CardTitle>
+                </div>
                 {!this.props.modal && <CardActions className='card-actions-wrapper'>
-                    <FlatButton labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleLaunch(e, app)}
-                                icon={<LaunchIcon style={{width: '24px', height: '24px'}}/>} label='Launch'/>
-                    <FlatButton labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppSelect(e, app)}
-                                icon={<SettingsIcon style={{width: '24px', height: '24px'}}/>} label='Settings'/>
+                    <Button variant='contained' labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleLaunch(e, app)}
+                            icon={<LaunchIcon style={{width: '24px', height: '24px'}}/>} label='Launch'/>
+                    <Button variant='contained' labelStyle={{fontSize: '14px', fontWeight: 700}} style={{color: 'whitesmoke'}} onClick={(e) => this.handleAppSelect(e, app)}
+                            icon={<SettingsIcon style={{width: '24px', height: '24px'}}/>} label='Settings'/>
                 </CardActions>}
             </Card>
         });
@@ -514,4 +512,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(muiThemeable()(Apps)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Apps));

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Checkbox, IconButton } from 'material-ui';
+import { IconButton } from '@material-ui/core';
 
 import './styles.less';
 

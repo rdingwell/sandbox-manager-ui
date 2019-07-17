@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { List, Subheader, ListItem, Card, CardTitle, DatePicker, TextField } from 'material-ui';
+import { List, ListItem, Card, DatePicker, TextField } from '@material-ui/core';
 import { bindActionCreators } from 'redux';
 import { getMetadata, app_setScreen, fetchResources } from '../../../redux/action-creators';
 import { connect } from 'react-redux';
@@ -60,9 +60,9 @@ class ResourceBrowser extends Component {
         return <div className='resource-browser'>
             <div className='resources-wrapper card-with-border'>
                 <Card>
-                    <CardTitle className='card-title'>
+                    <div className='card-title'>
                         Resources
-                    </CardTitle>
+                    </div>
                     <List className='scrollable'>
                         {this.props.metadata && this.props.metadata.rest[0].resource.map(item => {
                             let text = item.type + (this.props.metadataCounts ? ` (${this.props.metadataCounts[item.type]})` : '');
@@ -74,9 +74,9 @@ class ResourceBrowser extends Component {
             <div className='content-wrapper'>
                 <div className='resource-search-wrapper'>
                     <Card className='card-with-border'>
-                        <CardTitle className='card-title'>
+                        <div className='card-title'>
                             Search criteria
-                        </CardTitle>
+                        </div>
                         <div className='search-crit-wrapper'>
                             {this.state.selectedType && this.state.selectedType.searchParam.map(param => {
                                 return <div key={param.name} style={{ width: '300px', display: 'inline-block', overflow: 'hidden' }}>
@@ -89,16 +89,16 @@ class ResourceBrowser extends Component {
                 </div>
                 <div className='resource-results-wrapper'>
                     <Card className='definition-wrapper card-with-border'>
-                        <CardTitle className='card-title'>
+                        <div className='card-title'>
                             Resource definition
-                        </CardTitle>
+                        </div>
                         <ReactJson className='scrollable' src={TMP_DEFINITION} name={false}/>
                     </Card>
                     <div className='resource-wrapper'>
                         <Card className='card-with-border'>
-                            <CardTitle className='card-title'>
+                            <div className='card-title'>
                                 Resource(s)
-                            </CardTitle>
+                            </div>
                             <div className='resource-object-wrapper'>
                                 {this.props.resources && this.props.resources.map(resource => {
                                     return <div key={resource.resource.id} className='resource-item-wrapper'>

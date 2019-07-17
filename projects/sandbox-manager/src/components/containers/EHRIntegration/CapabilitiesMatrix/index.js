@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Paper } from 'material-ui';
 import { app_setScreen } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';

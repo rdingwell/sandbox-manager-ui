@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {RaisedButton, TextField, Dialog, RadioButtonGroup, RadioButton, Paper, IconButton} from 'material-ui';
+import {Button, TextField, Dialog, RadioGroup, Radio, Paper, IconButton} from '@material-ui/core';
 
 import './styles.less';
 import PersonaList from "../List";
@@ -31,7 +31,7 @@ export default class CreatePersona extends Component {
 
         return <div>
             <Dialog bodyClassName='create-persona-dialog' contentClassName='create-dialog' open={this.props.open} onRequestClose={this.props.close}
-                    actions={[<RaisedButton label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
+                    actions={[<Button variant='contained' label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
                 {this.props.type === PersonaList.TYPES.persona && <IconButton style={{color: this.state.selectedForCreation ? this.props.theme.primary5Color : this.props.theme.primary3Color}}
                                                                               className="close-button" onClick={this.props.close}>
                     <i className="material-icons" data-qa="modal-close-button">close</i>
@@ -89,10 +89,10 @@ export default class CreatePersona extends Component {
                            floatingLabelText="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                            onChange={(_, birthDate) => this.setState({birthDate})} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
                 <h4>Gender*</h4>
-                <RadioButtonGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({gender})}>
-                    <RadioButton value="male" label="Male"/>
-                    <RadioButton value="female" label="Female"/>
-                </RadioButtonGroup>
+                <RadioGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({gender})}>
+                    <Radio value="male" label="Male"/>
+                    <Radio value="female" label="Female"/>
+                </RadioGroup>
             </div>}
             {this.props.type === PersonaList.TYPES.practitioner &&
             <div>

@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import getMuiTheme from "material-ui/styles/getMuiTheme";
+import {createMuiTheme} from '@material-ui/core';
 
 export default class InitLoader extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         // Initialize the app
@@ -12,14 +12,14 @@ export default class InitLoader extends React.Component {
         this.state = {};
     }
 
-    componentDidMount () {
+    componentDidMount() {
         if (this.props.location.pathname !== "/launchApp" && this.props.location.pathname !== "/") {
             window.FHIR.oauth2.ready(
                 (smart) => {
                     Promise.resolve()
                         .then(() => {
                             this.props.fhir_Reset();
-                            this.props.fhir_SetSmart({ status: "ready", data: smart });
+                            this.props.fhir_SetSmart({status: "ready", data: smart});
                         });
                 }
             );
@@ -29,15 +29,15 @@ export default class InitLoader extends React.Component {
         }
     }
 
-    render () {
+    render() {
         return null;
     }
 
     // Application initialization process
-    init () {
+    init() {
         return Promise.resolve()
-        // (1) Customize theme
-            .then(() => this.props.ui_SetTheme(getMuiTheme(this.props.customizeTheme(this.props.ui.theme))))
+            // (1) Customize theme
+            .then(() => this.props.ui_SetTheme(createMuiTheme(this.props.customizeTheme(this.props.ui.theme))))
             // (2) Retina display detection
             .then(() => this.props.ui_SetRetina())
             // (3) Reset `config` Redux reducer

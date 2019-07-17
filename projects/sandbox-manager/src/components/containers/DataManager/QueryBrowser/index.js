@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { FloatingActionButton, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab, CircularProgress } from 'material-ui';
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import CodeIcon from 'material-ui/svg-icons/action/code';
-import ListIcon from 'material-ui/svg-icons/action/list';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import { Fab, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab, CircularProgress } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import CodeIcon from '@material-ui/icons/Code';
+import ListIcon from '@material-ui/icons/List';
+import CloseIcon from '@material-ui/icons/Close';
 import { parseEntry } from 'sandbox-manager-lib/utils';
 import ReactJson from 'react-json-view';
 import './styles.less';
@@ -88,12 +88,12 @@ export default class QueryBrowser extends Component {
                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>
                 {this.state.query.length > 0 &&
-                <FloatingActionButton onClick={this.clearQuery} className='clear-query-button' mini secondary>
+                <Fab onClick={this.clearQuery} className='clear-query-button' mini secondary>
                     <CloseIcon/>
-                </FloatingActionButton>}
-                <FloatingActionButton onClick={this.search} mini>
+                </Fab>}
+                <Fab onClick={this.search} mini>
                     <SearchIcon/>
-                </FloatingActionButton>
+                </Fab>
             </div>
             <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
                   value={this.state.activeTab}>

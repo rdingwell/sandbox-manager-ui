@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { AutoComplete, LinearProgress, RaisedButton } from 'material-ui';
+import { AutoComplete, LinearProgress, RaisedButton } from '@material-ui/core';
 
 import './styles.less';
-import ExportIcon from "material-ui/svg-icons/communication/import-export";
+import ExportIcon from "@material-ui/icons/ImportExport";
 
 // There are stored in a table at the BE but are not changed so I've hardcoded them
 // until we have time to build an algorithm to suggest based on the FHIR implementation

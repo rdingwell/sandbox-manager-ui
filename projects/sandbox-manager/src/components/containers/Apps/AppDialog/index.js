@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {MenuItem, DropDownMenu, RaisedButton, Paper, TextField, Dialog, Toggle, IconButton, FloatingActionButton} from 'material-ui';
-import DeleteIcon from "material-ui/svg-icons/action/delete";
+import {MenuItem, Select, Button, Paper, TextField, Dialog, Switch, IconButton, Fab} from '@material-ui/core';
+import DeleteIcon from "@material-ui/icons/Delete";
 import InfoIcon from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg";
-import ContentCopy from 'material-ui/svg-icons/content/content-copy';
+import ContentCopy from '@material-ui/icons/FileCopy';
 import './styles.less';
 
 class AppDialog extends Component {
@@ -87,12 +87,12 @@ class AppDialog extends Component {
 
         let saveEnabled = this.checkSaveEnabled();
         let actions = [
-            <RaisedButton primary label='Save' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'/>
+            <Button variant='contained' primary label='Save' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'/>
         ];
 
-        this.props.app && !this.state.clone && actions.push(<RaisedButton backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
-        this.props.app && !this.state.clone && actions.unshift(<RaisedButton secondary label='Clone' onClick={this.clone}/>,);
-        this.props.app && actions.unshift(<RaisedButton label='Download manifest' onClick={this.createManifest}/>,);
+        this.props.app && !this.state.clone && actions.push(<Button variant='contained' backgroundColor={theme.primary4Color} label='Delete' onClick={this.delete} labelColor={theme.primary5Color}/>);
+        this.props.app && !this.state.clone && actions.unshift(<Button variant='contained' secondary label='Clone' onClick={this.clone}/>,);
+        this.props.app && actions.unshift(<Button variant='contained' label='Download manifest' onClick={this.createManifest}/>,);
 
         let paperClasses = 'app-dialog' + (this.props.app ? ' small' : '');
         let underlineFocusStyle = {borderColor: theme.primary2Color};
@@ -113,11 +113,11 @@ class AppDialog extends Component {
                         <br/>
                         <div>
                             <div style={{color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)'}}>Client Type</div>
-                            <DropDownMenu value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
-                                          style={{top: '16px'}} disabled={this.state.isReplica}>
+                            <Select value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
+                                    style={{top: '16px'}} disabled={this.state.isReplica}>
                                 <MenuItem value='NONE' primaryText='Public Client'/>
                                 <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
-                            </DropDownMenu>
+                            </Select>
                         </div>
                         {clientId}
                         {clientSecret}
@@ -151,17 +151,17 @@ class AppDialog extends Component {
                         {this.props.app &&
                         <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                         {!this.props.app && <div className='toggle-wrapper'>
-                            <Toggle label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}
+                            <Switch label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}
                                     thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
                                     trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
-                            <Toggle label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}
+                            <Switch label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}
                                     thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
                                     trackStyle={{backgroundColor: this.props.muiTheme.palette.primary3Color}}/>
                         </div>}
                         < br/>
                         <div className='image-form'>
                             <div className='image-button-wrapper'>
-                                <RaisedButton label='Select Image' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}/>
+                                <Button variant='contained' label='Select Image' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}/>
                                 <div>
                                     <span className='subscript'>(Display size 300px W X 200px H)</span>
                                 </div>
@@ -177,9 +177,9 @@ class AppDialog extends Component {
                                 }
                             </div>
                             {this.state.app.logoUri &&
-                            <FloatingActionButton onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
+                            <Fab onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color} disabled={this.state.isReplica}>
                                 <DeleteIcon/>
-                            </FloatingActionButton>}
+                            </Fab>}
                         </div>
                     </form>
                 </div>
