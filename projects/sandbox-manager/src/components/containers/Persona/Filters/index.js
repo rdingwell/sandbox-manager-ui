@@ -82,7 +82,7 @@ export default class Filters extends Component {
                         <div className='filter-title' style={{ backgroundColor: palette.primary2Color, color: palette.primary5Color }}>
                             <h3>Age</h3>
                             <IconButton style={{ color: palette.primary5Color, width: '42px', height: '40px', position: 'absolute', right: '10px', top: '-3px' }} onClick={this.closeAgeFilter}>
-                                <i className="material-icons">close</i>
+                                <i className="material-icons" data-qa="modal-close-button">close</i>
                             </IconButton>
                         </div>
                         <div>

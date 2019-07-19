@@ -15,3 +15,11 @@ export SPRING_PROFILES_ACTIVE=""
 export AWS_CONTAINER_MEMORY_RESERVE=$(cat ../package.json | jq --raw-output '.config.memory')
 
 export TEMPLATE_FILE="../aws/task-definition_${TARGET_ENV}.json"
+
+export FIREFOX_VERSION="45.0"
+
+export FIREFOX_DIR="/usr/bin/firefox"
+
+export FIREFOX_FILENAME="$FIREFOX_DIR/firefox.tar.bz2"
+
+export DISPLAY=:99

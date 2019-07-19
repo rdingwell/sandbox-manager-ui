@@ -62,7 +62,7 @@ class Index extends Component {
                         <ActionLock color={this.props.muiTheme.palette.primary3Color}/>
                     </IconButton>;
                 return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
-                    <ListItem primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'}
+                    <ListItem primaryText={sandbox.name} secondaryText={sandbox.description || 'no description available'} data-qa={`sandbox-${sandbox.sandboxId}`}
                               leftIcon={leftAvatar} rightIcon={rightIcon} onClick={() => this.selectSandbox(index)} id={sandbox.name}/>
                 </a>
             });
@@ -81,13 +81,13 @@ class Index extends Component {
                         <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
                     </SelectField>
                 </div>
-                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff'/>
+                <RaisedButton id='create_sandbox_button' primary className='create-sandbox-button' label='New Sandbox' onClick={this.handleCreate} labelColor='#fff' data-qa='create-sandbox'/>
             </h3>
             <div>
                 {!this.props.loading && <List>
                     {sandboxes}
                 </List>}
-                {this.props.loading && <div className='loader-wrapper'>
+                {this.props.loading && <div className='loader-wrapper' data-qa='sandbox-loading-loader'>
                     <p>
                         Loading sandboxes
                     </p>

@@ -63,7 +63,7 @@ export default {
 const get_config = (method, data, isFormData, contentType = "application/json") => {
     let CONFIG = {
         headers: {
-            Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `BEARER ${window.fhirClient.server.auth.token}` : undefined,
+            Authorization: window.fhirClient && window.fhirClient.server && window.fhirClient.server.auth ? `Bearer ${window.fhirClient.server.auth.token}` : undefined,
             Accept: "application/json",
             "Content-Type": contentType
         },

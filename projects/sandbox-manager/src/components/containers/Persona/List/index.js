@@ -112,7 +112,7 @@ class PersonaList extends Component {
                 <CreatePersona key={createKey} open={this.state.showCreateModal} create={this.props.create} type={this.props.type} theme={this.props.theme} close={() => this.toggleCreateModal()}
                                personaType={this.state.creationType} personas={this.props[this.state.creationType.toLowerCase() + 's']} existingPersonas={this.getFilteredList()} search={this.props.search}/>
             </div>}
-            <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')}>
+            <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')} data-qa={`${this.props.type}-wrapper`}>
                 {!this.props.noFilter && <div className='filter-wrapper'>
                     <FilterList color={this.props.theme.primary3Color}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>

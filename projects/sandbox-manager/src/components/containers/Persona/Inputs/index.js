@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { Paper, TextField } from 'material-ui';
-import { parseNames } from 'sandbox-manager-lib/utils/fhir';
+import React, {Component} from 'react';
+import {Paper, TextField} from 'material-ui';
+import {parseNames} from 'sandbox-manager-lib/utils/fhir';
 
 import './styles.less';
 
 export default class PersonaInputs extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -15,9 +15,9 @@ export default class PersonaInputs extends Component {
         }
     }
 
-    render () {
-        let underlineFocusStyle = { borderColor: this.props.theme.primary2Color };
-        let floatingLabelFocusStyle = { color: this.props.theme.primary2Color };
+    render() {
+        let underlineFocusStyle = {borderColor: this.props.theme.primary2Color};
+        let floatingLabelFocusStyle = {color: this.props.theme.primary2Color};
 
         return <Paper className='paper-card persona-inputs-wrapper'>
             <h3>Persona Information</h3>
@@ -32,7 +32,7 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>User Id</span>
                     <div>
-                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId.replace(/[^a-z0-9]/gi, ''))}
+                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId.replace(/[^a-z0-9]/gi, ''))} onKeyPress={this.props.submitMaybe}
                                    errorText={this.props.userIdDuplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         {!this.props.userIdDuplicate && <span className='additional-info'>Your persona userId will be {this.state.userId}{this.state.userId && `@${this.props.sandbox}`}</span>}
                     </div>
@@ -40,7 +40,7 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>Password</span>
                     <TextField fullWidth id='password' onChange={(_, password) => this.update('password', password)} value={this.state.password}
-                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.props.submitMaybe}/>
                 </div>
                 <div className='persona-info-row'>
                     <span>FHIR Resource URL</span>

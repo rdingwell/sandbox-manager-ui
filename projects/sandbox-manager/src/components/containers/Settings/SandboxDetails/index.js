@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import { CircularProgress, Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog } from 'material-ui';
+import React, {Component} from 'react';
+import {CircularProgress, Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog} from 'material-ui';
 import Redo from 'material-ui/svg-icons/content/redo';
 import Delete from 'material-ui/svg-icons/action/delete';
 import Edit from 'material-ui/svg-icons/image/edit';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { bindActionCreators } from 'redux';
-import { updateSandbox, resetCurrentSandbox, deleteCurrentSandbox, clearSearchResults } from '../../../../redux/action-creators';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import {bindActionCreators} from 'redux';
+import {updateSandbox, resetCurrentSandbox, deleteCurrentSandbox, clearSearchResults} from '../../../../redux/action-creators';
 import withErrorHandler from 'sandbox-manager-lib/hoc/withErrorHandler';
 
 import './styles.less';
 import SandboxReset from "../SandboxReset";
 import DeleteSandbox from '../DeleteSandbox';
 
-const MODALS = { edit: 'edit', reset: 'reset', delete: 'delete' };
+const MODALS = {edit: 'edit', reset: 'reset', delete: 'delete'};
 
 class SandboxDetails extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -32,35 +32,35 @@ class SandboxDetails extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         let current = this.props.sandbox && this.props.sandbox.userRoles && this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.props.user.sbmUserId && r.role === 'ADMIN');
-        current && this.setState({ currentUserIsAdmin: true });
+        current && this.setState({currentUserIsAdmin: true});
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
         let current = (!this.props.sandbox || (this.props.sandbox && !this.props.sandbox.userRoles)) &&
             (nextProps.sandbox && nextProps.sandbox.userRoles) && nextProps.sandbox.userRoles.find(r => r.user.sbmUserId === nextProps.user.sbmUserId && r.role === 'ADMIN');
-        current && this.setState({ currentUserIsAdmin: true });
+        current && this.setState({currentUserIsAdmin: true});
     }
 
-    render () {
-        let titleStyle = { backgroundColor: this.props.theme.primary5Color };
+    render() {
+        let titleStyle = {backgroundColor: this.props.theme.primary5Color};
         let [actions, content] = this.getModalContent();
 
         return <Card className='sandbox-details-wrapper'>
-            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{ maxWidth: '450px' }}>
+            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{maxWidth: '450px'}}>
                 {content}
             </Dialog>
             <CardHeader className='details-header' style={titleStyle}>
                 <div className='header-actions-wrapper'>
                     <IconButton tooltip='Edit' onClick={() => this.toggleModal(MODALS.edit)} disabled={!this.state.currentUserIsAdmin}>
-                        <Edit color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                        <Edit color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
                     <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
-                        <Redo color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                        <Redo color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
-                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin}>
-                        <Delete color={this.props.theme.primary3Color} style={{ width: '24px', height: '24px' }}/>
+                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
+                        <Delete color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
                 </div>
             </CardHeader>
@@ -114,21 +114,22 @@ class SandboxDetails extends Component {
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
                     <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
-                                  label='Delete sandbox' onClick={this.deleteSandbox}/>
+                                  label='Delete sandbox' onClick={this.deleteSandbox} data-qa='sandbox-delete-button'/>
                 </div>;
 
         let content = this.state.modalToShow === MODALS.edit
             ? <div className='sandbox-edit-modal' key={this.state.modalToShow}>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={() => this.toggleModal()}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>EDIT SANDBOX</h1>
                 </div>
-                <TextField value={this.state.name || this.props.sandboxName} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange}/>
-                <TextField value={this.state.description || this.props.sandboxDescription} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth/>
+                <TextField value={this.state.name || this.props.sandboxName} floatingLabelText='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange} onKeyPress={this.submitMaybe}/>
+                <TextField value={this.state.description || this.props.sandboxDescription} floatingLabelText='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth
+                           onKeyPress={this.submitMaybe}/>
                 <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}
-                          iconStyle={{ fill: this.props.theme.primary2Color }}/>
+                          iconStyle={{fill: this.props.theme.primary2Color}}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div>
@@ -143,6 +144,10 @@ class SandboxDetails extends Component {
         return [actions, content];
     };
 
+    submitMaybe = (event) => {
+        [10, 13].indexOf(event.charCode) >= 0 && this.updateSandboxHandler(event);
+    };
+
     resetSandbox = () => {
         this.props.clearSearchResults();
         this.props.resetCurrentSandbox(this.state.addSampleData);
@@ -155,19 +160,19 @@ class SandboxDetails extends Component {
     };
 
     toggleSampleData = (addSampleData) => {
-        this.setState({ addSampleData });
+        this.setState({addSampleData});
     };
 
     toggleReset = (toggleReset) => {
-        this.setState({ toggleReset });
+        this.setState({toggleReset});
     };
 
     toggleDelete = (toggleDelete) => {
-        this.setState({ toggleDelete });
+        this.setState({toggleDelete});
     };
 
     toggleModal = (type) => {
-        this.setState({ modalToShow: type, addSampleData: false, toggleReset: false, toggleDelete: false });
+        this.setState({modalToShow: type, addSampleData: false, toggleReset: false, toggleDelete: false});
     };
 
     updateSandboxHandler = (event) => {
@@ -184,15 +189,15 @@ class SandboxDetails extends Component {
     };
 
     handleSandboxNameChange = (_e, name) => {
-        this.setState({ name, updateDone: true });
+        this.setState({name, updateDone: true});
     };
 
     handleSandboxDescriptionChange = (event) => {
-        this.setState({ description: event.target.value });
+        this.setState({description: event.target.value});
     };
 
     handleOpenFhirCheckboxChange = (_e, allowOpen) => {
-        this.setState({ allowOpen, updateDone: true })
+        this.setState({allowOpen, updateDone: true})
     };
 }
 
@@ -204,7 +209,7 @@ const mapStateToProps = state => {
     let sandboxAllowOpenAccess = sandbox ? !!sandbox.allowOpenAccess : false;
     let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
         ? state.sandbox.sandboxApiEndpointIndexes.find(i => i.index === state.sandbox.sandboxApiEndpointIndex)
-        : { name: 'unknown' };
+        : {name: 'unknown'};
 
     return {
         sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion, sandbox,
@@ -214,6 +219,6 @@ const mapStateToProps = state => {
         deleting: state.sandbox.deleting
     };
 };
-const mapDispatchToProps = dispatch => bindActionCreators({ updateSandbox, resetCurrentSandbox, deleteCurrentSandbox, clearSearchResults }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({updateSandbox, resetCurrentSandbox, deleteCurrentSandbox, clearSearchResults}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(SandboxDetails)))

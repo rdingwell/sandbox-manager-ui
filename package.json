@@ -1,6 +1,6 @@
 {
   "name": "sandbox-manager-v3",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "HSPC Sandbox Manager V3",
   "author": "Interopion",
   "license": "ISC",
@@ -13,7 +13,7 @@
   },
   "homepage": "",
   "scripts": {
-    "test": "npm run sandbox-manager:test",
+    "test": "jest",
     "coverage": "npm run sandbox-manager:coverage",
     "sandbox-manager:install": "cd projects/sandbox-manager && npm install && cd ../..",
     "sandbox-manager:build:local": "cd projects/sandbox-manager && NODE_ENV=local webpack",
@@ -21,7 +21,7 @@
     "sandbox-manager:build:prod": "cd projects/sandbox-manager && NODE_ENV=production webpack",
     "sm": "npm run sandbox-manager:start:local",
     "sandbox-manager:start:local": "cd projects/sandbox-manager && npm run start:local",
-    "smt": "npm run sandbox-manager:test",
+    "smt": "cd projects/sandbox-manager && npm run start:test",
     "sandbox-manager:test": "NODE_ENV=test mocha --opts mocha.opts",
     "smtw": "npm run sandbox-manager:test:watch",
     "sandbox-manager:test:watch": "NODE_ENV=test mocha --opts mocha.opts --watch",
@@ -132,7 +132,7 @@
     "less-loader": "4.0.5",
     "lodash": "4.17.4",
     "material-ui": "0.20.0",
-    "mocha": "4.1.0",
+    "mocha": "^4.1.0",
     "mochawesome": "3.0.1",
     "moment": "2.20.1",
     "moxios": "0.4.0",
@@ -182,5 +182,11 @@
   "config": {
     "port": "3000",
     "memory": "100"
+  },
+  "devDependencies": {
+    "chromedriver": "^2.43.0",
+    "geckodriver": "^1.12.2",
+    "jest": "^20.0.4",
+    "selenium-webdriver": "^4.0.0-alpha.1"
   }
 }

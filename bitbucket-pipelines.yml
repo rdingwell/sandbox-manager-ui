@@ -85,6 +85,19 @@ pipelines:
           name: build the source code
           script:
             - echo "success"
+    qa/*:
+      - step:
+          name: build docker and test the project
+          caches:
+            - node
+          script:
+            - export TARGET_ENV=test
+            - export CREDENTIALS=${ENC_PW_TEST}
+            - cd ci
+            - . ci-0-set-properties.sh
+            - . ci-1-prepare-sources.sh
+            - . ci-1-2-prepare-test.sh
+            - . ci-1-3-test-project.sh
     release/*:
       - step:
           name: build the source code

@@ -4,7 +4,8 @@
   "description": "Dashboard part of the wakeforset app.",
   "main": "src/index.js",
   "scripts": {
-    "start:local": "NODE_ENV=local webpack-dev-server"
+    "start:local": "NODE_ENV=local webpack-dev-server",
+    "start:test": "NODE_ENV=test webpack-dev-server"
   },
   "keywords": [],
   "author": "Interopion",

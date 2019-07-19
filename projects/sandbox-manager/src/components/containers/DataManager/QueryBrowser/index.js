@@ -72,7 +72,7 @@ export default class QueryBrowser extends Component {
                         Details
                     </h3>
                     <IconButton className="close-button" onClick={this.toggle}>
-                        <i className="material-icons">close</i>
+                        <i className="material-icons" data-qa="modal-close-button">close</i>
                     </IconButton>
                     <div className='paper-body'>
                         <div className='result-wrapper'>
@@ -107,7 +107,7 @@ export default class QueryBrowser extends Component {
                         {this.props.executing ?
                             <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>
                             : <List>
-                                {this.props.results && this.props.results.entry && this.props.results.entry.length > 0 ? this.props.results.entry.map((e, i) => {
+                                {this.props.results && this.props.results.entry && (this.props.results.resourceType !== 'List') && this.props.results.entry.length > 0 ? this.props.results.entry.map((e, i) => {
                                         let entry = parseEntry(e);
                                         return <ListItem key={i} onClick={() => this.setState({ showDialog: true, selectedEntry: e })} className='result-list-item'>
                                             {entry.props.map((item, index) => {

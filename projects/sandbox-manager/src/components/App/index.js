@@ -1,27 +1,25 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router';
-import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router';
+import {CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs} from "material-ui";
+import Snackbar from '../UI/Snackbar';
+import ReactJson from 'react-json-view';
+import {Fragment} from 'react';
+import {getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
 import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
 import * as glib from 'sandbox-manager-lib/utils/';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
-
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import Layout from 'sandbox-manager-lib/components/Layout';
 import CreateSandbox from '../containers/CreateSandbox';
-
 import Init from '../Init/';
 
 import './style.less';
-import { CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs } from "material-ui";
-import Snackbar from '../UI/Snackbar';
-import ReactJson from 'react-json-view';
-import { Fragment } from 'react';
 
 class App extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         if (props.location.pathname !== "/launchApp") {
@@ -56,16 +54,16 @@ class App extends React.Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setSandboxId();
         window.addEventListener('resize', this.onResize);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         window.removeEventListener('resize', this.onResize);
     }
 
-    render () {
+    render() {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
         let theme = getMuiTheme(this.props.ui.theme);
@@ -94,16 +92,16 @@ class App extends React.Component {
             <Layout {...layoutProps}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
-                    <div className='stage' style={{ marginBottom: this.props.ui.footerHeight }}>
+                    <div className='stage' style={{marginBottom: this.props.ui.footerHeight}}>
                         {!this.getCheck() && this.props.children}
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <RaisedButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{ padding: '0 16px' }}>
-                        <span style={{ position: 'relative', top: '-5px', marginRight: '10px', color: 'white' }}>Submit feedback</span><FeedbackIcon style={{ color: 'white', marginTop: '5px' }}/>
+                    <RaisedButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
+                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><FeedbackIcon style={{color: 'white', marginTop: '5px'}}/>
                     </RaisedButton>
                 </div>}
-                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader}>
+                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
@@ -113,13 +111,13 @@ class App extends React.Component {
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
                 {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
                     <Paper className='paper-card'>
-                        <IconButton style={{ color: palette.primary5Color }} className="close-button" onClick={this.dismiss}>
+                        <IconButton style={{color: palette.primary5Color}} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
                         </IconButton>
                         <h3>CDS Service response</h3>
                         <div className='paper-body'>
-                            <Tabs inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }} value={this.state.activeTab} className='cards-tabs-wrapper'>
-                                <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
+                            <Tabs inkBarStyle={{backgroundColor: palette.primary2Color}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
+                                <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({activeTab: 'parsed'})} value='parsed'>
                                     <div className='hooks-wrapper'>
                                         <a ref='openLink' target='_blank'/>
                                         {!this.props.cards[0].noCardsReturned && this.getCards()}
@@ -128,12 +126,12 @@ class App extends React.Component {
                                         </div>}
                                     </div>
                                 </Tab>
-                                <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'request' })} value='request'>
+                                <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({activeTab: 'request'})} value='request'>
                                     <div>
                                         <ReactJson className='json-view' src={request} name={false}/>
                                     </div>
                                 </Tab>
-                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'response' })}
+                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({activeTab: 'response'})}
                                      value='response'>
                                     <div>
                                         <ReactJson className='json-view' src={response} name={false}/>
@@ -148,7 +146,7 @@ class App extends React.Component {
     }
 
     dismiss = () => {
-        this.setState({ activeTab: 'parsed' });
+        this.setState({activeTab: 'parsed'});
         this.props.removeResultCards();
     };
 
@@ -160,7 +158,7 @@ class App extends React.Component {
                     <span className='hook-source-title'>Source:</span>
                     <span className='hook-source'> {card.source.label}</span>
                 </div>}
-                <div className='card-detail' dangerouslySetInnerHTML={{ __html: card.detail }}/>
+                <div className='card-detail' dangerouslySetInnerHTML={{__html: card.detail}}/>
                 {card.suggestions && <div>
                     {card.suggestions.map((suggestion, i) => {
                         return <button key={i} className='hook-suggestion-button' onClick={() => this.executeSuggestion(suggestion)}>
@@ -172,8 +170,9 @@ class App extends React.Component {
                     {card.links.map((link, i) => {
                         if (link.type === 'smart') {
                             let appToLaunch = this.props.apps.apps.find(app => app.launchUri === link.url);
+                            let contextParams = link.appContext ? [{name: 'appContext', value: link.appContext}] : undefined;
                             let onClick = appToLaunch && card.requestData && card.requestData.context && card.requestData.context.patientId
-                                ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId, undefined, undefined, { contextParams: [{ appContext: link.appContext }], needPatientBanner: 'T' })
+                                ? () => this.props.doLaunch(appToLaunch, card.requestData.context.patientId, undefined, undefined, {contextParams, needPatientBanner: 'T'})
                                 : null;
 
                             return <Fragment key={i}>
@@ -243,8 +242,8 @@ const mapStateToProps = (state) => {
         cards: state.hooks.cards || []
     }
 };
-const mapDispatchToProps = (dispatch) => bindActionCreators({ ...actionCreators }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({...actionCreators}, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);
-export { connectedComponent };
+export {connectedComponent};
 export default withRouter(connectedComponent);
