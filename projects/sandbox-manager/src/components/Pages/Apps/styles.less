@@ -1,0 +1,462 @@
+.apps-page-wrapper {
+  position: relative;
+  width: 106%;
+  padding-top: 1px;
+
+  .filter-wrapper {
+    position: absolute;
+    top: -46px;
+
+    .dummy-expander {
+      width: 828px;
+      display: inline-block;
+      @media (max-width: 1228px) {
+        width: 518px;
+      }
+    }
+
+    & > .actions > *:last-child {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.manifest-load {
+  height: 15rem;
+  padding: 0 25px;
+
+  & > div:last-of-type > div:first-of-type {
+    width: ~"calc(100% - 88px - 1rem)" !important;
+    margin-right: 1rem;
+  }
+
+  .manifest-url {
+    width: 85% !important;
+    margin-right: 1rem !important;
+  }
+
+  .sub {
+    font-size: .7rem;
+    display: block;
+    position: relative;
+    height: 11px;
+  }
+
+  .separator {
+    text-align: center;
+    margin: 10px 0;
+
+    span {
+      padding: 5px 10px;
+      border: 1px solid whitesmoke;
+      margin: 10px 0;
+      display: inline-block;
+      border-radius: 10px;
+      color: rgb(100, 100, 100);
+      font-weight: bold;
+    }
+  }
+}
+
+.apps-screen-wrapper {
+  width: 930px;
+  display: inline-block;
+  margin-top: 10px;
+  @media (max-width: 1228px) {
+    width: 620px;
+  }
+
+  .screen-content {
+    max-width: 1570px;
+  }
+
+  &.modal {
+    max-height: 38vh;
+    overflow: auto;
+    width: 100%;
+    padding-top: 0;
+
+    .screen-content {
+      padding-left: 20px;
+    }
+
+    .app-radio {
+      width: auto !important;
+      position: absolute !important;
+      right: 0;
+      top: 11px;
+
+      svg {
+        fill: white !important;
+        color: white !important;
+      }
+    }
+
+    .page-title-wrapper {
+      display: none;
+    }
+
+    .app-card {
+      .card-title {
+        bottom: -35%;
+      }
+    }
+  }
+
+  &:not(.modal) {
+    .app-card {
+      &:hover, &.active {
+        .card-title, .card-actions-wrapper {
+          transition: all .5s;
+          bottom: 0 !important;
+
+          .app-name {
+            &.disabled {
+              display: none;
+            }
+
+            &:not(.long) {
+              display: none;
+            }
+
+            &.long {
+              display: inline-block;
+            }
+          }
+        }
+
+        .card-actions-wrapper {
+          bottom: -40% !important;
+        }
+      }
+    }
+  }
+
+  .service-title-wrapper {
+    position: relative;
+
+    .remove-service-button {
+      position: absolute;
+      right: 200px;
+      top: -10px;
+    }
+
+    .service-update-button {
+      position: absolute;
+      right: 30px;
+      top: -8px;
+    }
+
+    & > span {
+      font-size: .8rem;
+      position: absolute;
+      bottom: -18px;
+
+      &.service-last-updated {
+        right: 30px;
+      }
+    }
+  }
+
+  .app-card {
+    width: 278px;
+    height: 235px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    margin: 24px 32px 0 0;
+
+    .hook-icon-wrapper {
+      position: absolute;
+      top: -14px;
+      right: -30px;
+      width: 80px;
+      height: 50px;
+      transform: rotate(45deg);
+      background-color: #1B9F7D;
+      z-index: 100;
+
+      &.medication-prescribe {
+        background-color: #9E7B20;
+      }
+
+      svg {
+        transform: rotate(-45deg);
+        top: 20px;
+        position: relative;
+        left: 27px;
+        fill: white;
+
+        &.additional-rotation {
+          transform: rotate(-135deg);
+          top: 24px;
+          left: 29px;
+        }
+
+        path {
+          fill: white !important;
+        }
+      }
+    }
+
+    .explore-app-button-wrapper {
+      padding: 9px 0 !important;
+    }
+
+    & > div {
+      margin: 0 !important;
+      //padding: 0 !important;
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-wrapper {
+      height: 100%;
+      overflow: hidden;
+
+      & > div {
+        height: 187px;
+      }
+
+      &.register {
+        border-bottom: 2px solid whitesmoke;
+
+        & > div {
+          height: 100%;
+          width: 100%;
+
+          & > div {
+            height: 100%;
+            width: 100%;
+
+            & > button {
+              height: 100% !important;
+              width: 100%;
+
+              & > div {
+                & > svg {
+                  margin: 0 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .card-title {
+      position: absolute !important;
+      padding: 8px !important;
+      color: whitesmoke;
+      width: 100%;
+      height: 60%;
+      bottom: -40%;
+      box-sizing: border-box;
+      transition: all .5s;
+
+      .app-name {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 20px;
+        text-align: left;
+        min-height: 3rem;
+
+        &:not(.long) {
+          max-width: 90%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        &.long {
+          display: none;
+          word-break: break-word;
+        }
+      }
+
+      .hook-name {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 14px;
+        font-size: 20px;
+        text-align: left;
+        max-width: 90%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .hook-url {
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 14px;
+        font-size: 14px;
+        text-align: left;
+        max-width: 90%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .app-description {
+        font-size: 12px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+
+    .card-actions-wrapper {
+      padding: 8px;
+      position: absolute !important;
+      width: 100%;
+      left: 0;
+      bottom: -60%;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-start;
+      transition: all .5s;
+
+      & > * {
+        margin-right: 0 !important;
+      }
+
+      button {
+        color: whitesmoke !important;
+        border: none !important;
+        box-shadow: none !important;
+
+        &:hover {
+          background-color: rgba(153, 153, 153, .2) !important;
+        }
+
+        svg {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    &.small {
+      width: 235px;
+      height: 148px;
+      min-height: 188px;
+
+      &:hover:not(.disabled) {
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.28) 0 1px 16px, rgba(0, 0, 0, 0.28) 0 8px 16px !important;
+      }
+
+      &.disabled:hover {
+        .app-name:not(.disabled) {
+          display: none;
+        }
+
+        .app-name.disabled {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .registered-app {
+    width: 48%;
+    float: right;
+  }
+}
+
+.created-app-dialog {
+  padding: 0 !important;
+
+  .paper-body {
+    padding: 16px 24px;
+  }
+
+  .client-id {
+    display: inline-block;
+    font-size: 14px;
+  }
+
+  .client-details {
+    padding: 3px 20px;
+  }
+}
+
+.app-dialog {
+  .paper-body {
+    width: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+
+    &.auto {
+      height: auto;
+    }
+  }
+
+  .paper-card {
+    height: 100%;
+  }
+
+  .app-dialog-actions-wrapper {
+    & > * {
+      margin-left: 1rem;
+    }
+  }
+
+  .toggle-wrapper {
+    margin-top: 1.5rem;
+    max-width: 50%;
+  }
+
+  &:not(.auto) > div:first-child {
+    border-bottom: 1px solid whitesmoke !important;
+    height: 65vh;
+  }
+
+  & > div:nth-child(1) {
+    padding: 0 !important;
+  }
+}
+
+.launch-scenario-dialog {
+  max-width: 900px !important;
+  width: 80%;
+}
+
+.launch-app-dialog {
+  .no-patient-button {
+    position: absolute;
+    top: 17px;
+    right: 70px;
+  }
+
+  & > div > div > div > div {
+    padding: 0 !important;
+    overflow: hidden !important;
+
+    .page-content-wrapper {
+      max-height: 74vh !important;
+      overflow-y: auto !important;
+    }
+  }
+
+  .close-button {
+    height: 68px !important;
+    width: 68px !important;
+    position: absolute !important;
+    right: 0;
+  }
+}
+
+.default-hook-icon {
+  fill: #00749f !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+
+.app-creation-type-selection-wrapper {
+  text-align: center;
+  padding-bottom: 20px;
+  padding-top: 10px !important;
+}

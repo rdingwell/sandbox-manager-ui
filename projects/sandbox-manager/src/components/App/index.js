@@ -1,19 +1,19 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
-import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme} from "@material-ui/core";
+import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme} from "@material-ui/core";
 import {ThemeProvider} from '@material-ui/styles';
 import {Feedback} from '@material-ui/icons';
 import Snackbar from '../UI/Snackbar';
 import ReactJson from 'react-json-view';
 import {Fragment} from 'react';
-import * as glib from 'sandbox-manager-lib/utils/';
+import * as glib from '../../lib/utils';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Layout from 'sandbox-manager-lib/components/Layout';
-import CreateSandbox from '../containers/CreateSandbox';
+import Layout from '../UI/Layout';
+import CreateSandbox from '../Pages/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
@@ -82,8 +82,6 @@ class App extends React.Component {
             markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
         let open = !!this.props.cards.length;
-        let palette = theme.palette;
-        let request = open ? this.props.cards[0].requestData : {};
         let response = open ? Object.assign({}, this.props.cards[0]) : {};
         open && delete response.requestData;
         open && delete response.noCardsReturned;
@@ -97,11 +95,11 @@ class App extends React.Component {
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
-                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>
+                    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} color='primary'>
+                        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>
                     </Button>
                 </div>}
-                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader} data-qa='full-page-loader'>
+                {showLoader && <Dialog classes={{paper: 'full-loader-wrapper'}} open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
@@ -246,4 +244,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({...actionCreators},
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);
 export {connectedComponent};
-export default withRouter(connectedComponent);
+export default withRouter(withTheme(connectedComponent));

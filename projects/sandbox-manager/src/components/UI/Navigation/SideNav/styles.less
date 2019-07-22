@@ -1,0 +1,28 @@
+.side-nav {
+  max-width: 256px;
+  position: absolute;
+  margin-top: 70px;
+
+  & > div {
+    min-height: 654px;
+    box-sizing: border-box;
+    height: 100% !important;
+    z-index: 1 !important;
+    position: absolute !important;
+    box-shadow: none !important;
+    border-right: 1px solid #DEDEDE;
+    max-width: 256px;
+
+    &.close {
+      width: 68px;
+
+      .navigation-item {
+        overflow: hidden;
+
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}
