@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {MenuItem, Select, Button, Paper, TextField, Dialog, Switch, IconButton, Fab, withTheme, DialogActions} from '@material-ui/core';
+import {MenuItem, Select, Button, Paper, TextField, Dialog, Switch, IconButton, Fab, withTheme, DialogActions, FormControlLabel} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import InfoIcon from "svg-react-loader?name=Patient!../../../../assets/icons/baseline-info.svg";
 import ContentCopy from '@material-ui/icons/FileCopy';
@@ -87,18 +87,18 @@ class AppDialog extends Component {
 
         let saveEnabled = this.checkSaveEnabled();
         let actions = [
-            <Button variant='contained' color='primary' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'>
+            <Button key={1} variant='contained' color='primary' onClick={this.save} disabled={!saveEnabled} data-qa='app-modal-save-button'>
                 Save
             </Button>
         ];
 
-        this.props.app && !this.state.clone && actions.push(<Button variant='contained' style={{backgroundColor: theme.p4}} onClick={this.delete}>
+        this.props.app && !this.state.clone && actions.push(<Button key={2} variant='contained' style={{backgroundColor: theme.p4, color: theme.p5}} onClick={this.delete}>
             Delete
         </Button>);
-        this.props.app && !this.state.clone && actions.unshift(<Button variant='contained' color='secondary' onClick={this.clone}>
+        this.props.app && !this.state.clone && actions.unshift(<Button key={3} variant='contained' color='secondary' onClick={this.clone}>
             Clone
         </Button>);
-        this.props.app && actions.unshift(<Button variant='contained' onClick={this.createManifest}>
+        this.props.app && actions.unshift(<Button key={4} variant='contained' onClick={this.createManifest}>
             Download manifest
         </Button>);
 
@@ -111,78 +111,76 @@ class AppDialog extends Component {
                 </IconButton>
                 <h3>{this.props.app ? 'Registered App Details' : 'App Details'}</h3>
                 <div className='paper-body'>
-                    <form>
-                        <TextField floatingLabelText='App Name*' fullWidth value={this.state.app.clientName} hintText='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}
-                                   onChange={(_e, newVal) => this.onChange('clientName', newVal)} id='appName' onKeyPress={this.submitMaybe}/>
-                        <br/>
-                        <div>
-                            <div style={{color: 'rgba(0, 0, 0, 0.3)', display: 'inline-block', transform: 'translate(0, -20%)'}}>Client Type</div>
-                            <Select value={this.state.app.tokenEndpointAuthMethod} onChange={(_e, _k, value) => this.onChange('tokenEndpointAuthMethod', value)}
-                                    style={{top: '16px'}} disabled={this.state.isReplica}>
-                                <MenuItem value='NONE' primaryText='Public Client'/>
-                                <MenuItem value='SECRET_BASIC' primaryText='Confidential Client'/>
-                            </Select>
-                        </div>
-                        {clientId}
-                        {clientSecret}
-                        <TextField multiline floatingLabelText='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest} data-qa='description-input'
-                                   onChange={(_e, newVal) => this.onChange('briefDescription', newVal)} onKeyPress={this.submitMaybe}/>
-                        <TextField floatingLabelText='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={(_e, newVal) => this.onChange('launchUri', newVal)}
-                                   hintText='e.g.: https://mydomain.com/growth-chart/launch.html'
-                                   onBlur={this.launchBlur} disabled={this.state.isReplica} data-qa='launch-uri-input' onKeyPress={this.submitMaybe}/>
-                        <br/>
-                        <TextField value={this.state.app.redirectUris} fullWidth floatingLabelText='App Redirect URIs*'
-                                   disabled={this.state.isReplica} data-qa='redirect-uris-input' onKeyPress={this.submitMaybe}
-                                   onChange={(_e, newVal) => this.onChange('redirectUris', newVal)} hintText='e.g.: https://mydomain.com/growth-chart/index.html'/>
-                        <span className='subscript'>
-            Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
-            </span>
-                        <TextField fullWidth floatingLabelText='Scopes' value={this.state.app.scope} onChange={(_e, newVal) => this.onChange('scope', newVal)} disabled={this.state.isReplica}
-                                   hintText='eg: launch patient/*.* openid profile' onKeyPress={this.submitMaybe}/>
-                        <span className='subscript'>
-            Space separated list of scopes. Note: If you do not provide scopes, defaults will be set.
-            </span>
-                        <div className='scopes-info'>
-                            <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
-                                <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                                <div>About SMART Scopes</div>
-                            </a>
-                        </div>
-                        <TextField fullWidth floatingLabelText='Sample Patients' hintText='e.g.: Patient?_id=SMART-1032702,SMART-621799'
-                                   disabled={this.state.isReplica && !this.props.manifest} onKeyPress={this.submitMaybe}
-                                   value={this.state.app.samplePatients} onChange={(_e, newVal) => this.onChange('samplePatients', newVal)}/>
-                        {this.props.app &&
-                        <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
-                        {!this.props.app && <div className='toggle-wrapper'>
-                            <Switch label='Allow offline access' defaultToggled={false} onToggle={(_e, value) => this.onChange('offlineAccess', value)}/>
-                            <Switch label='Patient Scoped App' defaultToggled={true} onToggle={(_e, value) => this.onChange('patientScoped', value)}/>
-                        </div>}
-                        < br/>
-                        <div className='image-form'>
-                            <div className='image-button-wrapper'>
-                                <Button variant='contained' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}>
-                                    Select Image
-                                </Button>
-                                <div>
-                                    <span className='subscript'>(Display size 300px W X 200px H)</span>
-                                </div>
-                                <div>
-                                    <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
-                                </div>
+                    <TextField label='App Name*' fullWidth value={this.state.app.clientName} placeholder='Human Readable Name for Your App e.g.: Growth Chart' disabled={this.state.isReplica}
+                               onChange={e => this.onChange('clientName', e.target.value)} id='appName' onKeyPress={this.submitMaybe}/>
+                    <br/>
+                    <div className='margin-top'>
+                        <div className='label'>Client Type</div>
+                        <Select value={this.state.app.tokenEndpointAuthMethod} onChange={(e) => this.onChange('tokenEndpointAuthMethod', e.target.value)} disabled={this.state.isReplica}>
+                            <MenuItem value='NONE'>
+                                Public Client
+                            </MenuItem>
+                            <MenuItem value='SECRET_BASIC'>
+                                Confidential Client
+                            </MenuItem>
+                        </Select>
+                    </div>
+                    {clientId}
+                    {clientSecret}
+                    <TextField multiline label='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest} data-qa='description-input'
+                               onChange={e => this.onChange('briefDescription', e.target.value)} onKeyPress={this.submitMaybe} className='margin-top'/>
+                    <TextField label='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={e => this.onChange('launchUri', e.target.value)}
+                               placeholder='e.g.: https://mydomain.com/growth-chart/launch.html' className='margin-top'
+                               onBlur={this.launchBlur} disabled={this.state.isReplica} data-qa='launch-uri-input' onKeyPress={this.submitMaybe}/>
+                    <TextField value={this.state.app.redirectUris} fullWidth label='App Redirect URIs*' className='margin-top'
+                               disabled={this.state.isReplica} data-qa='redirect-uris-input' onKeyPress={this.submitMaybe}
+                               onChange={e => this.onChange('redirectUris', e.target.value)} placeholder='e.g.: https://mydomain.com/growth-chart/index.html'/>
+                    <span className='subscript'>
+                        Note: If you provide one or more redirect URIs, your client code must send one of the provided values when performing OAuth2 authorization or you will receive an 'Invalid redirect' error.
+                    </span>
+                    <TextField fullWidth label='Scopes' value={this.state.app.scope} onChange={e => this.onChange('scope', e.target.value)} disabled={this.state.isReplica}
+                               placeholder='eg: launch patient/*.* openid profile' onKeyPress={this.submitMaybe} className='margin-top'/>
+                    <span className='subscript'>
+                        Space separated list of scopes. Note: If you do not provide scopes, defaults will be set.
+                    </span>
+                    <div className='scopes-info'>
+                        <a href='http://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context/' target='_blank'>
+                            <InfoIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
+                            <div>About SMART Scopes</div>
+                        </a>
+                    </div>
+                    <TextField fullWidth label='Sample Patients' placeholder='e.g.: Patient?_id=SMART-1032702,SMART-621799'
+                               disabled={this.state.isReplica && !this.props.manifest} onKeyPress={this.submitMaybe} className='margin-top'
+                               value={this.state.app.samplePatients} onChange={e => this.onChange('samplePatients', e.target.value)}/>
+                    {this.props.app && <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
+                    {!this.props.app && <div className='toggle-wrapper'>
+                        <FormControlLabel control={<Switch onToggle={e => this.onChange('offlineAccess', e.target.value)} />} label='Allow offline access' />
+                        <FormControlLabel control={<Switch onToggle={e => this.onChange('patientScoped', e.target.value)} />} label='Patient Scoped App' />
+                    </div>}
+                    <div className='image-form margin-top'>
+                        <div className='image-button-wrapper'>
+                            <Button variant='contained' onClick={() => this.refs.image.click()} disabled={this.state.isReplica}>
+                                Select Image
+                            </Button>
+                            <div>
+                                <span className='subscript'>(Display size 300px W X 200px H)</span>
                             </div>
-                            <div className='image-wrapper'>
-                                <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
-                                {this.state.app.logoUri
-                                    ? <img src={this.state.app.logoUri}/>
-                                    : <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
-                                }
+                            <div>
+                                <span className='subscript'>For best retina experience we recommend pictures with size: 600px X 400px</span>
                             </div>
-                            {this.state.app.logoUri &&
-                            <Fab onClick={this.removeImage} size='small' className='remove-image-button' disabled={this.state.isReplica}>
-                                <DeleteIcon/>
-                            </Fab>}
                         </div>
-                    </form>
+                        <div className='image-wrapper'>
+                            <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
+                            {this.state.app.logoUri
+                                ? <img src={this.state.app.logoUri}/>
+                                : <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                            }
+                        </div>
+                        {this.state.app.logoUri &&
+                        <Fab onClick={this.removeImage} size='small' className='remove-image-button' disabled={this.state.isReplica} style={{backgroundColor: theme.p4, color: theme.p5}}>
+                            <DeleteIcon/>
+                        </Fab>}
+                    </div>
                 </div>
             </Paper>
             <DialogActions className='app-dialog-actions-wrapper'>

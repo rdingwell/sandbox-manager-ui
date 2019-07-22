@@ -79,14 +79,14 @@ export default class CreatePersona extends Component {
             <h3>Create {this.props.type.toLowerCase().charAt(0).toUpperCase() + this.props.type.toLowerCase().slice(1)}</h3>
             <div className='paper-body'>
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                floatingLabelText='First/middle name*' fullWidth value={this.state.name} onChange={(_, name) => this.setState({name})}/>
+                label='First/middle name*' fullWidth value={this.state.name} onChange={(_, name) => this.setState({name})}/>
             <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                       floatingLabelText='Family name*' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({fName})}/>
+                       label='Family name*' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({fName})}/>
 
             {this.props.type === PersonaList.TYPES.patient &&
             <div>
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                           floatingLabelText="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                           label="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                            onChange={(_, birthDate) => this.setState({birthDate})} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
                 <h4>Gender*</h4>
                 <RadioGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({gender})}>
@@ -97,7 +97,7 @@ export default class CreatePersona extends Component {
             {this.props.type === PersonaList.TYPES.practitioner &&
             <div>
                 <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                           floatingLabelText="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({suffix})}/>
+                           label="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({suffix})}/>
             </div>}
         </div>
     </Paper>

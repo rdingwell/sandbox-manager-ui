@@ -34,7 +34,7 @@ export default class Import extends Component {
                         <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>
                         : <div>
                             <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({input})}
-                                       floatingLabelText='DATA' hintText='Paste your FHIR resource JSON/XML here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                                       label='DATA' hintText='Paste your FHIR resource JSON/XML here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         </div>}
                     <div>Place a FHIR resource (Patient, Bundle, etc.) in the form above or upload a file containing a resource.</div>
                     <div className='import-button'>

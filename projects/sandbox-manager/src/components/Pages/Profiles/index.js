@@ -251,8 +251,8 @@ class Profiles extends Component {
                     <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
                         <span>{this.refs.fileZip.files[0] ? this.refs.fileZip.files[0].name : this.state.sfProject}</span>
                     </div>
-                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} errorText={this.state.nameError}/>
-                    <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
+                    <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} errorText={this.state.nameError}/>
+                    <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
         </Dialog>);
@@ -296,7 +296,7 @@ class Profiles extends Component {
                 </Chip>
                 {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
                 {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({simplifireProjectName})}
-                                                               id='simplifireProjectName' floatingLabelText='Simplifier.net Project ID' className='project-name'/>}
+                                                               id='simplifireProjectName' label='Simplifier.net Project ID' className='project-name'/>}
                 <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                          targetOrigin={{horizontal: 'left', vertical: 'top'}} className='left-margin' onRequestClose={() => this.setState({menuActive: false})}>
                     <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>

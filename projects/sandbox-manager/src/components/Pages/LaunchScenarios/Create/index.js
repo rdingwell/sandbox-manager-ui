@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch} from '@material-ui/core';
+import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch, withTheme} from '@material-ui/core';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import LeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import AccountIcon from '@material-ui/icons/AccountBox';
@@ -8,16 +8,16 @@ import EventIcon from '@material-ui/icons/Event';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import WebIcon from '@material-ui/icons/Web';
-import PatientIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg';
-import HospitalIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg';
-import DescriptionIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg';
-import BulbIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg';
-import LinkIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg';
-import FullScreenIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg';
-import InfoIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-info.svg';
-import ContextIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg';
-import HooksIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg';
-import {getPatientName, getAge} from 'sandbox-manager-lib/utils/fhir';
+import PatientIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/patient.svg';
+import HospitalIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/round-location_city.svg';
+import DescriptionIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/round-description.svg';
+import BulbIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/lightbulb.svg';
+import LinkIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/round-link.svg';
+import FullScreenIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/baseline-fullscreen.svg';
+import InfoIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/baseline-info.svg';
+import ContextIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/context-icon.svg';
+import HooksIcon from 'svg-react-loader?name=Patient!../../../../assets/icons/hooks-logo-mono.svg';
+import {getPatientName, getAge} from '../../../../lib/utils/fhir';
 import PersonaList from '../../Persona/List';
 import Apps from '../../Apps';
 
@@ -79,14 +79,13 @@ class Create extends Component {
     }
 
     render() {
-        let palette = this.props.muiTheme.palette;
-        let titleStyle = {backgroundColor: palette.primary2Color, color: palette.primary5Color};
+        let theme = this.props.theme;
+        let titleStyle = {backgroundColor: theme.p2, color: theme.p5};
         let actions = this.getActions();
 
-        return <Dialog open={this.props.open} modal={false} onRequestClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions}
-                       actionsContainerClassName='create-modal-actions'>
+        return <Dialog open={this.props.open} onClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions} actionsContainerClassName='create-modal-actions'>
             <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
-            <IconButton style={{color: palette.primary5Color}} className='close-button' onClick={this.props.close}>
+            <IconButton style={{color: theme.p5}} className='close-button' onClick={this.props.close}>
                 <i className='material-icons' data-qa='modal-close-button'>close</i>
             </IconButton>
             {this.state.currentStep >= 0 && <div className='stepper'>
@@ -117,8 +116,8 @@ class Create extends Component {
 
     getActions = () => {
         let nextEnabled = this.checkNext();
-        let nextColor = nextEnabled ? this.props.muiTheme.palette.primary2Color : this.props.muiTheme.palette.primary3Color;
-        let prevColor = this.props.muiTheme.palette.primary2Color;
+        let nextColor = nextEnabled ? this.props.theme.p2 : this.props.theme.p3;
+        let prevColor = this.props.theme.p2;
 
         let actions = this.state.currentStep !== 3
             ? [<Button variant='outlined' disabled={!nextEnabled} label='NEXT' labelPosition='before' style={{color: nextColor}} icon={<RightIcon/>} onClick={this.next}/>]
@@ -134,15 +133,15 @@ class Create extends Component {
     };
 
     getContent = () => {
-        let palette = this.props.muiTheme.palette;
-        let titleStyle = {color: palette.primary3Color};
+        let theme = this.props.theme;
+        let titleStyle = {color: theme.p3};
         let cardTitleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
-        let underlineFocusStyle = {borderColor: palette.primary2Color};
-        let floatingLabelFocusStyle = {color: palette.primary2Color};
-        let iconStyle = {color: palette.primary3Color, fill: palette.primary3Color, width: '24px', height: '24px'};
-        let iconStyleSmaller = {color: palette.primary3Color, fill: palette.primary3Color, width: '18px', height: '18px'};
-        let rightIconGreenStyle = {color: palette.primary1Color, fill: palette.primary1Color, width: '16px', height: '16px'};
-        let rightIconRedStyle = {color: palette.primary4Color, fill: palette.primary4Color, width: '16px', height: '16px', bottom: '12px', position: 'relative'};
+        let underlineFocusStyle = {borderColor: theme.p2};
+        let floatingLabelFocusStyle = {color: theme.p2};
+        let iconStyle = {color: theme.p3, fill: theme.p3, width: '24px', height: '24px'};
+        let iconStyleSmaller = {color: theme.p3, fill: theme.p3, width: '18px', height: '18px'};
+        let rightIconGreenStyle = {color: theme.p1, fill: theme.p1, width: '16px', height: '16px'};
+        let rightIconRedStyle = {color: theme.p4, fill: theme.p4, width: '16px', height: '16px', bottom: '12px', position: 'relative'};
 
         switch (this.state.currentStep) {
             case -1:
@@ -199,7 +198,7 @@ class Create extends Component {
                 };
 
                 let props = {
-                    type, click, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart, selected: this.state.selectedPersona,
+                    type, click, personaList, modal: true, theme, lookupPersonasStart: this.props.lookupPersonasStart, selected: this.state.selectedPersona,
                     search: this.props.fetchPersonas, loading: this.props.personaLoading, pagination: this.props.patientsPagination,
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
@@ -218,7 +217,7 @@ class Create extends Component {
                 type = PersonaList.TYPES.patient;
                 personaList = this.props.patients;
                 props = {
-                    type, click: this.togglePatientSearch, personaList, modal: true, theme: palette, lookupPersonasStart: this.props.lookupPersonasStart,
+                    type, click: this.togglePatientSearch, personaList, modal: true, theme, lookupPersonasStart: this.props.lookupPersonasStart,
                     search: this.props.fetchPersonas, loading: this.props.personaLoading, close: this.closePatientSearch, pagination: this.props.patientsPagination,
                     next: () => this.props.getNextPersonasPage(type, this.props.patientsPagination), prev: () => this.props.getPrevPersonasPage(type, this.props.patientsPagination)
                 };
@@ -231,10 +230,10 @@ class Create extends Component {
                     </span>
                     <div className='context-selection'>
                         <div className='context-left-column'>
-                            {this.getLeftColumnContext(palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
+                            {this.getLeftColumnContext(theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
                         </div>
                         <div className='context-right-column'>
-                            {this.getRightColumnContext(palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
+                            {this.getRightColumnContext(theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)}
                         </div>
                         <div className={'persona-list-wrapper' + (this.state.showPatientSelectorWrapper ? ' active' : '')}>
                             {this.state.showPatientSelector && <PersonaList {...props} titleLeft scrollContent autoScrollBodyContent={true}/>}
@@ -278,14 +277,14 @@ class Create extends Component {
                                 <span className='section-title'>Details</span>
                             </div>
                             <div className='summary-item'>
-                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} floatingLabelText='Launch Scenario Title'
+                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} label='Launch Scenario Title'
                                            onChange={(_, val) => this.onChange('title', val)} value={this.state.title} onKeyPress={this.submitMaybe}/>
                                 <span className='subscript'>{this.state.title.length} / 75</span>
                             </div>
                             <div className='summary-item'>
                                 <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
                                            onKeyUp={e => this.submitMaybe(e, true)}
-                                           floatingLabelText='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
+                                           label='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
                                 <span className='subscript'>{this.state.description.length} / 250</span>
                             </div>
                         </div>
@@ -401,12 +400,12 @@ class Create extends Component {
         this.setState({selectedApp, requiredHookContext: [], service});
     };
 
-    getRightColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+    getRightColumnContext = (theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
         if (this.state.scenarioType === 'app') {
             return <Fragment>
                 <div className='column-item-wrapper'>
                     <BulbIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' floatingLabelText='Intent'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' label='Intent'
                                onChange={(_, value) => this.onChange('intent', value)} value={this.state.intent}
                                errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
                     {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
@@ -421,15 +420,15 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <LinkIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' floatingLabelText='SMART Style URL'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' label='SMART Style URL'
                                onChange={(_, value) => this.onChange('url', value)} value={this.state.url}/>
                 </div>
                 <div className='column-item-wrapper'>
                     <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                     <div>
-                        <Switch className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: palette.primary5Color}}
-                                trackStyle={{backgroundColor: palette.primary7Color}} toggled={this.state.patientBanner}
-                                thumbSwitchedStyle={{backgroundColor: palette.primary2Color}} trackSwitchedStyle={{backgroundColor: palette.primary2Color}}
+                        <Switch className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: theme.p5}}
+                                trackStyle={{backgroundColor: theme.p7}} toggled={this.state.patientBanner}
+                                thumbSwitchedStyle={{backgroundColor: theme.p2}} trackSwitchedStyle={{backgroundColor: theme.p2}}
                                 onToggle={(_, value) => this.onChange('patientBanner', value)}/>
                         <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
                     </div>
@@ -442,16 +441,16 @@ class Create extends Component {
                 </div>
             </Fragment>
         } else {
-            return this.getHookContextColumn(0, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
+            return this.getHookContextColumn(0, theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
         }
     };
 
-    getLeftColumnContext = (palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+    getLeftColumnContext = (theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
         if (this.state.scenarioType === 'app') {
             return <Fragment>
                 <div className='column-item-wrapper'>
                     <PatientIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' floatingLabelText='Patient ID'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' label='Patient ID'
                                onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
                                errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
                     <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
@@ -474,7 +473,7 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <EventIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' floatingLabelText='Encounter ID'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' label='Encounter ID'
                                onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)} value={this.state.encounterId}
                                errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
                     {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
@@ -490,7 +489,7 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <HospitalIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' floatingLabelText='Location ID'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' label='Location ID'
                                onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)} value={this.state.locationId}
                                errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
                     {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
@@ -506,7 +505,7 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <DescriptionIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' floatingLabelText='Resource'
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' label='Resource'
                                onBlur={() => this.blur('resourceId')} onChange={(_, value) => this.onChange('resource', value)}
                                errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
                     {(this.props.singleResource || this.props.fetchingSingleResource) && <div className='subscript'>
@@ -522,11 +521,11 @@ class Create extends Component {
                 </div>
             </Fragment>;
         } else {
-            return this.getHookContextColumn(1, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
+            return this.getHookContextColumn(1, theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle)
         }
     };
 
-    getHookContextColumn = (comp, palette, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
+    getHookContextColumn = (comp, theme, iconStyle, underlineFocusStyle, floatingLabelFocusStyle, iconStyleSmaller, rightIconGreenStyle, rightIconRedStyle) => {
         return Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map((key, index) => {
             let context = this.props.hookContexts[this.state.selectedApp.hook][key];
             let value = this.state[key] || '';
@@ -534,7 +533,7 @@ class Create extends Component {
 
             return index % 2 === comp && key !== 'userId' && <div className='column-item-wrapper' key={index}>
                 <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
-                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} floatingLabelText={context.title}
+                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} label={context.title}
                            onBlur={() => this.blurHookContext(key, context, this.state)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
                            errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
                 {key === 'patientId' && <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
@@ -723,4 +722,4 @@ class Create extends Component {
     };
 }
 
-export default Create;
+export default withTheme(Create);

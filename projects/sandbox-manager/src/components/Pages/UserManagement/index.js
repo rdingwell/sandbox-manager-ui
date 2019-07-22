@@ -59,7 +59,7 @@ class Users extends Component {
                         </IconButton>
                     </div>
                     <div className='screen-content-invite-modal'>
-                        <TextField fullWidth value={this.state.email} floatingLabelText="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}
+                        <TextField fullWidth value={this.state.email} label="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}
                                    underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe} id='newEmailAddress'/>
                     </div>
                 </Dialog>}
@@ -113,7 +113,7 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-import-modal'>
                         <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
-                        <TextField multiLine fullWidth floatingLabelText='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
+                        <TextField multiLine fullWidth label='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
                                    value={this.state.usersToImport} onKeyUp={this.importMaybe} id='emailList'/>
                     </div>
                 </Dialog>}

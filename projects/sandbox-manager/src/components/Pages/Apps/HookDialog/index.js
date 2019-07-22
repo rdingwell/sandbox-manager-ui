@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from 'react';
-import { Button, Paper, Dialog, IconButton, Fab, TextField, Tab, Tabs } from '@material-ui/core';
+import React, {Component, Fragment} from 'react';
+import {Button, Paper, Dialog, IconButton, Fab, TextField, Tab, Tabs, Box} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import HooksIcon from "svg-react-loader?name=Patient!../../../../assets/icons/hooks-logo-mono.svg";
 import './styles.less';
 import ReactJson from 'react-json-view';
 
 class AppDialog extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let logoURI = props.hook ? props.hook.logoUri : '';
@@ -19,9 +19,9 @@ class AppDialog extends Component {
         }
     }
 
-    render () {
+    render() {
         let paperClasses = 'hook-dialog';
-        let palette = this.props.muiTheme.palette;
+        let theme = this.props.theme;
         let hook = Object.assign({}, this.props.hook);
         hook.id = hook.hookId;
         delete hook.hookId;
@@ -29,30 +29,35 @@ class AppDialog extends Component {
         delete hook.url;
         delete hook.logoUri;
 
-        return <Dialog paperClassName={paperClasses} modal={false} open={!!this.props.open} onRequestClose={this.props.onClose} actionsContainerClassName='app-dialog-actions-wrapper'>
+        return <Dialog classes={{paper: paperClasses}} open={!!this.props.open} onClose={this.props.onClose} scroll='paper'>
             <Paper className='paper-card'>
-                <IconButton style={{ color: this.props.muiTheme.palette.primary5Color }} className="close-button" onClick={this.handleClose}>
+                <IconButton style={{color: theme.p5}} className="close-button" onClick={this.handleClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
                 <h3>CDS Service Info</h3>
                 <div className='paper-body'>
-                    <Tabs className='info-tabs' contentContainerClassName='info-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
-                          value={this.state.activeTab}>
-                        <Tab label='Rendering' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'parsed' })} value='parsed'>
-                            <Fragment>
+                    <Tabs className='info-tabs' value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})} variant='fullWidth'>
+                        <Tab label='Rendering' value='parsed'/>
+                        <Tab label='JSON' value='json'/>
+                    </Tabs>
+                    <Box>
+                        {this.state.activeTab !== 'json'
+                            ? <Fragment>
                                 <div className='hook-info-wrapper'>
-                                    <TextField fullWidth value={this.props.hook.hook} disabled={true} floatingLabelText='Hook'/>
-                                    <TextField fullWidth value={this.props.hook.title} disabled={true} floatingLabelText='Title'/>
-                                    <TextField fullWidth value={this.props.hook.description} disabled={true} floatingLabelText='Description'/>
-                                    <TextField fullWidth value={this.props.hook.hookId} disabled={true} floatingLabelText='Id'/>
-                                    {!!this.props.hook.prefetch && <div className='prefetch-title'>Prefetch</div>}
+                                    <TextField fullWidth value={this.props.hook.hook} disabled={true} label='Hook'/>
+                                    <TextField fullWidth value={this.props.hook.title} disabled={true} label='Title' className='margin-top'/>
+                                    <TextField fullWidth value={this.props.hook.description} disabled={true} label='Description' className='margin-top'/>
+                                    <TextField fullWidth value={this.props.hook.hookId} disabled={true} label='Id' className='margin-top'/>
+                                    {!!this.props.hook.prefetch && <div className='prefetch-title margin-top'>Prefetch</div>}
                                     {!!this.props.hook.prefetch && Object.keys(this.props.hook.prefetch).map(key => {
-                                        return <TextField key={key} fullWidth value={this.props.hook.prefetch[key]} disabled={true} floatingLabelText={key}/>;
+                                        return <TextField key={key} fullWidth value={this.props.hook.prefetch[key]} disabled={true} label={key} className='margin-top'/>;
                                     })}
                                 </div>
                                 <form className='image-form'>
                                     <div className='image-button-wrapper'>
-                                        <Button variant='contained' label='Select Image' onClick={() => this.refs.image.click()}/>
+                                        <Button variant='contained' onClick={() => this.refs.image.click()}>
+                                            Select Image
+                                        </Button>
                                         <div>
                                             <span className='subscript'>(Display size 300px W X 200px H)</span>
                                         </div>
@@ -61,24 +66,23 @@ class AppDialog extends Component {
                                         </div>
                                     </div>
                                     <div className='image-wrapper'>
-                                        <input ref='image' type='file' style={{ 'display': 'none' }} onChange={this.onFileInput}/>
+                                        <input ref='image' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
                                         {!this.state.logoURI && <HooksIcon className='default-hook-icon'/>}
-                                        {this.state.logoURI && <img style={{ height: '100%' }} src={this.state.logoURI}/>}
+                                        {this.state.logoURI && <img style={{height: '100%'}} src={this.state.logoURI}/>}
                                     </div>
                                     {this.state.logoURI &&
-                                    <Fab onClick={this.removeImage} mini className='remove-image-button' backgroundColor={this.props.muiTheme.palette.primary4Color}>
+                                    <Fab onClick={this.removeImage} size='small' className='remove-image-button' style={{backgroundColor: theme.p4, color: theme.p5}}>
                                         <DeleteIcon/>
                                     </Fab>}
                                 </form>
                                 <div className='save-btn-wrapper'>
-                                    <Button variant='contained' className='save-btn' primary label='Save' onClick={this.save} disabled={!this.state.hasChanged}/>
+                                    <Button variant='contained' className='save-btn' onClick={this.save} disabled={!this.state.hasChanged} color='primary'>
+                                        Save
+                                    </Button>
                                 </div>
                             </Fragment>
-                        </Tab>
-                        <Tab label='JSON' className={'json tab' + (this.state.activeTab === 'json' ? ' active' : '')} onActive={() => this.setState({ activeTab: 'json' })} value='json'>
-                            <ReactJson src={hook} name={false}/>
-                        </Tab>
-                    </Tabs>
+                            : <ReactJson src={hook} name={false}/>}
+                    </Box>
                 </div>
             </Paper>
         </Dialog>
@@ -87,11 +91,11 @@ class AppDialog extends Component {
     removeImage = () => {
         let input = this.refs.image;
         input.value = '';
-        this.setState({ logoURI: undefined, hasChanged: true });
+        this.setState({logoURI: undefined, hasChanged: true});
     };
 
     handleClose = () => {
-        this.setState({ modalOpen: false });
+        this.setState({modalOpen: false});
         this.props.onClose();
     };
 
@@ -101,7 +105,7 @@ class AppDialog extends Component {
             let reader = new FileReader();
 
             reader.onload = (e) => {
-                this.setState({ logoURI: e.target.result, hasChanged: true })
+                this.setState({logoURI: e.target.result, hasChanged: true})
             };
 
             reader.readAsDataURL(input.files[0]);

@@ -112,7 +112,8 @@ class Apps extends Component {
                     </div>
                 </div>
             </div>
-            {this.state.showConfirmModal && <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm'>
+            {this.state.showConfirmModal &&
+            <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.delete} onCancel={this.toggleConfirmation} title='Confirm' theme={this.props.theme}>
                 {this.state.serviceToDelete && <p>
                     Are you sure you want to delete this service? Deleting this service will result in the deletion of all the launch scenarios connected to it.
                 </p>}
@@ -121,7 +122,7 @@ class Apps extends Component {
                     to it.
                 </p>}
             </ConfirmModal>}
-            <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000} bodyStyle={{margin: '0 auto', backgroundColor: this.props.theme.p2, textAlign: 'center'}}/>
+            <Snackbar open={!!this.props.copying} message='Text Copied to Clipboard' autoHideDuration={30000}/>
         </Page>
     }
 
@@ -131,12 +132,13 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <Fab onClick={() => this.toggleDeleteService(service)} mini className='remove-service-button'
-                                           backgroundColor={this.props.theme.p4} disabled={this.state.isReplica}>
+                {!this.props.modal && <Fab onClick={() => this.toggleDeleteService(service)} className='remove-service-button' size='small'
+                                           style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p5}} disabled={this.state.isReplica}>
                     <DeleteIcon/>
                 </Fab>}
-                {!this.props.modal && <Button label='Refresh' variant='contained' backgroundColor="#0E5676" labelColor='#FFF' icon={<UpdateIcon/>} className='service-update-button'
-                                              onClick={() => this.props.updateService(service)}/>}
+                {!this.props.modal && <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
+                    <UpdateIcon/> Refresh
+                </Button>}
                 {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
@@ -205,18 +207,18 @@ class Apps extends Component {
 
         return (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation} manifest={this.state.manifest}
-                         muiTheme={this.props.muiTheme} app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
+                         app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
             : this.state.appToLaunch || this.state.hookToLaunch
-                ? <Dialog modal={false} open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onRequestClose={this.handleLaunch} className='launch-app-dialog' autoScrollBodyContent>
+                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={this.handleLaunch} className='launch-app-dialog'>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
-                        <Button variant='contained' primary onClick={() => this.doLaunch()} label='Launch without a patient'/>
+                        <Button variant='contained' color='primary' onClick={() => this.doLaunch()} label='Launch without a patient'/>
                     </div>}
                     {this.props.defaultUser && <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>
                 : this.state.createdApp
-                    ? <Dialog modal={false} open={!!this.state.createdApp} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
+                    ? <Dialog open={!!this.state.createdApp} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
                         <Paper className='paper-card' data-qa='created-app-modal'>
                             <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
                                 <i className="material-icons" data-qa="modal-close-button">close</i>
@@ -238,24 +240,26 @@ class Apps extends Component {
                         </Paper>
                     </Dialog>
                     : this.state.loadDialogVisible
-                        ? <Dialog modal={false} open={!!this.state.loadDialogVisible} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
+                        ? <Dialog open={!!this.state.loadDialogVisible} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
                             <Paper className='paper-card'>
                                 <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
                                     <i className="material-icons">close</i>
                                 </IconButton>
                                 <h3>{this.props.hooks ? 'Register through service' : 'Register with manifest'}</h3>
                                 <div className={`manifest-load${this.props.hooks ? ' small' : ''}`}>
-                                    {this.props.hooks && <TextField value={this.state.serviceName} onChange={(_, serviceName) => this.setState({serviceName})} fullWidth floatingLabelText={'Service name'}
-                                                                    id='serviceName' onKeyPress={event => {
-                                        [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
-                                    }}/>}
+                                    {this.props.hooks && <TextField value={this.state.serviceName} onChange={e => this.setState({serviceName: e.target.value})} fullWidth label='Service name' id='serviceName'
+                                                                    onKeyPress={event => {
+                                                                        [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
+                                                                    }}/>}
                                     <div style={{width: '100%', verticalAlign: 'middle'}}>
-                                        <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={(_, a) => this.setState({manifestURL: a.trim()})}
-                                                   floatingLabelText={this.props.hooks ? 'Service url' : 'Manifest URL'} className={!this.props.hooks ? 'manifest-url' : ''} id='url'
+                                        <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={e => this.setState({manifestURL: e.target.value.trim()})}
+                                                   label={this.props.hooks ? 'Service url' : 'Manifest URL'} className={!this.props.hooks ? 'manifest-url' : ''} id='url' style={{verticalAlign: 'bottom'}}
                                                    onKeyPress={event => {
                                                        [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
                                                    }}/>
-                                        <Button variant='contained' primary label='Load' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}/>
+                                        <Button variant='contained' color='primary' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}>
+                                            Load
+                                        </Button>
                                         {!this.props.hooks && <span className='sub'>Example: https://bilirubin-risk-chart.hspconsortium.org(/.well-known/smart/manifest.json)</span>}
                                         {this.props.hooks && <span className='sub'>Example: https://bilirubin-cdshooks.hspconsortium.org(/cds-services)</span>}
                                     </div>
@@ -264,7 +268,9 @@ class Apps extends Component {
                                             <span>or</span>
                                         </div>
                                         <div style={{width: '100%', verticalAlign: 'middle', textAlign: 'center'}}>
-                                            <Button variant='contained' label='Load from file' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}/>
+                                            <Button variant='contained' color='primary' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}>
+                                                Load from file
+                                            </Button>
                                             <input ref='file' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
                                         </div>
                                     </Fragment>}
@@ -272,13 +278,13 @@ class Apps extends Component {
                             </Paper>
                         </Dialog>
                         : !!this.state.selectedHook
-                            ? <HookDialog muiTheme={this.props.muiTheme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.service}
+                            ? <HookDialog theme={this.props.theme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.service}
                                           onSubmit={(hookId, file) => {
                                               this.props.updateHook(hookId, file);
                                               this.closeAll();
                                           }}/>
                             : this.state.selectCreationType
-                                ? <Dialog modal={false} open={!!this.state.selectCreationType} onRequestClose={this.closeAll} bodyClassName='created-app-dialog' autoScrollBodyContent>
+                                ? <Dialog open={!!this.state.selectCreationType} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
                                     <Paper className='paper-card'>
                                         <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
                                             <i className="material-icons">close</i>

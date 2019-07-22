@@ -83,7 +83,7 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => this.setState({ query })}
+                    <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth label='FHIR Query' onUpdateInput={query => this.setState({ query })}
                                   dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={this.search}
                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>

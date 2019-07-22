@@ -81,7 +81,7 @@ class ResourceBrowser extends Component {
                             {this.state.selectedType && this.state.selectedType.searchParam.map(param => {
                                 return <div key={param.name} style={{ width: '300px', display: 'inline-block', overflow: 'hidden' }}>
                                     {param.type === 'date' && <DatePicker id={param.name} hintText={param.name}/>}
-                                    {param.type !== 'date' && <TextField className='search-crit-field' id={param.name} floatingLabelText={param.name} hintText={param.documentation}/>}
+                                    {param.type !== 'date' && <TextField className='search-crit-field' id={param.name} label={param.name} hintText={param.documentation}/>}
                                 </div>
                             })}
                         </div>

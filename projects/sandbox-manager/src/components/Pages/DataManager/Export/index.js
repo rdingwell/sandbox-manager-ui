@@ -51,7 +51,7 @@ export default class Export extends Component {
         return <div className='export-wrapper'>
             <div className='controls-wrapper'>
                 <div className='input-wrapper'>
-                    <AutoComplete id='query' searchText={this.state.query} fullWidth floatingLabelText='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
+                    <AutoComplete id='query' searchText={this.state.query} fullWidth label='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
                                   dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter}
                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                 </div>

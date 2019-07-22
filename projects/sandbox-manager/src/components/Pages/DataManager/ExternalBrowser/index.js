@@ -33,7 +33,7 @@ export default class ExternalBrowser extends Component {
             </div>
             <div className='external-query-wrapper'>
                 <div className='input-wrapper'>
-                    <TextField ref='query' value={this.state.query} id='query' fullWidth floatingLabelText='FHIR Query' onChange={(_, query) => this.setState({ query })} />
+                    <TextField ref='query' value={this.state.query} id='query' fullWidth label='FHIR Query' onChange={(_, query) => this.setState({ query })} />
                 </div>
                 <div>
                     <FloatingActionButton onClick={() => this.props.search(this.state.query, this.state.endpoint)} mini>

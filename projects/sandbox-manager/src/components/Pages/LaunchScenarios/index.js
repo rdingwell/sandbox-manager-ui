@@ -3,14 +3,14 @@ import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
-    customSearch, fetchAnyResource, clearResourceFetch, launchHook, clearResourceList
+    customSearch, fetchAnyResource, clearResourceFetch, launchHook
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
-    CircularProgress, Card, IconButton, Fab, CardMedia, Popover, Menu, MenuItem, Table, TableHeader, TableRow, TableHeaderColumn, TableBody, TableRowColumn,
-    TextField, Select, Switch
+    CircularProgress, Card, IconButton, Fab, CardMedia, Popover, Menu, MenuItem, Table, TableHead, TableRow, TableBody, TableCell,
+    TextField, Select, Switch, withTheme
 } from '@material-ui/core';
 import PersonaList from '../Persona/List';
 import ContentSort from '@material-ui/icons/Sort';
@@ -25,17 +25,17 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import EventIcon from '@material-ui/icons/Event';
 import DownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FilterList from '@material-ui/icons/FilterList';
-import HospitalIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-location_city.svg';
-import DescriptionIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-description.svg';
-import LinkIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/round-link.svg';
-import FullScreenIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/baseline-fullscreen.svg';
-import HooksIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/hooks-logo-mono.svg';
-import BulbIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/lightbulb.svg';
-import Patient from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg';
-import ContextIcon from 'svg-react-loader?name=Patient!sandbox-manager-lib/icons/context-icon.svg';
-import Page from 'sandbox-manager-lib/components/Page';
-import DohMessage from 'sandbox-manager-lib/components/DohMessage';
-import ConfirmModal from 'sandbox-manager-lib/components/ConfirmModal';
+import HospitalIcon from 'svg-react-loader?name=Patient!../../../assets/icons/round-location_city.svg';
+import DescriptionIcon from 'svg-react-loader?name=Patient!../../../assets/icons/round-description.svg';
+import LinkIcon from 'svg-react-loader?name=Patient!../../../assets/icons/round-link.svg';
+import FullScreenIcon from 'svg-react-loader?name=Patient!../../../assets/icons/baseline-fullscreen.svg';
+import HooksIcon from 'svg-react-loader?name=Patient!../../../assets/icons/hooks-logo-mono.svg';
+import BulbIcon from 'svg-react-loader?name=Patient!../../../assets/icons/lightbulb.svg';
+import Patient from 'svg-react-loader?name=Patient!../../../assets/icons/patient.svg';
+import ContextIcon from 'svg-react-loader?name=Patient!../../../assets/icons/context-icon.svg';
+import Page from '../../UI/Page';
+import DohMessage from '../../UI/DohMessage';
+import ConfirmModal from '../../UI/ConfirmModal';
 import Filters from './Filters';
 import Create from './Create';
 
@@ -86,6 +86,8 @@ class LaunchScenarios extends Component {
     }
 
     render() {
+        let theme = this.props.theme;
+
         return <Page title='Launch Scenarios' helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/65011892/Sandbox+Launch+Scenarios'/>}>
             {this.state.scenarioToEdit && <Create key={this.createKey} open={!!this.state.scenarioToEdit} close={() => this.selectScenarioForEditing()} create={this.createScenario} {...this.props}
                                                   {...this.state.scenarioToEdit}/>}
@@ -101,19 +103,22 @@ class LaunchScenarios extends Component {
                 <a ref='openLink' target='_blank'/>
                 <div className='filter-wrapper'>
                     <IconButton onClick={() => this.setState({desc: !this.state.desc})} className='sort-button'>
-                        <ContentSort className={!this.state.desc ? 'rev' : ''} color={this.props.muiTheme.palette.primary3Color}/>
+                        <ContentSort className={!this.state.desc ? 'rev' : ''} style={{fill: theme.p3}}/>
                     </IconButton>
-                    <Select style={{width: '140px', marginLeft: '16px'}} labelStyle={{color: this.props.muiTheme.palette.primary6Color}} underlineStyle={{display: 'none'}}
-                            value={this.state.sort}
-                            className='sort-select' onChange={(_, sort) => this.setState({sort: SORT_VALUES[sort].val})}>
-                        <MenuItem value={SORT_VALUES[0].val} primaryText={SORT_VALUES[0].label}/>
-                        <MenuItem value={SORT_VALUES[1].val} primaryText={SORT_VALUES[1].label}/>
+                    <Select style={{width: '140px', marginLeft: '16px'}} value={this.state.sort}
+                            className='sort-select' onChange={e => this.setState({sort: e.target.value})}>
+                        <MenuItem value={SORT_VALUES[0].val}>
+                            {SORT_VALUES[0].label}
+                        </MenuItem>
+                        <MenuItem value={SORT_VALUES[1].val}>
+                            {SORT_VALUES[1].label}
+                        </MenuItem>
                     </Select>
-                    <FilterList color={this.props.muiTheme.palette.primary3Color}/>
+                    <FilterList style={{fill: theme.p3}}/>
                     {!this.props.scenariosLoading && this.props.scenarios && this.props.scenarios.length > 0 &&
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter} appliedIdFilter={this.state.appIdFilter}/>}
                     <div className='actions'>
-                        <Fab onClick={this.toggleCreateModal}>
+                        <Fab onClick={this.toggleCreateModal} color='primary'>
                             <ContentAdd/>
                         </Fab>
                     </div>
@@ -204,17 +209,18 @@ class LaunchScenarios extends Component {
     };
 
     getScenarios = () => {
+        let theme = this.props.theme;
         let sorted = this.sortScenarios();
         return <div className='scenarios-list'>
             {sorted.map((sc, index) => {
                     let isSelected = this.state.selectedScenario === index;
                     let isLast = this.state.lastLaunch && this.state.lastLaunch.id === sc.id;
-                    let itemStyles = {backgroundColor: this.props.muiTheme.palette.canvasColor};
-                    let contentStyles = isSelected ? {borderTop: '1px solid ' + this.props.muiTheme.palette.primary7Color} : {};
+                    let itemStyles = {backgroundColor: theme.p5};
+                    let contentStyles = isSelected ? {borderTop: '1px solid ' + theme.p7} : {};
                     let isPatient = sc.userPersona.resource !== 'Practitioner';
                     let iconStyle = {
-                        backgroundColor: this.props.muiTheme.palette.primary5Color,
-                        color: this.props.muiTheme.palette.accent1Color
+                        backgroundColor: theme.p5,
+                        color: theme.a1
                     };
 
                     let details = <div key={1} className='expanded-content'>
@@ -240,22 +246,19 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
-                                    <LaunchIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
+                                    <LaunchIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                                 <IconButton onClick={e => this.toggleMenuForItem(e, index)}>
                                     <span className='anchor' ref={'anchor' + index.toString()}/>
-                                    <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
+                                    <MoreIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                                 {showMenuForItem &&
-                                <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + index]} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                                         targetOrigin={{horizontal: 'right', vertical: 'top'}} onRequestClose={this.toggleMenuForItem}>
-                                    <Menu desktop autoWidth={false} width='100px'>
-                                        <MenuItem className='scenario-menu-item' primaryText='Edit' leftIcon={<EditIcon/>} onClick={() => this.selectScenarioForEditing(sc)}/>
-                                        <MenuItem className='scenario-menu-item' primaryText='Delete' leftIcon={<DeleteIcon/>} onClick={() => this.showDeleteScenario(sc)}/>
-                                    </Menu>
-                                </Popover>}
+                                <Menu width='100px' open={showMenuForItem} anchorEl={this.refs['anchor' + index]} onClose={this.toggleMenuForItem}>
+                                    <MenuItem className='scenario-menu-item' primaryText='Edit' leftIcon={<EditIcon/>} onClick={() => this.selectScenarioForEditing(sc)}/>
+                                    <MenuItem className='scenario-menu-item' primaryText='Delete' leftIcon={<DeleteIcon/>} onClick={() => this.showDeleteScenario(sc)}/>
+                                </Menu>}
                                 <IconButton className='expanded-toggle'>
-                                    <DownIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
+                                    <DownIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
                                 </IconButton>
                             </div>
                             <div className='content' style={contentStyles} onClick={e => e.stopPropagation()}>
@@ -308,17 +311,18 @@ class LaunchScenarios extends Component {
     };
 
     getDetailsContent = (selectedScenario) => {
-        let lightColor = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7'};
-        let needsBanner = {color: this.props.muiTheme.palette.primary3Color, alpha: '.7', width: '58%'};
-        let normalColor = {color: this.props.muiTheme.palette.primary3Color};
-        let darkColor = {color: this.props.muiTheme.palette.primary6Color};
-        let iconStyle = {color: this.props.muiTheme.palette.primary6Color, fill: this.props.muiTheme.palette.primary6Color, width: '24px', height: '24px'};
-        let iconStyleLight = {color: this.props.muiTheme.palette.primary3Color, fill: this.props.muiTheme.palette.primary3Color, width: '24px', height: '24px'};
+        let theme = this.props.theme;
+        let lightColor = {color: theme.p3, alpha: '.7'};
+        let needsBanner = {color: theme.p3, alpha: '.7', width: '58%'};
+        let normalColor = {color: theme.p3};
+        let darkColor = {color: theme.p6};
+        let iconStyle = {color: theme.p6, fill: theme.p6, width: '24px', height: '24px'};
+        let iconStyleLight = {color: theme.p3, fill: theme.p3, width: '24px', height: '24px'};
         let disabled = this.props.modifyingCustomContext || (this.state.addContext && (!this.state.key.length || !this.state.val.length));
         let deleteEnabled = this.state.selectedCustomContent !== undefined;
         let onClick = this.state.addContext ? this.addContext : deleteEnabled ? this.deleteCustomContext : this.toggleAddContext;
-        let underlineFocusStyle = {borderColor: this.props.muiTheme.palette.primary2Color};
-        let floatingLabelFocusStyle = {color: this.props.muiTheme.palette.primary2Color};
+        let underlineFocusStyle = {borderColor: theme.p2};
+        let floatingLabelFocusStyle = {color: theme.p2};
 
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
@@ -347,7 +351,7 @@ class LaunchScenarios extends Component {
                     {selectedScenario.app && <div>
                         <span className='section-value' style={lightColor}>
                             <Patient style={iconStyleLight}/>
-                            {selectedScenario.patientName && <span style={{cursor: 'pointer', color: this.props.muiTheme.palette.primary2Color, textDecoration: 'underline'}}
+                            {selectedScenario.patientName && <span style={{cursor: 'pointer', color: theme.p2, textDecoration: 'underline'}}
                                                                    onClick={e => this.openInDM(e, selectedScenario.patient)}>{selectedScenario.patientName ? selectedScenario.patientName : '-'}</span>}
                             {!selectedScenario.patientName && <span>-</span>}
                         </span>
@@ -373,12 +377,8 @@ class LaunchScenarios extends Component {
                         </span>
                         <span className='section-value' style={lightColor}>
                             <FullScreenIcon style={iconStyleLight}/>
-                            <Switch className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} labelStyle={needsBanner}
-                                    thumbStyle={{backgroundColor: this.props.muiTheme.palette.primary5Color}}
-                                    trackStyle={{backgroundColor: this.props.muiTheme.palette.primary7Color}} toggled={selectedScenario.needPatientBanner === 'T'}
-                                    thumbSwitchedStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}
-                                    trackSwitchedStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color, opacity: '.5'}}
-                                    onToggle={e => {
+                            <Switch className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} checked={selectedScenario.needPatientBanner === 'T'}
+                                    onChange={e => {
                                         this.toggleNeedsPatientBanner(e, selectedScenario)
                                     }}/>
                             {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
@@ -399,26 +399,34 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <Fab onClick={onClick} mini className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}>
+                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton} color='primary'>
                             {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
                         </Fab>
-                        <Table onRowSelection={this.handleContextSelection} className='custom-context-table'>
-                            <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
+                        <Table className='custom-context-table'>
+                            <TableHead>
                                 <TableRow>
-                                    <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Key</TableHeaderColumn>
-                                    <TableHeaderColumn style={{color: this.props.muiTheme.palette.primary3Color}}>Value</TableHeaderColumn>
+                                    <TableCell style={{color: theme.p3}}>Key</TableCell>
+                                    <TableCell style={{color: theme.p3}}>Value</TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false} className='table-body'>
-                                {this.state.addContext && <TableRow selectable={false}>
-                                    <TableRowColumn>
-                                        <TextField floatingLabelText='Key*' id='key' onChange={(_, key) => this.setState({key})}
-                                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-                                    </TableRowColumn>
-                                    <TableRowColumn>
-                                        <TextField floatingLabelText='Value*' id='val' onChange={(_, val) => this.setState({val})}
-                                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
-                                    </TableRowColumn>
+                            </TableHead>
+                            <TableBody className='table-body'>
+                                {this.state.addContext && <TableRow>
+                                    <TableCell onClick={e => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }} onMouseDown={e => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }}>
+                                        <TextField label='Key*' id='key' onChange={(_, key) => this.setState({key})} onClick={e => {
+                                            e.stopPropagation();
+                                        }} onMouseDown={e => {
+                                            e.stopPropagation();
+                                        }}/>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField label='Value*' id='val' onChange={(_, val) => this.setState({val})}/>
+                                    </TableCell>
                                 </TableRow>}
                                 {this.getCustomContext(selectedScenario)}
                             </TableBody>
@@ -473,19 +481,19 @@ class LaunchScenarios extends Component {
         let contexts = selectedScenario.contextParams || [];
         return !this.props.modifyingCustomContext
             ? contexts.map((context, i) => {
-                return <TableRow key={i} selected={this.state.selectedCustomContent === i}>
-                    <TableRowColumn>
+                return <TableRow key={i} selected={this.state.selectedCustomContent === i} onClick={() => this.handleContextSelection(i)}>
+                    <TableCell>
                         {context.name}
-                    </TableRowColumn>
-                    <TableRowColumn>
+                    </TableCell>
+                    <TableCell>
                         {context.value}
-                    </TableRowColumn>
+                    </TableCell>
                 </TableRow>
             })
             : <TableRow key={1}>
-                <TableRowColumn colSpan={2} style={{textAlign: 'center'}}>
+                <TableCell colSpan={2} style={{textAlign: 'center'}}>
                     <CircularProgress/>
-                </TableRowColumn>
+                </TableCell>
             </TableRow>;
     };
 
@@ -558,15 +566,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario,
-        updateNeedPatientBanner, lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext,
-        deleteCustomContext, fetchLocation, setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError,
-        fetchResource, fetchIntent, getDefaultUserForSandbox, customSearch, fetchAnyResource, clearResourceFetch, launchHook, clearResourceList,
+        setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner,
+        lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext, fetchLocation,
+        setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
+        customSearch, fetchAnyResource, clearResourceFetch, launchHook,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },
     dispatch
-);
+)
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(LaunchScenarios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(LaunchScenarios)));

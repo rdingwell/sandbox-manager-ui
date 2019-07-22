@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dialog, IconButton, Button, withTheme} from "@material-ui/core";
+import {Dialog, IconButton, Button, withTheme, DialogActions} from "@material-ui/core";
 
 import './styles.less';
 
@@ -12,16 +12,13 @@ class ConfirmModal extends React.Component {
             paddingLeft: '10px',
             marginLeft: '0'
         };
-        let props = {label: this.props.confirmLabel, secondary: true, onClick: this.props.onConfirm};
+        let props = {onClick: this.props.onConfirm, color: 'secondary'};
         if (this.props.red) {
-            props.labelColor = this.props.theme.p5;
-            props.backgroundColor = this.props.theme.p4;
-            props.secondary = false;
+            delete props.color;
+            props.style = {backgroundColor: this.props.theme.p4, color: this.props.theme.p5};
         }
 
-        let actions = <Button variant='contained' {...props}/>;
-
-        return <Dialog paperClassName='confirm-dialog' overlayClassName='confirm-dialog' modal={false} open={this.props.open} onRequestClose={this.props.onCancel} actions={actions}>
+        return <Dialog classes={{paper: 'confirm-dialog'}} open={this.props.open} onClose={this.props.onCancel}>
             <div className='screen-title' style={titleStyle}>
                 <IconButton className="close-button" onClick={this.props.onCancel}>
                     <i className="material-icons" data-qa="modal-close-button">close</i>
@@ -31,6 +28,11 @@ class ConfirmModal extends React.Component {
             <div className='screen-content confirm-dialog-content'>
                 {this.props.children}
             </div>
+            <DialogActions>
+                <Button variant='contained' {...props}>
+                    {this.props.confirmLabel}
+                </Button>
+            </DialogActions>
         </Dialog>
     }
 }

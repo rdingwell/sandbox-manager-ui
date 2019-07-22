@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 
 import App from '../components/App/';
 import Apps from '../components/Pages/Apps';
-// import Hooks from '../components/Pages/Hooks';
+import Hooks from '../components/Pages/Hooks';
 // import Persona from '../components/Pages/Persona';
 // import Profiles from '../components/Pages/Profiles';
-// import LaunchScenarios from '../components/Pages/LaunchScenarios';
+import LaunchScenarios from '../components/Pages/LaunchScenarios';
 // import LaunchApp from '../components/Pages/LaunchApp';
 // import Settings from '../components/Pages/Settings';
 // import EHRIntegration from '../components/Pages/EHRIntegration';
@@ -23,8 +23,8 @@ export default <Router>
     <App>
         <Switch>
             <Route path='/:sandboxId/apps' component={Apps} />
-            {/*<Route path='/:sandboxId/launch' component={LaunchScenarios} />*/}
-            {/*<Route path='/:sandboxId/hooks' component={Hooks} />*/}
+            <Route path='/:sandboxId/launch' component={LaunchScenarios} />
+            <Route path='/:sandboxId/hooks' component={Hooks} />
             {/*<Route path='/launchApp' component={LaunchApp} />*/}
             {/*<Route path='/:sandboxId/patients' component={Persona} />*/}
             {/*<Route path='/:sandboxId/profiles' component={Profiles} />*/}

@@ -18,18 +18,18 @@ import './styles.less';
 export default class NavigationItems extends Component {
     render () {
         let ehrSimulatorUrl = this.props.sandbox && window.fhirClient ? this.props.ehrUrl : undefined;
-        let ehrStyle = { borderBottom: `1px solid ${this.props.theme.palette.primary7Color}` };
-        let iconStyle = { color: this.props.theme.palette.primary3Color, marginRight: '24px' };
+        let ehrStyle = { borderBottom: `1px solid ${this.props.theme.p7}` };
+        let iconStyle = { color: this.props.theme.p3, marginRight: '24px' };
 
         return <ul className='navigation-items'>
             {this.props.sandbox &&
             <li className={'navigation-item' + (!this.props.defaultUser ? ' disabled' : '')} style={ehrStyle}>
-                <a href={!this.props.defaultUser ? undefined : ehrSimulatorUrl} target='_blank' style={{ color: this.props.theme.palette.primary3Color }} onClick={ehrSimulatorUrl ? this.openEHR : undefined}>
+                <a href={!this.props.defaultUser ? undefined : ehrSimulatorUrl} target='_blank' style={{ color: this.props.theme.p3 }} onClick={ehrSimulatorUrl ? this.openEHR : undefined}>
                     <Desktop style={iconStyle}/>
                     <span>{strings.navigation.ehrSimulator}</span>
                 </a>
-                <a className='warning' style={{ color: this.props.theme.palette.primary3Color }}>
-                    <Warning style={Object.assign({}, iconStyle, {color: this.props.theme.palette.primary4Color})}/>
+                <a className='warning' style={{ color: this.props.theme.p3 }}>
+                    <Warning style={Object.assign({}, iconStyle, {color: this.props.theme.p4})}/>
                     <span>Persona needed</span>
                 </a>
             </li>}

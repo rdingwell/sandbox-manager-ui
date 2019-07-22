@@ -10,6 +10,7 @@
 
 .save-btn-wrapper {
   text-align: right;
+  padding: 0 16px;
 }
 
 .image-wrapper {
@@ -43,15 +44,12 @@
 
   .paper-body {
     height: ~'calc(100% - 68px)';
-    overflow: hidden;
+    overflow: auto;
     box-sizing: border-box;
     position: relative;
     padding: 0 !important;
 
     .info-tabs {
-      height: 100%;
-      overflow: hidden;
-
       .info-tabs-container {
         height: ~'calc(100% - 50px)';
         overflow-x: hidden;
@@ -70,7 +68,7 @@
     }
 
     .react-json-view {
-      padding: 10px 0;
+      padding: 16px;
     }
   }
 
@@ -122,5 +120,14 @@
     top: 4px;
     width: 18px !important;
     height: 18px !important;
+  }
+}
+
+
+.hook-info-wrapper {
+  padding: 16px;
+
+  .margin-top {
+    margin-top: 16px;
   }
 }

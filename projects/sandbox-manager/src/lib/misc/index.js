@@ -1,4 +1,4 @@
-import {indigo, teal,pink, lightBlue, deepOrange} from "@material-ui/core/colors";
+import {teal, pink, lightBlue, deepOrange} from "@material-ui/core/colors";
 
 export function customizeTheme() {
     return {
@@ -15,9 +15,15 @@ export function customizeTheme() {
         a3: '#759F27',
         a4: pink,
         a5: lightBlue,
+        st: '#00577',
         palette: {
             primary: teal,
-            secondary: indigo,
+            secondary: {
+                light: 'rgb(14, 86, 118)',
+                main: 'rgb(14, 86, 118)',
+                dark: 'rgb(14, 86, 118)',
+                contrastText: '#FFF'
+            },
             error: deepOrange
         }
     };
