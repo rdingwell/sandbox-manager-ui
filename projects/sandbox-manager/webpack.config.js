@@ -49,7 +49,7 @@ const config = {
         rules: [
             {
                 test: /\.css$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
+                exclude: [/externals/, /__storage__/],
                 include: [SRC_DIR],
                 use: ExtractTextPlugin.extract({
                     use: ["css-loader?minimize", "postcss-loader"]
@@ -57,7 +57,7 @@ const config = {
             },
             {
                 test: /\.less$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
+                exclude: [/externals/, /__storage__/],
                 include: [SRC_DIR],
                 use: ExtractTextPlugin.extract({
                     use: ["css-loader?minimize", "postcss-loader", "less-loader"]
@@ -65,7 +65,7 @@ const config = {
             },
             {
                 test: /\.(js|jsx)?$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
+                exclude: [/externals/, /__storage__/],
                 include: [SRC_DIR],
                 use: {
                     loader: "babel-loader",
@@ -186,7 +186,6 @@ const config = {
         port: PORT,
         publicPath: "/",
         watchOptions: {
-            ignored: /node_modules\/(?!(sandbox-manager-lib)\/).*/,
             aggregateTimeout: 300
         }
     }

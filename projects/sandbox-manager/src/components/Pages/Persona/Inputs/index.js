@@ -16,8 +16,8 @@ export default class PersonaInputs extends Component {
     }
 
     render() {
-        let underlineFocusStyle = {borderColor: this.props.theme.primary2Color};
-        let floatingLabelFocusStyle = {color: this.props.theme.primary2Color};
+        let underlineFocusStyle = {borderColor: this.props.theme.p2};
+        let floatingLabelFocusStyle = {color: this.props.theme.p2};
 
         return <Paper className='paper-card persona-inputs-wrapper'>
             <h3>Persona Information</h3>

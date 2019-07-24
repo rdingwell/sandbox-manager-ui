@@ -1,5 +1,7 @@
 import React, {Component, Fragment} from 'react';
-import {Tabs, Tab, Card, Button, List, ListItem, TextField, CircularProgress, Dialog, Switch, IconButton, Paper, Menu, MenuItem, Popover, Chip} from '@material-ui/core';
+import {
+    Tabs, Tab, Card, Button, List, ListItem, TextField, CircularProgress, Dialog, Switch, IconButton, Paper, Menu, MenuItem, Popover, Chip, withTheme, DialogActions, FormHelperText, FormControl
+} from '@material-ui/core';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
@@ -7,7 +9,7 @@ import {
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Page from 'sandbox-manager-lib/components/Page';
+import Page from '../../UI/Page';
 import ListIcon from '@material-ui/icons/List';
 import DownIcon from "@material-ui/icons/ArrowDropDown";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -78,23 +80,17 @@ class Profiles extends Component {
     }
 
     render() {
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
         let tab = this.state.activeTab;
-        let underlineFocusStyle = {borderColor: palette.primary2Color};
-        let floatingLabelFocusStyle = {color: palette.primary2Color};
-        let styleProps = {underlineFocusStyle, floatingLabelFocusStyle};
         let validateDisabled = (this.state.activeTab === 'browse' && this.state.query.length <= 5)
             || (this.state.activeTab === 'existing' && this.state.query.length <= 5)
             || (this.state.activeTab === 'file' && !this.state.file)
             || (this.state.activeTab === 'json-input' && this.state.manualJson.length <= 5);
-        let typeButton = <Switch className='view-toggle' label='Show as table' labelPosition='right' toggled={this.state.resultsView} thumbStyle={{backgroundColor: palette.primary5Color}}
-                                 trackStyle={{backgroundColor: palette.primary7Color}} thumbSwitchedStyle={{backgroundColor: palette.primary2Color}}
-                                 trackSwitchedStyle={{backgroundColor: palette.primary2Color}} onToggle={() => this.setState({resultsView: !this.state.resultsView})}/>;
+        let typeButton = <Switch className='view-toggle' label='Show as table' labelPosition='right' checked={this.state.resultsView} onChange={() => this.setState({resultsView: !this.state.resultsView})}/>;
 
         let profile = this.state.selectedProfile && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
 
-        return <Page title={<span>Profiles</span>}
-                     helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
+        return <Page title={<span>Profiles</span>} helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.getModals()}
             <div className='profiles-wrapper'>
                 <Card className='card profile-list-wrapper'>
@@ -104,7 +100,9 @@ class Profiles extends Component {
                     <div className='card-content import-button left-padding'>
                         <div className='file-load-wrapper'>
                             <input type='file' id='fileZip' ref='fileZip' style={{display: 'none'}} onChange={this.loadZip}/>
-                            <Button variant='contained' label='Import profile' primary onClick={this.toggleInputModal}/>
+                            <Button variant='contained' color='primary' onClick={this.toggleInputModal}>
+                                Import profile
+                            </Button>
                             {/*<Button variant='contained label='Import profile' primary onClick={() => {*/}
                             {/*    this.setState({ profileName: '', profileId: '' }, () => {*/}
                             {/*        this.refs.fileZip.value = [];*/}
@@ -123,41 +121,48 @@ class Profiles extends Component {
                         <span>Validation target</span>
                     </div>
                     <div className='validate-wrapper'>
-                        <Tabs className='validate-tabs' contentContainerClassName={`validate-tabs-container ${this.state.activeTab === 'browse' ? 'no-padding' : ''}`}
-                              inkBarStyle={{backgroundColor: palette.primary2Color}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab}>
-                            <Tab label={<span><ListIcon style={{color: tab === 'browse' ? palette.primary5Color : palette.primary3Color}}/> Browse</span>}
-                                 className={'manual-input tab' + (tab === 'browse' ? ' active' : '')} onActive={() => this.setActiveTab('browse')} value='browse'>
-                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
-                                             selectPatient={this.selectPatient} cleanResults={this.props.cleanValidationResults}/>
-                            </Tab>
-                            <Tab label={<span><ListIcon style={{color: tab === 'existing' ? palette.primary5Color : palette.primary3Color}}/> URI</span>}
-                                 className={'manual-input tab' + (tab === 'existing' ? ' active' : '')} onActive={() => this.setActiveTab('existing')} value='existing'>
+                        <Tabs className='validate-tabs' style={{backgroundColor: palette.p7}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setActiveTab(activeTab)}>
+                            <Tab label={<span><ListIcon style={{color: tab === 'browse' ? palette.p5 : palette.p3}}/> Browse</span>} id='browse' value='browse'/>
+                            <Tab label={<span><ListIcon style={{color: tab === 'existing' ? palette.p5 : palette.p3}}/> URI</span>} id='existing' value='existing'/>
+                            <Tab label={<span><ListIcon style={{color: tab === 'file' ? palette.p5 : palette.p3}}/> File</span>} id='file' value='file'/>
+                            <Tab label={<span><ListIcon style={{color: tab === 'json-input' ? palette.p5 : palette.p3}}/> JSON</span>} id='json-input' value='json-input'/>
+                        </Tabs>
+                        <div>
+                            {this.state.activeTab === 'browse' &&
+                            <div className={'manual-input tab' + (tab === 'browse' ? ' active' : '')}>
+                                <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)} selectPatient={this.selectPatient}
+                                             cleanResults={this.props.cleanValidationResults}/>
+                            </div>}
+                            {this.state.activeTab === 'existing' &&
+                            <div className={'manual-input tab' + (tab === 'existing' ? ' active' : '')}>
                                 <div>
                                     <div className='tab-title'>Existing resource uri</div>
-                                    <TextField fullWidth id='query' {...styleProps} onChange={(_, query) => this.setState({query, manualJson: '', file: '', fileJson: ''})}
-                                               hintText='Patient/smart-613876' value={this.state.query}/>
+                                    <TextField fullWidth id='query' onChange={e => this.setState({query: e.target.value, manualJson: '', file: '', fileJson: ''})} placeholder='Patient/smart-613876'
+                                               value={this.state.query}/>
                                 </div>
-                            </Tab>
-                            <Tab label={<span><ListIcon style={{color: tab === 'file' ? palette.primary5Color : palette.primary3Color}}/> File</span>}
-                                 className={'manual-input tab' + (tab === 'file' ? ' active' : '')} onActive={() => this.setActiveTab('file')} value='file'>
-                                <div>
-                                    <input value='' type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile} accept='application/json'/>
-                                    <div className='tab-title'>Validate resource from file</div>
-                                    <Button variant='contained' label='Select file' primary onClick={() => this.refs.file.click()}/>
-                                    {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
-                                </div>
-                            </Tab>
-                            <Tab label={<span><ListIcon style={{color: tab === 'json-input' ? palette.primary5Color : palette.primary3Color}}/> JSON</span>}
-                                 className={'manual-input tab' + (tab === 'json-input' ? ' active' : '')} onActive={() => this.setActiveTab('json-input')} value='json-input'>
-                                <div>
-                                    <span className='tab-title'>JSON</span>
-                                    <Button variant='contained' className='clear-json-button' disabled={!this.state.manualJson} label='CLEAR' primary onClick={() => this.setState({manualJson: ''})}/>
-                                    <TextField className='manual-input' hintText='Paste fhir resource json here' {...styleProps} multiLine fullWidth value={this.state.manualJson}
-                                               onChange={(_, manualJson) => this.setState({query: '', file: '', fileJson: '', manualJson})}/>
-                                </div>
-                            </Tab>
-                        </Tabs>
-                        <Button variant='contained' className='validate-button' label='Validate' primary onClick={this.validate} disabled={validateDisabled}/>
+                            </div>}
+                            {this.state.activeTab === 'file' &&
+                            <div className={'manual-input tab' + (tab === 'file' ? ' active' : '')}>
+                                <input value='' type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile} accept='application/json'/>
+                                <div className='tab-title'>Validate resource from file</div>
+                                <Button variant='contained' color='primary' onClick={() => this.refs.file.click()}>
+                                    Select file
+                                </Button>
+                                {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
+                            </div>}
+                            {this.state.activeTab === 'json-input' &&
+                            <div className={'manual-input tab' + (tab === 'json-input' ? ' active' : '')}>
+                                <span className='tab-title'>JSON</span>
+                                <Button variant='contained' className='clear-json-button' disabled={!this.state.manualJson} color='primary' onClick={() => this.setState({manualJson: ''})}>
+                                    CLEAR
+                                </Button>
+                                <TextField className='manual-input' placeholder='Paste fhir resource json here' multiLine fullWidth value={this.state.manualJson}
+                                           onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
+                            </div>}
+                        </div>
+                        <Button variant='contained' className='validate-button' colo='primary' onClick={this.validate} disabled={validateDisabled}>
+                            Validate
+                        </Button>
                     </div>
                 </Card>
                 <Card className='card result-card'>
@@ -182,27 +187,32 @@ class Profiles extends Component {
 
     getModals = () => {
         let modals = [];
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
         let titleStyle = {
-            backgroundColor: palette.primary2Color,
-            color: palette.alternateTextColor,
+            backgroundColor: palette.p2,
+            color: palette.p7,
             paddingLeft: '10px',
             marginLeft: '0'
         };
         let actions = [
             <div className='warning-modal-action'>
-                <Button variant='contained' label='OK' primary onClick={this.toggleWarningModal}/>
+                <Button variant='contained' color='primary' onClick={this.toggleWarningModal}>
+                    OK
+                </Button>
             </div>
         ];
         let inputActions = [
             <div className='warning-modal-action'>
-                <Button variant='contained' label='OK' primary onClick={this.saveProfile}/>
+                <Button variant='contained' color='primary' onClick={this.saveProfile}>
+                    OK
+                </Button>
             </div>
         ];
         let inputModalActions = [
             <div key={1} className='input-modal-action'>
-                <Button variant='contained' label='Load' primary onClick={this.loadRemoteFile}
-                        disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}/>
+                <Button variant='contained' color='primary' onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifireProjectName.length < 2)}>
+                    Load
+                </Button>
             </div>
         ];
         !this.state.simplifierInputVisible && inputModalActions.shift();
@@ -210,7 +220,7 @@ class Profiles extends Component {
 
 
         this.state.showZipWarning &&
-        modals.push(<Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{width: '350px'}} key={1}>
+        modals.push(<Dialog open={this.state.showZipWarning} onClose={this.toggleWarningModal} style={{width: '350px'}} key={1}>
             <div className='sandbox-edit-modal'>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={this.toggleWarningModal}>
@@ -224,22 +234,27 @@ class Profiles extends Component {
                     </p>
                 </div>
             </div>
+            <DialogActions>
+                {actions}
+            </DialogActions>
         </Dialog>);
 
         this.state.inputModalVisible &&
         modals.push(
-            <Dialog open={this.state.inputModalVisible} modal={false} onRequestClose={this.toggleInputModal} actions={inputModalActions} contentStyle={{width: '412px'}} bodyClassName='project-input-modal'
-                    key={2}>
+            <Dialog open={this.state.inputModalVisible} onClose={this.toggleInputModal} styl={{width: '412px'}} classes={{paper: 'project-input-modal'}} key={2}>
                 <Paper className='paper-card'>
-                    <IconButton style={{color: this.props.muiTheme.palette.primary5Color}} className="close-button" onClick={this.toggleInputModal}>
+                    <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.toggleInputModal}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     {this.getModalContent(palette)}
                 </Paper>
+                <DialogActions>
+                    {inputModalActions}
+                </DialogActions>
             </Dialog>);
 
         this.state.profileInputModalVisible &&
-        modals.push(<Dialog open={this.state.profileInputModalVisible} modal={false} onRequestClose={closeInputModal} actions={inputActions} contentStyle={{width: '412px'}} key={3}>
+        modals.push(<Dialog open={this.state.profileInputModalVisible} onClose={closeInputModal} style={{width: '412px'}} key={3}>
             <div className='sandbox-edit-modal'>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={closeInputModal}>
@@ -251,10 +266,16 @@ class Profiles extends Component {
                     <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
                         <span>{this.refs.fileZip.files[0] ? this.refs.fileZip.files[0].name : this.state.sfProject}</span>
                     </div>
-                    <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} errorText={this.state.nameError}/>
+                    <FormControl error={!!this.state.nameError}>
+                        <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
+                        {!!this.state.nameError && <FormHelperText>{this.state.nameError}</FormHelperText>}
+                    </FormControl>
                     <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
+            <DialogActions>
+                {inputActions}
+            </DialogActions>
         </Dialog>);
 
         return modals;
@@ -270,7 +291,8 @@ class Profiles extends Component {
         }
     };
 
-    setProfileName = (_, profileName) => {
+    setProfileName = (e) => {
+        let profileName = e.target.value;
         let profileId = profileName.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (profileId.length > 20) {
             profileId = value.substring(0, 20);
@@ -282,29 +304,32 @@ class Profiles extends Component {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = !this.state.simplifierInputVisible
             ? <div className='buttons-wrapper'>
-                <Button variant='contained' label='Simplifier.net' primary onClick={() => this.setState({simplifierInputVisible: true})}/>
-                <Button variant='contained' label='Package' primary onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}/>
+                <Button variant='contained' color='primary' onClick={() => this.setState({simplifierInputVisible: true})}>
+                    Simplifier.net
+                </Button>
+                <Button variant='contained' color='primary' onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}>
+                    Package
+                </Button>
             </div>
             : <div style={{padding: '20px'}}>
                 <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({menuActive: true})}
-                      backgroundColor={this.state.menuActive ? palette.primary2Color : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
+                      backgroundColor={this.state.menuActive ? palette.p2 : undefined} labelColor={this.state.menuActive ? palette.alternateTextColor : undefined}>
                     <span ref='project-menu'/>
                     <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
                     <span className='icon-wrapper'>
-                                   <DownIcon style={{position: 'relative', top: '5px'}} color={!this.state.menuActive ? palette.primary3Color : 'white'}/>
-                                </span>
+                        <DownIcon style={{position: 'relative', top: '5px'}} color={!this.state.menuActive ? palette.p3 : 'white'}/>
+                    </span>
                 </Chip>
                 {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
                 {this.state.project === 'manual' && <TextField value={this.state.simplifireProjectName} onChange={(_, simplifireProjectName) => this.setState({simplifireProjectName})}
                                                                id='simplifireProjectName' label='Simplifier.net Project ID' className='project-name'/>}
-                <Popover open={this.state.menuActive} anchorEl={this.refs['project-menu']} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                         targetOrigin={{horizontal: 'left', vertical: 'top'}} className='left-margin' onRequestClose={() => this.setState({menuActive: false})}>
-                    <Menu className='type-filter-menu' width='200px' desktop autoWidth={false}>
-                        {PROFILES.map(profile =>
-                            <MenuItem className='type-filter-menu-item' primaryText={profile.title} onClick={() => this.setState({menuActive: false, project: profile.id})}/>
-                        )}
-                    </Menu>
-                </Popover>
+                <Menu open={this.state.menuActive} anchorEl={this.refs['project-menu']} className='type-filter-menu' onClose={() => this.setState({menuActive: false})}>
+                    {PROFILES.map(profile =>
+                        <MenuItem className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
+                            profile.title
+                        </MenuItem>
+                    )}
+                </Menu>
             </div>;
 
         return <Fragment>
@@ -389,12 +414,8 @@ class Profiles extends Component {
     };
 
     getList = (palette) => {
-        let underlineFocusStyle = {borderColor: palette.primary2Color};
-        let floatingLabelFocusStyle = {color: palette.primary2Color};
-
         return <div>
-            <TextField id='profile-filter' hintText='Filter profiles by name' onChange={(_, value) => this.delayFiltering(value)}
-                       underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+            <TextField id='profile-filter' placeholder='Filter profiles by name' onChange={e => this.delayFiltering(e.target.value)}/>
             <List className='profiles-list'>
                 {(this.props.fetchingFile || this.props.profilesUploading) && <div className='loader-wrapper' style={{height: '110px', paddingTop: '20px', margin: 0}}>
                     <CircularProgress size={40} thickness={5}/>
@@ -412,7 +433,7 @@ class Profiles extends Component {
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.profileId ? ' active' : '');
                     return <ListItem key={key} className={classes} primaryText={profile.profileName} hoverColor='transparent' onClick={() => this.toggleProfile(profile.profileId)}
                                      rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile.id, this.state.canFit)}>
-                                         <DeleteIcon color={palette.primary4Color}/>
+                                         <DeleteIcon color={palette.p4}/>
                                      </IconButton>}/>;
                 })}
                 {this.props.profilesLoading && <div className='loader-wrapper' style={{height: '110px', paddingTop: '20px', margin: 0}}>
@@ -487,4 +508,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Profiles)));

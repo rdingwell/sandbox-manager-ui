@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { TextField, Paper, FloatingActionButton, List, ListItem } from '@material-ui/core';
+import { TextField, Fab, List, ListItem } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 
 import './styles.less';
-import { parseEntry } from "sandbox-manager-lib/utils";
+import { parseEntry } from "../../../../lib/utils";
 
 export default class ExternalBrowser extends Component {
     constructor (props) {
@@ -36,12 +36,12 @@ export default class ExternalBrowser extends Component {
                     <TextField ref='query' value={this.state.query} id='query' fullWidth label='FHIR Query' onChange={(_, query) => this.setState({ query })} />
                 </div>
                 <div>
-                    <FloatingActionButton onClick={() => this.props.search(this.state.query, this.state.endpoint)} mini>
+                    <Fab onClick={() => this.props.search(this.state.query, this.state.endpoint)} mini>
                         <SearchIcon />
-                    </FloatingActionButton>
-                    <FloatingActionButton onClick={this.clearQuery} className={clearClasses} mini secondary>
+                    </Fab>
+                    <Fab onClick={this.clearQuery} className={clearClasses} mini secondary>
                         <CloseIcon />
-                    </FloatingActionButton>
+                    </Fab>
                 </div>
             </div>
             {this.props.results && this.props.results.entry &&

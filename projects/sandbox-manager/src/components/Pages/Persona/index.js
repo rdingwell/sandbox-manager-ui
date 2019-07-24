@@ -3,6 +3,7 @@ import {createResource, getPersonasPage, fetchPersonas, deletePersona, app_setSc
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
+import {withTheme} from '@material-ui/core';
 import PersonaList from './List';
 
 import './styles.less';
@@ -44,7 +45,7 @@ class Persona extends Component {
             pagination: this.props.currentPagination,
             click: this.selectPersonHandler,
             search: this.props.fetchPersonas,
-            theme: this.props.muiTheme.palette,
+            theme: this.props.theme,
             create: type !== PersonaList.TYPES.persona ? this.props.createResource : this.props.createPersona,
             modal: this.props.modal,
             title: this.props.title,
@@ -114,4 +115,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Persona));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Persona)));

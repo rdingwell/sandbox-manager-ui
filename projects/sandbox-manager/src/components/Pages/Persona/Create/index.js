@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, TextField, Dialog, RadioGroup, Radio, Paper, IconButton} from '@material-ui/core';
+import {Button, TextField, Dialog, RadioGroup, Radio, Paper, IconButton, DialogActions, FormControl, FormHelperText, FormLabel, FormControlLabel} from '@material-ui/core';
 
 import './styles.less';
 import PersonaList from "../List";
@@ -21,23 +21,22 @@ export default class CreatePersona extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        let div = document.querySelector('body div:last-child');
-        nextProps.open && console.log(div);
-    }
-
     render() {
         let createEnabled = this.checkCreateEnabled();
 
         return <div>
-            <Dialog bodyClassName='create-persona-dialog' contentClassName='create-dialog' open={this.props.open} onRequestClose={this.props.close}
-                    actions={[<Button variant='contained' label='Create' onClick={this.create} primary disabled={!createEnabled}/>]}>
-                {this.props.type === PersonaList.TYPES.persona && <IconButton style={{color: this.state.selectedForCreation ? this.props.theme.primary5Color : this.props.theme.primary3Color}}
+            <Dialog classes={{root: 'create-dialog', paper: 'create-persona-dialog'}} open={this.props.open} onClose={this.props.close}>
+                {this.props.type === PersonaList.TYPES.persona && <IconButton style={{color: this.state.selectedForCreation ? this.props.theme.p5 : this.props.theme.p3}}
                                                                               className="close-button" onClick={this.props.close}>
                     <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>}
                 {this.props.type !== PersonaList.TYPES.persona && this.getDefaultContent()}
                 {this.props.type === PersonaList.TYPES.persona && this.getPersonaContent()}
+                <DialogActions>
+                    <Button variant='contained' onClick={this.create} color='primary' disabled={!createEnabled}>
+                        Create
+                    </Button>
+                </DialogActions>
             </Dialog>
         </div>
     }
@@ -69,38 +68,42 @@ export default class CreatePersona extends Component {
     };
 
     getDefaultContent = () => {
-        let underlineFocusStyle = {borderColor: this.props.theme.primary2Color};
-        let floatingLabelFocusStyle = {color: this.props.theme.primary2Color};
+        let underlineFocusStyle = {borderColor: this.props.theme.p2};
+        let floatingLabelFocusStyle = {color: this.props.theme.p2};
 
         return <Paper className='paper-card'>
-            <IconButton style={{color: this.props.theme.primary5Color}} className="close-button" onClick={this.props.close}>
+            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.props.close}>
                 <i className="material-icons" data-qa="modal-close-button">close</i>
             </IconButton>
             <h3>Create {this.props.type.toLowerCase().charAt(0).toUpperCase() + this.props.type.toLowerCase().slice(1)}</h3>
             <div className='paper-body'>
-                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                label='First/middle name*' fullWidth value={this.state.name} onChange={(_, name) => this.setState({name})}/>
-            <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                       label='Family name*' fullWidth value={this.state.fName} onChange={(_, fName) => this.setState({fName})}/>
+                <TextField onKeyPress={this.submitMaybe} label='First/middle name*' fullWidth value={this.state.name} onChange={e => this.setState({name: e.target.value})}/>
+                <TextField onKeyPress={this.submitMaybe} label='Family name*' fullWidth value={this.state.fName} onChange={e => this.setState({fName: e.target.value})}/>
 
-            {this.props.type === PersonaList.TYPES.patient &&
-            <div>
-                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                           label="Birth date*" hintText='YYYY-MM-DD' fullWidth value={this.state.birthDate}
-                           onChange={(_, birthDate) => this.setState({birthDate})} onBlur={this.checkBirthDate} errorText={this.state.birthDateError}/>
-                <h4>Gender*</h4>
-                <RadioGroup name="gender" valueSelected={this.state.gender} onChange={(_, gender) => this.setState({gender})}>
-                    <Radio value="male" label="Male"/>
-                    <Radio value="female" label="Female"/>
-                </RadioGroup>
-            </div>}
-            {this.props.type === PersonaList.TYPES.practitioner &&
-            <div>
-                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                           label="Suffix" hintText='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({suffix})}/>
-            </div>}
-        </div>
-    </Paper>
+                {this.props.type === PersonaList.TYPES.patient &&
+                <div>
+                    <FormControl error={!!this.state.birthDateError}>
+                        <TextField onKeyPress={this.submitMaybe} label="Birth date*" placeholder='YYYY-MM-DD' fullWidth value={this.state.birthDate}
+                                   onChange={e => this.setState({birthDate: e.target.value})} onBlur={this.checkBirthDate}/>
+                        {!!this.state.birthDateError && <FormHelperText>{this.state.birthDateError}</FormHelperText>}
+                    </FormControl>
+                    <div style={{marginTop: '16px'}}>
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Gender*</FormLabel>
+                            <RadioGroup aria-label="Gender" name="gender" value={this.state.gender} onChange={e => this.setState({gender: e.target.value})}>
+                                <FormControlLabel value="female" control={<Radio/>} label="Female"/>
+                                <FormControlLabel value="male" control={<Radio/>} label="Male"/>
+                            </RadioGroup>
+                        </FormControl>
+                    </div>
+                </div>}
+                {this.props.type === PersonaList.TYPES.practitioner &&
+                <div>
+                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
+                               label="Suffix" placeholder='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({suffix})}/>
+                </div>}
+            </div>
+        </Paper>
     };
 
     submitMaybe = (event) => {

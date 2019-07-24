@@ -23,12 +23,12 @@ export default class Import extends Component {
     render() {
         let palette = this.props.muiTheme.palette;
         let data = this.state.activeTab === 'data';
-        let underlineFocusStyle = {borderColor: palette.primary2Color};
-        let floatingLabelFocusStyle = {color: palette.primary2Color};
+        let underlineFocusStyle = {borderColor: palette.p2};
+        let floatingLabelFocusStyle = {color: palette.p2};
 
         return <div className='import-wrapper'>
-            <Tabs className='import-tabs' contentContainerClassName='import-tabs-container' inkBarStyle={{backgroundColor: palette.primary2Color}} style={{backgroundColor: palette.canvasColor}}>
-                <Tab label={<span><ListIcon style={{color: data ? palette.primary5Color : palette.primary3Color}}/> Data</span>} className={'data tab' + (data ? ' active' : '')}
+            <Tabs className='import-tabs' contentContainerClassName='import-tabs-container' inkBarStyle={{backgroundColor: palette.p2}} style={{backgroundColor: palette.canvasColor}}>
+                <Tab label={<span><ListIcon style={{color: data ? palette.p5 : palette.p3}}/> Data</span>} className={'data tab' + (data ? ' active' : '')}
                      onActive={() => this.setActiveTab('data')}>
                     {this.props.dataImporting ?
                         <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>
@@ -43,7 +43,7 @@ export default class Import extends Component {
                         <Button variant='contained' label='Import' disabled={this.state.input.length === 0 || this.props.dataImporting} primary onClick={this.import}/>
                     </div>
                 </Tab>
-                <Tab label={<span><CodeIcon style={{color: !data ? palette.primary5Color : palette.primary3Color}}/> Results</span>} className={'result tab' + (!data ? ' active' : '')}
+                <Tab label={<span><CodeIcon style={{color: !data ? palette.p5 : palette.p3}}/> Results</span>} className={'result tab' + (!data ? ' active' : '')}
                      onActive={() => this.setActiveTab('result')} ref='results'>
                     {this.props.results && this.state.input.length > 0 && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.dataImporting && <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>}

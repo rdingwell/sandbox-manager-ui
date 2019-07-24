@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Dialog, Button, IconButton, CircularProgress, TableRowColumn, TableRow, TableBody, Table, TableHeader, TableHeaderColumn, Popover, Menu, MenuItem, Fab, TextField, Snackbar} from '@material-ui/core';
+import {Dialog, Button, IconButton, CircularProgress, TableCell, TableRow, TableBody, Table, TableHead, Popover, Menu, MenuItem, Fab, TextField, Snackbar, withTheme} from '@material-ui/core';
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Redo from '@material-ui/icons/Redo';
 import ContentAdd from '@material-ui/icons/Add';
@@ -33,24 +33,24 @@ class Users extends Component {
     }
 
     render() {
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
         let titleStyle = {
-            backgroundColor: palette.primary2Color,
-            color: palette.alternateTextColor
+            backgroundColor: palette.p2,
+            color: palette.p7
         };
-        let underlineFocusStyle = {borderColor: palette.primary2Color};
-        let floatingLabelFocusStyle = {color: palette.primary2Color};
+        let underlineFocusStyle = {borderColor: palette.p2};
+        let floatingLabelFocusStyle = {color: palette.p2};
         let sending = this.state.action === 'sending';
 
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <Button variant='contained' label='MANAGE INVITES' backgroundColor={this.props.muiTheme.palette.primary2Color} labelColor='#FFF' onClick={this.showInvitationsModal}/>
+                    <Button variant='contained' label='MANAGE INVITES' backgroundColor={this.props.theme.p2} labelColor='#FFF' onClick={this.showInvitationsModal}/>
                     <Button variant='contained' label='EXPORT USERS' primary onClick={this.exportUsers}/>
                     <Button variant='contained' label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
                 </div>
                 {this.state.inviteModal &&
-                <Dialog modal={false} open={this.state.inviteModal} onRequestClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
+                <Dialog modal={false} open={this.state.inviteModal} onClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
                         paperClassName='invitations-modal' actions={[<Button variant='contained' label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITE</h1>
@@ -63,7 +63,7 @@ class Users extends Component {
                                    underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe} id='newEmailAddress'/>
                     </div>
                 </Dialog>}
-                {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onRequestClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
+                {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
                                                         actions={[<Fab onClick={this.toggleCreateModal}><ContentAdd/></Fab>]} paperClassName='invitations-modal'>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITES</h1>
@@ -73,23 +73,23 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-invites-modal'>
                         <Table className='sandbox-invitations-list'>
-                            <TableHeader className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}
-                                         style={{backgroundColor: this.props.muiTheme.palette.primary7Color}}>
+                            <TableHead className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}
+                                         style={{backgroundColor: this.props.theme.p7}}>
                                 <TableRow>
-                                    <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Email</TableHeaderColumn>
-                                    <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Date Sent</TableHeaderColumn>
-                                    <TableHeaderColumn/>
+                                    <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Email</TableCell>
+                                    <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Date Sent</TableCell>
+                                    <TableCell/>
                                 </TableRow>
-                            </TableHeader>
+                            </TableHead>
                             <TableBody displayRowCheckbox={false} selectable={false}>
                                 {this.props.invitations && this.getInvitations()}
                             </TableBody>
                         </Table>
                     </div>
                 </Dialog>}
-                {this.state.userToRemove && <Dialog modal={false} open={this.state.open} onRequestClose={this.handleClose} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                                                    actions={<Button variant='contained' label="Remove" labelColor={this.props.muiTheme.palette.primary5Color}
-                                                                     backgroundColor={this.props.muiTheme.palette.primary4Color}
+                {this.state.userToRemove && <Dialog modal={false} open={this.state.open} onClose={this.handleClose} actionsContainerClassName='user-remove-dialog-actions-wrapper'
+                                                    actions={<Button variant='contained' label="Remove" labelColor={this.props.theme.p5}
+                                                                     backgroundColor={this.props.theme.p4}
                                                                      keyboardFocused onClick={this.deleteSandboxUserHandler}/>}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>Remove User from Sandbox</h1>
@@ -102,7 +102,7 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {this.state.importUsersModal &&
-                <Dialog modal={false} open={this.state.importUsersModal} onRequestClose={this.toggleImportUsersModal} actionsContainerClassName='user-remove-dialog-actions-wrapper'
+                <Dialog modal={false} open={this.state.importUsersModal} onClose={this.toggleImportUsersModal} actionsContainerClassName='user-remove-dialog-actions-wrapper'
                         actions={[<Button variant='contained' label="Import" style={{marginRight: '10px'}} onClick={this.importUsers} primary/>,
                             <Button variant='contained' label='Load from file (csv)' primary onClick={() => this.refs.file.click()}/>]}>
                     <div className='screen-title imports' style={titleStyle}>
@@ -118,15 +118,15 @@ class Users extends Component {
                     </div>
                 </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
-                    <TableHeader className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} style={{backgroundColor: this.props.muiTheme.palette.primary7Color}}>
+                    <TableHead className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} style={{backgroundColor: this.props.theme.p7}}>
                         <TableRow>
-                            <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Name</TableHeaderColumn>
-                            <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Identifier</TableHeaderColumn>
-                            <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Role</TableHeaderColumn>
-                            <TableHeaderColumn style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Signed In</TableHeaderColumn>
-                            <TableHeaderColumn/>
+                            <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Name</TableCell>
+                            <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Identifier</TableCell>
+                            <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Role</TableCell>
+                            <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Signed In</TableCell>
+                            <TableCell/>
                         </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody displayRowCheckbox={false} selectable={false}>
                         {this.props.sandbox && this.getRows()}
                     </TableBody>
@@ -139,7 +139,7 @@ class Users extends Component {
                 </div>}
             </div>
             <Snackbar open={this.props.inviting} message={sending ? 'Sending invitation to user...' : 'Deleting user invitation...'} autoHideDuration={30000}
-                      bodyStyle={{margin: '0 auto', backgroundColor: sending ? palette.primary2Color : palette.primary4Color}}/>
+                      bodyStyle={{margin: '0 auto', backgroundColor: sending ? palette.p2 : palette.p4}}/>
         </div>;
     }
 
@@ -254,17 +254,17 @@ class Users extends Component {
             }
 
             return <TableRow key={key} selectable={false}>
-                <TableRowColumn>{user.name || ''}</TableRowColumn>
-                <TableRowColumn>{user.email || ''}</TableRowColumn>
-                <TableRowColumn>{isAdmin ? 'Admin' : ''}</TableRowColumn>
-                <TableRowColumn>{lastLogin}</TableRowColumn>
-                <TableRowColumn>
+                <TableCell>{user.name || ''}</TableCell>
+                <TableCell>{user.email || ''}</TableCell>
+                <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
+                <TableCell>{lastLogin}</TableCell>
+                <TableCell>
                     <IconButton onClick={() => this.toggleMenu(key)}>
                         <span className='anchor' ref={'anchor_' + key}/>
-                        <MoreIcon color={this.props.muiTheme.palette.primary3Color} style={{width: '24px', height: '24px'}}/>
+                        <MoreIcon color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
                         {this.state.showMenu && key === this.state.menuItem &&
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                                 targetOrigin={{horizontal: 'right', vertical: 'top'}} onRequestClose={this.toggleMenu}>
+                                 targetOrigin={{horizontal: 'right', vertical: 'top'}} onClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
                                 {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
                                 {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
@@ -274,7 +274,7 @@ class Users extends Component {
                             </Menu>
                         </Popover>}
                     </IconButton>
-                </TableRowColumn>
+                </TableCell>
             </TableRow>
         });
     };
@@ -286,14 +286,14 @@ class Users extends Component {
     getInvitations = () => {
         if (this.props.userInvitesLoading) {
             return <TableRow>
-                <TableRowColumn colSpan={3} style={{textAlign: 'center'}}>
+                <TableCell colSpan={3} style={{textAlign: 'center'}}>
                     <CircularProgress/>
-                </TableRowColumn>
+                </TableCell>
             </TableRow>
         } else {
-            let buttonStyles = {width: '30px', height: '30px', color: this.props.muiTheme.palette.primary3Color};
+            let buttonStyles = {width: '30px', height: '30px', color: this.props.theme.p3};
             let style = {width: '55px', height: '55px'};
-            let revokeStyle = {width: '30px', height: '30px', color: this.props.muiTheme.palette.primary4Color};
+            let revokeStyle = {width: '30px', height: '30px', color: this.props.theme.p4};
 
             return this.props.invitations.map((invitation, key) => {
                 let timestamp = invitation.inviteTimestamp;
@@ -304,16 +304,16 @@ class Users extends Component {
                     timestamp = '';
                 }
                 return <TableRow key={key}>
-                    <TableRowColumn>{invitation.invitee.email}</TableRowColumn>
-                    <TableRowColumn>{timestamp}</TableRowColumn>
-                    <TableRowColumn className='invite-buttons-wrapper'>
+                    <TableCell>{invitation.invitee.email}</TableCell>
+                    <TableCell>{timestamp}</TableCell>
+                    <TableCell className='invite-buttons-wrapper'>
                         <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
                             <Redo/>
                         </IconButton>
                         <IconButton iconStyle={revokeStyle} style={style} onClick={() => this.revokeInvitation(invitation.id)} tooltip='Revoke'>
                             <DeleteIcon/>
                         </IconButton>
-                    </TableRowColumn>
+                    </TableCell>
                 </TableRow>;
             });
         }
@@ -381,4 +381,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({fetchSandboxInvites, removeUser, toggleUserAdminRights, inviteNewUser, removeInvitation}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(Users)));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withRouter(withTheme(Users))));

@@ -411,18 +411,8 @@ class LaunchScenarios extends Component {
                             </TableHead>
                             <TableBody className='table-body'>
                                 {this.state.addContext && <TableRow>
-                                    <TableCell onClick={e => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                    }} onMouseDown={e => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                    }}>
-                                        <TextField label='Key*' id='key' onChange={(_, key) => this.setState({key})} onClick={e => {
-                                            e.stopPropagation();
-                                        }} onMouseDown={e => {
-                                            e.stopPropagation();
-                                        }}/>
+                                    <TableCell >
+                                        <TextField label='Key*' id='key' onChange={(_, key) => this.setState({key})} />
                                     </TableCell>
                                     <TableCell>
                                         <TextField label='Value*' id='val' onChange={(_, val) => this.setState({val})}/>

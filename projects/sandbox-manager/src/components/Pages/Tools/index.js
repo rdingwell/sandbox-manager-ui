@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Card, CardMedia} from '@material-ui/core';
-import Page from 'sandbox-manager-lib/components/Page';
+import Page from '../../UI/Page';
 import HelpButton from '../../UI/HelpButton';
 import {app_setScreen} from '../../../redux/action-creators';
 import {connect} from 'react-redux';

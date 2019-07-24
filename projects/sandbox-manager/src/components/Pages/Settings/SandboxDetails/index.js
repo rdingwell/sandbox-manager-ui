@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Checkbox, RaisedButton, TextField, Card, CardHeader, CardText, IconButton, Dialog} from '@material-ui/core';
+import {Checkbox, Button, TextField, Card, CardHeader, IconButton, Dialog} from '@material-ui/core';
 import Redo from '@material-ui/icons/Redo';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {updateSandbox, resetCurrentSandbox, deleteCurrentSandbox, clearSearchResults} from '../../../../redux/action-creators';
-import withErrorHandler from '../../UI/hoc/withErrorHandler';
+import withErrorHandler from '../../../UI/hoc/withErrorHandler';
 
 import './styles.less';
 import SandboxReset from "../SandboxReset";
@@ -44,77 +44,79 @@ class SandboxDetails extends Component {
     }
 
     render() {
-        let titleStyle = {backgroundColor: this.props.theme.primary5Color};
+        let titleStyle = {backgroundColor: this.props.theme.p5};
         let [actions, content] = this.getModalContent();
 
         return <Card className='sandbox-details-wrapper'>
-            <Dialog modal={false} open={!!this.state.modalToShow} onRequestClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{maxWidth: '450px'}}>
+            <Dialog modal={false} open={!!this.state.modalToShow} onClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{maxWidth: '450px'}}>
                 {content}
             </Dialog>
             <CardHeader className='details-header' style={titleStyle}>
                 <div className='header-actions-wrapper'>
                     <IconButton tooltip='Edit' onClick={() => this.toggleModal(MODALS.edit)} disabled={!this.state.currentUserIsAdmin}>
-                        <Edit color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
+                        <Edit color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
                     <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
-                        <Redo color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
+                        <Redo color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
                     <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
-                        <Delete color={this.props.theme.primary3Color} style={{width: '24px', height: '24px'}}/>
+                        <Delete color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
                     </IconButton>
                 </div>
             </CardHeader>
-            <CardText>
-                <div>
-                    <div className='label-value'>
-                        <span>Sandbox Name: </span>
-                        <span>{this.props.sandboxName}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>Sandbox Description: </span>
-                        <span>{this.props.sandboxDescription || 'no description available'}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>Sandbox ID: </span>
-                        <span>{this.props.sandboxId}</span>
-                    </div>
-                    <div className='label-value'>
-                        <span>Secured FHIR Server URL: </span>
-                        <span>{window.fhirClient ? window.fhirClient.server.serviceUrl : ''}</span>
-                    </div>
-                    {this.props.sandboxAllowOpenAccess && <div className='label-value'>
-                        <span>Open FHIR Server URL: </span>
-                        <span>{this.props.serviceUrl.replace('/data', '/open')}</span>
-                    </div>}
-                    <div className='label-value'>
-                        <span>Sandbox FHIR Version: </span>
-                        <span>{this.props.sandboxVersion.name}</span>
-                    </div>
+            <div>
+                <div className='label-value'>
+                    <span>Sandbox Name: </span>
+                    <span>{this.props.sandboxName}</span>
                 </div>
-            </CardText>
+                <div className='label-value'>
+                    <span>Sandbox Description: </span>
+                    <span>{this.props.sandboxDescription || 'no description available'}</span>
+                </div>
+                <div className='label-value'>
+                    <span>Sandbox ID: </span>
+                    <span>{this.props.sandboxId}</span>
+                </div>
+                <div className='label-value'>
+                    <span>Secured FHIR Server URL: </span>
+                    <span>{window.fhirClient ? window.fhirClient.server.serviceUrl : ''}</span>
+                </div>
+                {this.props.sandboxAllowOpenAccess && <div className='label-value'>
+                    <span>Open FHIR Server URL: </span>
+                    <span>{this.props.serviceUrl.replace('/data', '/open')}</span>
+                </div>}
+                <div className='label-value'>
+                    <span>Sandbox FHIR Version: </span>
+                    <span>{this.props.sandboxVersion.name}</span>
+                </div>
+            </div>
         </Card>;
     }
 
     getModalContent = () => {
         let titleStyle = {
-            backgroundColor: this.props.theme.primary2Color,
-            color: this.props.theme.alternateTextColor,
+            backgroundColor: this.props.theme.p2,
+            color: this.props.theme.p7,
             paddingLeft: '10px',
             marginLeft: '0'
         };
 
         let actions = this.state.modalToShow === MODALS.edit
             ? <div className='modal-bottom-actions-wrapper'>
-                <RaisedButton label='Save' primary onClick={this.updateSandboxHandler}/>
+                <Button variant='contained' color='primary' onClick={this.updateSandboxHandler}>
+                    Save
+                </Button>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div className='modal-bottom-actions-wrapper'>
-                    <RaisedButton disabled={!this.state.toggleReset} label=' Reset ' onClick={this.resetSandbox}
-                                  labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color}/>
+                    <Button variant='contained' disabled={!this.state.toggleReset} onClick={this.resetSandbox}>
+                        Reset
+                    </Button>
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
-                    <RaisedButton labelColor={this.props.theme.primary5Color} backgroundColor={this.props.theme.primary4Color} disabled={!this.state.toggleDelete}
-                                  label='Delete sandbox' onClick={this.deleteSandbox} data-qa='sandbox-delete-button'/>
+                    <Button variant='contained' disabled={!this.state.toggleDelete} onClick={this.deleteSandbox} data-qa='sandbox-delete-button'>
+                        Delete sandbox
+                    </Button>
                 </div>;
 
         let content = this.state.modalToShow === MODALS.edit
@@ -129,7 +131,7 @@ class SandboxDetails extends Component {
                 <TextField value={this.state.description || this.props.sandboxDescription} label='Sandbox Description' onChange={(event) => this.handleSandboxDescriptionChange(event)} fullWidth
                            onKeyPress={this.submitMaybe}/>
                 <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}
-                          iconStyle={{fill: this.props.theme.primary2Color}}/>
+                          iconStyle={{fill: this.props.theme.p2}}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div>

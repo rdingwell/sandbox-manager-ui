@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
-import {Chip, Menu, MenuItem, Popover} from '@material-ui/core';
+import {Chip, Menu, MenuItem} from '@material-ui/core';
 
 import './styles.less';
 

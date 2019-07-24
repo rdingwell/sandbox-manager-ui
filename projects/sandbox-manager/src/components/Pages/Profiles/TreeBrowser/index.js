@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../UI/hoc/withErrorHandler';
-import { Dialog, ListItem, RaisedButton, List } from '@material-ui/core';
+import withErrorHandler from '../../../UI/hoc/withErrorHandler';
+import { Dialog, ListItem, Button, List } from '@material-ui/core';
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
 import PersonaList from '../../Persona/List';
-import { getPatientName } from "sandbox-manager-lib/utils/fhir";
+import { getPatientName } from "../../../../lib/utils/fhir";
 
 import './styles.less';
 
@@ -30,7 +30,7 @@ class TreeBrowser extends Component {
     }
 
     render () {
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
         let click = selectedPersona => {
             selectedPersona && this.props.selectPatient(selectedPersona);
             this.toggleModal();
@@ -55,13 +55,15 @@ class TreeBrowser extends Component {
         return <div className='tree-browser'>
             <div className='tab-title'>Browse linked resources</div>
             <div className='tree-input-wrapper'>
-                {!this.props.selectedPersona && !this.state.patientSelectVisible && <RaisedButton label='Select a patient' primary onClick={this.toggleModal}/>}
-                {this.props.selectedPersona && !this.state.patientSelectVisible && <RaisedButton label='Change patient' primary onClick={() => {
+                {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal}>Select a patient</Button>}
+                {this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={() => {
                     this.props.selectPatient();
                     this.toggleModal();
-                }}/>}
+                }}>
+                    Change patient
+                </Button>}
                 {!this.props.selectedPersona && this.state.patientSelectVisible &&
-                <Dialog open={this.state.patientSelectVisible} modal={false} onRequestClose={this.toggleModal} contentClassName='patient-select-dialog'>
+                <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} contentClassName='patient-select-dialog'>
                     <PersonaList {...props} titleLeft/>
                 </Dialog>}
                 {this.props.selectedPersona && this.getTree()}

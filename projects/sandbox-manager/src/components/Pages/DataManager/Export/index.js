@@ -28,8 +28,8 @@ export default class Export extends Component {
 
     render () {
         let palette = this.props.muiTheme.palette;
-        let underlineFocusStyle = { borderColor: palette.primary2Color };
-        let floatingLabelFocusStyle = { color: palette.primary2Color };
+        let underlineFocusStyle = { borderColor: palette.p2 };
+        let floatingLabelFocusStyle = { color: palette.p2 };
 
         let status = this.props.exportStatus;
 
@@ -77,8 +77,8 @@ export default class Export extends Component {
                     <div className='exporting-status-wrapper'>
                         <div>Do not close your browser or you will lose your progress.</div>
                         <br/>
-                        <RaisedButton className='button' onClick={() => this.props.cancelDownload()} labelColor={this.props.muiTheme.palette.primary5Color}
-                                      backgroundColor={this.props.muiTheme.palette.primary4Color} label='Cancel download'/>
+                        <RaisedButton className='button' onClick={() => this.props.cancelDownload()} labelColor={this.props.muiTheme.palette.p5}
+                                      backgroundColor={this.props.muiTheme.palette.p4} label='Cancel download'/>
                 </div>}
 
             </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { app_setScreen } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
-import withErrorHandler from '../../UI/hoc/withErrorHandler';
+import withErrorHandler from '../../../UI/hoc/withErrorHandler';
 import { bindActionCreators } from 'redux';
 
 const matrixLocation = 'http://docs.smarthealthit.org/fhir-support/';

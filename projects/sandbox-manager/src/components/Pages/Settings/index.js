@@ -4,7 +4,7 @@ import {app_setScreen, getUserLoginInfo, getDefaultUserForSandbox} from '../../.
 import {connect} from 'react-redux';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {bindActionCreators} from "redux";
-import {Tab, Tabs} from '@material-ui/core';
+import {Tab, Tabs, withTheme} from '@material-ui/core';
 import UserManagement from '../UserManagement';
 
 import './styles.less';
@@ -30,23 +30,15 @@ class Settings extends Component {
 
     render() {
         return <div className='settings-wrapper' data-qa='settings-wrapper'>
-            <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')} contentContainerClassName='settings-tabs-container'
-                  inkBarStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}
-                  tabItemContainerStyle={{backgroundColor: this.props.muiTheme.palette.canvasColor, borderBottom: '1px solid ' + this.props.muiTheme.palette.primary7Color}}>
-                <Tab label="Sandbox" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} onActive={() => this.setActiveTab('details')}
-                     buttonStyle={{backgroundColor: 'transparent'}}>
-                    <SandboxDetails theme={this.props.muiTheme.palette} sandbox={this.props.sandbox}/>
-                </Tab>
+            <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')} classes={{paper: 'settings-tabs-container'}}
+                  value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
+                <Tab label="Sandbox" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} id='details' value='details'/>
                 {this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' &&
-                <Tab label="Users" className={'sandbox-reset tab' + (this.state.activeTab === 'reset' ? ' active' : '')} onActive={() => this.setActiveTab('reset')}>
-                    <UserManagement/>
-                </Tab>}
+                <Tab label="Users" className={'sandbox-reset tab' + (this.state.activeTab === 'reset' ? ' active' : '')} id='reset' value='reset'/>}
             </Tabs>
+            {this.state.activeTab === 'details' && <SandboxDetails theme={this.props.theme} sandbox={this.props.sandbox}/>}
+            {this.state.activeTab === 'reset' && <UserManagement/>}
         </div>;
-    };
-
-    setActiveTab = (tab) => {
-        this.setState({activeTab: tab});
     };
 }
 
@@ -62,4 +54,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, getUserLoginInfo, getDefaultUserForSandbox}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Settings));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Settings)));

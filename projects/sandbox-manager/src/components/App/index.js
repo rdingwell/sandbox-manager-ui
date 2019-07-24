@@ -107,14 +107,14 @@ class App extends React.Component {
                     <p>Your session has expired. Reloading...</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
+                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onClose={this.dismiss}>
                     <Paper className='paper-card'>
-                        <IconButton style={{color: palette.primary5Color}} className="close-button" onClick={this.dismiss}>
+                        <IconButton style={{color: palette.p5}} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
                         </IconButton>
                         <h3>CDS Service response</h3>
                         <div className='paper-body'>
-                            <Tabs inkBarStyle={{backgroundColor: palette.primary2Color}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
+                            <Tabs inkBarStyle={{backgroundColor: palette.p2}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
                                 <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({activeTab: 'parsed'})} value='parsed'>
                                     <div className='hooks-wrapper'>
                                         <a ref='openLink' target='_blank'/>

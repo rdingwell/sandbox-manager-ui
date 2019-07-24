@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Tabs, Tab} from '@material-ui/core';
+import {Tabs, Tab, withTheme} from '@material-ui/core';
 import * as QueryString from 'query-string';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage}
@@ -30,22 +30,25 @@ class DataManager extends Component {
         let query = QueryString.parse(this.props.history.location.search);
 
         return <div className='data-manager-wrapper page-content-wrapper' data-qa='data-manager-wrapper'>
-            <Tabs className='data-tabs' contentContainerClassName='data-tabs-container' inkBarStyle={{backgroundColor: this.props.muiTheme.palette.primary2Color}}>
-                <Tab label="Browser" className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')} onActive={() => this.setActiveTab('browser')}>
-                    <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} muiTheme={this.props.muiTheme}
-                                  executing={this.props.executing} next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>
-                </Tab>
-                <Tab label="Import" className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')} onActive={() => this.setActiveTab('import')}>
-                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} muiTheme={this.props.muiTheme}
-                            dataImporting={this.props.dataImporting}/>
-                </Tab>
-                <Tab label="Export" className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')} onActive={() => this.setActiveTab('export')}>
-                    <div>
-                        <Export clearResults={this.props.clearResults} muiTheme={this.props.muiTheme} dataImporting={this.props.dataImporting}
-                                export={this.props.loadExportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
-                    </div>
-                </Tab>
+            <Tabs className='data-tabs' classes={{paper: 'data-tabs-container'}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
+                <Tab label="Browser" id='browser' value='browser'/>
+                <Tab label="Import" id='import' value='import'/>
+                <Tab label="Export" id='export' value='export'/>
             </Tabs>
+            <div>
+                {this.state.activeTab === 'browser' && <div className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')}>
+                    <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} theme={this.props.theme} executing={this.props.executing}
+                                  next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>
+                </div>}
+                {this.state.activeTab === 'import' && <div className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')}>
+                    <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} theme={this.props.theme}
+                            dataImporting={this.props.dataImporting}/>
+                </div>}
+                {this.state.activeTab === 'export' && <div className={'export tab' + (this.state.activeTab === 'export' ? ' active' : '')}>
+                    <Export clearResults={this.props.clearResults} theme={this.props.theme} dataImporting={this.props.dataImporting}
+                            export={this.props.loadExportResources} cancelDownload={this.props.cancelDownload} exportStatus={this.props.exportStatus} resetResults={this.props.resetResults}/>
+                </div>}
+            </div>
         </div>;
     }
 
@@ -81,4 +84,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(DataManager));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(DataManager)));

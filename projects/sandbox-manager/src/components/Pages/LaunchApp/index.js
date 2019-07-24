@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import Patient from "svg-react-loader?name=Patient!sandbox-manager-lib/icons/patient.svg";
+import Patient from "svg-react-loader?name=Patient!../../../assets/icons/patient.svg";
 
 import './index.less';
 

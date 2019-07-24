@@ -23,7 +23,7 @@ export default class LinksPopover extends Component {
             </div>
             <div className='left'><a onClick={this.handleLinksDropdown}><i className='fa fa-th fa-lg' /></a></div>
             <Popover open={this.state.showLinksDropdown} anchorEl={this.state.anchorEl} anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} onRequestClose={this.handleLinksDropdown}
+                     targetOrigin={{ horizontal: 'left', vertical: 'top' }} onClose={this.handleLinksDropdown}
                      className='sandbox-menu-item left-margin'>
                 <Menu className='links-menu'>
                     <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://hspconsortium.org')}

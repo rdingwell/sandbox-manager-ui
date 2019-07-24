@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Fab, List, ListItem, Dialog, Paper, IconButton, AutoComplete, Tabs, Tab, CircularProgress } from '@material-ui/core';
+import { TextField, Fab, List, ListItem, Dialog, Paper, IconButton, Tabs, Tab, CircularProgress } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CodeIcon from '@material-ui/icons/Code';
 import ListIcon from '@material-ui/icons/List';
 import CloseIcon from '@material-ui/icons/Close';
-import { parseEntry } from 'sandbox-manager-lib/utils';
+import { parseEntry } from '../../../../lib/utils';
 import ReactJson from 'react-json-view';
 import './styles.less';
 
@@ -41,7 +41,7 @@ export default class QueryBrowser extends Component {
 
         this.setState({ canFit });
 
-        this.refs.query.refs.searchTextField.input.addEventListener('keypress', this.submitMaybe);
+        // this.refs.query.refs.searchTextField.input.addEventListener('keypress', this.submitMaybe);
 
         let element = document.getElementsByClassName('stage')[0];
         element.addEventListener('scroll', this.scroll);
@@ -50,7 +50,7 @@ export default class QueryBrowser extends Component {
     }
 
     componentWillUnmount () {
-        this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
+        // this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
         let element = document.getElementsByClassName('stage')[0];
         element && element.removeEventListener('scroll', this.scroll);
     }
@@ -60,13 +60,11 @@ export default class QueryBrowser extends Component {
     }
 
     render () {
-        let palette = this.props.muiTheme.palette;
+        let palette = this.props.theme;
         let json = this.state.activeTab === 'json';
-        let underlineFocusStyle = { borderColor: palette.primary2Color };
-        let floatingLabelFocusStyle = { color: palette.primary2Color };
 
         return <div className='query-browser-wrapper'>
-            <Dialog paperClassName='query-result-dialog' open={this.state.showDialog} onRequestClose={this.toggle}>
+            <Dialog paperClassName='query-result-dialog' open={this.state.showDialog} onClose={this.toggle}>
                 <Paper className='paper-card'>
                     <h3>
                         Details
@@ -83,9 +81,8 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    <AutoComplete ref='query' id='query' searchText={this.state.query} fullWidth label='FHIR Query' onUpdateInput={query => this.setState({ query })}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter} onNewRequest={this.search}
-                                  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                    <TextField ref='query' id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({ query: e.target.value })} />
+                                  {/*dataSource={SUGGESTIONS} onNewRequest={this.search}/>*/}
                 </div>
                 {this.state.query.length > 0 &&
                 <Fab onClick={this.clearQuery} className='clear-query-button' mini secondary>
@@ -95,9 +92,9 @@ export default class QueryBrowser extends Component {
                     <SearchIcon/>
                 </Fab>
             </div>
-            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.primary2Color }} style={{ backgroundColor: palette.canvasColor }}
+            <Tabs className='query-tabs' contentContainerClassName='query-tabs-container' inkBarStyle={{ backgroundColor: palette.p2 }} style={{ backgroundColor: palette.p7 }}
                   value={this.state.activeTab}>
-                <Tab label={<span><ListIcon style={{ color: !json ? palette.primary5Color : palette.primary3Color }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
+                <Tab label={<span><ListIcon style={{ color: !json ? palette.p5 : palette.p3 }}/> Summary</span>} className={'summary tab' + (!json ? ' active' : '')}
                      onActive={() => this.setActiveTab('summary')} value='summary'>
                     {this.props.results && this.props.results.entry && this.props.results.total && <span className='query-size'>
                         <span>Showing <span className='number'>{this.props.results.entry.length || 1}</span></span>
@@ -132,7 +129,7 @@ export default class QueryBrowser extends Component {
                         {this.props.gettingNextPage && <div className='loader-wrapper-small'><CircularProgress size={80} thickness={5}/></div>}
                     </div>
                 </Tab>
-                <Tab label={<span><CodeIcon style={{ color: json ? palette.primary5Color : palette.primary3Color }}/> JSON</span>} className={'json tab' + (json ? ' active' : '')}
+                <Tab label={<span><CodeIcon style={{ color: json ? palette.p5 : palette.p3 }}/> JSON</span>} className={'json tab' + (json ? ' active' : '')}
                      onActive={() => this.setActiveTab('json')} value='json'>
                     {this.props.results && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.executing && <div className='loader-wrapper'><CircularProgress size={80} thickness={5}/></div>}

@@ -15,7 +15,7 @@ export default class Footer extends Component {
 
     render () {
         return <footer className='footer-wrapper'>
-            <Dialog open={this.state.showTerms} onRequestClose={this.toggleTerms} contentClassName='terms-dialog' actionsContainerClassName='terms-dialog-actions'
+            <Dialog open={this.state.showTerms} onClose={this.toggleTerms} contentClassName='terms-dialog' actionsContainerClassName='terms-dialog-actions'
                     actions={[<Button variant='outlined' primary label='View PDF' onClick={this.openPDF} />, <Button variant='outlined' secondary label='Close' onClick={this.toggleTerms} />]}>
                 <Paper className='paper-card'>
                     <h3>Terms of Use & Privacy Statement</h3>

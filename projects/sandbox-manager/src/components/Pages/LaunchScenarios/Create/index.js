@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch, withTheme} from '@material-ui/core';
+import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch, withTheme, DialogActions, Radio, FormControl, FormHelperText} from '@material-ui/core';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import LeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import AccountIcon from '@material-ui/icons/AccountBox';
@@ -34,7 +34,7 @@ class Create extends Component {
             title: props.title || '',
             selectedApp: props.app || props.cdsHook || null,
             encounterId: props.encounter || '',
-            patientBanner: props.needPatientBanner === 'T' || null,
+            patientBanner: props.needPatientBanner === 'T' || false,
             showPatientSelectorWrapper: false,
             showPatientSelector: false,
             titleIsClean: true,
@@ -83,7 +83,7 @@ class Create extends Component {
         let titleStyle = {backgroundColor: theme.p2, color: theme.p5};
         let actions = this.getActions();
 
-        return <Dialog open={this.props.open} onClose={this.props.close} contentClassName='launch-scenario-dialog' actions={actions} actionsContainerClassName='create-modal-actions'>
+        return <Dialog open={this.props.open} onClose={this.props.close} classes={{paper: 'launch-scenario-dialog'}}>
             <h3 className='modal-title' style={titleStyle}>{this.props.id ? 'Update Launch Scenario' : 'Build Launch Scenario'}</h3>
             <IconButton style={{color: theme.p5}} className='close-button' onClick={this.props.close}>
                 <i className='material-icons' data-qa='modal-close-button'>close</i>
@@ -94,6 +94,9 @@ class Create extends Component {
             <div className='create-scenario-content-wrapper'>
                 {this.getContent()}
             </div>
+            <DialogActions classes={{root: 'create-modal-actions'}}>
+                {actions}
+            </DialogActions>
         </Dialog>
     }
 
@@ -120,12 +123,18 @@ class Create extends Component {
         let prevColor = this.props.theme.p2;
 
         let actions = this.state.currentStep !== 3
-            ? [<Button variant='outlined' disabled={!nextEnabled} label='NEXT' labelPosition='before' style={{color: nextColor}} icon={<RightIcon/>} onClick={this.next}/>]
-            : [<Button variant='contained' disabled={!nextEnabled} label='SAVE' primary onClick={this.createScenario}/>];
+            ? [<Button key={1} variant='outlined' disabled={!nextEnabled} style={{color: nextColor}} onClick={this.next}>
+                <RightIcon/> NEXT
+            </Button>]
+            : [<Button key={2} variant='contained' disabled={!nextEnabled} colo='primary' onClick={this.createScenario}>
+                SAVE
+            </Button>];
 
         if (this.state.currentStep > -1) {
             actions.unshift(
-                <Button variant='outlined' label={<span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>} labelPosition='before' style={{color: prevColor}} onClick={this.prev}/>
+                <Button variant='outlined' style={{color: prevColor}} onClick={this.prev} key={3}>
+                    <span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>
+                </Button>
             );
         }
 
@@ -153,7 +162,7 @@ class Create extends Component {
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>SMART App</h3>
-                            <Switch className='app-radio' value='selected' checked={this.state.scenarioType === 'app'}/>
+                            <Radio className='app-radio' value='selected' checked={this.state.scenarioType === 'app'}/>
                         </div>
                     </Card>
                     {!!this.props.hooks.length && <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({scenarioType: 'hook'})}>
@@ -162,7 +171,7 @@ class Create extends Component {
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>CDS Hook</h3>
-                            <Switch className='app-radio' value='selected' checked={this.state.scenarioType === 'hook'}/>
+                            <Radio className='app-radio' value='selected' checked={this.state.scenarioType === 'hook'}/>
                         </div>
                     </Card>}
                     {!this.props.hooks.length && <Card title='Hook launch' className={`app-card small disabled`}>
@@ -277,14 +286,13 @@ class Create extends Component {
                                 <span className='section-title'>Details</span>
                             </div>
                             <div className='summary-item'>
-                                <TextField id='title' fullWidth underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} label='Launch Scenario Title'
-                                           onChange={(_, val) => this.onChange('title', val)} value={this.state.title} onKeyPress={this.submitMaybe}/>
+                                <TextField id='title' fullWidth label='Launch Scenario Title'
+                                           onChange={e => this.onChange('title', e.target.value)} value={this.state.title} onKeyPress={this.submitMaybe}/>
                                 <span className='subscript'>{this.state.title.length} / 75</span>
                             </div>
                             <div className='summary-item'>
-                                <TextField id='description' fullWidth multiLine underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}
-                                           onKeyUp={e => this.submitMaybe(e, true)}
-                                           label='Description/Instructions' onChange={(_, val) => this.onChange('description', val)} value={this.state.description}/>
+                                <TextField id='description' fullWidth multiline onKeyUp={e => this.submitMaybe(e, true)}
+                                           label='Description/Instructions' onChange={e => this.onChange('description', e.target.value)} value={this.state.description}/>
                                 <span className='subscript'>{this.state.description.length} / 250</span>
                             </div>
                         </div>
@@ -405,9 +413,10 @@ class Create extends Component {
             return <Fragment>
                 <div className='column-item-wrapper'>
                     <BulbIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='intent' label='Intent'
-                               onChange={(_, value) => this.onChange('intent', value)} value={this.state.intent}
-                               errorText={this.props.singleIntentLoadingError ? 'Could not fetch an intent with that ID' : ''}/>
+                    <FormControl error={!!this.props.singleIntentLoadingError} fullWidth>
+                        <TextField fullWidth id='intent' label='Intent' onChange={e => this.onChange('intent', e.target.value)} value={this.state.intent}/>
+                        {!!this.props.singleIntentLoadingError && <FormHelperText>Could not fetch an intent with that ID</FormHelperText>}
+                    </FormControl>
                     {(this.props.singleIntent || this.props.fetchingSingleIntent) && <div className='subscript'>
                         {this.props.fetchingSingleIntent
                             ? 'Loading intent data...'
@@ -420,16 +429,12 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <LinkIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='url' label='SMART Style URL'
-                               onChange={(_, value) => this.onChange('url', value)} value={this.state.url}/>
+                    <TextField fullWidth id='url' label='SMART Style URL' onChange={e => this.onChange('url', e.target.value)} value={this.state.url}/>
                 </div>
                 <div className='column-item-wrapper'>
                     <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
                     <div>
-                        <Switch className='toggle' label='Needs Patient Banner' thumbStyle={{backgroundColor: theme.p5}}
-                                trackStyle={{backgroundColor: theme.p7}} toggled={this.state.patientBanner}
-                                thumbSwitchedStyle={{backgroundColor: theme.p2}} trackSwitchedStyle={{backgroundColor: theme.p2}}
-                                onToggle={(_, value) => this.onChange('patientBanner', value)}/>
+                        <Switch className='toggle' label='Needs Patient Banner' checked={this.state.patientBanner} onChange={(_e, v) => this.onChange('patientBanner', v)}/>
                         <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
                     </div>
                 </div>
@@ -450,71 +455,75 @@ class Create extends Component {
             return <Fragment>
                 <div className='column-item-wrapper'>
                     <PatientIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='patient-id' label='Patient ID'
-                               onBlur={() => this.blur('patientId')} onChange={(_, value) => this.onChange('patientId', value)} value={this.state.patientId}
-                               errorText={this.props.fetchingSinglePatientError ? 'Could not fetch a patient with that ID' : ''}/>
-                    <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
-                        <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
-                            <SearchIcon style={iconStyle}/>
-                        </IconButton>
-                    </div>
+                    <FormControl error={!!this.props.fetchingSinglePatientError} fullWidth>
+                        <TextField fullWidth id='patient-id' label='Patient ID' onBlur={() => this.blur('patientId')} onChange={e => this.onChange('patientId', e.target.value)} value={this.state.patientId}/>
+                        {!!this.props.fetchingSinglePatientError && <FormHelperText>Could not fetch a patient with that ID</FormHelperText>}
+                        <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
+                            <IconButton style={iconStyle} onClick={() => this.togglePatientSearch()}>
+                                <SearchIcon style={iconStyle}/>
+                            </IconButton>
+                        </div>
+                    </FormControl>
                     {(this.props.singlePatient || this.props.fetchingSinglePatient) && <div className='subscript'>
                         {this.props.fetchingSinglePatient
                             ? 'Loading patient data...'
-                            : <span>
-                                            {getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}
-                                        </span>}
+                            : <span>{getPatientName(this.props.singlePatient)} | {this.props.singlePatient.gender} | {getAge(this.props.singlePatient.birthDate)}</span>}
                     </div>}
                     <div className='subscript right'>
-                        {this.props.fetchingSinglePatient && <CircularProgress innerStyle={iconStyleSmaller} size={18}/>}
+                        {this.props.fetchingSinglePatient && <CircularProgress style={iconStyleSmaller} size={18}/>}
                         {this.props.singlePatient && <CheckIcon style={rightIconGreenStyle}/>}
                         {this.props.fetchingSinglePatientError && <CloseIcon style={rightIconRedStyle}/>}
                     </div>
                 </div>
                 <div className='column-item-wrapper'>
                     <EventIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='encounter-id' label='Encounter ID'
-                               onBlur={() => this.blur('encounterId')} onChange={(_, value) => this.onChange('encounterId', value)} value={this.state.encounterId}
-                               errorText={this.props.singleEncounterLoadingError ? 'Could not fetch an encounter with that ID' : ''}/>
+                    <FormControl error={!!this.props.singleEncounterLoadingError} fullWidth>
+                        <TextField fullWidth id='encounter-id' label='Encounter ID' onBlur={() => this.blur('encounterId')} onChange={e => this.onChange('encounterId', e.target.value)}
+                                   value={this.state.encounterId}/>
+                        {!!this.props.singleEncounterLoadingError && <FormHelperText>Could not fetch an encounter with that ID</FormHelperText>}
+                    </FormControl>
                     {(this.props.singleEncounter || this.props.fetchingSingleEncounter) && <div className='subscript'>
                         {this.props.fetchingSingleEncounter
                             ? 'Loading encounter data...'
                             : <span>Encounter FHIR Resource Located</span>}
                     </div>}
                     <div className='subscript right'>
-                        {this.props.fetchingSingleEncounter && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.fetchingSingleEncounter && <CircularProgress style={iconStyle} size={18}/>}
                         {this.props.singleEncounter && <CheckIcon style={rightIconGreenStyle}/>}
                         {this.props.singleEncounterLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                     </div>
                 </div>
                 <div className='column-item-wrapper'>
                     <HospitalIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='location-id' label='Location ID'
-                               onBlur={() => this.blur('locationId')} onChange={(_, value) => this.onChange('locationId', value)} value={this.state.locationId}
-                               errorText={this.props.singleLocationLoadingError ? 'Could not fetch a location with that ID' : ''}/>
+                    <FormControl error={!!this.props.singleLocationLoadingError} fullWidth>
+                        <TextField fullWidth id='location-id' label='Location ID' onBlur={() => this.blur('locationId')} onChange={e => this.onChange('locationId', e.target.value)}
+                                   value={this.state.locationId}/>
+                        {!!this.props.singleLocationLoadingError && <FormHelperText>Could not fetch a location with that ID</FormHelperText>}
+                    </FormControl>
                     {(this.props.singleLocation || this.props.fetchingSingleLocation) && <div className='subscript'>
                         {this.props.fetchingSingleLocation
                             ? 'Loading location data...'
                             : <span>Location FHIR Resource Located</span>}
                     </div>}
                     <div className='subscript right'>
-                        {this.props.fetchingSingleLocation && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.fetchingSingleLocation && <CircularProgress style={iconStyle} size={18}/>}
                         {this.props.singleLocation && <CheckIcon style={rightIconGreenStyle}/>}
                         {this.props.singleLocationLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                     </div>
                 </div>
                 <div className='column-item-wrapper'>
                     <DescriptionIcon className='column-item-icon' style={iconStyle}/>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id='resource' label='Resource'
-                               onBlur={() => this.blur('resourceId')} onChange={(_, value) => this.onChange('resource', value)}
-                               errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                    <FormControl error={!!this.props.singleResourceLoadingError} fullWidth>
+                        <TextField fullWidth id='resource' label='Resource' onBlur={() => this.blur('resourceId')} onChange={e => this.onChange('resource', e.target.value)}/>
+                        {!!this.props.singleResourceLoadingError && <FormHelperText>Could not fetch the specified resource</FormHelperText>}
+                    </FormControl>
                     {(this.props.singleResource || this.props.fetchingSingleResource) && <div className='subscript'>
                         {this.props.fetchingSingleResource
                             ? 'Loading resource data...'
                             : <span>FHIR Resource Located</span>}
                     </div>}
                     <div className='subscript right'>
-                        {this.props.fetchingSingleResource && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                        {this.props.fetchingSingleResource && <CircularProgress style={iconStyle} size={18}/>}
                         {this.props.singleResource && <CheckIcon style={rightIconGreenStyle}/>}
                         {this.props.singleResourceLoadingError && <CloseIcon style={rightIconRedStyle}/>}
                     </div>
@@ -533,11 +542,13 @@ class Create extends Component {
 
             return index % 2 === comp && key !== 'userId' && <div className='column-item-wrapper' key={index}>
                 <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
-                <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} fullWidth id={key} label={context.title}
-                           onBlur={() => this.blurHookContext(key, context, this.state)} onChange={(_, value) => this.onChange(key, value)} disabled={disabled} value={value}
-                           errorText={this.props.singleResourceLoadingError ? 'Could not fetch the specified resource' : ''}/>
+                <FormControl error={!!this.props.singleResourceLoadingError}>
+                    <TextField fullWidth id={key} label={context.title} onBlur={() => this.blurHookContext(key, context, this.state)} onChange={e => this.onChange(key, e.target.value)} disabled={disabled}
+                               value={value}/>
+                    {!!this.props.singleResourceLoadingError && <FormHelperText>Could not fetch the specified resource</FormHelperText>}
+                </FormControl>
                 {key === 'patientId' && <div className={'right-control' + (this.props.fetchingSinglePatient ? ' loader' : '')}>
-                    <IconButton iconStyle={iconStyle} onClick={() => this.togglePatientSearch()}>
+                    <IconButton style={iconStyle} onClick={() => this.togglePatientSearch()}>
                         <SearchIcon style={iconStyle}/>
                     </IconButton>
                 </div>}
@@ -549,7 +560,7 @@ class Create extends Component {
                             : null}
                 </div>}
                 <div className='subscript right'>
-                    {this.props.resourceListFetching[context.resourceType] && <CircularProgress innerStyle={iconStyle} size={18}/>}
+                    {this.props.resourceListFetching[context.resourceType] && <CircularProgress style={iconStyle} size={18}/>}
                     {this.props.resourceList[context.resourceType] && !!value && <CheckIcon style={rightIconGreenStyle}/>}
                     {this.props.resourceListLoadError[context.resourceType] && <CloseIcon style={rightIconRedStyle}/>}
                 </div>
