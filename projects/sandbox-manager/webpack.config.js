@@ -186,7 +186,8 @@ const config = {
         port: PORT,
         publicPath: "/",
         watchOptions: {
-            aggregateTimeout: 300
+            aggregateTimeout: 300,
+            poll: true
         }
     }
 };
@@ -195,7 +196,7 @@ const config = {
 if (ENV === "production") {
     config.plugins.push(new UglifyJsPlugin({
         sourceMap: true,
-        uglifyOptions: { ecma: 8 }
+        uglifyOptions: {ecma: 8}
     }));
 }
 
