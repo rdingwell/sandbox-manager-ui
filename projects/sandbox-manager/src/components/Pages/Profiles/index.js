@@ -121,7 +121,7 @@ class Profiles extends Component {
                         <span>Validation target</span>
                     </div>
                     <div className='validate-wrapper'>
-                        <Tabs className='validate-tabs' style={{backgroundColor: palette.p7}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setActiveTab(activeTab)}>
+                        <Tabs className='validate-tabs' value={this.state.activeTab} onChange={(_e, activeTab) => this.setActiveTab(activeTab)}>
                             <Tab label={<span><ListIcon style={{color: tab === 'browse' ? palette.p5 : palette.p3}}/> Browse</span>} id='browse' value='browse'/>
                             <Tab label={<span><ListIcon style={{color: tab === 'existing' ? palette.p5 : palette.p3}}/> URI</span>} id='existing' value='existing'/>
                             <Tab label={<span><ListIcon style={{color: tab === 'file' ? palette.p5 : palette.p3}}/> File</span>} id='file' value='file'/>
@@ -431,10 +431,12 @@ class Profiles extends Component {
                         return;
                     }
                     let classes = 'profile-list-item' + (this.state.selectedProfile === profile.profileId ? ' active' : '');
-                    return <ListItem key={key} className={classes} primaryText={profile.profileName} hoverColor='transparent' onClick={() => this.toggleProfile(profile.profileId)}
-                                     rightIconButton={<IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile.id, this.state.canFit)}>
-                                         <DeleteIcon color={palette.p4}/>
-                                     </IconButton>}/>;
+                    return <ListItem key={key} classes={{root: classes}} onClick={() => this.toggleProfile(profile.profileId)}>
+                        {profile.profileName}
+                        <IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile.id, this.state.canFit)}>
+                            <DeleteIcon styl={{fill:palette.p4}}/>
+                        </IconButton>
+                    </ListItem>
                 })}
                 {this.props.profilesLoading && <div className='loader-wrapper' style={{height: '110px', paddingTop: '20px', margin: 0}}>
                     <CircularProgress size={40} thickness={5}/>

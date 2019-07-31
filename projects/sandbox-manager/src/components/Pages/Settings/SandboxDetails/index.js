@@ -44,26 +44,23 @@ class SandboxDetails extends Component {
     }
 
     render() {
-        let titleStyle = {backgroundColor: this.props.theme.p5};
         let [actions, content] = this.getModalContent();
 
         return <Card className='sandbox-details-wrapper'>
-            <Dialog modal={false} open={!!this.state.modalToShow} onClose={() => this.toggleModal()} actions={actions} paperClassName='settings-dialog' contentStyle={{maxWidth: '450px'}}>
+            <Dialog open={!!this.state.modalToShow} onClose={() => this.toggleModal()} actions={actions} classes={{paper: 'settings-dialog'}}>
                 {content}
             </Dialog>
-            <CardHeader className='details-header' style={titleStyle}>
-                <div className='header-actions-wrapper'>
-                    <IconButton tooltip='Edit' onClick={() => this.toggleModal(MODALS.edit)} disabled={!this.state.currentUserIsAdmin}>
-                        <Edit color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
-                    </IconButton>
-                    <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
-                        <Redo color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
-                    </IconButton>
-                    <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
-                        <Delete color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
-                    </IconButton>
-                </div>
-            </CardHeader>
+            <div className='header-actions-wrapper'>
+                <IconButton tooltip='Edit' onClick={() => this.toggleModal(MODALS.edit)} disabled={!this.state.currentUserIsAdmin}>
+                    <Edit style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+                </IconButton>
+                <IconButton tooltip='Reset' onClick={() => this.toggleModal(MODALS.reset)} disabled={!this.state.currentUserIsAdmin}>
+                    <Redo style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+                </IconButton>
+                <IconButton tooltip='Delete' onClick={() => this.toggleModal(MODALS.delete)} disabled={!this.state.currentUserIsAdmin} data-qa='delete-sandbox-button'>
+                    <Delete style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+                </IconButton>
+            </div>
             <div>
                 <div className='label-value'>
                     <span>Sandbox Name: </span>
@@ -141,7 +138,7 @@ class SandboxDetails extends Component {
                     ? <div>
                         <DeleteSandbox toggleDelete={this.toggleDelete} theme={this.props.theme} sandbox={this.props.sandbox} onClose={() => this.toggleModal()}/>
                     </div>
-                    : null;
+                    : <span/>;
 
         return [actions, content];
     };

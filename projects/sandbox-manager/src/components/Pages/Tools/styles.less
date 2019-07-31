@@ -19,7 +19,6 @@
     & > div {
       height: 100%;
       overflow: hidden;
-      padding: 0 !important;
       position: relative;
 
       & > div {
@@ -52,10 +51,32 @@
       }
     }
 
+    .card-title {
+      bottom: 0;
+      height: 60%;
+      color: white;
+      transition: all .5s;
+      padding: 10px;
+
+      h3 {
+        margin-top: 0;
+      }
+    }
+
     .text {
       padding: 5px;
       box-sizing: border-box;
       overflow: hidden;
+    }
+
+    .media-wrapper {
+      text-align: center;
+      background-size: contain;
+
+      .tool-icon {
+        max-width: 100%;
+        max-height: 100%;
+      }
     }
   }
 }

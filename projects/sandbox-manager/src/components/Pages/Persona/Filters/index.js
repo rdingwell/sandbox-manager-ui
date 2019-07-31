@@ -2,11 +2,59 @@ import React, {Component, Fragment} from 'react';
 import DownIcon from "@material-ui/icons/ArrowDropDown";
 import Search from '@material-ui/icons/Search';
 import Patient from "svg-react-loader?name=Patient!../../../../assets/icons/patient.svg";
-import {Chip, IconButton, Menu, MenuItem, Popover, Slider, TextField} from '@material-ui/core';
+import {Chip, IconButton, Menu, MenuItem, Popover, Slider, TextField, Tooltip, withStyles} from '@material-ui/core';
 import moment from 'moment';
 
 import './styles.less';
 import PersonaListWithTheme from "../List";
+
+let CustomSlider = withStyles({
+    root: {
+        color: '#3a8589',
+        height: 3,
+        padding: '13px 0',
+    },
+    thumb: {
+        height: 27,
+        width: 27,
+        backgroundColor: '#fff',
+        border: '1px solid currentColor',
+        marginTop: -12,
+        marginLeft: -13,
+        boxShadow: '#ebebeb 0px 2px 2px',
+        '&:focus,&:hover,&$active': {
+            boxShadow: '#ccc 0px 2px 3px 1px',
+        },
+        '& .bar': {
+            height: 9,
+            width: 1,
+            backgroundColor: 'currentColor',
+            marginLeft: 1,
+            marginRight: 1,
+        },
+    },
+    active: {},
+    valueLabel: {
+        left: 'calc(-50% + 4px)',
+    },
+    track: {
+        height: 3,
+    },
+    rail: {
+        color: '#d8d8d8',
+        opacity: 1,
+        height: 3,
+    },
+})(Slider);
+
+function ThumbComponent(props) {
+    console.log(props);
+    return <span {...props}>
+                <span className="bar"/>
+                <span className="bar"/>
+                <span className="bar"/>
+            </span>;
+}
 
 export default class Filters extends Component {
 
@@ -82,23 +130,8 @@ export default class Filters extends Component {
                                 <i className="material-icons" data-qa="modal-close-button">close</i>
                             </IconButton>
                         </div>
-                        <div>
-                            <span>Max</span>
-                            <Slider className='slider' value={this.state.maxAge} step={1} min={1} max={99} onChange={e => this.sliderChange('maxAge', e.target.value)}/>
-                            <TextField value={this.state.maxAge} id='maxAge' className='age-filter-value'
-                                       onChange={e => {
-                                           let value = parseInt(e.target.value);
-                                           Number.isInteger(value) && value !== this.state.maxAge && this.sliderChange('maxAge', value);
-                                       }}/>
-                        </div>
-                        <div>
-                            <span>Min</span>
-                            <Slider className='slider' value={this.state.minAge} step={1} min={0} max={98} onChange={e => this.sliderChange('minAge', e.target.value)}/>
-                            <TextField value={this.state.minAge} id='minAge' className='age-filter-value'
-                                       onChange={e => {
-                                           let value = parseInt(e.target.value);
-                                           Number.isInteger(value) && value !== this.state.minAge && this.sliderChange('minAge', value);
-                                       }}/>
+                        <div className='slider-wrapper'>
+                            <CustomSlider valueLabelDisplay='auto' aria-label='slider' defaultValue={[0, 100]} getAriaValueText={() => <span>23</span>}/>
                         </div>
                     </div>
                 </Popover>}

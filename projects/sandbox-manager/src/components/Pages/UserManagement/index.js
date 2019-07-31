@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Dialog, Button, IconButton, CircularProgress, TableCell, TableRow, TableBody, Table, TableHead, Popover, Menu, MenuItem, Fab, TextField, Snackbar, withTheme} from '@material-ui/core';
+import {Dialog, Button, IconButton, CircularProgress, TableCell, TableRow, TableBody, Table, TableHead, Popover, Menu, MenuItem, Fab, TextField, Snackbar, withTheme, DialogActions} from '@material-ui/core';
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Redo from '@material-ui/icons/Redo';
 import ContentAdd from '@material-ui/icons/Add';
@@ -28,30 +28,29 @@ class Users extends Component {
         };
     }
 
-    componentDidMount() {
-        // this.props.fetchSandboxInvites();
-    }
-
     render() {
         let palette = this.props.theme;
         let titleStyle = {
             backgroundColor: palette.p2,
             color: palette.p7
         };
-        let underlineFocusStyle = {borderColor: palette.p2};
-        let floatingLabelFocusStyle = {color: palette.p2};
         let sending = this.state.action === 'sending';
 
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <Button variant='contained' label='MANAGE INVITES' backgroundColor={this.props.theme.p2} labelColor='#FFF' onClick={this.showInvitationsModal}/>
-                    <Button variant='contained' label='EXPORT USERS' primary onClick={this.exportUsers}/>
-                    <Button variant='contained' label='IMPORT USERS' secondary onClick={this.toggleImportUsersModal}/>
+                    <Button variant='contained' color='secondary' onClick={this.showInvitationsModal}>
+                        MANAGE INVITES
+                    </Button>
+                    <Button variant='contained' color='primary' onClick={this.exportUsers}>
+                        EXPORT USERS
+                    </Button>
+                    <Button variant='contained' color='secondary' onClick={this.toggleImportUsersModal}>
+                        IMPORT USERS
+                    </Button>
                 </div>
                 {this.state.inviteModal &&
-                <Dialog modal={false} open={this.state.inviteModal} onClose={this.handleClose} actionsContainerClassName='invite-dialog-actions-wrapper'
-                        paperClassName='invitations-modal' actions={[<Button variant='contained' label="Send" primary keyboardFocused onClick={this.handleSendInvite}/>]}>
+                <Dialog open={this.state.inviteModal} onClose={this.handleClose} classes={{paper: 'invitations-modal', root: 'invite-dialog-actions-wrapper'}}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITE</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -59,12 +58,14 @@ class Users extends Component {
                         </IconButton>
                     </div>
                     <div className='screen-content-invite-modal'>
-                        <TextField fullWidth value={this.state.email} label="Email Address of New User" onChange={(event) => this.handleInviteEmailChange(event)} errorText={this.state.emailError}
-                                   underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe} id='newEmailAddress'/>
+                        <TextField fullWidth value={this.state.email} label="Email Address of New User" onChange={e => this.handleInviteEmailChange(e.target.value)} errorText={this.state.emailError}
+                                   onKeyPress={this.submitMaybe} id='newEmailAddress'/>
                     </div>
+                    <DialogActions>
+                        <Button variant='contained' color='primary' onClick={this.handleSendInvite}>Send</Button>
+                    </DialogActions>
                 </Dialog>}
-                {this.state.invitationsModal && <Dialog modal={false} open={this.state.invitationsModal} onClose={this.handleClose} actionsContainerClassName='invites-dialog-actions-wrapper'
-                                                        actions={[<Fab onClick={this.toggleCreateModal}><ContentAdd/></Fab>]} paperClassName='invitations-modal'>
+                {this.state.invitationsModal && <Dialog open={this.state.invitationsModal} onClose={this.handleClose} classes={{root: 'invites-dialog-actions-wrapper', paper: 'invitations-modal'}}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>INVITES</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -74,23 +75,23 @@ class Users extends Component {
                     <div className='screen-content-invites-modal'>
                         <Table className='sandbox-invitations-list'>
                             <TableHead className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}
-                                         style={{backgroundColor: this.props.theme.p7}}>
+                                       style={{backgroundColor: this.props.theme.p7}}>
                                 <TableRow>
                                     <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Email</TableCell>
                                     <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Date Sent</TableCell>
                                     <TableCell/>
                                 </TableRow>
                             </TableHead>
-                            <TableBody displayRowCheckbox={false} selectable={false}>
+                            <TableBody>
                                 {this.props.invitations && this.getInvitations()}
                             </TableBody>
                         </Table>
                     </div>
+                    <DialogActions>
+                        <Fab onClick={this.toggleCreateModal}><ContentAdd/></Fab>
+                    </DialogActions>
                 </Dialog>}
-                {this.state.userToRemove && <Dialog modal={false} open={this.state.open} onClose={this.handleClose} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                                                    actions={<Button variant='contained' label="Remove" labelColor={this.props.theme.p5}
-                                                                     backgroundColor={this.props.theme.p4}
-                                                                     keyboardFocused onClick={this.deleteSandboxUserHandler}/>}>
+                {this.state.userToRemove && <Dialog open={this.state.open} onClose={this.handleClose}>
                     <div className='screen-title invitations' style={titleStyle}>
                         <h1 style={titleStyle}>Remove User from Sandbox</h1>
                         <IconButton className="close-button" onClick={this.handleClose}>
@@ -100,11 +101,14 @@ class Users extends Component {
                     <div className='screen-content-delete-modal'>
                         Are you sure you want to remove {(this.props.sandbox.userRoles.find(r => r.user.sbmUserId === this.state.userToRemove) || {user: {email: '"not found"'}}).user.email}?
                     </div>
+                    <DialogActions classes={{root: 'user-remove-dialog-actions-wrapper'}}>
+                        <Button variant='contained' style={{color: this.props.theme.p5, backgroundColor: this.props.theme.p4}} onClick={this.deleteSandboxUserHandler}>
+                            Remove
+                        </Button>
+                    </DialogActions>
                 </Dialog>}
                 {this.state.importUsersModal &&
-                <Dialog modal={false} open={this.state.importUsersModal} onClose={this.toggleImportUsersModal} actionsContainerClassName='user-remove-dialog-actions-wrapper'
-                        actions={[<Button variant='contained' label="Import" style={{marginRight: '10px'}} onClick={this.importUsers} primary/>,
-                            <Button variant='contained' label='Load from file (csv)' primary onClick={() => this.refs.file.click()}/>]}>
+                <Dialog open={this.state.importUsersModal} onClose={this.toggleImportUsersModal}>
                     <div className='screen-title imports' style={titleStyle}>
                         <h1 style={titleStyle}>Import users</h1>
                         <IconButton className="close-button" onClick={this.toggleImportUsersModal}>
@@ -116,9 +120,17 @@ class Users extends Component {
                         <TextField multiLine fullWidth label='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
                                    value={this.state.usersToImport} onKeyUp={this.importMaybe} id='emailList'/>
                     </div>
+                    <DialogActions classes={{root: 'user-remove-dialog-actions-wrapper'}}>
+                        <Button variant='contained' style={{marginRight: '10px'}} onClick={this.importUsers} color='primary'>
+                            Import
+                        </Button>
+                        <Button variant='contained' color='primary' onClick={() => this.refs.file.click()}>
+                            Load from file (csv)
+                        </Button>
+                    </DialogActions>
                 </Dialog>}
                 {!this.props.updatingUser && <Table className='sandbox-users-list'>
-                    <TableHead className='users-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false} style={{backgroundColor: this.props.theme.p7}}>
+                    <TableHead className='users-table-header' style={{backgroundColor: this.props.theme.p7}}>
                         <TableRow>
                             <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Name</TableCell>
                             <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '14px'}}>Identifier</TableCell>
@@ -127,7 +139,7 @@ class Users extends Component {
                             <TableCell/>
                         </TableRow>
                     </TableHead>
-                    <TableBody displayRowCheckbox={false} selectable={false}>
+                    <TableBody>
                         {this.props.sandbox && this.getRows()}
                     </TableBody>
                 </Table>}
@@ -253,7 +265,7 @@ class Users extends Component {
                 lastLogin = 'unknown';
             }
 
-            return <TableRow key={key} selectable={false}>
+            return <TableRow key={key}>
                 <TableCell>{user.name || ''}</TableCell>
                 <TableCell>{user.email || ''}</TableCell>
                 <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
@@ -261,16 +273,20 @@ class Users extends Component {
                 <TableCell>
                     <IconButton onClick={() => this.toggleMenu(key)}>
                         <span className='anchor' ref={'anchor_' + key}/>
-                        <MoreIcon color={this.props.theme.p3} style={{width: '24px', height: '24px'}}/>
+                        <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
                         {this.state.showMenu && key === this.state.menuItem &&
                         <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                                  targetOrigin={{horizontal: 'right', vertical: 'top'}} onClose={this.toggleMenu}>
                             <Menu desktop autoWidth={false} width='100px'>
-                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' primaryText='Revoke admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' primaryText='Make admin' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}/>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item'
-                                          primaryText={user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
-                                          onClick={() => this.handleOpen(user.sbmUserId)}/>
+                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                    Revoke admin
+                                </MenuItem>}
+                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                    Make admin
+                                </MenuItem>}
+                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
+                                    {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
+                                </MenuItem>
                             </Menu>
                         </Popover>}
                     </IconButton>
@@ -307,11 +323,11 @@ class Users extends Component {
                     <TableCell>{invitation.invitee.email}</TableCell>
                     <TableCell>{timestamp}</TableCell>
                     <TableCell className='invite-buttons-wrapper'>
-                        <IconButton iconStyle={buttonStyles} style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
-                            <Redo/>
+                        <IconButton style={style} onClick={() => this.resendEmail(invitation.invitee.email)} tooltip='Resend'>
+                            <Redo style={{buttonStyles}}/>
                         </IconButton>
-                        <IconButton iconStyle={revokeStyle} style={style} onClick={() => this.revokeInvitation(invitation.id)} tooltip='Revoke'>
-                            <DeleteIcon/>
+                        <IconButton style={style} onClick={() => this.revokeInvitation(invitation.id)} tooltip='Revoke'>
+                            <DeleteIcon style={{revokeStyle}}/>
                         </IconButton>
                     </TableCell>
                 </TableRow>;

@@ -30,12 +30,12 @@ class DataManager extends Component {
         let query = QueryString.parse(this.props.history.location.search);
 
         return <div className='data-manager-wrapper page-content-wrapper' data-qa='data-manager-wrapper'>
-            <Tabs className='data-tabs' classes={{paper: 'data-tabs-container'}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
+            <Tabs className='data-tabs' value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
                 <Tab label="Browser" id='browser' value='browser'/>
                 <Tab label="Import" id='import' value='import'/>
                 <Tab label="Export" id='export' value='export'/>
             </Tabs>
-            <div>
+            <div className='data-tabs-container'>
                 {this.state.activeTab === 'browser' && <div className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')}>
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} theme={this.props.theme} executing={this.props.executing}
                                   next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>

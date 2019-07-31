@@ -36,10 +36,10 @@ export default class ExternalBrowser extends Component {
                     <TextField ref='query' value={this.state.query} id='query' fullWidth label='FHIR Query' onChange={(_, query) => this.setState({ query })} />
                 </div>
                 <div>
-                    <Fab onClick={() => this.props.search(this.state.query, this.state.endpoint)} mini>
+                    <Fab onClick={() => this.props.search(this.state.query, this.state.endpoint)} size='small'>
                         <SearchIcon />
                     </Fab>
-                    <Fab onClick={this.clearQuery} className={clearClasses} mini secondary>
+                    <Fab onClick={this.clearQuery} className={clearClasses} size='small' secondary>
                         <CloseIcon />
                     </Fab>
                 </div>

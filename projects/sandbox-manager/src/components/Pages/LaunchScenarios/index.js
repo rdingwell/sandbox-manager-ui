@@ -148,11 +148,14 @@ class LaunchScenarios extends Component {
     launchScenario = (e, sc) => {
         this.preventDefault(e);
         (sc.app || sc.cdsHook) && this.props.updateLaunchScenario(sc);
-        sc.app && (sc.needPatientBanner === 'T'
-            ? this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc)
-            : this.openEHRSimulator(sc));
-        !sc.app && !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
-        !sc.app && sc.cdsHook && this.props.launchHook(sc.cdsHook, sc.contextParams);
+        if (!!sc.app) {
+            sc.needPatientBanner === 'T'
+                ? this.props.doLaunch(sc.app, sc.patient, sc.userPersona, undefined, sc)
+                : this.openEHRSimulator(sc);
+        } else {
+            !sc.cdsHook && this.props.doLaunch(this.state.selectedApp, this.state.selectedPatient, this.state.selectedPersona);
+            sc.cdsHook && this.props.launchHook(sc.cdsHook, sc.contextParams);
+        }
         this.setState({lastLaunch: sc});
     };
 
@@ -313,7 +316,6 @@ class LaunchScenarios extends Component {
     getDetailsContent = (selectedScenario) => {
         let theme = this.props.theme;
         let lightColor = {color: theme.p3, alpha: '.7'};
-        let needsBanner = {color: theme.p3, alpha: '.7', width: '58%'};
         let normalColor = {color: theme.p3};
         let darkColor = {color: theme.p6};
         let iconStyle = {color: theme.p6, fill: theme.p6, width: '24px', height: '24px'};
@@ -321,8 +323,6 @@ class LaunchScenarios extends Component {
         let disabled = this.props.modifyingCustomContext || (this.state.addContext && (!this.state.key.length || !this.state.val.length));
         let deleteEnabled = this.state.selectedCustomContent !== undefined;
         let onClick = this.state.addContext ? this.addContext : deleteEnabled ? this.deleteCustomContext : this.toggleAddContext;
-        let underlineFocusStyle = {borderColor: theme.p2};
-        let floatingLabelFocusStyle = {color: theme.p2};
 
         return <div className='launch-scenario-wrapper'>
             <div className='persona-wrapper'>
@@ -411,11 +411,11 @@ class LaunchScenarios extends Component {
                             </TableHead>
                             <TableBody className='table-body'>
                                 {this.state.addContext && <TableRow>
-                                    <TableCell >
-                                        <TextField label='Key*' id='key' onChange={(_, key) => this.setState({key})} />
+                                    <TableCell>
+                                        <TextField label='Key*' id='key' onChange={e => this.setState({key: e.target.value})}/>
                                     </TableCell>
                                     <TableCell>
-                                        <TextField label='Value*' id='val' onChange={(_, val) => this.setState({val})}/>
+                                        <TextField label='Value*' id='val' onChange={e => this.setState({val: e.target.value})}/>
                                     </TableCell>
                                 </TableRow>}
                                 {this.getCustomContext(selectedScenario)}

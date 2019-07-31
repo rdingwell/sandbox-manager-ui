@@ -49,8 +49,8 @@ class Tools extends Component {
             <div className='tools'>
                 {TOOLS.map(t =>
                     <Card title={t.title} className='tool-card' onClick={() => this.openLink(t.link)} key={t.link}>
-                        <CardMedia className='media-wrapper'>
-                            <img className='tool-icon' src={t.image}/>
+                        <CardMedia className='media-wrapper' image={t.image}>
+                            <span />
                         </CardMedia>
                         <div className='card-title' style={titleStyle}>
                             <h3 className='tool-name'>{t.title}</h3>
@@ -69,9 +69,6 @@ class Tools extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {}
-};
 const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Tools));
+export default connect(undefined, mapDispatchToProps)(withErrorHandler(Tools));

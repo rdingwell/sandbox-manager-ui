@@ -30,14 +30,16 @@ class Settings extends Component {
 
     render() {
         return <div className='settings-wrapper' data-qa='settings-wrapper'>
-            <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')} classes={{paper: 'settings-tabs-container'}}
+            <Tabs className={(this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' ? 'settings-tabs' : 'settings-tabs-public-app')}
                   value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
                 <Tab label="Sandbox" className={'sandbox-details tab' + (this.state.activeTab === 'details' ? ' active' : '')} id='details' value='details'/>
                 {this.props.sandbox && this.props.sandbox.visibility === 'PRIVATE' &&
                 <Tab label="Users" className={'sandbox-reset tab' + (this.state.activeTab === 'reset' ? ' active' : '')} id='reset' value='reset'/>}
             </Tabs>
-            {this.state.activeTab === 'details' && <SandboxDetails theme={this.props.theme} sandbox={this.props.sandbox}/>}
-            {this.state.activeTab === 'reset' && <UserManagement/>}
+            <div className='settings-tabs-container'>
+                {this.state.activeTab === 'details' && <SandboxDetails theme={this.props.theme} sandbox={this.props.sandbox}/>}
+                {this.state.activeTab === 'reset' && <UserManagement/>}
+            </div>
         </div>;
     };
 }

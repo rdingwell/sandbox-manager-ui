@@ -193,7 +193,7 @@ class Apps extends Component {
     handleHookSelect = (e, hook, service) => {
         e.stopPropagation();
         e.preventDefault();
-        this.setState({selectedHook: hook, service, registerDialogVisible: false, appIsLoading: true});
+        this.setState({selectedHook: hook, toggledHook: hook.id, service, registerDialogVisible: false, appIsLoading: true});
     };
 
     getDialog = () => {
@@ -210,9 +210,11 @@ class Apps extends Component {
                          app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={this.closeAll} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
             : this.state.appToLaunch || this.state.hookToLaunch
-                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={this.handleLaunch} className='launch-app-dialog'>
+                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={this.closeAll} className='launch-app-dialog'>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
-                        <Button variant='contained' color='primary' onClick={() => this.doLaunch()} label='Launch without a patient'/>
+                        <Button variant='contained' color='primary' onClick={() => this.doLaunch()}>
+                            Launch without a patient
+                        </Button>
                     </div>}
                     {this.props.defaultUser && <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
@@ -450,15 +452,15 @@ class Apps extends Component {
         !this.state.loadingManifest &&
         this.setState({
             selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false, createdApp: undefined, loadDialogVisible: false, loadingManifest: false,
-            hookToLaunch: undefined, selectedHook: undefined, selectCreationType: false, manifestURL: ''
+            hookToLaunch: undefined, selectedHook: undefined, selectCreationType: false, manifestURL: '', toggledApp: undefined, toggledHook: undefined
         });
     };
 
     handleAppSelect = (event, app) => {
-        event.preventDefault();
-        event.stopPropagation();
+        // event.preventDefault();
+        // event.stopPropagation();
         this.props.loadApp(app);
-        this.setState({selectedApp: app, registerDialogVisible: false, appIsLoading: true});
+        this.setState({selectedApp: app, toggledApp: app.id, registerDialogVisible: false, appIsLoading: true});
     };
 
     handleLaunch = (event, app) => {
@@ -471,18 +473,18 @@ class Apps extends Component {
             if (isPatientScoped) {
                 app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
                 (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-                this.setState({appToLaunch: app, registerDialogVisible: false});
+                this.setState({appToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
                 this.props.resetPersonas();
             } else {
-                this.setState({appToLaunch: app, registerDialogVisible: false}, this.doLaunch);
+                this.setState({appToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false}, this.doLaunch);
             }
         } else if (this.props.hooks && !!app) {
             //TODO add patient restriction to the HOOKS
             this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-            this.setState({hookToLaunch: app, registerDialogVisible: false});
+            this.setState({hookToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
             this.props.resetPersonas();
         } else {
-            this.setState({appToLaunch: undefined, hookToLaunch: undefined, registerDialogVisible: false});
+            this.setState({appToLaunch: undefined, hookToLaunch: undefined, registerDialogVisible: false, toggledApp: undefined, toggledHook: undefined});
         }
     };
 }

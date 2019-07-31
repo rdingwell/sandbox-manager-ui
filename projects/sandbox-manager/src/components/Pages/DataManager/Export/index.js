@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { AutoComplete, LinearProgress, RaisedButton } from '@material-ui/core';
+import React, {Component, Fragment} from 'react';
+import {TextField, LinearProgress, Button} from '@material-ui/core';
 
 import './styles.less';
 import ExportIcon from "@material-ui/icons/ImportExport";
@@ -13,7 +13,7 @@ const SUGGESTIONS = [
 ];
 
 export default class Export extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -22,15 +22,11 @@ export default class Export extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.props.clearResults();
     }
 
-    render () {
-        let palette = this.props.muiTheme.palette;
-        let underlineFocusStyle = { borderColor: palette.p2 };
-        let floatingLabelFocusStyle = { color: palette.p2 };
-
+    render() {
         let status = this.props.exportStatus;
 
         let totalItemCount = 0;
@@ -51,21 +47,20 @@ export default class Export extends Component {
         return <div className='export-wrapper'>
             <div className='controls-wrapper'>
                 <div className='input-wrapper'>
-                    <AutoComplete id='query' searchText={this.state.query} fullWidth label='FHIR Query' onUpdateInput={query => {this.setState({ query })}}
-                                  dataSource={SUGGESTIONS} filter={AutoComplete.caseInsensitiveFilter}
-                                  underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                    <TextField id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({query: e.target.value})}/>
                 </div>
-                <RaisedButton className='button' primary onClick={() => this.props.export(this.state.query)} icon={<ExportIcon/>}
-                              label={this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'}/>
+                <Button className='button' color='primary' onClick={() => this.props.export(this.state.query)}>
+                    <ExportIcon/> {this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'}
+                </Button>
                 <div className='exporting-status-wrapper'>
                     {status.loading && status.resourceList.length !== 0 && status.content && allDone &&
-                        <RaisedButton className='button' secondary onClick={() => this.downloadFile(status)} icon={<ExportIcon/>} label='Download file'/>}
+                    <Button className='button' color='secondary' onClick={() => this.downloadFile(status)}>
+                        <ExportIcon/> Download file
+                    </Button>}
 
-                    {status.loading && status.resourceList.length === 0 && this.state.query.length > 0 &&
-                    <span>Counting total objects to export. </span>}
+                    {status.loading && status.resourceList.length === 0 && this.state.query.length > 0 && <span>Counting total objects to export. </span>}
 
-                    {status.loading && status.resourceList.length !== 0 && !status.content &&
-                    <span>Counting total objects to export. </span>}
+                    {status.loading && status.resourceList.length !== 0 && !status.content && <span>Counting total objects to export. </span>}
 
                     {status.loading && status.resourceList.length !== 0 && status.content && !allDone && <Fragment>
                         <span>Object loaded: {exportedItemsCount} / {totalItemCount}</span>
@@ -74,18 +69,17 @@ export default class Export extends Component {
 
                 </div>
                 {status.loading && !allDone && status.content &&
-                    <div className='exporting-status-wrapper'>
-                        <div>Do not close your browser or you will lose your progress.</div>
-                        <br/>
-                        <RaisedButton className='button' onClick={() => this.props.cancelDownload()} labelColor={this.props.muiTheme.palette.p5}
-                                      backgroundColor={this.props.muiTheme.palette.p4} label='Cancel download'/>
+                <div className='exporting-status-wrapper'>
+                    <div>Do not close your browser or you will lose your progress.</div>
+                    <br/>
+                    <Button className='button' onClick={() => this.props.cancelDownload()} style={{color: this.props.theme.p5, backgroundColor: this.props.theme.p4}} label='Cancel download'/>
                 </div>}
 
             </div>
         </div>;
     }
 
-    downloadFile (status) {
+    downloadFile(status) {
         let a = document.createElement("a");
         let entry = [];
         let content = status.content;
@@ -110,7 +104,7 @@ export default class Export extends Component {
         let blob;
         if (entry.length === 1 && entry[0].length === 1) {
             blob = new Blob([JSON.stringify(entry[0][0])],
-                { type: 'text/json' }
+                {type: 'text/json'}
             );
         } else {
             blob = new Blob(
@@ -119,7 +113,7 @@ export default class Export extends Component {
                     "type": "transaction",
                     "entry": entry
                 }, undefined, 2)],
-                { type: 'text/json' }
+                {type: 'text/json'}
             );
         }
 

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient } from '../../../../redux/action-creators';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../UI/hoc/withErrorHandler';
-import { Dialog, ListItem, Button, List } from '@material-ui/core';
+import { Dialog, ListItem, Button, List, withTheme} from '@material-ui/core';
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
@@ -63,7 +63,7 @@ class TreeBrowser extends Component {
                     Change patient
                 </Button>}
                 {!this.props.selectedPersona && this.state.patientSelectVisible &&
-                <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} contentClassName='patient-select-dialog'>
+                <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} classes={{paper: 'patient-select-dialog'}}>
                     <PersonaList {...props} titleLeft/>
                 </Dialog>}
                 {this.props.selectedPersona && this.getTree()}
@@ -84,23 +84,31 @@ class TreeBrowser extends Component {
             if (['string', 'number', 'boolean'].indexOf(typeof (item)) !== -1) {
                 return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>}/>;
             } else {
-                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
-                                 onNestedListToggle={() => this.toggleItem(id)}/>;
+                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true}
+                                 onNestedListToggle={() => this.toggleItem(id)}>
+                    {this.getNested(item, id)}
+                </ListItem>;
             }
         });
         let references = this.props.loadingResources ? [] : this.getReferences();
         let props = [
-            <ListItem key={`2-${persona.id}`} primaryText="Own props" leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={ownProps}
-                      onNestedListToggle={() => this.toggleItem('ownProps')} className='list-item'/>,
-            <ListItem key={`3-${persona.id}`} primaryText="References" leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={references}
-                      onNestedListToggle={() => this.toggleItem('references')} className='list-item'/>
+            <ListItem key={`2-${persona.id}`} primaryText="Own props" leftIcon={<Folder/>} primaryTogglesNestedList={true}
+                      onNestedListToggle={() => this.toggleItem('ownProps')} className='list-item'>
+                {ownProps}
+            </ListItem>,
+            <ListItem key={`3-${persona.id}`} primaryText="References" leftIcon={<Folder/>} primaryTogglesNestedList={true}
+                      onNestedListToggle={() => this.toggleItem('references')} className='list-item'>
+                {references}
+            </ListItem>
         ];
         let id = `${persona.resourceType}/${persona.id}`;
         let classes = `list-item ${this.props.query === id ? 'active' : ''}`;
 
         return <List className='tree-list' key={persona.id} id={persona.id}>
             <ListItem primaryText={`${getPatientName(persona)}`} leftIcon={<Description />} initiallyOpen={true} onNestedListToggle={() => this.toggleItem('patient')}
-                      nestedItems={props} className={classes} onClick={() => this.toggle(id)}/>
+                      className={classes} onClick={() => this.toggle(id)}>
+                {props}
+            </ListItem>
         </List>
     };
 
@@ -118,7 +126,9 @@ class TreeBrowser extends Component {
                     list.push(item.resource);
                 });
                 return <ListItem key={id} primaryText={<span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>} leftIcon={<Folder/>}
-                                 primaryTogglesNestedList={true} nestedItems={this.getNested(list, id, true)} onNestedListToggle={() => this.toggleItem(id)} className='list-item'/>;
+                                 primaryTogglesNestedList={true} onNestedListToggle={() => this.toggleItem(id)} className='list-item'>
+                    {this.getNested(list, id, true)}
+                </ListItem>;
             }
         });
     };
@@ -150,7 +160,9 @@ class TreeBrowser extends Component {
                     let classes = `list-item ${this.props.query === checked ? 'active' : ''}`;
 
                     return <ListItem key={id} primaryText={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>} leftIcon={<Description />} className={classes}
-                                     nestedItems={this.getNested(listItem, id)} onNestedListToggle={() => this.toggleItem(id)} onClick={() => this.toggle(checked)}/>;
+                                     onNestedListToggle={() => this.toggleItem(id)} onClick={() => this.toggle(checked)}>
+                        {this.getNested(listItem, id)}
+                    </ListItem>;
                 }
             });
         } else {
@@ -167,8 +179,10 @@ class TreeBrowser extends Component {
             } else if (typeof (item) === 'boolean') {
                 return <ListItem key={id} primaryText={<span>{key}: <span className='bold'>{item.toString()}</span></span>} leftIcon={<Remove/>} className='list-item'/>;
             } else {
-                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true} nestedItems={this.getNested(item, id)}
-                                 onNestedListToggle={() => this.toggleItem(id)} className='list-item'/>;
+                return <ListItem key={id} primaryText={<span>{key}</span>} leftIcon={<Folder/>} primaryTogglesNestedList={true}
+                                 onNestedListToggle={() => this.toggleItem(id)} className='list-item'>
+                    {this.getNested(item, id)}
+                </ListItem>;
             }
         })
     };
@@ -195,4 +209,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(TreeBrowser));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(TreeBrowser)));

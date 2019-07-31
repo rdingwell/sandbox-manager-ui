@@ -113,7 +113,7 @@ class PersonaList extends Component {
             </div>}
             <div className={'personas-wrapper' + (this.props.modal ? ' modal' : '')} data-qa={`${this.props.type}-wrapper`}>
                 {!this.props.noFilter && <div className='filter-wrapper'>
-                    <FilterList style={{color:this.props.theme.p3}}/>
+                    <FilterList style={{color: this.props.theme.p3}}/>
                     <Filters {...this.props} apps={this.props.apps} onFilter={this.onFilter} appliedTypeFilter={this.state.typeFilter}/>
                     <div className='actions'>
                         {(isPractitioner || isPatient) && !this.props.modal && <Fab onClick={() => this.toggleCreateModal()} color='primary'>
@@ -198,7 +198,7 @@ class PersonaList extends Component {
             let showMenuForItem = this.state.showMenuForItem === i;
             let patientRightIconStyle = {padding: 0, width: '40px', height: '40px'};
 
-            rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} selected={isSelected} onSelect={() => this.handleRowSelect(i)}>
+            rows.push(<TableRow key={persona.id} style={itemStyles} className={'persona-list-item' + (isSelected ? ' active' : '')} selected={isSelected} onClick={e => this.handleRowSelect([i * 2], e)}>
                 <TableCell className='persona-info left-icon-wrapper'>
                     {badge}
                 </TableCell>
@@ -233,15 +233,15 @@ class PersonaList extends Component {
                     }}>
                         <span className='anchor' ref={'anchor' + i}/>
                         {/*<MoreIcon style={{color:this.props.theme.p3}} style={{ width: '24px', height: '24px' }}/>*/}
-                        <DeleteIcon style={{color:this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
+                        <DeleteIcon style={{color: this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
                     </IconButton>}
                     {isPatient && <IconButton style={patientRightIconStyle} onClick={e => this.openInDM(e, persona)}>
                         <span/>
-                        <LaunchIcon style={{color:this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
+                        <LaunchIcon style={{color: this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
                     </IconButton>}
                     {isPatient && <IconButton onClick={e => this.handleRowSelect([i * 2], e)} style={patientRightIconStyle}>
                         <span/>
-                        <DownIcon style={{color:this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
+                        <DownIcon style={{color: this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
                     </IconButton>}
                     {!isPatient && showMenuForItem &&
                     <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + i]} anchorOrigin={{horizontal: 'left', vertical: 'top'}} style={{backgroundColor: this.props.theme.canvasColor}}
@@ -295,7 +295,7 @@ class PersonaList extends Component {
                         <TableCell style={{color: this.props.theme.p6, fontWeight: 'bold', fontSize: '14px', paddingLeft: isPatient || isPractitioner ? '34px' : '24px'}}>
                             Login Info
                         </TableCell>}
-                        {!this.props.modal &&!isPractitioner && <TableCell className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''}> </TableCell>}
+                        {!this.props.modal && !isPractitioner && <TableCell className={isPatient ? 'actions-row' : !isPractitioner ? ' actions-row small' : ''}> </TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -381,7 +381,8 @@ class PersonaList extends Component {
     handleRowSelect = (row, event) => {
         event && event.stopPropagation();
         event && event.preventDefault();
-        row = this.props.modal ? row : row[0] / 2;
+        // row = this.props.modal ? row[0] : row[0] / 2;
+        row = row[0] / 2;
         let list = this.getFilteredList();
         if (!this.props.modal && this.props.type === TYPES.patient) {
             let selection = getSelection();

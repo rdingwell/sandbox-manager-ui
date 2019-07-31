@@ -2,36 +2,47 @@
   @media (max-width: 1289px) {
     max-width: 320px;
   }
+
   & > div {
     display: inline-block;
     margin-right: 16px;
   }
+
   .chip {
     min-width: 140px;
+
     &.active {
+      background-color: rgb(14, 86, 118);
+      color: white;
+
       & > svg {
         fill: #BCDBF0 !important;
       }
     }
+
     & > svg {
       position: absolute;
       right: 0;
     }
+
     & > span {
       display: inline-block;
       width: 100%;
       position: relative;
+
       .icon-wrapper {
         vertical-align: middle;
         float: right;
         position: absolute;
         right: 5px;
         top: 0;
+
         svg {
           vertical-align: middle;
         }
       }
     }
+
     .title {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -49,6 +60,7 @@
   height: 40px;
   line-height: 40px;
   font-size: 12px;
+
   h3 {
     margin: 0;
     padding-left: 16px !important;
@@ -58,45 +70,12 @@
 
 .age-filter-wrapper {
   width: 300px;
-  height: 120px;
+  height: 80px;
   padding: 16px;
   padding-top: 40px;
-  & > div {
-    & > * {
-      vertical-align: middle;
-      padding: 0 7px;
-    }
-    & > span:first-of-type {
-      display: inline-block;
-      width: 36px;
-    }
-  }
-  .slider {
-    display: inline-block;
-    min-width: 180px;
-    & > div {
-      & > div > div {
-        &:first-of-type, &:last-of-type {
-          background-color: #0E5676 !important;
-          border-color: #0E5676 !important;
-          border: none !important;
-          & > div > div > div {
-            background-color: #0E5676 !important;
-            border-color: #0E5676 !important;
-          }
-        }
-        &:nth-of-type(2) {
-          background-color: rgb(117, 117, 117) !important;
-        }
-      }
-      margin-bottom: 20px !important;
-    }
-  }
-  .age-filter-value {
-    width: 20px !important;
-    hr {
-      width: 20px !important;
-    }
+
+  .slider-wrapper {
+    padding-top: 25px;
   }
 }
 

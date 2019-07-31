@@ -21,34 +21,38 @@ export default class Import extends Component {
     }
 
     render() {
-        let palette = this.props.muiTheme.palette;
+        let theme = this.props.theme;
         let data = this.state.activeTab === 'data';
-        let underlineFocusStyle = {borderColor: palette.p2};
-        let floatingLabelFocusStyle = {color: palette.p2};
 
         return <div className='import-wrapper'>
-            <Tabs className='import-tabs' contentContainerClassName='import-tabs-container' inkBarStyle={{backgroundColor: palette.p2}} style={{backgroundColor: palette.canvasColor}}>
-                <Tab label={<span><ListIcon style={{color: data ? palette.p5 : palette.p3}}/> Data</span>} className={'data tab' + (data ? ' active' : '')}
-                     onActive={() => this.setActiveTab('data')}>
+            <Tabs className='import-tabs' style={{backgroundColor: theme.p7}} onChange={(_e, activeTab) => this.setActiveTab(activeTab)} value={this.state.activeTab}>
+                <Tab label={<span><ListIcon style={{color: data ? theme.p5 : theme.p3}}/> Data</span>} value='data' id='data'/>
+                <Tab label={<span><CodeIcon style={{color: !data ? theme.p5 : theme.p3}}/> Results</span>} value='result' id='result'/>
+            </Tabs>
+            <div className='import-tabs-container'>
+                {this.state.activeTab === 'data' && <div className={'data tab' + (data ? ' active' : '')}>
                     {this.props.dataImporting ?
                         <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>
                         : <div>
-                            <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiLine onChange={(_, input) => this.setState({input})}
-                                       label='DATA' hintText='Paste your FHIR resource JSON/XML here' underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                            <TextField value={this.state.input} id='input' className='import-field-wrapper' fullWidth multiline onChange={(_, input) => this.setState({input})}
+                                       label='DATA' placeholder='Paste your FHIR resource JSON/XML here'/>
                         </div>}
                     <div>Place a FHIR resource (Patient, Bundle, etc.) in the form above or upload a file containing a resource.</div>
                     <div className='import-button'>
                         <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
-                        <Button variant='contained' label='Load from file' primary onClick={() => this.refs.file.click()}/>
-                        <Button variant='contained' label='Import' disabled={this.state.input.length === 0 || this.props.dataImporting} primary onClick={this.import}/>
+                        <Button variant='contained' color='primary' onClick={() => this.refs.file.click()}>
+                            Load from file
+                        </Button>
+                        <Button variant='contained' disabled={this.state.input.length === 0 || this.props.dataImporting} color='primary' onClick={this.import}>
+                            Import
+                        </Button>
                     </div>
-                </Tab>
-                <Tab label={<span><CodeIcon style={{color: !data ? palette.p5 : palette.p3}}/> Results</span>} className={'result tab' + (!data ? ' active' : '')}
-                     onActive={() => this.setActiveTab('result')} ref='results'>
+                </div>}
+                {this.state.activeTab === 'result' && <div className={'result tab' + (!data ? ' active' : '')} ref='results'>
                     {this.props.results && this.state.input.length > 0 && <ReactJson src={this.props.results} name={false}/>}
                     {this.props.dataImporting && <div className='loader-wrapper' style={{paddingTop: '200px'}}><CircularProgress size={80} thickness={5}/></div>}
-                </Tab>
-            </Tabs>
+                </div>}
+            </div>
         </div>;
     }
 
