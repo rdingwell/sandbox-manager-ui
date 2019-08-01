@@ -1,0 +1,59 @@
+ .patients-wrapper {
+  height: ~'calc(100% - 70px)';
+  position: relative;
+  & > div {
+    height: 100%;
+    .paper-card {
+      height: 100%;
+      .paper-body {
+        height: 100%;
+        overflow: hidden;
+        & > div {
+          &:first-of-type:not(.hidden) {
+            height: 6% !important;
+            overflow: hidden !important;
+          }
+          &:nth-of-type(2) {
+            height: 94% !important;
+            overflow: hidden !important;
+            & > div:nth-child(2) {
+              height: ~'calc(100% - 120px)' !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  .centered {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 200px;
+  }
+  .actions {
+    position: absolute;
+    right: 10px;
+    top: 1px;
+    z-index: 1000;
+    .custom-button {
+      margin-right: 20px;
+      & > button span {
+        margin-right: 20px !important;
+      }
+      .fa {
+        margin-left: 30px !important;
+        font-size: 1.2rem;
+      }
+    }
+    h4 {
+      display: inline-block;
+      margin: 1rem;
+    }
+  }
+}
+
+.persona-info-dialog {
+  & > div > div:first-of-type {
+    padding: 0 !important;
+  }
+}

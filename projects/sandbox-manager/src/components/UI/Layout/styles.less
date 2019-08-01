@@ -1,0 +1,41 @@
+.layout-main {
+  margin: 0;
+  background-color: rgb(247, 251, 255);
+  display: inline-block;
+  transition: all .2s ease-out;
+  vertical-align: top;
+  width: 100%;
+  height: ~'calc(100% - 70px)';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  &.open {
+    padding-left: 255px;
+  }
+  &.full-height {
+    height: 100%;
+  }
+}
+
+.creating-sandbox-dialog {
+  text-align: center;
+}
+svg {
+  circle {
+    stroke: #989898 !important;
+  }
+}
+
+.message-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  button {
+    position: absolute !important;
+    top: -7px;
+    right: 20px;
+  }
+}

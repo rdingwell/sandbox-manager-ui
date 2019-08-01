@@ -1,0 +1,34 @@
+.sidenav-paper {
+  background-color: rgb(245, 245, 245) !important;
+}
+
+.side-nav {
+  max-width: 256px;
+  position: absolute;
+  margin-top: 70px;
+  top: 2px !important;
+  height: 100%;
+
+  & > div {
+    min-height: 654px;
+    box-sizing: border-box;
+    height: 100% !important;
+    z-index: 1 !important;
+    position: absolute !important;
+    box-shadow: none !important;
+    border-right: 1px solid #DEDEDE;
+    width: 256px;
+
+    &.close {
+      width: 68px;
+
+      .navigation-item {
+        overflow: hidden;
+
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}

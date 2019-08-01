@@ -1,5 +1,5 @@
 import * as actionTypes from "./types";
-import { parseNames } from "sandbox-manager-lib/utils/fhir";
+import { parseNames } from "../../lib/utils/fhir";
 import API from '../../lib/api';
 import { getDefaultUserForSandbox } from './sandbox';
 

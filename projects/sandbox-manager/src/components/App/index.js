@@ -1,19 +1,19 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
-import {CircularProgress, Dialog, IconButton, Paper, RaisedButton, Tab, Tabs} from "material-ui";
+import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme} from "@material-ui/core";
+import {ThemeProvider} from '@material-ui/styles';
+import {Feedback} from '@material-ui/icons';
 import Snackbar from '../UI/Snackbar';
 import ReactJson from 'react-json-view';
 import {Fragment} from 'react';
-import {getMuiTheme, MuiThemeProvider} from 'material-ui/styles';
-import FeedbackIcon from 'material-ui/svg-icons/action/feedback';
-import * as glib from 'sandbox-manager-lib/utils/';
+import * as glib from '../../lib/utils';
 import * as lib from '../../lib';
 import * as actionCreators from '../../redux/action-creators';
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Layout from 'sandbox-manager-lib/components/Layout';
-import CreateSandbox from '../containers/CreateSandbox';
+import Layout from '../UI/Layout';
+import CreateSandbox from '../Pages/CreateSandbox';
 import Init from '../Init/';
 
 import './style.less';
@@ -66,7 +66,7 @@ class App extends React.Component {
     render() {
         let showLoader = this.props.selecting || this.props.resetting || this.props.deleting;
         let loaderText = this.props.deleting ? 'Deleting sandbox' : this.props.resetting ? 'Resetting sandbox data' : 'Loading sandbox data';
-        let theme = getMuiTheme(this.props.ui.theme);
+        let theme = createMuiTheme(this.props.ui.theme);
         let pathSplit = this.props.location.pathname.split('/');
         let isSingeHook = pathSplit[2] === 'hooks' && !!pathSplit[3];
         let layoutProps = {
@@ -82,13 +82,11 @@ class App extends React.Component {
             markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
         let open = !!this.props.cards.length;
-        let palette = theme.palette;
-        let request = open ? this.props.cards[0].requestData : {};
         let response = open ? Object.assign({}, this.props.cards[0]) : {};
         open && delete response.requestData;
         open && delete response.noCardsReturned;
 
-        return this.props.ui && <MuiThemeProvider muiTheme={theme}>
+        return this.props.ui && <ThemeProvider theme={theme}>
             <Layout {...layoutProps}>
                 <Init {...this.props} />
                 {!this.props.selecting && this.props.config.xsettings.status === 'ready' && <div className='app-root' ref={this.refStage()}>
@@ -97,11 +95,11 @@ class App extends React.Component {
                     </div>
                 </div>}
                 {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <RaisedButton onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} secondary overlayStyle={{padding: '0 16px'}}>
-                        <span style={{position: 'relative', top: '-5px', marginRight: '10px', color: 'white'}}>Submit feedback</span><FeedbackIcon style={{color: 'white', marginTop: '5px'}}/>
-                    </RaisedButton>
+                    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} color='primary'>
+                        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>
+                    </Button>
                 </div>}
-                {showLoader && <Dialog className='loader-wrapper' modal open={showLoader} data-qa='full-page-loader'>
+                {showLoader && <Dialog classes={{paper: 'full-loader-wrapper'}} open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
@@ -109,14 +107,14 @@ class App extends React.Component {
                     <p>Your session has expired. Reloading...</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onRequestClose={this.dismiss}>
+                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onClose={this.dismiss}>
                     <Paper className='paper-card'>
-                        <IconButton style={{color: palette.primary5Color}} className="close-button" onClick={this.dismiss}>
+                        <IconButton style={{color: palette.p5}} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
                         </IconButton>
                         <h3>CDS Service response</h3>
                         <div className='paper-body'>
-                            <Tabs inkBarStyle={{backgroundColor: palette.primary2Color}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
+                            <Tabs inkBarStyle={{backgroundColor: palette.p2}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
                                 <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({activeTab: 'parsed'})} value='parsed'>
                                     <div className='hooks-wrapper'>
                                         <a ref='openLink' target='_blank'/>
@@ -142,7 +140,7 @@ class App extends React.Component {
                     </Paper>
                 </Dialog>}
             </Layout>
-        </MuiThemeProvider>;
+        </ThemeProvider>;
     }
 
     dismiss = () => {
@@ -246,4 +244,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({...actionCreators},
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(App);
 export {connectedComponent};
-export default withRouter(connectedComponent);
+export default withRouter(withTheme(connectedComponent));
