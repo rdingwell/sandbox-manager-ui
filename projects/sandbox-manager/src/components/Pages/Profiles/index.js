@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {
-    Tabs, Tab, Card, Button, List, ListItem, TextField, CircularProgress, Dialog, Switch, IconButton, Paper, Menu, MenuItem, Popover, Chip, withTheme, DialogActions, FormHelperText, FormControl
+    Tabs, Tab, Card, Button, List, ListItem, TextField, CircularProgress, Dialog, Checkbox, IconButton, Paper, Menu, MenuItem, Chip, withTheme, DialogActions, FormHelperText, FormControl, FormControlLabel
 } from '@material-ui/core';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
@@ -86,7 +86,8 @@ class Profiles extends Component {
             || (this.state.activeTab === 'existing' && this.state.query.length <= 5)
             || (this.state.activeTab === 'file' && !this.state.file)
             || (this.state.activeTab === 'json-input' && this.state.manualJson.length <= 5);
-        let typeButton = <Switch className='view-toggle' label='Show as table' labelPosition='right' checked={this.state.resultsView} onChange={() => this.setState({resultsView: !this.state.resultsView})}/>;
+        let typeButton = <FormControlLabel className='view-toggle' label='Show as table'
+                                           control={<Checkbox checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>;
 
         let profile = this.state.selectedProfile && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
 
@@ -434,7 +435,7 @@ class Profiles extends Component {
                     return <ListItem key={key} classes={{root: classes}} onClick={() => this.toggleProfile(profile.profileId)}>
                         {profile.profileName}
                         <IconButton tooltip='DELETE' onClick={() => this.props.deleteDefinition(profile.id, this.state.canFit)}>
-                            <DeleteIcon styl={{fill:palette.p4}}/>
+                            <DeleteIcon styl={{fill: palette.p4}}/>
                         </IconButton>
                     </ListItem>
                 })}
