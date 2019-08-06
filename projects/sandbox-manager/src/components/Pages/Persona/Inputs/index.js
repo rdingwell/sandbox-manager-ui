@@ -32,14 +32,14 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>User Id</span>
                     <div>
-                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={(_, userId) => this.update('userId', userId.replace(/[^a-z0-9]/gi, ''))} onKeyPress={this.props.submitMaybe}
+                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={e => this.update('userId', e.target.value.replace(/[^a-z0-9]/gi, ''))} onKeyPress={this.props.submitMaybe}
                                    errorText={this.props.userIdDuplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
                         {!this.props.userIdDuplicate && <span className='additional-info'>Your persona userId will be {this.state.userId}{this.state.userId && `@${this.props.sandbox}`}</span>}
                     </div>
                 </div>
                 <div className='persona-info-row high'>
                     <span>Password</span>
-                    <TextField fullWidth id='password' onChange={(_, password) => this.update('password', password)} value={this.state.password}
+                    <TextField fullWidth id='password' onChange={e => this.update('password', e.target.value)} value={this.state.password}
                                underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.props.submitMaybe}/>
                 </div>
                 <div className='persona-info-row'>
