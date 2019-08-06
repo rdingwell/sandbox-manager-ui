@@ -70,7 +70,7 @@ export default class Import extends Component {
 
             this.setState({input: formatted}, () => {
                 this.props.importData && this.props.importData(e.target.result);
-                this.refs.results.handleClick();
+                this.setActiveTab('result');
             });
         };
 
@@ -83,6 +83,6 @@ export default class Import extends Component {
 
     import = () => {
         this.props.importData && this.props.importData(this.state.input);
-        this.refs.results.handleClick();
+        this.setActiveTab('result');
     };
 }

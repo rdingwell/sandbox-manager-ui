@@ -117,7 +117,7 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-import-modal'>
                         <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
-                        <TextField multiLine fullWidth label='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
+                        <TextField multiline fullWidth label='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
                                    value={this.state.usersToImport} onKeyUp={this.importMaybe} id='emailList'/>
                     </div>
                     <DialogActions classes={{root: 'user-remove-dialog-actions-wrapper'}}>

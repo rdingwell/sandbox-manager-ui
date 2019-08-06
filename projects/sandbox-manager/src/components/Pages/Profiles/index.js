@@ -157,7 +157,7 @@ class Profiles extends Component {
                                 <Button variant='contained' className='clear-json-button' disabled={!this.state.manualJson} color='primary' onClick={() => this.setState({manualJson: ''})}>
                                     CLEAR
                                 </Button>
-                                <TextField className='manual-input' placeholder='Paste fhir resource json here' multiLine fullWidth value={this.state.manualJson}
+                                <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson}
                                            onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                             </div>}
                         </div>
