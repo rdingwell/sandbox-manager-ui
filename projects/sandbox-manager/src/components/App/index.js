@@ -83,6 +83,7 @@ class App extends React.Component {
         };
         let open = !!this.props.cards.length;
         let response = open ? Object.assign({}, this.props.cards[0]) : {};
+        let request = open ? this.props.cards[0].requestData : {};
         open && delete response.requestData;
         open && delete response.noCardsReturned;
 
@@ -107,35 +108,33 @@ class App extends React.Component {
                     <p>Your session has expired. Reloading...</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} paperClassName='hooks-dialog' onClose={this.dismiss}>
+                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} classes={{paper: 'hooks-dialog'}} onClose={this.dismiss}>
                     <Paper className='paper-card'>
-                        <IconButton style={{color: palette.p5}} className="close-button" onClick={this.dismiss}>
+                        <IconButton style={{color: theme.p5}} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
                         </IconButton>
                         <h3>CDS Service response</h3>
                         <div className='paper-body'>
-                            <Tabs inkBarStyle={{backgroundColor: palette.p2}} style={{backgroundColor: palette.canvasColor}} value={this.state.activeTab} className='cards-tabs-wrapper'>
-                                <Tab label='Cards' className={'parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')} onActive={() => this.setState({activeTab: 'parsed'})} value='parsed'>
-                                    <div className='hooks-wrapper'>
-                                        <a ref='openLink' target='_blank'/>
-                                        {!this.props.cards[0].noCardsReturned && this.getCards()}
-                                        {this.props.cards[0].noCardsReturned && <div className='no-cards-message'>
-                                            <span>No cards were returned by the service</span>
-                                        </div>}
-                                    </div>
-                                </Tab>
-                                <Tab label='request' className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')} onActive={() => this.setState({activeTab: 'request'})} value='request'>
-                                    <div>
-                                        <ReactJson className='json-view' src={request} name={false}/>
-                                    </div>
-                                </Tab>
-                                <Tab label='Response' className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')} onActive={() => this.setState({activeTab: 'response'})}
-                                     value='response'>
-                                    <div>
-                                        <ReactJson className='json-view' src={response} name={false}/>
-                                    </div>
-                                </Tab>
+                            <Tabs value={this.state.activeTab} className='cards-tabs-wrapper' onChange={(_e, activeTab) => this.setState({activeTab})}>
+                                <Tab label='Cards' value='parsed'/>
+                                <Tab label='Request' value='request'/>
+                                <Tab label='Response' value='response'/>
                             </Tabs>
+                            <div>
+                                {this.state.activeTab === 'parsed' && <div className={'hooks-wrapper parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')}>
+                                    <a ref='openLink' target='_blank'/>
+                                    {!this.props.cards[0].noCardsReturned && this.getCards()}
+                                    {this.props.cards[0].noCardsReturned && <div className='no-cards-message'>
+                                        <span>No cards were returned by the service</span>
+                                    </div>}
+                                </div>}
+                                {this.state.activeTab === 'request' && <div className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')}>
+                                    <ReactJson className='json-view' src={request} name={false}/>
+                                </div>}
+                                {this.state.activeTab === 'response' && <div className={'response tab' + (this.state.activeTab === 'response' ? ' active' : '')}>
+                                    <ReactJson className='json-view' src={response} name={false}/>
+                                </div>}
+                            </div>
                         </div>
                     </Paper>
                 </Dialog>}
