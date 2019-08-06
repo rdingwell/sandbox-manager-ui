@@ -108,7 +108,7 @@ export default class QueryBrowser extends Component {
                             : <List>
                                 {this.props.results && this.props.results.entry && (this.props.results.resourceType !== 'List') && this.props.results.entry.length > 0 ? this.props.results.entry.map((e, i) => {
                                         let entry = parseEntry(e);
-                                        return <ListItem key={i} onClick={() => this.setState({showDialog: true, selectedEntry: e})} className='result-list-item'>
+                                        return <ListItem key={i} onClick={() => this.setState({showDialog: true, selectedEntry: e})} className='result-list-item' button>
                                             {entry.props.map((item, index) => {
                                                 return <div className='result-item' key={index}>
                                                     <span>{item.label}: </span>
@@ -118,15 +118,17 @@ export default class QueryBrowser extends Component {
                                         </ListItem>
                                     })
                                     : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
-                                        : <div>{this.props.results != null &&
-                                        <ListItem key={0} onClick={() => this.setState({showDialog: true, selectedEntry: {resource: this.props.results}})} className='result-list-item'>
-                                            {parseEntry({resource: this.props.results}).props.map((item, index) => {
-                                                return <div className='result-item' key={index}>
-                                                    <span>{item.label}: </span>
-                                                    <span>{item.value}</span>
-                                                </div>
-                                            })}
-                                        </ListItem>}</div>}
+                                        : <div>
+                                            {this.props.results != null &&
+                                            <ListItem key={0} onClick={() => this.setState({showDialog: true, selectedEntry: {resource: this.props.results}})} className='result-list-item' button>
+                                                {parseEntry({resource: this.props.results}).props.map((item, index) => {
+                                                    return <div className='result-item' key={index}>
+                                                        <span>{item.label}: </span>
+                                                        <span>{item.value}</span>
+                                                    </div>
+                                                })}
+                                            </ListItem>}
+                                        </div>}
                             </List>}
                         {this.props.gettingNextPage && <div className='loader-wrapper-small'><CircularProgress size={80} thickness={5}/></div>}
                     </div>

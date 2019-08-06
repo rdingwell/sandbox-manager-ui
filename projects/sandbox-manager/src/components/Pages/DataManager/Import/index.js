@@ -25,7 +25,7 @@ export default class Import extends Component {
         let data = this.state.activeTab === 'data';
 
         return <div className='import-wrapper'>
-            <Tabs className='import-tabs' style={{backgroundColor: theme.p7}} onChange={(_e, activeTab) => this.setActiveTab(activeTab)} value={this.state.activeTab}>
+            <Tabs className='import-tabs' style={{backgroundColor: 'white'}} onChange={(_e, activeTab) => this.setActiveTab(activeTab)} value={this.state.activeTab}>
                 <Tab label={<span><ListIcon style={{color: data ? theme.p5 : theme.p3}}/> Data</span>} value='data' id='data'/>
                 <Tab label={<span><CodeIcon style={{color: !data ? theme.p5 : theme.p3}}/> Results</span>} value='result' id='result'/>
             </Tabs>

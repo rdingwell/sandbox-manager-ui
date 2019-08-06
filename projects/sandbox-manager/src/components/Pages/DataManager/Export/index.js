@@ -49,12 +49,12 @@ export default class Export extends Component {
                 <div className='input-wrapper'>
                     <TextField id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({query: e.target.value})}/>
                 </div>
-                <Button className='button' color='primary' onClick={() => this.props.export(this.state.query)}>
+                <Button variant='contained' color='primary' onClick={() => this.props.export(this.state.query)} style={{marginTop: '10px', verticalAlign: 'bottom'}}>
                     <ExportIcon/> {this.state.query.length > 0 ? 'Export query to file' : 'Export all to file'}
                 </Button>
                 <div className='exporting-status-wrapper'>
                     {status.loading && status.resourceList.length !== 0 && status.content && allDone &&
-                    <Button className='button' color='secondary' onClick={() => this.downloadFile(status)}>
+                    <Button variant='contained' className='button' color='secondary' onClick={() => this.downloadFile(status)}>
                         <ExportIcon/> Download file
                     </Button>}
 
@@ -72,7 +72,9 @@ export default class Export extends Component {
                 <div className='exporting-status-wrapper'>
                     <div>Do not close your browser or you will lose your progress.</div>
                     <br/>
-                    <Button className='button' onClick={() => this.props.cancelDownload()} style={{color: this.props.theme.p5, backgroundColor: this.props.theme.p4}} label='Cancel download'/>
+                    <Button variant='contained' className='button' onClick={() => this.props.cancelDownload()} style={{color: this.props.theme.p5, backgroundColor: this.props.theme.p4}}>
+                        Cancel download
+                    </Button>
                 </div>}
 
             </div>
