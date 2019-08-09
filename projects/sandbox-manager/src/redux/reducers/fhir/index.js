@@ -22,6 +22,7 @@ export default function (state = initialState, action) {
             break;
         case types.FHIR_CLEAN_VALIDATION_RESULTS:
             state.validationResults = undefined;
+            state.resource = undefined;
             break;
         case types.FHIR_SET_PROFDILES_LOADING:
             state.profilesLoading = action.payload.loading;
@@ -29,6 +30,14 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_PROFDILESDS_LOADING:
             state.profileSDsLoading = action.payload.loading;
             action.payload.loading && (state.sds = undefined);
+            action.payload.loading && (state.profileResources = undefined);
+            break;
+        case types.FHIR_SET_FETCHING_RESOURCE:
+            state.fetchingResource = action.payload.fetching;
+            action.payload.fetching && (state.resource = undefined);
+            break;
+        case types.FHIR_SET_RESOURCE:
+            state.resource = action.payload.resource;
             break;
         case types.FHIR_SET_PROFDILES_UPLOADING:
             state.profilesUploading = action.payload.loading;
@@ -38,6 +47,9 @@ export default function (state = initialState, action) {
             break;
         case types.FHIR_SET_PROFDILESDS:
             state.sds = action.payload.sds;
+            break;
+        case types.FHIR_SET_PROFDILE_RESOURCES:
+            state.profileResources = action.payload.resources;
             break;
         case types.FHIR_SET_PROFDILES:
             state.profiles = action.payload.profiles.entry;
@@ -95,11 +107,14 @@ export default function (state = initialState, action) {
             break;
         case "persist/REHYDRATE":
             state = action.payload ? action.payload.fhir : state;
-            state.validationResults = null;
             state.sds = null;
+            state.resource = null;
+            state.profileResources = null;
+            state.validationResults = null;
             state.customSearchResults = null;
             state.customExportResults = null;
             state.executing = false;
+            state.resources = false;
             state.fetchingFile = false;
             state.resources = false;
             state.profileSDsLoading = false;
