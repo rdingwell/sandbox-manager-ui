@@ -1,21 +1,26 @@
 .user-management-wrapper {
   margin: 0 !important;
   max-width: 100% !important;
+
   .user-tabs {
     .screen-content {
       margin-top: 10px;
     }
+
     & > div:first-of-type {
       border-bottom: 2px solid whitesmoke;
       width: 100% !important;
+
       & > button {
         max-width: 125px;
       }
     }
   }
+
   .user-tabs > div:nth-child(2) {
     display: none !important;
   }
+
   .user-tabs-container {
     padding-right: 10px;
   }
@@ -26,11 +31,37 @@
     position: relative;
     right: -20px;
   }
+
+  .invitations-table-header, .users-table-header {
+    height: 32px;
+    position: relative;
+    top: -2px;
+
+    th, tr {
+      padding: 4px 40px 4px 16px !important;
+      height: 32px !important;
+    }
+  }
+
+  tbody {
+    background-color: white;
+  }
+
+  .MuiTableRow-root {
+
+    td {
+      padding: 4px 40px 4px 16px !important;
+    }
+  }
 }
 
 .invitations-modal {
-  & > div:first-of-type {
-    padding: 0 !important;
+  min-width: 600px;
+  max-width: 1000px;
+  width: 50%;
+
+  .close-button {
+    color: white;
   }
 }
 
@@ -41,39 +72,29 @@
 
 .screen-content-invites-modal {
   padding: 47px 0 20px 0;
+
   & > div > div:nth-child(2) {
     max-height: 30vh;
     overflow-y: auto !important;
-    padding-bottom: 20px;
   }
 }
 
 .screen-content-import-modal {
-  padding: 47px 0 20px 0;
+  padding: 80px 16px 20px;
+
   & > div > div:nth-child(2) {
     max-height: 30vh;
     overflow-y: auto !important;
-    padding-bottom: 20px;
-  }
-}
-
-.invitations-table-header,
-.users-table-header {
-  height: 32px;
-  position: relative;
-  top: -2px;
-  th, tr {
-    height: 32px !important;
   }
 }
 
 .screen-content-invite-modal {
-  padding: 80px 16px 20px 16px;
+  padding: 80px 16px 20px;
 }
 
 .user-remove-dialog-actions-wrapper {
-  text-align: right!important;
-  padding-right: 26px!important;
+  text-align: right !important;
+  padding-right: 26px !important;
   padding-bottom: 15px !important;
 }
 
@@ -91,25 +112,31 @@
 
 .users-wrapper {
   text-align: center;
+
   & > div {
     min-width: 700px;
     max-width: 1000px;
     width: 80%;
     display: inline-block;
   }
+
   .invitation-buttons-wrapper {
     text-align: right;
     padding-bottom: 16px;
+
     & > * {
       margin-left: 16px;
     }
   }
+
   td:last-of-type, th:last-of-type {
     width: 40px;
   }
+
   td:nth-of-type(3), th:nth-of-type(3) {
     width: 40px;
   }
+
   td:nth-of-type(4), th:nth-of-type(4) {
     width: 200px;
   }
@@ -117,11 +144,22 @@
 
 .screen-title.invitations {
   padding-left: 10px;
+
   h1 {
     padding-left: 16px;
+  }
+
+  .close-button {
+    color: white !important;
   }
 }
 
 .invite-dialog-actions-wrapper, .invites-dialog-actions-wrapper {
   padding: 0 20px 25px !important;
+}
+
+.import-users-dialog {
+  min-width: 600px;
+  max-width: 1000px;
+  width: 50%;
 }

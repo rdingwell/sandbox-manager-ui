@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
-import {Dialog, Button, IconButton, CircularProgress, TableCell, TableRow, TableBody, Table, TableHead, Popover, Menu, MenuItem, Fab, TextField, Snackbar, withTheme, DialogActions} from '@material-ui/core';
+import {
+    Dialog, Button, IconButton, CircularProgress, TableCell, TableRow, TableBody, Table, TableHead, FormControl, Menu, MenuItem, Fab, TextField, Snackbar, withTheme, DialogActions, InputLabel, Input,
+    FormHelperText
+} from '@material-ui/core';
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Redo from '@material-ui/icons/Redo';
 import ContentAdd from '@material-ui/icons/Add';
@@ -58,8 +61,11 @@ class Users extends Component {
                         </IconButton>
                     </div>
                     <div className='screen-content-invite-modal'>
-                        <TextField fullWidth value={this.state.email} label="Email Address of New User" onChange={e => this.handleInviteEmailChange(e.target.value)} errorText={this.state.emailError}
-                                   onKeyPress={this.submitMaybe} id='newEmailAddress'/>
+                        <FormControl error={!!this.state.emailError} fullWidth>
+                            <InputLabel htmlFor="newEmailAddress">Email Address of New User</InputLabel>
+                            <Input id="newEmailAddress" value={this.state.email} onChange={e => this.handleInviteEmailChange(e.target.value)} onKeyPress={this.submitMaybe} fullWidth/>
+                            {!!this.state.emailError && <FormHelperText id="component-error-text">{this.state.emailError}</FormHelperText>}
+                        </FormControl>
                     </div>
                     <DialogActions>
                         <Button variant='contained' color='primary' onClick={this.handleSendInvite}>Send</Button>
@@ -74,8 +80,7 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-invites-modal'>
                         <Table className='sandbox-invitations-list'>
-                            <TableHead className='invitations-table-header' displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}
-                                       style={{backgroundColor: this.props.theme.p7}}>
+                            <TableHead className='invitations-table-header' style={{backgroundColor: this.props.theme.p7}}>
                                 <TableRow>
                                     <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Email</TableCell>
                                     <TableCell style={{color: 'black', fontWeight: 'bold', fontSize: '12px'}}>Date Sent</TableCell>
@@ -88,7 +93,7 @@ class Users extends Component {
                         </Table>
                     </div>
                     <DialogActions>
-                        <Fab onClick={this.toggleCreateModal}><ContentAdd/></Fab>
+                        <Fab color='primary' onClick={this.toggleCreateModal}><ContentAdd/></Fab>
                     </DialogActions>
                 </Dialog>}
                 {this.state.userToRemove && <Dialog open={this.state.open} onClose={this.handleClose}>
@@ -108,7 +113,7 @@ class Users extends Component {
                     </DialogActions>
                 </Dialog>}
                 {this.state.importUsersModal &&
-                <Dialog open={this.state.importUsersModal} onClose={this.toggleImportUsersModal}>
+                <Dialog open={this.state.importUsersModal} onClose={this.toggleImportUsersModal} classes={{paper: 'import-users-dialog'}}>
                     <div className='screen-title imports' style={titleStyle}>
                         <h1 style={titleStyle}>Import users</h1>
                         <IconButton className="close-button" onClick={this.toggleImportUsersModal}>
@@ -117,7 +122,7 @@ class Users extends Component {
                     </div>
                     <div className='screen-content-import-modal'>
                         <input type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile}/>
-                        <TextField multiline fullWidth label='Enter comma separated emails' onChange={(_, usersToImport) => this.setState({usersToImport})}
+                        <TextField multiline fullWidth label='Enter comma separated emails' onChange={e => this.setState({usersToImport: e.target.value})}
                                    value={this.state.usersToImport} onKeyUp={this.importMaybe} id='emailList'/>
                     </div>
                     <DialogActions classes={{root: 'user-remove-dialog-actions-wrapper'}}>
@@ -150,8 +155,7 @@ class Users extends Component {
                     <CircularProgress size={80} thickness={5}/>
                 </div>}
             </div>
-            <Snackbar open={this.props.inviting} message={sending ? 'Sending invitation to user...' : 'Deleting user invitation...'} autoHideDuration={30000}
-                      bodyStyle={{margin: '0 auto', backgroundColor: sending ? palette.p2 : palette.p4}}/>
+            <Snackbar open={this.props.inviting} message={sending ? 'Sending invitation to user...' : 'Deleting user invitation...'} autoHideDuration={30000}/>
         </div>;
     }
 
@@ -176,7 +180,7 @@ class Users extends Component {
     importUsers = () => {
         let users = this.state.usersToImport.split(',') || [];
         users.map(user => {
-            this.props.inviteNewUser(user);
+            this.props.inviteNewUser(user.trim());
         });
         this.toggleImportUsersModal();
     };
@@ -275,28 +279,25 @@ class Users extends Component {
                         <span className='anchor' ref={'anchor_' + key}/>
                         <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
                         {this.state.showMenu && key === this.state.menuItem &&
-                        <Popover open={this.state.showMenu && key === this.state.menuItem} anchorEl={this.refs['anchor_' + key]} anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                                 targetOrigin={{horizontal: 'right', vertical: 'top'}} onClose={this.toggleMenu}>
-                            <Menu desktop autoWidth={false} width='100px'>
-                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                    Revoke admin
-                                </MenuItem>}
-                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                    Make admin
-                                </MenuItem>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
-                                    {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
-                                </MenuItem>
-                            </Menu>
-                        </Popover>}
+                        <Menu anchorEl={this.refs['anchor_' + key]} open={this.state.showMenu && key === this.state.menuItem} onClose={this.toggleMenu}>
+                            {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                Revoke admin
+                            </MenuItem>}
+                            {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                Make admin
+                            </MenuItem>}
+                            <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
+                                {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
+                            </MenuItem>
+                        </Menu>}
                     </IconButton>
                 </TableCell>
             </TableRow>
         });
     };
 
-    handleInviteEmailChange = (event) => {
-        this.setState({email: event.target.value, emailError: undefined});
+    handleInviteEmailChange = (email) => {
+        this.setState({email, emailError: undefined});
     };
 
     getInvitations = () => {
