@@ -89,7 +89,7 @@ class Profiles extends Component {
         let typeButton = <FormControlLabel className='view-toggle' label='Show as table'
                                            control={<Checkbox checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>;
 
-        let profile = this.state.selectedProfile && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
+        let profile = this.state.selectedProfile && this.props.profiles && this.props.profiles.find(i => i.profileId === this.state.selectedProfile) || {};
 
         return <Page title={<span>Profiles</span>} helpIcon={<HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>}>
             {this.getModals()}
