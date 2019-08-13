@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FormControlLabel, Checkbox, TextField, Button, Card, IconButton, withTheme, Dialog, DialogActions, Paper, Step, StepButton, Stepper, CircularProgress} from '@material-ui/core';
+import {FormControlLabel, Switch, TextField, Button, Card, IconButton, withTheme, Dialog, DialogActions, Paper, Step, StepButton, Stepper, CircularProgress} from '@material-ui/core';
 import Find from '@material-ui/icons/FindInPage';
 import Link from '@material-ui/icons/Link';
 import Folder from '@material-ui/icons/Folder';
@@ -17,7 +17,6 @@ class Validation extends Component {
         this.state = {
             query: '',
             resultsView: false,
-            activeTab: 'browse',
             selectedType: undefined,
             showValidationResults: false
         }
@@ -33,15 +32,15 @@ class Validation extends Component {
     }
 
     render() {
-        let validateDisabled = (this.state.activeTab === 'browse' && this.state.query.length <= 5)
-            || (this.state.activeTab === 'existing' && this.state.query.length <= 5)
-            || (this.state.activeTab === 'file' && !this.state.file)
-            || (this.state.activeTab === 'json-input' && this.state.manualJson.length <= 5);
+        let validateDisabled = (this.state.selectedType === 'browse' && this.state.query.length <= 5)
+            || (this.state.selectedType === 'existing' && this.state.query.length <= 5)
+            || (this.state.selectedType === 'file' && !this.state.file)
+            || (this.state.selectedType === 'json-input' && this.state.manualJson.length <= 5);
         let st = this.state.selectedType;
 
-        return <Dialog open={true} classes={{root: 'validation-dialog', paper: 'validation-content'}}>
+        return <Dialog open={true} classes={{root: 'validation-dialog', paper: 'validation-content'}} onClose={this.props.onClose}>
             <Paper className='paper-card'>
-                <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.toggleInputModal}>
+                <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.props.onClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
                 <h3>Validate</h3>
@@ -59,7 +58,7 @@ class Validation extends Component {
                     </Stepper>
                     {this.state.showValidationResults && this.props.validationResults &&
                     <FormControlLabel className='view-toggle' label='Show as table'
-                                      control={<Checkbox checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>}
+                                      control={<Switch color='secondary' checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>}
                     {!this.state.selectedType && <div className='validation-cards'>
                         <p>
                             Chose a way to provide the resource for validation
@@ -98,7 +97,7 @@ class Validation extends Component {
                             <input value='' type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile} accept='application/json'/>
                             <div className='tab-title'>Validate resource from file</div>
                             <div style={{textAlign: 'center'}}>
-                                <Button color='primary' onClick={() => this.refs.file.click()}>
+                                <Button variant='contained' color='primary' onClick={() => this.refs.file.click()}>
                                     Select file
                                 </Button>
                             </div>
@@ -117,7 +116,9 @@ class Validation extends Component {
                         {this.state.showValidationResults && <div className='validate-result-wrapper'>
                             {!this.state.resultsView && this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
                             {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults}/>}
-                            {this.props.validationExecuting && <CircularProgress size={60} thickness={5}/>}
+                            {this.props.validationExecuting && <div className='loader-wrapper-small'>
+                                <CircularProgress size={60} thickness={5}/>
+                            </div>}
                         </div>}
                     </div>
                 </div>
@@ -162,7 +163,7 @@ class Validation extends Component {
         manualJSON && (manualJSON = this.prepareJSON(JSON.parse(manualJSON)));
         manualJSON && this.props.validate(manualJSON);
         !manualJSON && this.state.query && this.props.validateExisting(this.state.query, this.props.profile);
-        this.state.activeTab === 'browse' && this.setState({query: '', showValidationResults: true});
+        this.setState({query: '', showValidationResults: true});
     };
 
     prepareJSON = (json) => {

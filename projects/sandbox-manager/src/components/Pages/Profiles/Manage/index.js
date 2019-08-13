@@ -39,7 +39,7 @@ class Manage extends Component {
     getList = () => {
         return <div className='profiles-list'>
             {this.state.showValidation && <Validation {...this.props} profile={this.state.selectedProfile} onScreenSelect={a => this.setState({selectedValidationScreen: a, deselectValidation: false})}
-                                                      deselectValidation={this.state.deselectValidation}/>}
+                                                      deselectValidation={this.state.deselectValidation} onClose={() => this.setState({showValidation: false})}/>}
             <div className='wrapper'>
                 <Filters {...this.props} onFilter={this.onFilter}/>
             </div>
