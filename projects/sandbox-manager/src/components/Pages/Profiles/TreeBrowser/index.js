@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {bindActionCreators} from 'redux';
 import {getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient} from '../../../../redux/action-creators';
 import {connect} from 'react-redux';
 import withErrorHandler from '../../../UI/hoc/withErrorHandler';
-import {Dialog, ListItem, Button, List, withTheme, ListItemText, Collapse, ListItemIcon} from '@material-ui/core';
+import {Dialog, ListItem, Button, List, withTheme, Collapse} from '@material-ui/core';
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
 import PersonaList from '../../Persona/List';
-import {getPatientName} from "../../../../lib/utils/fhir";
+import {getPatientName} from "../../../../lib/utils/";
 
 import './styles.less';
 
@@ -55,7 +55,9 @@ class TreeBrowser extends Component {
         return <div className='tree-browser'>
             <div className='tab-title'>Browse linked resources</div>
             <div className='tree-input-wrapper'>
-                {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal}>Select a patient</Button>}
+                {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal}>
+                    Select a patient
+                </Button>}
                 {this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={() => {
                     this.props.selectPatient();
                     this.toggleModal();
@@ -73,7 +75,7 @@ class TreeBrowser extends Component {
 
     toggleModal = () => {
         this.setState({patientSelectVisible: !this.state.patientSelectVisible});
-        this.props.cleanResults && this.props.cleanResults();
+        // this.props.cleanResults && this.props.cleanResults();
     };
 
     getTree = () => {
@@ -83,61 +85,59 @@ class TreeBrowser extends Component {
             let id = 'ownProps.' + key;
             if (['string', 'number', 'boolean'].indexOf(typeof (item)) !== -1) {
                 return <ListItem key={id}>
-                    <ListItemIcon>
-                        <Remove/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{key}: <span className='bold'>{item.toString()}</span></span>}/>
+                    <Remove/> <span>{key}: <span className='bold'>{item.toString()}</span></span>
                 </ListItem>;
             } else {
-                return [<ListItem key={id} button onClick={() => this.toggleItem(id)}>
-                    <ListItemIcon>
-                        <Folder/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{key}</span>}/>
-                </ListItem>,
-                    <Collapse in={!!this.state.toggledItems[id]}>
-                        {this.getNested(item, id)}
+                return <Fragment key={id}>
+                    <ListItem button onClick={() => this.toggleItem(id)}>
+                        <Folder/> <span>{key}</span>
+                    </ListItem>
+                    <Collapse unmountOnExit in={this.state.toggledItems[id]}>
+                        <List>
+                            {this.getNested(item, id)}
+                        </List>
                     </Collapse>
-                ];
+                </Fragment>;
             }
         });
         let references = this.props.loadingResources ? [] : this.getReferences();
         let props = [
-            <ListItem key={`2-${persona.id}`} button onClick={() => this.toggleItem('ownProps')} className='list-item'>
-                <ListItemIcon>
-                    <Folder/>
-                </ListItemIcon>
-                <ListItemText primary="Own props"/>
-            </ListItem>,
-            <Collapse key='li-1' in={!!this.state.toggledItems.ownProps}>
-                {ownProps}
-            </Collapse>,
-            <ListItem key={`3-${persona.id}`} button onClick={() => this.toggleItem('references')} className='list-item'>
-                <ListItemIcon>
-                    <Folder/>
-                </ListItemIcon>
-                <ListItemText primary="References"/>
-            </ListItem>,
-            <Collapse key='li-2' in={!!this.state.toggledItems.references}>
-                {references}
-            </Collapse>
+            <Fragment key={`2-${persona.id}`}>
+                <ListItem button onClick={() => this.toggleItem('ownProps')} className='list-item'>
+                    <Folder/> Own props
+                </ListItem>
+                <Collapse unmountOnExit in={this.state.toggledItems.ownProps}>
+                    <List>
+                        {ownProps}
+                    </List>
+                </Collapse>
+            </Fragment>,
+            <Fragment key={`3-${persona.id}`}>
+                <ListItem button onClick={() => this.toggleItem('references')} className='list-item'>
+                    <Folder/> References
+                </ListItem>
+                <Collapse unmountOnExit in={this.state.toggledItems.references}>
+                    {references}
+                </Collapse>
+            </Fragment>
         ];
         let id = `${persona.resourceType}/${persona.id}`;
         let classes = `list-item ${this.props.query === id ? 'active' : ''}`;
 
         return <List className='tree-list' key={persona.id} id={persona.id}>
-            <ListItem button onClick={() => this.toggleItem('patient')}>
-                <ListItemText primary={getPatientName(persona)}/>
+            <ListItem button className={classes} onClick={() => this.toggle(id) || this.toggleItem('patient')}>
+                <Description/> {`${getPatientName(persona)}`}
             </ListItem>
-            <Collapse in={true}>
-                {props}
+            <Collapse unmountOnExit in>
+                <List>
+                    {props}
+                </List>
             </Collapse>
         </List>
     };
 
     toggle = (selectedResource) => {
         this.props.onToggle && this.props.onToggle(selectedResource);
-        this.props.cleanResults && this.props.cleanResults();
     };
 
     getReferences = () => {
@@ -148,16 +148,16 @@ class TreeBrowser extends Component {
                 this.props.patientResources[resource].entry.map(item => {
                     list.push(item.resource);
                 });
-                return [<ListItem key={id} button onClick={() => this.toggleItem(id)} className='list-item'>
-                    <ListItemIcon>
-                        <Folder/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>}/>
-                </ListItem>,
-                    <Collapse key={`${id}-12`} in={!!this.state.toggledItems[id]}>
-                        {this.getNested(list, id, true)}
+                return <Fragment key={id}>
+                    <ListItem button onClick={() => this.toggleItem(id)} className='list-item'>
+                        <Folder/> <span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>
+                    </ListItem>
+                    <Collapse unmountOnExit in={this.state.toggledItems[id]}>
+                        <List>
+                            {this.getNested(list, id, true)}
+                        </List>
                     </Collapse>
-                ];
+                </Fragment>;
             }
         });
     };
@@ -174,7 +174,6 @@ class TreeBrowser extends Component {
             toggledItems[item] = true
         }
         this.setState({toggledItems});
-        this.props.cleanResults && this.props.cleanResults();
     };
 
     getNested = (object, parentId, isRootLevel) => {
@@ -183,26 +182,23 @@ class TreeBrowser extends Component {
                 if (['string', 'number', 'boolean'].indexOf(typeof (listItem)) !== -1) {
                     let id = `${parentId}.${listItem}`;
                     return <ListItem key={id}>
-                        <ListItemIcon>
-                            <Remove/>
-                        </ListItemIcon>
-                        <ListItemText primary={<span><span className='bold'>{listItem}</span></span>}/>
+                        <Remove/> <span><span className='bold'>{listItem}</span></span>
                     </ListItem>;
                 } else {
                     let id = `${parentId}.${index}`;
                     let checked = `${listItem.resourceType}/${listItem.id}`;
                     let classes = `list-item ${this.props.query === checked ? 'active' : ''}`;
 
-                    return [<ListItem key={id} className={classes} onClick={() => this.toggle(checked) && this.toggleItem(id)}>
-                        <ListItemIcon>
-                            <Description/>
-                        </ListItemIcon>
-                        <ListItemText primary={<span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>}/>
-                    </ListItem>,
-                        <Collapse key='list-21' in={!!this.state.toggledItems[id]}>
-                            {this.getNested(listItem, id)}
+                    return <Fragment key={id}>
+                        <ListItem button className={classes} onClick={() => this.toggle(checked) || this.toggleItem(id)}>
+                            <Description/> <span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>
+                        </ListItem>
+                        <Collapse unmountOnExit in={this.state.toggledItems[id]}>
+                            <List>
+                                {this.getNested(listItem, id)}
+                            </List>
                         </Collapse>
-                    ];
+                    </Fragment>;
                 }
             });
         } else {
@@ -216,28 +212,23 @@ class TreeBrowser extends Component {
             let id = `${parentId}.${key}`;
             if (typeof (item) === 'string') {
                 return <ListItem key={id} className='list-item'>
-                    <ListItemIcon>
-                        <Remove/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{key}: <span className='bold'>{item}</span></span>}/>
+                    <Remove/> <span>{key}: <span className='bold'>{item}</span></span>
                 </ListItem>;
             } else if (typeof (item) === 'boolean') {
                 return <ListItem key={id} className='list-item'>
-                    <ListItemIcon>
-                        <Remove/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{key}: <span className='bold'>{item.toString()}</span></span>}/>
+                    <Remove/> <span>{key}: <span className='bold'>{item.toString()}</span></span>
                 </ListItem>;
             } else {
-                return [<ListItem key={id} button onClick={() => this.toggleItem(id)} className='list-item'>
-                    <ListItemIcon>
-                        <Folder/>
-                    </ListItemIcon>
-                    <ListItemText primary={<span>{key}</span>}/>
-                </ListItem>,
-                    <Collapse key={`${id}-22`} in={!!this.state.toggledItems[id]}>
-                        {this.getNested(item, id)}
-                    </Collapse>];
+                return <Fragment key={id}>
+                    <ListItem button onClick={() => this.toggleItem(id)} className='list-item'>
+                        <Folder/> <span>{key}</span>
+                    </ListItem>
+                    <Collapse unmountOnExit in={this.state.toggledItems[id]}>
+                        <List>
+                            {this.getNested(item, id)}
+                        </List>
+                    </Collapse>
+                </Fragment>;
             }
         })
     };
