@@ -170,7 +170,7 @@ class PersonaList extends Component {
     };
 
     getPersonaList = (isPatient, isPractitioner) => {
-        let itemStyles = {backgroundColor: this.props.theme.canvasColor};
+        let itemStyles = {};
 
         let rows = [];
         let list = this.getFilteredList();
@@ -244,8 +244,8 @@ class PersonaList extends Component {
                         <DownIcon style={{color: this.props.theme.p3}} style={{width: '24px', height: '24px'}}/>
                     </IconButton>}
                     {!isPatient && showMenuForItem &&
-                    <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + i]} anchorOrigin={{horizontal: 'left', vertical: 'top'}} style={{backgroundColor: this.props.theme.canvasColor}}
-                             targetOrigin={{horizontal: 'right', vertical: 'top'}} onClose={this.toggleMenuForItem}>
+                    <Popover open={showMenuForItem} anchorEl={this.refs['anchor' + i]} anchorOrigin={{horizontal: 'left', vertical: 'top'}} targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                             onClose={this.toggleMenuForItem}>
                         <Menu desktop autoWidth={false} width='100px'>
                             {isPatient && <MenuItem className='scenario-menu-item' onClick={e => this.openInDM(e, persona)}>
                                 <LaunchIcon/> Edit

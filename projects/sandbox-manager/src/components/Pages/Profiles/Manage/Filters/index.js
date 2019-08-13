@@ -49,7 +49,7 @@ class Filters extends Component {
     }
 
     filter = (id) => {
-        this.props.onFilter && this.props.onFilter('appIdFilter', id);
+        this.props.onFilter && this.props.onFilter('nameFilter', id);
         this.showFilter();
     };
 

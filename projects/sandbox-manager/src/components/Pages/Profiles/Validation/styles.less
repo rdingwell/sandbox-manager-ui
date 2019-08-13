@@ -1,7 +1,16 @@
 .validation-wrapper {
   position: relative;
-  height: 100%;
   text-align: center;
+  height: ~'calc(100% - 120px)';
+
+  .scroll-wrapper {
+    height: ~'calc(100% - 70px)';
+    overflow: auto;
+
+    &.bigger {
+      height: ~'calc(100% - 60px)';
+    }
+  }
 
   .validation-title {
     display: inline-block;
@@ -110,6 +119,16 @@
         color: rgb(14, 86, 118) !important;
       }
     }
+
+    .validation-card {
+      & > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+    }
   }
 
   .tab-title {
@@ -118,6 +137,10 @@
 
   .tree-input-wrapper {
     text-align: center;
+
+    .MuiCollapse-wrapperInner {
+      padding-left: 20px;
+    }
   }
 
   .validation-tabs-container {
@@ -126,4 +149,24 @@
     padding: 40px 20px 0 20px;
     box-sizing: border-box;
   }
+}
+
+.validation-content {
+  max-width: none !important;
+  max-height: none !important;
+  width: 50vw;
+  min-width: 600px;
+  box-sizing: border-box;
+  height: 40vh;
+  min-height: 500px;
+  overflow: hidden !important;
+
+  & > div {
+    box-shadow: none !important;
+    height: 100%;
+  }
+}
+
+.validate-result-wrapper {
+  text-align: left;
 }

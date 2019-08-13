@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Button, List, ListItem, Tab, Tabs, Stepper, Step, StepLabel, StepButton} from '@material-ui/core';
+import {CircularProgress, Button, List, ListItem, Tab, Tabs, Stepper, Step, StepLabel, StepButton, StepConnector} from '@material-ui/core';
 import Tree, {TreeNode} from 'rc-tree';
 import ProfilesIcon from '@material-ui/icons/Spellcheck';
 import Modal from './Modal';
@@ -20,10 +20,12 @@ class Manage extends Component {
         super(props);
 
         this.state = {
+            filter: {},
             profileId: '',
             resourceId: '',
             profileName: '',
-            activeTab: 'info'
+            activeTab: 'info',
+            showValidation: false
         };
     }
 
@@ -36,34 +38,43 @@ class Manage extends Component {
 
     getList = () => {
         return <div className='profiles-list'>
+            {this.state.showValidation && <Validation {...this.props} profile={this.state.selectedProfile} onScreenSelect={a => this.setState({selectedValidationScreen: a, deselectValidation: false})}
+                                                      deselectValidation={this.state.deselectValidation}/>}
             <div className='wrapper'>
                 <Filters {...this.props} onFilter={this.onFilter}/>
             </div>
             {!this.props.profilesLoading && ((!this.state.selectedResource && !this.state.selectedProfile)
                 ? <List className='profiles'>
                     {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
-                        return <ListItem key={key} onClick={() => this.toggleProfile(profile.profileId)} button>
-                            <ProfilesIcon className='avatar'/> {profile.profileName}
+                        let isNotFiltered = !this.state.filter.nameFilter || profile.profileId.indexOf(this.state.filter.nameFilter) >= 0;
+                        return isNotFiltered && <ListItem key={key} onClick={() => this.toggleProfile(profile.profileId)} button>
+                            <ProfilesIcon className='avatar'/>
+                            <span>{profile.profileName}</span>
                         </ListItem>
                     })}
                 </List>
                 : <div className='stepper'>
-                    <Stepper activeStep={this.state.selectedProfile ? this.state.selectedResource ? 2 : 1 : 0} connector={<span className='stepper-connector'><span/></span>}>
+                    <Stepper activeStep={this.state.selectedProfile ? this.state.selectedResource ? 2 : 1 : 0} connector={<StepConnector className='stepper-connector'/>}>
                         <Step>
                             <StepButton onClick={() => this.toggleProfile()} icon={<span/>}>All profiles</StepButton>
                         </Step>
                         <Step>
                             <StepButton onClick={() => this.selectResource()} icon={<span/>}>{this.state.selectedProfile.profileId}</StepButton>
                         </Step>
+                        {this.state.selectedResource && <Step onClick={() => this.setState({deselectValidation: true})}>
+                            <StepButton icon={<span/>}>{this.state.selectedResource.relativeUrl}</StepButton>
+                        </Step>}
                     </Stepper>
                     <div>
                         {!!this.state.selectedResource
                             ? <Fragment>
-                                <Tabs className='resource-tabs' classes={{paper: 'resource-tabs-container'}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setActiveTab(activeTab)}>
+                                <Tabs className='resource-tabs' classes={{root: 'resource-tabs-container'}} value={this.state.activeTab} onChange={(_e, activeTab) => this.setActiveTab(activeTab)}>
                                     <Tab label='Info' id='info' value='info' className='info tab'/>
                                     <Tab label='Tree' id='tree' value='tree' className='tree tab'/>
                                     <Tab label='JSON' id='json' value='json' className='json tab'/>
                                 </Tabs>
+                                {this.props.profileResource && this.props.profileResource.resourceType === 'StructureDefinition' &&
+                                <Button className='validate-button' variant='contained' color='secondary' onClick={() => this.setState({showValidation: true})}>Validate</Button>}
                                 {this.state.activeTab === 'info' && <Fragment>
                                     {this.props.fetchingProfileResource && <div className='loader-wrapper-small'>
                                         <CircularProgress size={40} thickness={5}/>
@@ -148,6 +159,16 @@ class Manage extends Component {
         </div>
     };
 
+    setActiveTab = (tab) => {
+        this.setState({activeTab: tab});
+    };
+
+    onFilter = (a, b) => {
+        let filter = {};
+        filter[a] = b;
+        this.setState({filter})
+    };
+
     expand = (_, e) => {
         e.node.selectHandle.previousSibling.click();
         return [];
@@ -156,12 +177,12 @@ class Manage extends Component {
     buildTree = (res) => {
         let keys = Object.keys(res);
         let nodes = [];
-        keys.map(k => {
+        keys.map((k, i) => {
             let val = res[k];
             if (typeof (val) !== 'object') {
-                nodes.push(<TreeNode title={<span>{k} <b>{val}</b></span>}/>);
+                nodes.push(<TreeNode key={i} title={<span>{k} <b>{val}</b></span>}/>);
             } else {
-                nodes.push(<TreeNode title={<span>{k}</span>}>
+                nodes.push(<TreeNode key={i} title={<span>{k}</span>}>
                     {this.buildTree(res[k])}
                 </TreeNode>);
             }

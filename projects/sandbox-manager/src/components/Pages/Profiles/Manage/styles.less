@@ -14,6 +14,7 @@
       height: ~'calc(100% - 64px)';
 
       & > *:first-child {
+        height: 30px;
         padding: 0 16px;
         background-color: whitesmoke;
         place-content: start !important;
@@ -25,6 +26,15 @@
 
       & > *:nth-child(2) {
         height: ~'calc(100% - 30px)';
+        overflow: hidden;
+        border-top: 1px solid whitesmoke;
+        position: relative;
+
+        .validate-button {
+          position: absolute;
+          right: 16px;
+          top: 5px;
+        }
       }
 
       .stepper-connector {
@@ -36,6 +46,7 @@
         transform: rotate(45deg);
         position: relative;
         margin: 0 20px;
+        flex: none;
 
         span {
           display: inline-block;
@@ -48,6 +59,18 @@
           top: -2px;
 
         }
+      }
+
+      .react-json-view {
+        height: ~'calc(100% - 51px)';
+        border-top: 1px solid whitesmoke;
+        overflow-y: auto;
+      }
+
+      .rc-tree {
+        height: ~'calc(100% - 60px)';
+        border-top: 1px solid whitesmoke;
+        overflow: auto;
       }
     }
 
@@ -102,46 +125,39 @@
     }
 
     .resource-tabs {
-      height: ~'calc(100% - 50px)';
+      //height: ~'calc(100% - 50px)';
 
       & > *:nth-child(2) {
         border-bottom: 2px solid whitesmoke;
       }
+    }
 
-      .resource-tabs-container {
-        //height: ~'calc(100% - 48px)';
-        height: 100%;
-        overflow: auto;
+    .resource-info {
+      padding: 10px;
+      height: ~'calc(100% - 70px)';
+      overflow: auto;
+      border-top: 1px solid whitesmoke;
 
-        & > div {
-          height: 100%;
+      .label-value {
+        display: inline-block;
+        min-width: 25%;
+
+        &.big {
+          min-width: 100%;
         }
+      }
 
-        .resource-info {
-          padding: 10px;
+      .rc-tree-node-selected {
+        background-color: inherit;
+        border: none;
+        opacity: 1;
+      }
 
-          .label-value {
-            display: inline-block;
-            min-width: 25%;
-
-            &.big {
-              min-width: 100%;
-            }
-          }
-        }
-
-        .rc-tree-node-selected {
-          background-color: inherit;
-          border: none;
-          opacity: 1;
-        }
-
-        .rc-tree-node-content-wrapper.rc-tree-node-content-wrapper-normal {
-          overflow: hidden;
-          width: calc(100% - 20px);
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
+      .rc-tree-node-content-wrapper.rc-tree-node-content-wrapper-normal {
+        overflow: hidden;
+        width: calc(100% - 20px);
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }
