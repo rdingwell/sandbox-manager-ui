@@ -45,7 +45,7 @@ class Layout extends Component {
             </Aux>
             : !isRoot
                 ? <Aux>
-                    <Dialog paperClassName='creating-sandbox-dialog' modal open={this.props.isSandboxCreating}>
+                    <Dialog classes={{paper: 'full-loader-wrapper'}} open={this.props.isSandboxCreating}>
                         <p data-qa='sandbox-creating-loader'>
                             Creating sandbox
                         </p>

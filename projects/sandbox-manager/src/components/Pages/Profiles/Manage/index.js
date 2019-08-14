@@ -74,7 +74,7 @@ class Manage extends Component {
                                     <Tab label='JSON' id='json' value='json' className='json tab'/>
                                 </Tabs>
                                 {this.props.profileResource && this.props.profileResource.resourceType === 'StructureDefinition' &&
-                                <Button className='validate-button' variant='contained' color='secondary' onClick={() => this.setState({showValidation: true})}>Validate</Button>}
+                                <Button className='validate-button' variant='contained' color='secondary' onClick={() => this.setState({showValidation: true})}>Validate against</Button>}
                                 {this.state.activeTab === 'info' && <Fragment>
                                     {this.props.fetchingProfileResource && <div className='loader-wrapper-small'>
                                         <CircularProgress size={40} thickness={5}/>

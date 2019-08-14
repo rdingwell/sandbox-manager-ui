@@ -25,6 +25,10 @@
       min-width: 600px;
       overflow: auto;
       box-sizing: border-box;
+      
+      .MuiTextField-root, .MuiFormControl-root {
+        min-width: 300px;
+      }
 
       .margin-top {
         margin-top: 10px;
@@ -43,7 +47,6 @@
   }
 
   .checkbox {
-    margin-bottom: 16px;
     user-select: none;
   }
 
@@ -58,6 +61,9 @@
 }
 
 .create-sandbox-dialog {
+  width: 45vw;
+  min-width: 600px;
+  max-width: initial !important;
   border-radius: 0 !important;
   height: 63vh;
   overflow: hidden;

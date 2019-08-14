@@ -124,7 +124,7 @@ class Validation extends Component {
                 </div>
                 {!this.state.showValidationResults && <DialogActions>
                     <Button variant='contained' className={`validate-button ${this.props.modal ? 'modal' : ''}`} color='primary' onClick={this.validate} disabled={validateDisabled}>
-                        Validate
+                        Validate against
                     </Button>
                 </DialogActions>}
             </Paper>

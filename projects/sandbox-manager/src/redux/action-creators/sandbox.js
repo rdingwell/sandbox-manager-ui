@@ -1187,10 +1187,15 @@ export function copyToClipboard (str) {
     return dispatch => {
         dispatch(setCopying(true));
         let el = document.createElement('textarea');
-        el.value = str;
         document.body.appendChild(el);
+        el.value = str;
         el.select();
-        document.execCommand('copy');
+        console.log(el.value);
+        try {
+            document.execCommand('copy');
+        } catch (e) {
+            console.log(e);
+        }
         document.body.removeChild(el);
         setTimeout(function () {
             dispatch(setCopying(false));
