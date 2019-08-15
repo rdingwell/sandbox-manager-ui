@@ -1,198 +1,212 @@
 import * as types from "./types";
 import API from '../../lib/api';
-import { setGlobalError } from './app';
-import { setFetchingSingleResourceError, setFetchSingleResource, setSingleResource } from './sandbox';
+import {setGlobalError} from './app';
+import {setFetchingSingleResourceError, setFetchSingleResource, setSingleResource} from './sandbox';
 
-export function fhir_Reset () {
-    return { type: types.FHIR_RESET };
+export function fhir_Reset() {
+    return {type: types.FHIR_RESET};
 }
 
-export function fhir_SetContext (context) {
+export function fhir_SetContext(context) {
     return {
         type: types.FHIR_SET_CONTEXT,
         payload: context
     };
 }
 
-export function fhir_SetMeta (payload) {
+export function fhir_SetMeta(payload) {
     return {
         type: types.FHIR_SET_META,
         payload
     };
 }
 
-export function fhir_SetParsedPatientDemographics (data) {
+export function fhir_SetParsedPatientDemographics(data) {
     return {
         type: types.FHIR_SET_PARSED_PATIENT_DEMOGRAPHICS,
         payload: data
     };
 }
 
-export function fhir_setCustomSearchExecuting (executing) {
+export function fhir_setCustomSearchExecuting(executing) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_EXECUTING,
-        payload: { executing }
+        payload: {executing}
     };
 }
 
-export function fhir_setLoadingMetadata (loading) {
+export function fhir_setLoadingRelativeProfiles(loading) {
+    return {
+        type: types.FHIR_SET_LOADING_RELATIVE_PROFILES,
+        payload: {loading}
+    };
+}
+
+export function fhir_setLoadingMetadata(loading) {
     return {
         type: types.FHIR_SET_METADATA_LOADING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setLoadingResources (loading) {
+export function fhir_setLoadingResources(loading) {
     return {
         type: types.FHIR_SET_RESOURCES_LOADING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setMetadata (data) {
+export function fhir_setMetadata(data) {
     return {
         type: types.FHIR_SET_METADATA,
-        payload: { data }
+        payload: {data}
     };
 }
 
-export function fhir_setResources (data) {
+export function fhir_setResources(data) {
     return {
         type: types.FHIR_SET_RESOURCES,
-        payload: { data }
+        payload: {data}
     };
 }
 
-export function fhir_setResourcesCount (data) {
+export function fhir_setResourcesCount(data) {
     return {
         type: types.FHIR_SET_RESOURCES_COUNT,
-        payload: { data }
+        payload: {data}
     };
 }
 
-export function fhir_setValidationResults (results) {
+export function fhir_setValidationResults(results) {
     return {
         type: types.FHIR_SET_VALIDATION_RESULTS,
-        payload: { results }
+        payload: {results}
     };
 }
 
-export function fhir_setValidationExecuting (executing) {
+export function fhir_setValidationExecuting(executing) {
     return {
         type: types.FHIR_SET_VALIDATION_EXECUTING,
-        payload: { executing }
+        payload: {executing}
     };
 }
 
-export function fhir_setCustomSearchGettingNextPage (executing) {
+export function fhir_setCustomSearchGettingNextPage(executing) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_GETTING_NEXT_PAGE,
-        payload: { executing }
+        payload: {executing}
     };
 }
 
-export function cleanValidationResults () {
+export function cleanValidationResults() {
     return {
         type: types.FHIR_CLEAN_VALIDATION_RESULTS
     };
 }
 
-export function fhir_setProfilesLoading (loading) {
+export function fhir_setProfilesLoading(loading) {
     return {
         type: types.FHIR_SET_PROFDILES_LOADING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setProfileSDsLoading (loading) {
+export function fhir_setProfileSDsLoading(loading) {
     return {
         type: types.FHIR_SET_PROFDILESDS_LOADING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setProfilesUploading (loading) {
+export function fhir_setProfilesUploading(loading) {
     return {
         type: types.FHIR_SET_PROFDILES_UPLOADING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setFetchingFile (loading) {
+export function fhir_setFetchingFile(loading) {
     return {
         type: types.FHIR_SET_FILE_FETCHING,
-        payload: { loading }
+        payload: {loading}
     };
 }
 
-export function fhir_setProfilesUploadingStatus (status) {
+export function fhir_setProfilesUploadingStatus(status) {
     return {
         type: types.FHIR_SET_PROFDILES_UPLOADING_STATUS,
-        payload: { status }
+        payload: {status}
     };
 }
 
-export function fhir_setProfiles (profiles) {
+export function fhir_setProfiles(profiles) {
     return {
         type: types.FHIR_SET_PROFDILES,
-        payload: { profiles }
+        payload: {profiles}
     };
 }
 
-export function fhir_setProfileSDs (sds) {
+export function fhir_setProfileSDs(sds) {
     return {
         type: types.FHIR_SET_PROFDILESDS,
-        payload: { sds }
+        payload: {sds}
     };
 }
 
-export function fhir_setProfileResources (resources) {
+export function fhir_setProfileResources(resources) {
     return {
         type: types.FHIR_SET_PROFDILE_RESOURCES,
-        payload: { resources }
+        payload: {resources}
     };
 }
 
-export function fhir_setFetchingResource (fetching) {
+export function fhir_setFetchingResource(fetching) {
     return {
         type: types.FHIR_SET_FETCHING_RESOURCE,
-        payload: { fetching }
+        payload: {fetching}
     };
 }
 
-export function fhir_setResource (resource) {
+export function fhir_setResource(resource) {
     return {
         type: types.FHIR_SET_RESOURCE,
-        payload: { resource }
+        payload: {resource}
     };
 }
 
-export function fhir_SetSampleData () {
-    return { type: types.FHIR_SET_SAMPLE_DATA };
+export function fhir_SetSampleData() {
+    return {type: types.FHIR_SET_SAMPLE_DATA};
 }
 
-export function fhir_setCustomSearchResults (results) {
+export function fhir_setCustomSearchResults(results) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_RESULTS,
-        payload: { results }
+        payload: {results}
     }
 }
 
-export function fhir_setCustomSearchResultsNext (results) {
+export function fhir_setRelativeProfiles(profiles) {
+    return {
+        type: types.FHIR_SET_RELATIVE_PROFILES,
+        payload: {profiles}
+    }
+}
+
+export function fhir_setCustomSearchResultsNext(results) {
     return {
         type: types.FHIR_SET_CUSTOM_SEARCH_RESULTS_NEXT,
-        payload: { results }
+        payload: {results}
     }
 }
 
-export function fhir_setExportSearchResults (exportResults) {
+export function fhir_setExportSearchResults(exportResults) {
     return {
         type: types.FHIR_SET_EXPORT_SEARCH_RESULTS,
-        payload: { exportResults }
+        payload: {exportResults}
     }
 }
 
-export function fhir_SetSmart (payload) {
+export function fhir_SetSmart(payload) {
     return dispatch => {
         if (payload.status === 'ready') {
             window.fhirClient = FHIR.client({
@@ -205,11 +219,11 @@ export function fhir_SetSmart (payload) {
             });
         }
 
-        dispatch({ type: types.FHIR_SET_SMART, payload });
+        dispatch({type: types.FHIR_SET_SMART, payload});
     }
 }
 
-export function customSearch (query, endpoint) {
+export function customSearch(query, endpoint) {
     return dispatch => {
         dispatch(fhir_setCustomSearchResults(null));
         dispatch(fhir_setCustomSearchExecuting(true));
@@ -226,7 +240,22 @@ export function customSearch (query, endpoint) {
     }
 }
 
-export function loadProfiles () {
+export function loadRelativeProfiles(sdType) {
+    return dispatch => {
+        dispatch(fhir_setLoadingRelativeProfiles(true));
+
+        API.get(`${window.fhirClient.server.serviceUrl}/StructureDefinition?type=${sdType}`, dispatch)
+            .then(data => {
+                dispatch(fhir_setRelativeProfiles(data));
+                dispatch(fhir_setLoadingRelativeProfiles(false));
+            })
+            .catch(() => {
+                dispatch(fhir_setLoadingRelativeProfiles(false));
+            });
+    }
+}
+
+export function loadProfiles() {
     return (dispatch, getState) => {
         dispatch(fhir_setProfilesLoading(true));
 
@@ -236,7 +265,7 @@ export function loadProfiles () {
             API.get(`${configuration.sandboxManagerApiUrl}/profile?sandboxId=${sessionStorage.sandboxId}`, dispatch)
                 .then(data => {
                     data = data || [];
-                    dispatch(fhir_setProfiles({ entry: data }));
+                    dispatch(fhir_setProfiles({entry: data}));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(() => {
@@ -246,7 +275,7 @@ export function loadProfiles () {
     }
 }
 
-export function loadProfileSDs (id) {
+export function loadProfileSDs(id) {
     return (dispatch, getState) => {
         dispatch(fhir_setProfileSDsLoading(true));
 
@@ -265,7 +294,7 @@ export function loadProfileSDs (id) {
     }
 }
 
-export function loadProfileResources (id) {
+export function loadProfileResources(id) {
     return (dispatch, getState) => {
         dispatch(fhir_setProfileSDsLoading(true));
 
@@ -284,12 +313,12 @@ export function loadProfileResources (id) {
     }
 }
 
-export function loadResource (resource) {
+export function loadResource(resource) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(fhir_setFetchingResource(true));
             let props = resource.relativeUrl.split('/');
-            window.fhirClient.api.read({ type: props[0], id: props[1] })
+            window.fhirClient.api.read({type: props[0], id: props[1]})
                 .done(resource => {
                     dispatch(fhir_setResource(resource.data));
                     dispatch(fhir_setFetchingResource(false))
@@ -302,7 +331,7 @@ export function loadResource (resource) {
     }
 }
 
-export function getProfilesPagination () {
+export function getProfilesPagination() {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(fhir_setProfilesLoading(true));
@@ -324,7 +353,7 @@ export function getProfilesPagination () {
                     state = getState();
                     let current = state.fhir.profiles || [];
                     list = current.concat(list);
-                    dispatch(fhir_setProfiles({ entry: list, total: profiles.total, link: profiles.link }));
+                    dispatch(fhir_setProfiles({entry: list, total: profiles.total, link: profiles.link}));
                     dispatch(fhir_setProfilesLoading(false));
                 })
                 .catch(e => {
@@ -334,7 +363,7 @@ export function getProfilesPagination () {
     }
 }
 
-export function uploadProfile (file, count, name, id) {
+export function uploadProfile(file, count, name, id) {
     return (dispatch, getState) => {
         let formData = new FormData();
         formData.append("file", file);
@@ -368,7 +397,7 @@ export function uploadProfile (file, count, name, id) {
     }
 }
 
-export function loadProject (project, canFit, profileName, profileId) {
+export function loadProject(project, canFit, profileName, profileId) {
     return dispatch => {
         dispatch(fhir_setFetchingFile(true));
         fetch(`https://simplifier.net/${project}/$download?format=json`)
@@ -376,9 +405,9 @@ export function loadProject (project, canFit, profileName, profileId) {
             .then(rs => {
                 const reader = rs.getReader();
                 return new ReadableStream({
-                    async start (controller) {
+                    async start(controller) {
                         while (true) {
-                            const { done, value } = await reader.read();
+                            const {done, value} = await reader.read();
                             // When no more data needs to be consumed, break the reading
                             if (done) {
                                 break;
@@ -408,7 +437,7 @@ export function loadProject (project, canFit, profileName, profileId) {
     }
 }
 
-export function deleteDefinition (id) {
+export function deleteDefinition(id) {
     return (dispatch, getState) => {
         dispatch(fhir_setProfilesUploading(true));
 
@@ -427,7 +456,7 @@ export function deleteDefinition (id) {
     }
 }
 
-export function getMetadata (shouldGetResourcesCount = true) {
+export function getMetadata(shouldGetResourcesCount = true) {
     return dispatch => {
         dispatch(fhir_setLoadingMetadata(true));
         API.get(`${window.fhirClient.server.serviceUrl}/metadata?_format=json&_pretty=true`, dispatch)
@@ -442,7 +471,7 @@ export function getMetadata (shouldGetResourcesCount = true) {
     }
 }
 
-export function fetchResources (type, query = "") {
+export function fetchResources(type, query = "") {
     return dispatch => {
         dispatch(fhir_setLoadingResources(true));
         API.get(`${window.fhirClient.server.serviceUrl}/${type}?_count=40${query}`, dispatch)
@@ -456,7 +485,7 @@ export function fetchResources (type, query = "") {
     }
 }
 
-export function validate (object) {
+export function validate(object) {
     return dispatch => {
         dispatch(fhir_setValidationResults(null));
         dispatch(fhir_setValidationExecuting(true));
@@ -477,7 +506,7 @@ export function validate (object) {
     }
 }
 
-export function validateExisting (url, selectedProfile) {
+export function validateExisting(url, selectedProfile) {
     return (dispatch, getState) => {
         dispatch(fhir_setValidationResults(null));
         dispatch(fhir_setValidationExecuting(true));
@@ -494,32 +523,36 @@ export function validateExisting (url, selectedProfile) {
                     dispatch(fhir_setValidationExecuting(false));
                 });
         } else {
-            API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
-                .then(data => {
-                    if (data.resourceType) {
-                        let state = getState();
-                        let sds = state.fhir.sds;
-                        let SD = sds.find(i => i.profileType === data.resourceType);
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
 
-                        if (!SD) {
-                            dispatch(setGlobalError(`Unable to validate resource "${data.resourceType}" against this profile.`));
+            API.get(`${configuration.sandboxManagerApiUrl}/profile/getProfileSDs?fhirProfileId=${selectedProfile.id}`, dispatch)
+                .then(sds => {
+                    API.getNoErrorManagement(`${window.fhirClient.server.serviceUrl}/${url}`, dispatch)
+                        .then(data => {
+                            if (data.resourceType) {
+                                let SD = sds.find(i => i.profileType === data.resourceType);
+
+                                if (!SD) {
+                                    dispatch(setGlobalError(`Unable to validate resource "${data.resourceType}" against this profile.`));
+                                    dispatch(fhir_setValidationExecuting(false));
+                                } else {
+                                    !data.meta && (data.meta = {});
+                                    data.meta.profile = [SD.fullUrl];
+                                    dispatch(validate(data));
+                                }
+                            }
+                        })
+                        .catch((e) => {
+                            dispatch(fhir_setValidationResults(e));
                             dispatch(fhir_setValidationExecuting(false));
-                        } else {
-                            !data.meta && (data.meta = {});
-                            data.meta.profile = [SD.fullUrl];
-                            dispatch(validate(data));
-                        }
-                    }
-                })
-                .catch((e) => {
-                    dispatch(fhir_setValidationResults(e));
-                    dispatch(fhir_setValidationExecuting(false));
+                        });
                 });
         }
     }
 }
 
-export function getResourcesCount (data, query = "") {
+export function getResourcesCount(data, query = "") {
     return dispatch => {
         let counts = {};
         let promises = [];
@@ -539,7 +572,7 @@ export function getResourcesCount (data, query = "") {
     };
 }
 
-export function customSearchNextPage (link) {
+export function customSearchNextPage(link) {
     return dispatch => {
         dispatch(fhir_setCustomSearchGettingNextPage(true));
 
@@ -554,7 +587,7 @@ export function customSearchNextPage (link) {
     }
 }
 
-export function clearSearchResults () {
+export function clearSearchResults() {
     return dispatch => {
         dispatch(fhir_setCustomSearchResults());
     }

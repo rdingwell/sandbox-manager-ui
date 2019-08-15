@@ -1,14 +1,15 @@
 import React, {Component, Fragment} from 'react';
 import {bindActionCreators} from 'redux';
-import {getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient} from '../../../../redux/action-creators';
+import {getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient} from '../../../../../redux/action-creators';
 import {connect} from 'react-redux';
-import withErrorHandler from '../../../UI/hoc/withErrorHandler';
-import {Dialog, ListItem, Button, List, withTheme, Collapse} from '@material-ui/core';
+import withErrorHandler from '../../../../UI/hoc/withErrorHandler';
+import {Dialog, ListItem, Button, IconButton, List, withTheme, Collapse, Tooltip} from '@material-ui/core';
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
-import PersonaList from '../../Persona/List';
-import {getPatientName} from "../../../../lib/utils/";
+import Compare from '@material-ui/icons/Compare';
+import PersonaList from '../../../Persona/List';
+import {getPatientName} from '../../../../../lib/utils';
 
 import './styles.less';
 
@@ -125,8 +126,13 @@ class TreeBrowser extends Component {
         let classes = `list-item ${this.props.query === id ? 'active' : ''}`;
 
         return <List className='tree-list' key={persona.id} id={persona.id}>
-            <ListItem button className={classes} onClick={() => this.toggle(id) || this.toggleItem('patient')}>
+            <ListItem button className={classes} onClick={() => this.toggleItem('patient')}>
                 <Description/> {`${getPatientName(persona)}`}
+                <Tooltip title='Select' aria-label='select'>
+                    <IconButton variant='contained' color='secondary' onClick={e => this.toggle(e, id)}>
+                        <Compare/>
+                    </IconButton>
+                </Tooltip>
             </ListItem>
             <Collapse unmountOnExit in>
                 <List>
@@ -136,7 +142,9 @@ class TreeBrowser extends Component {
         </List>
     };
 
-    toggle = (selectedResource) => {
+    toggle = (event, selectedResource) => {
+        event.preventDefault();
+        event.stopPropagation();
         this.props.onToggle && this.props.onToggle(selectedResource);
     };
 
@@ -190,8 +198,13 @@ class TreeBrowser extends Component {
                     let classes = `list-item ${this.props.query === checked ? 'active' : ''}`;
 
                     return <Fragment key={id}>
-                        <ListItem button className={classes} onClick={() => this.toggle(checked) || this.toggleItem(id)}>
+                        <ListItem button className={classes} onClick={() => this.toggleItem(id)}>
                             <Description/> <span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>
+                            <Tooltip title='Select' aria-label='select'>
+                                <IconButton variant='contained' color='secondary' onClick={e => this.toggle(e, checked)}>
+                                    <Compare/>
+                                </IconButton>
+                            </Tooltip>
                         </ListItem>
                         <Collapse unmountOnExit in={this.state.toggledItems[id]}>
                             <List>

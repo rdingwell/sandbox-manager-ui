@@ -56,10 +56,6 @@ class DataManager extends Component {
         this.props.customSearch(query);
     };
 
-    setActiveTab = (tab) => {
-        this.setState({activeTab: tab});
-    };
-
     next = (link) => {
         this.props.customSearchNextPage(link);
     }

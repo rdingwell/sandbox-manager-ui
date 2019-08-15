@@ -4,11 +4,12 @@ import Find from '@material-ui/icons/FindInPage';
 import Link from '@material-ui/icons/Link';
 import Folder from '@material-ui/icons/Folder';
 import Align from '@material-ui/icons/FormatAlignLeft';
-import TreeBrowser from '../TreeBrowser';
+import TreeBrowser from './TreeBrowser';
+import ResultsTable from "./ResultsTable";
+import ReactJson from "react-json-view";
 
 import './styles.less';
-import ReactJson from "react-json-view";
-import ResultsTable from "../ResultsTable";
+import ProfileSelection from "./ProfileSelection";
 
 class Validation extends Component {
     constructor(props) {
@@ -16,15 +17,10 @@ class Validation extends Component {
 
         this.state = {
             query: '',
-            resultsView: false,
-            selectedType: undefined,
-            showValidationResults: false
+            activeStep: 0,
+            resultsView: true,
+            selectedType: undefined
         }
-    }
-
-    componentDidMount() {
-        this.props.loadProfileSDs(this.props.profile.id);
-        // this.props.onValidate && this.props.onValidate(this.props.profile);
     }
 
     componentWillUpdate(nextProps) {
@@ -32,34 +28,32 @@ class Validation extends Component {
     }
 
     render() {
-        let validateDisabled = (this.state.selectedType === 'browse' && this.state.query.length <= 5)
-            || (this.state.selectedType === 'existing' && this.state.query.length <= 5)
-            || (this.state.selectedType === 'file' && !this.state.file)
-            || (this.state.selectedType === 'json-input' && this.state.manualJson.length <= 5);
         let st = this.state.selectedType;
+        let sv = this.state.activeStep === 3;
+        let sp = this.state.activeStep === 2;
+        let validateDisabled = (st === 'browse' && this.state.query.length <= 5) || (st === 'existing' && this.state.query.length <= 5) || (st === 'file' && !this.state.file) || (st === 'json-input' && this.state.manualJson.length <= 5);
 
-        return <Dialog open={true} classes={{root: 'validation-dialog', paper: 'validation-content'}} onClose={this.props.onClose}>
+        return <div className='validation-content'>
             <Paper className='paper-card'>
-                <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.props.onClose}>
-                    <i className="material-icons">close</i>
-                </IconButton>
-                <h3>Validate</h3>
                 <div className='validation-wrapper'>
-                    <Stepper activeStep={!st ? 0 : this.state.showValidationResults ? 2 : 1}>
+                    <Stepper activeStep={this.state.activeStep}>
                         <Step>
-                            <StepButton onClick={() => this.setState({selectedType: undefined, showValidationResults: false, resultsView: false})}>Validation type</StepButton>
+                            <StepButton onClick={() => this.setState({selectedType: undefined, resultsView: true, activeStep: 0})}>Validation type</StepButton>
                         </Step>
                         <Step>
-                            <StepButton onClick={() => this.setState({showValidationResults: false, resultsView: false})}>Provide data</StepButton>
+                            <StepButton onClick={() => this.setState({resultsView: true, activeStep: 1})}>Provide data</StepButton>
+                        </Step>
+                        <Step>
+                            <StepButton onClick={() => this.setState({resultsView: true, activeStep: 2})}>Select profile</StepButton>
                         </Step>
                         <Step>
                             <StepButton>Validation results</StepButton>
                         </Step>
                     </Stepper>
-                    {this.state.showValidationResults && this.props.validationResults &&
+                    {sv && this.props.validationResults &&
                     <FormControlLabel className='view-toggle' label='Show as table'
                                       control={<Switch color='secondary' checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>}
-                    {!this.state.selectedType && <div className='validation-cards'>
+                    {!st && <div className='validation-cards'>
                         <p>
                             Chose a way to provide the resource for validation
                         </p>
@@ -84,16 +78,15 @@ class Validation extends Component {
                             </div>
                         </Card>
                     </div>}
-                    <div className={`scroll-wrapper${this.state.showValidationResults ? ' bigger' : ''}`}>
-                        {!this.state.showValidationResults && this.state.selectedType === 'browse' &&
-                        <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
-                                     selectPatient={this.selectPatient} cleanResults={this.props.cleanValidationResults}/>}
-                        {!this.state.showValidationResults && this.state.selectedType === 'uri' && <div>
+                    <div className={`scroll-wrapper${sv ? ' bigger' : ''}`}>
+                        {!sv && st === 'browse' && !sp && <TreeBrowser selectedPersona={this.state.selectedPersona} query={this.state.query} onToggle={query => this.toggleTree(query)}
+                                                                       selectPatient={this.selectPatient} cleanResults={this.props.cleanValidationResults}/>}
+                        {!sv && st === 'uri' && !sp && <div>
                             <div className='tab-title'>Existing resource uri</div>
                             <TextField fullWidth id='query' onChange={e => this.setState({query: e.target.value, manualJson: '', file: '', fileJson: ''})} placeholder='Patient/smart-613876'
                                        value={this.state.query}/>
                         </div>}
-                        {!this.state.showValidationResults && this.state.selectedType === 'file' && <div>
+                        {!sv && st === 'file' && !sp && <div>
                             <input value='' type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile} accept='application/json'/>
                             <div className='tab-title'>Validate resource from file</div>
                             <div style={{textAlign: 'center'}}>
@@ -103,7 +96,7 @@ class Validation extends Component {
                             </div>
                             {this.state.file && <div><span className='subscript'>File: {this.state.file}</span></div>}
                         </div>}
-                        {!this.state.showValidationResults && this.state.selectedType === 'json' && <div>
+                        {!sv && st === 'json' && !sp && <div>
                             <span className='tab-title'>JSON</span>
                             <div style={{textAlign: 'center'}}>
                                 <Button className='clear-json-button' disabled={!this.state.manualJson} color='primary' onClick={() => this.setState({manualJson: ''})}>
@@ -113,7 +106,8 @@ class Validation extends Component {
                             <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson}
                                        onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                         </div>}
-                        {this.state.showValidationResults && <div className='validate-result-wrapper'>
+                        {!sv && sp && <ProfileSelection {...this.state} {...this.props} profileSelected={this.profileSelected}/>}
+                        {sv && <div className='validate-result-wrapper'>
                             {!this.state.resultsView && this.props.validationResults && <ReactJson src={this.props.validationResults} name={false}/>}
                             {this.state.resultsView && this.props.validationResults && <ResultsTable results={this.props.validationResults}/>}
                             {this.props.validationExecuting && <div className='loader-wrapper-small'>
@@ -122,17 +116,23 @@ class Validation extends Component {
                         </div>}
                     </div>
                 </div>
-                {!this.state.showValidationResults && <DialogActions>
-                    <Button variant='contained' className={`validate-button ${this.props.modal ? 'modal' : ''}`} color='primary' onClick={this.validate} disabled={validateDisabled}>
-                        Validate against
-                    </Button>
-                </DialogActions>}
+                {/*{!sv && <DialogActions>*/}
+                {/*    <Button variant='contained' className={`validate-button ${this.props.modal ? 'modal' : ''}`} color='primary' onClick={this.validate} disabled={validateDisabled}>*/}
+                {/*        Validate against*/}
+                {/*    </Button>*/}
+                {/*</DialogActions>}*/}
             </Paper>
-        </Dialog>
+        </div>
     }
 
+    profileSelected = (selectedProfile) => {
+        this.setState({selectedProfile}, () => {
+            this.validate();
+        })
+    };
+
     toggleScreen = (screen) => {
-        this.setState({selectedType: screen});
+        this.setState({selectedType: screen, activeStep: 1});
         this.props.onScreenSelect && this.props.onScreenSelect(screen);
 
     };
@@ -142,8 +142,8 @@ class Validation extends Component {
     };
 
     toggleTree = (query) => {
-        query = this.state.query !== query ? query : '';
-        this.setState({query, manualJson: '', file: '', fileJson: ''});
+        // query = this.state.query !== query ? query : '';
+        this.setState({query, manualJson: '', file: '', fileJson: '', activeStep: 2});
     };
 
     readFile = () => {
@@ -162,8 +162,8 @@ class Validation extends Component {
         let manualJSON = this.state.fileJson || this.state.manualJson;
         manualJSON && (manualJSON = this.prepareJSON(JSON.parse(manualJSON)));
         manualJSON && this.props.validate(manualJSON);
-        !manualJSON && this.state.query && this.props.validateExisting(this.state.query, this.props.profile);
-        this.setState({query: '', showValidationResults: true});
+        !manualJSON && this.state.query && this.props.validateExisting(this.state.query, this.state.selectedProfile);
+        this.setState({activeStep: 3});
     };
 
     prepareJSON = (json) => {

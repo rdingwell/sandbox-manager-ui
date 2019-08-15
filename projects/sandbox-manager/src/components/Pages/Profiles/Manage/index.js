@@ -1,12 +1,12 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Button, List, ListItem, Tab, Tabs, Stepper, Step, StepLabel, StepButton, StepConnector} from '@material-ui/core';
+import {CircularProgress, List, ListItem, Tab, Tabs, Stepper, Step, StepButton, StepConnector} from '@material-ui/core';
 import Tree, {TreeNode} from 'rc-tree';
 import ProfilesIcon from '@material-ui/icons/Spellcheck';
 import Modal from './Modal';
 import Filters from './Filters';
 import moment from 'moment';
 import ReactJson from 'react-json-view';
-import Validation from '../Validation';
+import Validation from '../../Tools/Validation';
 
 import './styles.less';
 
@@ -73,8 +73,6 @@ class Manage extends Component {
                                     <Tab label='Tree' id='tree' value='tree' className='tree tab'/>
                                     <Tab label='JSON' id='json' value='json' className='json tab'/>
                                 </Tabs>
-                                {this.props.profileResource && this.props.profileResource.resourceType === 'StructureDefinition' &&
-                                <Button className='validate-button' variant='contained' color='secondary' onClick={() => this.setState({showValidation: true})}>Validate against</Button>}
                                 {this.state.activeTab === 'info' && <Fragment>
                                     {this.props.fetchingProfileResource && <div className='loader-wrapper-small'>
                                         <CircularProgress size={40} thickness={5}/>
@@ -229,8 +227,6 @@ class Manage extends Component {
 
     toggleProfileToBrowse = (id) => {
         let profileToBrowse = this.state.profileToBrowse === id ? undefined : id;
-        this.props.cleanValidationResults();
-
         this.setState({profileToBrowse});
     };
 

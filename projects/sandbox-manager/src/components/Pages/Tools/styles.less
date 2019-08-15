@@ -1,82 +1,48 @@
 .tools {
-  padding: 10px 0;
+  .tools-tabs > div:first-of-type {
+    height: 57px;
+    background-color: white;
+    border-bottom: 2px solid whitesmoke;
+    width: 100% !important;
+    padding: 0 4px;
 
-  .tool-card {
-    width: 278px;
-    height: 235px;
-    overflow: hidden;
-    cursor: pointer;
-    display: inline-block;
-    margin: 24px 32px 0 0;
-
-    &:hover {
-      .card-title {
-        bottom: 60%;
-        transition: all .5s;
-      }
+    & > button {
+      max-width: 125px;
     }
 
-    & > div {
-      height: 100%;
-      overflow: hidden;
-      position: relative;
+    & > div:nth-child(2) {
+      max-width: 125px;
+    }
 
-      & > div {
-        height: 100%;
-        overflow: hidden;
-      }
+    .MuiTabs-flexContainer {
+      margin-top: 5px;
 
-      .card-title {
-        bottom: 20%;
-        height: 60%;
-        color: white;
-        transition: all .5s;
-
-        h3 {
-          margin-top: 0;
-        }
-      }
-
-      .media-wrapper {
-        & > div {
-          height: 100%;
-          text-align: center;
-
-          .tool-icon {
-            min-width: initial !important;
-            width: auto !important;
-            height: 100% !important;
+      button {
+        &.Mui-selected {
+          span {
+            color: #0E5676;
           }
         }
+
+        span:first-child {
+          font-size: 1.1rem;
+          line-height: 1.1rem;
+        }
       }
     }
+  }
 
-    .card-title {
-      bottom: 0;
-      height: 60%;
-      color: white;
-      transition: all .5s;
-      padding: 10px;
+  .tools-tabs > div:nth-child(2) {
+    max-width: 375px;
+    padding: 0 4px;
 
-      h3 {
-        margin-top: 0;
-      }
+    & > div {
+      max-width: 125px;
     }
+  }
 
-    .text {
-      padding: 5px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    .media-wrapper {
-      text-align: center;
-      background-size: contain;
-
-      .tool-icon {
-        max-width: 100%;
-        max-height: 100%;
-      }
-    }
+  .tools-tabs-container {
+    padding-right: 10px;
+    padding-bottom: 20px;
   }
 }
