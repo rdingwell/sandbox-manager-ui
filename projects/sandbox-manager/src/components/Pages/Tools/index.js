@@ -26,7 +26,7 @@ class Tools extends Component {
         return <div className='tools page-content-wrapper'>
             <Tabs className='tools-tabs' value={this.state.activeTab} onChange={(_e, activeTab) => this.setState({activeTab})}>
                 <Tab label='Third party tools' id='tools' value='tools'/>
-                <Tab label='Validation' id='validation' value='validation'/>
+                <Tab label='Resource validation' id='validation' value='validation'/>
             </Tabs>
             {this.state.activeTab === 'tools' && <ThirdPartyTools/>}
             {this.state.activeTab === 'validation' && <Validation {...this.props}/>}

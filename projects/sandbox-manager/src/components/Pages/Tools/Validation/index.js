@@ -38,7 +38,7 @@ class Validation extends Component {
                 <div className='validation-wrapper'>
                     <Stepper activeStep={this.state.activeStep}>
                         <Step>
-                            <StepButton onClick={() => this.setState({selectedType: undefined, resultsView: true, activeStep: 0})}>Validation type</StepButton>
+                            <StepButton onClick={() => this.setState({selectedType: undefined, resultsView: true, activeStep: 0})}>Select resource</StepButton>
                         </Step>
                         <Step>
                             <StepButton onClick={() => this.setState({resultsView: true, activeStep: 1})}>Provide data</StepButton>
@@ -54,9 +54,6 @@ class Validation extends Component {
                     <FormControlLabel className='view-toggle' label='Show as table'
                                       control={<Switch color='secondary' checked={this.state.resultsView} value='resultsView' onChange={() => this.setState({resultsView: !this.state.resultsView})}/>}/>}
                     {!st && <div className='validation-cards'>
-                        <p>
-                            Chose a way to provide the resource for validation
-                        </p>
                         <Card className='validation-card' onClick={() => this.toggleScreen('browse')}>
                             <div>
                                 <Find/> Browse
