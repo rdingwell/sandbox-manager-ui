@@ -7,6 +7,7 @@ import {Dialog, ListItem, Button, IconButton, List, withTheme, Collapse, Tooltip
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
+import ArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import Compare from '@material-ui/icons/Compare';
 import PersonaList from '../../../Persona/List';
 import {getPatientName} from '../../../../../lib/utils';
@@ -76,52 +77,11 @@ class TreeBrowser extends Component {
 
     toggleModal = () => {
         this.setState({patientSelectVisible: !this.state.patientSelectVisible});
-        // this.props.cleanResults && this.props.cleanResults();
     };
 
     getTree = () => {
         let persona = this.props.selectedPersona;
-        let ownProps = Object.keys(persona).map(key => {
-            let item = persona[key];
-            let id = 'ownProps.' + key;
-            if (['string', 'number', 'boolean'].indexOf(typeof (item)) !== -1) {
-                return <ListItem key={id}>
-                    <Remove/> <span>{key}: <span className='bold'>{item.toString()}</span></span>
-                </ListItem>;
-            } else {
-                return <Fragment key={id}>
-                    <ListItem button onClick={() => this.toggleItem(id)}>
-                        <Folder/> <span>{key}</span>
-                    </ListItem>
-                    <Collapse unmountOnExit in={this.state.toggledItems[id]}>
-                        <List>
-                            {this.getNested(item, id)}
-                        </List>
-                    </Collapse>
-                </Fragment>;
-            }
-        });
-        let references = this.props.loadingResources ? [] : this.getReferences();
-        let props = [
-            <Fragment key={`2-${persona.id}`}>
-                <ListItem button onClick={() => this.toggleItem('ownProps')} className='list-item'>
-                    <Folder/> Own props
-                </ListItem>
-                <Collapse unmountOnExit in={this.state.toggledItems.ownProps}>
-                    <List>
-                        {ownProps}
-                    </List>
-                </Collapse>
-            </Fragment>,
-            <Fragment key={`3-${persona.id}`}>
-                <ListItem button onClick={() => this.toggleItem('references')} className='list-item'>
-                    <Folder/> References
-                </ListItem>
-                <Collapse unmountOnExit in={this.state.toggledItems.references}>
-                    {references}
-                </Collapse>
-            </Fragment>
-        ];
+        let props = this.props.loadingResources ? [] : this.getReferences();
         let id = `${persona.resourceType}/${persona.id}`;
         let classes = `list-item ${this.props.query === id ? 'active' : ''}`;
 
@@ -158,7 +118,13 @@ class TreeBrowser extends Component {
                 });
                 return <Fragment key={id}>
                     <ListItem button onClick={() => this.toggleItem(id)} className='list-item'>
-                        <Folder/> <span>{resource} <span className='bold'>({this.props.patientResources[resource].total})</span></span>
+                        <Folder/>
+                        <span>
+                            {resource}s <span className='bold'>({this.props.patientResources[resource].total})</span>
+                        </span>
+                        <Tooltip title='Expand' aria-label='expand' className={`chevron${!!this.state.toggledItems[id] ? ' turn' : ''}`}>
+                            <ArrowDown/>
+                        </Tooltip>
                     </ListItem>
                     <Collapse unmountOnExit in={this.state.toggledItems[id]}>
                         <List>
@@ -235,6 +201,9 @@ class TreeBrowser extends Component {
                 return <Fragment key={id}>
                     <ListItem button onClick={() => this.toggleItem(id)} className='list-item'>
                         <Folder/> <span>{key}</span>
+                        <Tooltip title='Expand' aria-label='expand' className={`chevron${!!this.state.toggledItems[id] ? ' turn' : ''}`}>
+                            <ArrowDown/>
+                        </Tooltip>
                     </ListItem>
                     <Collapse unmountOnExit in={this.state.toggledItems[id]}>
                         <List>

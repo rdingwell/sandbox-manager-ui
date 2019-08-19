@@ -88,7 +88,8 @@
     }
 
     td:first-of-type, th:first-of-type {
-      width: 24px !important;
+      width: 10% !important;
+      text-align: center;
     }
 
     &:not(.modal) {
@@ -106,12 +107,11 @@
     }
 
     .persona-table-header {
-      tr {
-        height: 32px !important;
-
-        th {
-          height: 32px !important;
-        }
+      tr, th {
+        height: 24px !important;
+        box-sizing: border-box;
+        padding-top: 5px;
+        padding-bottom: 5px;
       }
     }
 
@@ -188,7 +188,8 @@
 
   tr:not(.content) {
     td {
-      padding: 5px 10px 5px 10px !important;
+      padding: 10px !important;
+      font-size: .8rem;
     }
   }
 }

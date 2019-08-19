@@ -1,12 +1,12 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, List, ListItem, Tab, Tabs, Stepper, Step, StepButton, StepConnector} from '@material-ui/core';
+import {CircularProgress, List, ListItem, Tab, Tabs, Stepper, Step, StepButton, StepConnector, IconButton} from '@material-ui/core';
 import Tree, {TreeNode} from 'rc-tree';
 import ProfilesIcon from '@material-ui/icons/Spellcheck';
+import Delete from '@material-ui/icons/Delete';
 import Modal from './Modal';
 import Filters from './Filters';
 import moment from 'moment';
 import ReactJson from 'react-json-view';
-import Validation from '../../Tools/Validation';
 
 import './styles.less';
 
@@ -24,8 +24,7 @@ class Manage extends Component {
             profileId: '',
             resourceId: '',
             profileName: '',
-            activeTab: 'info',
-            showValidation: false
+            activeTab: 'info'
         };
     }
 
@@ -38,8 +37,6 @@ class Manage extends Component {
 
     getList = () => {
         return <div className='profiles-list'>
-            {this.state.showValidation && <Validation {...this.props} profile={this.state.selectedProfile} onScreenSelect={a => this.setState({selectedValidationScreen: a, deselectValidation: false})}
-                                                      deselectValidation={this.state.deselectValidation} onClose={() => this.setState({showValidation: false})}/>}
             <div className='wrapper'>
                 <Filters {...this.props} onFilter={this.onFilter}/>
             </div>
@@ -50,6 +47,9 @@ class Manage extends Component {
                         return isNotFiltered && <ListItem key={key} onClick={() => this.toggleProfile(profile.profileId)} button>
                             <ProfilesIcon className='avatar'/>
                             <span>{profile.profileName}</span>
+                            <IconButton onClick={e => this.deleteProfile(e, profile)} className='delete-button'>
+                                <Delete />
+                            </IconButton>
                         </ListItem>
                     })}
                 </List>
@@ -61,7 +61,7 @@ class Manage extends Component {
                         <Step>
                             <StepButton onClick={() => this.selectResource()} icon={<span/>}>{this.state.selectedProfile.profileId}</StepButton>
                         </Step>
-                        {this.state.selectedResource && <Step onClick={() => this.setState({deselectValidation: true})}>
+                        {this.state.selectedResource && <Step>
                             <StepButton icon={<span/>}>{this.state.selectedResource.relativeUrl}</StepButton>
                         </Step>}
                     </Stepper>
@@ -155,6 +155,12 @@ class Manage extends Component {
                 <CircularProgress size={40} thickness={5}/>
             </div>}
         </div>
+    };
+
+    deleteProfile = (e, profile) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.deleteDefinition(profile.id);
     };
 
     setActiveTab = (tab) => {

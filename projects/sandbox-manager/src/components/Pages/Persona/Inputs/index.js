@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Paper, TextField} from '@material-ui/core';
+import {FormControl, FormHelperText, Paper, TextField} from '@material-ui/core';
 import {parseNames} from '../../../../lib/utils/fhir';
 
 import './styles.less';
@@ -16,9 +16,6 @@ export default class PersonaInputs extends Component {
     }
 
     render() {
-        let underlineFocusStyle = {borderColor: this.props.theme.p2};
-        let floatingLabelFocusStyle = {color: this.props.theme.p2};
-
         return <Paper className='paper-card persona-inputs-wrapper'>
             <h3>Persona Information</h3>
             <div className='actions'>
@@ -32,15 +29,18 @@ export default class PersonaInputs extends Component {
                 <div className='persona-info-row high'>
                     <span>User Id</span>
                     <div>
-                        <TextField fullWidth id='user-id' value={this.state.userId} onChange={e => this.update('userId', e.target.value.replace(/[^a-z0-9]/gi, ''))} onKeyPress={this.props.submitMaybe}
-                                   errorText={this.props.userIdDuplicate ? 'ID already in use' : undefined} underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle}/>
+                        <FormControl error={!!this.props.userIdDuplicate} fullWidth>
+                            <TextField fullWidth id='user-id' value={this.state.userId} onChange={e => this.update('userId', e.target.value.replace(/[^a-z0-9]/gi, ''))}
+                                       onKeyPress={this.props.submitMaybe}/>
+                            {!!this.props.userIdDuplicate && <FormHelperText>ID already in use</FormHelperText>}
+                        </FormControl>
                         {!this.props.userIdDuplicate && <span className='additional-info'>Your persona userId will be {this.state.userId}{this.state.userId && `@${this.props.sandbox}`}</span>}
                     </div>
                 </div>
                 <div className='persona-info-row high'>
                     <span>Password</span>
                     <TextField fullWidth id='password' onChange={e => this.update('password', e.target.value)} value={this.state.password}
-                               underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.props.submitMaybe}/>
+                               onKeyPress={this.props.submitMaybe}/>
                 </div>
                 <div className='persona-info-row'>
                     <span>FHIR Resource URL</span>

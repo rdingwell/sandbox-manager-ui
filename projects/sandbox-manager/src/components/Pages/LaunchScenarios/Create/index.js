@@ -1,5 +1,7 @@
 import React, {Component, Fragment} from 'react';
-import {Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch, withTheme, DialogActions, Radio, FormControl, FormHelperText} from '@material-ui/core';
+import {
+    Card, CardMedia, CircularProgress, Dialog, Button, IconButton, Step, StepLabel, Stepper, TextField, Switch, withTheme, DialogActions, Radio, FormControl, FormHelperText, FormControlLabel
+} from '@material-ui/core';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import LeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import AccountIcon from '@material-ui/icons/AccountBox';
@@ -126,14 +128,14 @@ class Create extends Component {
             ? [<Button key={1} variant='outlined' disabled={!nextEnabled} style={{color: nextColor}} onClick={this.next}>
                 <RightIcon/> NEXT
             </Button>]
-            : [<Button key={2} variant='contained' disabled={!nextEnabled} colo='primary' onClick={this.createScenario}>
+            : [<Button key={2} variant='contained' disabled={!nextEnabled} color='primary' onClick={this.createScenario}>
                 SAVE
             </Button>];
 
         if (this.state.currentStep > -1) {
             actions.unshift(
                 <Button variant='outlined' style={{color: prevColor}} onClick={this.prev} key={3}>
-                    <span className='perv-button-label'><LeftIcon style={{color: prevColor}}/> BACK</span>
+                    <LeftIcon style={{color: prevColor}}/> BACK
                 </Button>
             );
         }
@@ -150,7 +152,7 @@ class Create extends Component {
         let iconStyle = {color: theme.p3, fill: theme.p3, width: '24px', height: '24px'};
         let iconStyleSmaller = {color: theme.p3, fill: theme.p3, width: '18px', height: '18px'};
         let rightIconGreenStyle = {color: theme.p1, fill: theme.p1, width: '16px', height: '16px'};
-        let rightIconRedStyle = {color: theme.p4, fill: theme.p4, width: '16px', height: '16px', bottom: '12px', position: 'relative'};
+        let rightIconRedStyle = {color: theme.p4, fill: theme.p4, width: '16px', height: '16px', bottom: '-16px', position: 'relative'};
 
         switch (this.state.currentStep) {
             case -1:
@@ -433,8 +435,8 @@ class Create extends Component {
                 </div>
                 <div className='column-item-wrapper'>
                     <FullScreenIcon className='column-item-icon no-vertical-align' style={iconStyle}/>
-                    <div>
-                        <Switch className='toggle' label='Needs Patient Banner' checked={this.state.patientBanner} onChange={(_e, v) => this.onChange('patientBanner', v)}/>
+                    <div style={{position: 'relative', top: '-7px'}}>
+                        <FormControlLabel control={<Switch className='toggle' checked={this.state.patientBanner} onChange={(_e, v) => this.onChange('patientBanner', v)}/>} label='Needs Patient Banner'/>
                         <span className='sub'>{!this.state.patientBanner && 'App will open in the EHR Simulator.'}</span>
                     </div>
                 </div>

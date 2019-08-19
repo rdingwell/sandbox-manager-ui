@@ -26,8 +26,8 @@ export default class CreatePersona extends Component {
 
         return <div>
             <Dialog classes={{root: 'create-dialog', paper: 'create-persona-dialog'}} open={this.props.open} onClose={this.props.close}>
-                {this.props.type === PersonaList.TYPES.persona && <IconButton style={{color: this.state.selectedForCreation ? this.props.theme.p5 : this.props.theme.p3}}
-                                                                              className="close-button" onClick={this.props.close}>
+                {this.props.type === PersonaList.TYPES.persona &&
+                <IconButton className={`close-button${this.props.type === PersonaList.TYPES.persona && !this.state.selectedForCreation ? ' dark' : ''}`} onClick={this.props.close}>
                     <i className="material-icons" data-qa="modal-close-button">close</i>
                 </IconButton>}
                 {this.props.type !== PersonaList.TYPES.persona && this.getDefaultContent()}
@@ -68,26 +68,23 @@ export default class CreatePersona extends Component {
     };
 
     getDefaultContent = () => {
-        let underlineFocusStyle = {borderColor: this.props.theme.p2};
-        let floatingLabelFocusStyle = {color: this.props.theme.p2};
-
         return <Paper className='paper-card'>
-            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.props.close}>
+            <IconButton style={{color: `${this.props.theme.p5} !important`}} className="close-button" onClick={this.props.close}>
                 <i className="material-icons" data-qa="modal-close-button">close</i>
             </IconButton>
             <h3>Create {this.props.type.toLowerCase().charAt(0).toUpperCase() + this.props.type.toLowerCase().slice(1)}</h3>
             <div className='paper-body'>
-                <TextField onKeyPress={this.submitMaybe} label='First/middle name*' fullWidth value={this.state.name} onChange={e => this.setState({name: e.target.value})}/>
-                <TextField onKeyPress={this.submitMaybe} label='Family name*' fullWidth value={this.state.fName} onChange={e => this.setState({fName: e.target.value})}/>
+                <TextField className='persona-info-field' fullWidth onKeyPress={this.submitMaybe} label='First/middle name*' value={this.state.name} onChange={e => this.setState({name: e.target.value})}/>
+                <TextField className='persona-info-field' fullWidth onKeyPress={this.submitMaybe} label='Family name*' value={this.state.fName} onChange={e => this.setState({fName: e.target.value})}/>
 
                 {this.props.type === PersonaList.TYPES.patient &&
                 <div>
-                    <FormControl error={!!this.state.birthDateError}>
+                    <FormControl error={!!this.state.birthDateError} fullWidth className='persona-info-field'>
                         <TextField onKeyPress={this.submitMaybe} label="Birth date*" placeholder='YYYY-MM-DD' fullWidth value={this.state.birthDate}
                                    onChange={e => this.setState({birthDate: e.target.value})} onBlur={this.checkBirthDate}/>
                         {!!this.state.birthDateError && <FormHelperText>{this.state.birthDateError}</FormHelperText>}
                     </FormControl>
-                    <div style={{marginTop: '16px'}}>
+                    <div className='persona-info-field'>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Gender*</FormLabel>
                             <RadioGroup aria-label="Gender" name="gender" value={this.state.gender} onChange={e => this.setState({gender: e.target.value})}>
@@ -98,10 +95,8 @@ export default class CreatePersona extends Component {
                     </div>
                 </div>}
                 {this.props.type === PersonaList.TYPES.practitioner &&
-                <div>
-                    <TextField underlineFocusStyle={underlineFocusStyle} floatingLabelFocusStyle={floatingLabelFocusStyle} onKeyPress={this.submitMaybe}
-                               label="Suffix" placeholder='MD ...' fullWidth value={this.state.suffix} onChange={(_, suffix) => this.setState({suffix})}/>
-                </div>}
+                <TextField className='persona-info-field' onKeyPress={this.submitMaybe} label="Suffix" placeholder='MD ...' fullWidth value={this.state.suffix}
+                           onChange={e => this.setState({suffix: e.target.value})}/>}
             </div>
         </Paper>
     };

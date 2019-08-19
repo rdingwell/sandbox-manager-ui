@@ -5,12 +5,33 @@
   max-width: 900px !important;
   min-width: 650px !important;
 
+  .paper-card {
+    box-shadow: none !important;
+  }
+
   .close-button {
     position: absolute;
-    right: 16px;
+    right: 0;
+    color: whitesmoke !important;
+
+    &.dark {
+      color: #757575 !important;
+    }
   }
+
+  //.create-scenario-content-wrapper .context-selection .persona-list-wrapper .close-button {
+  //
+  //}
 
   .page-title-wrapper {
     margin-top: 10px !important;
+  }
+
+  .paper-body {
+    .persona-info-field {
+      display: inline-block;
+      width: 45%;
+      margin: 10px 2.5%;
+    }
   }
 }

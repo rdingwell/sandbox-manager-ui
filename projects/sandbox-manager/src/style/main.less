@@ -145,7 +145,7 @@ body {
 :global(.close-button) {
   float: right;
   margin: 0 !important;
-  color: whitesmoke !important;
+  color: whitesmoke;
   z-index: 100;
   width: 68px !important;
   height: 68px !important;
@@ -160,4 +160,9 @@ body {
   &:hover {
     cursor: pointer;
   }
+}
+
+
+.MuiIconButton-root.close-button {
+  color: inherit;
 }

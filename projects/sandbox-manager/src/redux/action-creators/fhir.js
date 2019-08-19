@@ -368,6 +368,7 @@ export function uploadProfile(file, count, name, id) {
         let formData = new FormData();
         formData.append("file", file);
         dispatch(fhir_setProfilesUploading(true));
+        dispatch(fhir_setProfilesLoading(true));
 
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -400,6 +401,7 @@ export function uploadProfile(file, count, name, id) {
 export function loadProject(project, canFit, profileName, profileId) {
     return dispatch => {
         dispatch(fhir_setFetchingFile(true));
+        dispatch(fhir_setProfilesLoading(true));
         fetch(`https://simplifier.net/${project}/$download?format=json`)
             .then(response => response.body)
             .then(rs => {
@@ -429,10 +431,12 @@ export function loadProject(project, canFit, profileName, profileId) {
                 let file = new File([blob], `${project}.zip`);
                 dispatch(uploadProfile(file, canFit, profileName, profileId));
                 dispatch(fhir_setFetchingFile(false));
+                dispatch(fhir_setProfilesLoading(false));
             })
             // Update image
             .catch(() => {
                 dispatch(fhir_setFetchingFile(false));
+                dispatch(fhir_setProfilesLoading(false));
             })
     }
 }

@@ -73,7 +73,8 @@
 
   &.modal {
     max-height: 38vh;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     width: 100%;
     padding-top: 0;
 
@@ -367,7 +368,8 @@
 }
 
 .created-app-dialog {
-  max-width: 45vw;
+  min-width: 600px;
+  max-width: 45vw !important;
   padding: 0 !important;
 
   .paper-body {
@@ -433,17 +435,29 @@
     right: 70px;
   }
 
-  & > div > div > div > div {
-    padding: 0 !important;
-    overflow: hidden !important;
+  & > div > div {
+    max-width: initial !important;
+    overflow: hidden;
+    height: ~'calc(100% - 96px)';
 
-    .page-content-wrapper {
-      max-height: 74vh !important;
-      overflow-y: auto !important;
+    .page-wrapper {
+      height: 100%;
+      overflow: hidden;
+
+      .page-content-wrapper {
+        height: ~'calc(100% - 64px)';
+        overflow-y: auto !important;
+      }
+
+      & > div {
+        //padding: 0 !important;
+        overflow: hidden !important;
+      }
     }
   }
 
   .close-button {
+    color: rgb(117, 117, 117) !important;
     height: 68px !important;
     width: 68px !important;
     position: absolute !important;

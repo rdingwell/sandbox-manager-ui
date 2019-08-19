@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Checkbox, Button, TextField, Card, DialogActions, IconButton, Dialog} from '@material-ui/core';
+import {Checkbox, Button, TextField, Card, DialogActions, IconButton, Dialog, FormControlLabel} from '@material-ui/core';
 import Redo from '@material-ui/icons/Redo';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
@@ -129,7 +129,8 @@ class SandboxDetails extends Component {
                 </div>
                 <TextField value={this.state.name || this.props.sandboxName} label='Sandbox Name' fullWidth onChange={this.handleSandboxNameChange} onKeyPress={this.submitMaybe}/>
                 <TextField value={this.state.description || this.props.sandboxDescription} label='Sandbox Description' onChange={this.handleSandboxDescriptionChange} fullWidth onKeyPress={this.submitMaybe}/>
-                <Checkbox label='Allow Open FHIR Endpoint' defaultChecked={this.props.sandboxAllowOpenAccess} onCheck={this.handleOpenFhirCheckboxChange}/>
+                <FormControlLabel label='Allow Open FHIR Endpoint'
+                                  control={<Checkbox defaultChecked={this.props.sandboxAllowOpenAccess} onChange={this.handleOpenFhirCheckboxChange}/>}/>
             </div>
             : this.state.modalToShow === MODALS.reset
                 ? <div>

@@ -49,21 +49,21 @@ class ProfilesModal extends Component {
         };
         let actions = [
             <div className='warning-modal-action'>
-                <Button color='primary' onClick={this.toggleWarningModal}>
+                <Button variant='contained' color='primary' onClick={this.toggleWarningModal}>
                     OK
                 </Button>
             </div>
         ];
         let inputActions = [
             <div className='warning-modal-action'>
-                <Button color='primary' onClick={this.saveProfile}>
+                <Button variant='contained' color='primary' onClick={this.saveProfile}>
                     OK
                 </Button>
             </div>
         ];
         let inputModalActions = [
             <div key={1} className='input-modal-action'>
-                <Button color='primary' onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifierProjectName.length < 2)}>
+                <Button variant='contained' color='primary' onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifierProjectName.length < 2)}>
                     Load
                 </Button>
             </div>
@@ -73,7 +73,7 @@ class ProfilesModal extends Component {
 
 
         this.state.showZipWarning &&
-        modals.push(<Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} contentStyle={{width: '350px'}} key={1}>
+        modals.push(<Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} key={1}>
             <div className='profiles-modal'>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={this.toggleWarningModal}>
@@ -90,7 +90,7 @@ class ProfilesModal extends Component {
         </Dialog>);
 
         this.state.inputModalVisible &&
-        modals.push(<Dialog open={this.state.inputModalVisible} onClose={this.toggleInputModal} style={{width: '412px'}} classes={{paper: 'project-input-modal'}} key={2}>
+        modals.push(<Dialog open={this.state.inputModalVisible} onClose={this.toggleInputModal} classes={{paper: 'project-input-modal'}} key={2}>
             <Paper className='paper-card'>
                 <IconButton style={{color: palette.p5}} className="close-button" onClick={this.toggleInputModal}>
                     <i className="material-icons">close</i>
@@ -103,20 +103,20 @@ class ProfilesModal extends Component {
         </Dialog>);
 
         this.state.profileInputModalVisible &&
-        modals.push(<Dialog open={this.state.profileInputModalVisible} onClose={closeInputModal} style={{width: '412px'}} key={3}>
+        modals.push(<Dialog open={this.state.profileInputModalVisible} onClose={closeInputModal} key={3}>
             <div className='profiles-modal'>
                 <div className='screen-title' style={titleStyle}>
-                    <IconButton className="close-button" onClick={closeInputModal}>
+                    <IconButton className="close-button" onClick={closeInputModal} style={{color: 'whitesmoke'}}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>Profile name</h1>
                 </div>
-                <div>
+                <div style={{paddingTop: '80px', paddingLeft: '16px', paddingRight: '16px'}}>
                     <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
                         <span>{this.refs.fileZip.files[0].name}</span>
                     </div>
-                    <TextField id='profileName' floatingLabelText='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName}/>
-                    <TextField id='profileId' floatingLabelText='Id' fullWidth disabled value={this.state.profileId}/>
+                    <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}}/>
+                    <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
             <DialogActions>
@@ -141,7 +141,6 @@ class ProfilesModal extends Component {
 
         return <Fragment>
             <div className='file-load-wrapper'>
-                {/*<RaisedButton label='Import profile' primary onClick={this.toggleInputModal}/>*/}
                 <Fab onClick={this.toggleInputModal} color='primary' className='add-button'>
                     <ContentAdd/>
                 </Fab>
@@ -164,26 +163,28 @@ class ProfilesModal extends Component {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = !this.state.simplifierInputVisible
             ? <div className='buttons-wrapper'>
-                <Button color='primary' onClick={() => this.setState({simplifierInputVisible: true})}>
+                <Button variant='contained' color='primary' onClick={() => this.setState({simplifierInputVisible: true})}>
                     Simplifier.net
                 </Button>
-                <Button color='primary' onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}>
+                <Button variant='contained' color='primary' onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}>
                     Package
                 </Button>
             </div>
             : <div style={{padding: '20px'}}>
-                <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({menuActive: true})}>
-                    <span ref='project-menu'/>
-                    <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
-                    <span className='icon-wrapper'>
-                        <DownIcon style={{position: 'relative', top: '5px'}} color={!this.state.menuActive ? palette.p3 : 'white'}/>
-                    </span>
-                </Chip>
+                <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({menuActive: true})}
+                      label={<Fragment>
+                          <span ref='project-menu'/>
+                          <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
+                          <span className='icon-wrapper'>
+                              <DownIcon style={{position: 'relative', top: '2px', color: !this.state.menuActive ? palette.p3 : 'white'}}/>
+                          </span>
+                      </Fragment>}
+                />
                 {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
                 {this.state.project === 'manual' && <TextField value={this.state.simplifierProjectName} onChange={e => this.setState({simplifierProjectName: e.target.value})}
-                                                               id='simplifierProjectName' label='Simplifier.net Project ID' className='project-name'/>}
+                                                               id='simplifierProjectName' label='Simplifier.net Project ID' className='project-name' fullWidth/>}
                 <Menu open={this.state.menuActive} anchorEl={this.refs['project-menu']} className='type-filter-menu' onExit={() => this.setState({menuActive: false})}>
-                    {PROFILES.map(profile => <MenuItem className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
+                    {PROFILES.map(profile => <MenuItem key={profile.id} className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
                         {profile.title}
                     </MenuItem>)}
                 </Menu>

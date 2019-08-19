@@ -253,7 +253,7 @@ class Apps extends Component {
                                                                     onKeyPress={event => {
                                                                         [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
                                                                     }}/>}
-                                    <div style={{width: '100%', verticalAlign: 'middle'}}>
+                                    <div style={{width: '100%', verticalAlign: 'middle', marginTop: '20px'}}>
                                         <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={e => this.setState({manifestURL: e.target.value.trim()})}
                                                    label={this.props.hooks ? 'Service url' : 'Manifest URL'} className={!this.props.hooks ? 'manifest-url' : ''} id='url' style={{verticalAlign: 'bottom'}}
                                                    onKeyPress={event => {

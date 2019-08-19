@@ -15,7 +15,11 @@
   .subscript.right {
     position: absolute;
     right: 35px;
-    bottom: -15px;
+    bottom: -5px;
+
+    //svg {
+    //  position: initial !important;
+    //}
   }
 
   .modal-title {
@@ -56,6 +60,7 @@
 
   .stepper {
     margin-top: 80px;
+    margin-bottom: 32px;
     padding: 0 46px;
 
     .step-label {
@@ -171,13 +176,14 @@
         .required-tag {
           color: red;
           position: relative;
-          left: -18px;
-          top: -7px;
+          left: -20px;
+          top: 0;
         }
       }
 
       .column-item-wrapper:not(.big-and-centered) {
         width: ~'calc(100% - 40px)';
+        margin-bottom: 20px;
         float: right;
         position: relative;
 
@@ -190,8 +196,13 @@
           }
         }
 
-        & > div {
+        & > div:not(.right-control):not(.subscript) {
           max-width: 90%;
+          width: 100%;
+        }
+
+        .subscript:not(.right) {
+          padding-left: 6px;
         }
 
         .toggle {
@@ -236,13 +247,18 @@
 
       .right-control {
         position: absolute;
-        right: -25px;
+        right: 20px;
         top: 10px;
         width: 48px;
         height: 48px;
 
         &.loader {
           right: 20px;
+        }
+
+        button {
+          width: 48px !important;
+          height: 48px !important;
         }
       }
 
@@ -287,4 +303,8 @@
       }
     }
   }
+}
+
+.create-scenario-content-wrapper .context-selection .persona-list-wrapper .close-button {
+  color: rgb(117, 117, 117) !important;
 }

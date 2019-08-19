@@ -2,8 +2,23 @@
   margin: 0;
   height: 100%;
 
+  svg {
+    color: #0E5676;
+  }
+
   .tree-list {
     text-align: left;
+
+    .chevron {
+      position: absolute;
+      right: 28px;
+      transition: transform .3s;
+
+      &.turn {
+        transition: transform .3s;
+        transform: rotate(180deg);
+      }
+    }
 
     .radio {
       top: 12px !important;
@@ -42,8 +57,12 @@
 }
 
 .patient-select-dialog {
-  & > div > div {
-    padding: 0 !important;
+  max-width: initial !important;
+  min-width: 750px;
+
+  .page-wrapper {
+    max-width: initial;
+    min-width: initial;
   }
 
   .page-title-wrapper.left {

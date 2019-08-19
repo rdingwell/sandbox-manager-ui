@@ -3,7 +3,7 @@ import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
     setSingleLocation, setFetchingSingleLocationError, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
-    customSearch, fetchAnyResource, clearResourceFetch, launchHook
+    customSearch, fetchAnyResource, clearResourceFetch, launchHook, loadServices
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -78,6 +78,7 @@ class LaunchScenarios extends Component {
         this.setState({lastLaunch: undefined});
         this.props.app_setScreen('launch');
         this.props.loadLaunchScenarios();
+        this.props.loadServices();
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
@@ -257,8 +258,12 @@ class LaunchScenarios extends Component {
                                 </IconButton>
                                 {showMenuForItem &&
                                 <Menu width='100px' open={showMenuForItem} anchorEl={this.refs['anchor' + index]} onClose={this.toggleMenuForItem}>
-                                    <MenuItem className='scenario-menu-item' primaryText='Edit' leftIcon={<EditIcon/>} onClick={() => this.selectScenarioForEditing(sc)}/>
-                                    <MenuItem className='scenario-menu-item' primaryText='Delete' leftIcon={<DeleteIcon/>} onClick={() => this.showDeleteScenario(sc)}/>
+                                    <MenuItem className='scenario-menu-item' onClick={() => this.selectScenarioForEditing(sc)}>
+                                        <EditIcon/> Edit
+                                    </MenuItem>
+                                    <MenuItem className='scenario-menu-item' onClick={() => this.showDeleteScenario(sc)}>
+                                        <DeleteIcon/> Delete
+                                    </MenuItem>
                                 </Menu>}
                                 <IconButton className='expanded-toggle'>
                                     <DownIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
@@ -389,7 +394,7 @@ class LaunchScenarios extends Component {
                         let isPatient = param.name === 'patientId';
                         // let click = param.name !== 'patientId' ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
                         let click = isPatient ? () => this.props.history.push(`data-manager?q=${param.value}&p=${patient}`) : e => this.openInDM(e, patient);
-                        return <span className='section-value' style={lightColor}>
+                        return <span key={`val-${param.value}`} className='section-value' style={lightColor}>
                                 {/*{this.getContextIcon(param.name, iconStyleLight)} <span className={`context-value ${!!patient ? 'context-link' : ''}`} onClick={click}>{param.value}</span>*/}
                             {param.name}: <span className={`context-value ${isPatient ? 'context-link' : ''}`} onClick={isPatient ? e => this.openInDM(e, patient) : null}>{param.value}</span>
                             </span>;
@@ -559,7 +564,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         setFetchingSinglePatientFailed, fetchPatient, app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner,
         lookupPersonasStart, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, addCustomContext, deleteCustomContext, fetchLocation,
         setFetchingSingleLocationError, setSingleLocation, setSingleIntent, setFetchingSingleIntentError, setSingleResource, setFetchingSingleResourceError, fetchResource, fetchIntent, getDefaultUserForSandbox,
-        customSearch, fetchAnyResource, clearResourceFetch, launchHook,
+        customSearch, fetchAnyResource, clearResourceFetch, launchHook, loadServices,
         getNextPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'next'),
         getPrevPersonasPage: (type, pagination) => getPersonasPage(type, pagination, 'previous')
     },

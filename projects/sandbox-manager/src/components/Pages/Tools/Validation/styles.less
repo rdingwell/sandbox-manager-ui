@@ -9,7 +9,9 @@
     padding: 0 16px;
 
     &.bigger {
-      height: ~'calc(100% - 110px)';
+      height: ~'calc(100% - 70px)';
+      overflow: hidden;
+      padding: 0;
     }
 
     .loader-wrapper-small {
@@ -157,6 +159,7 @@
 }
 
 .validation-content {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
   max-width: none !important;
   max-height: none !important;
   width: 90%;
@@ -176,4 +179,6 @@
 
 .validate-result-wrapper {
   text-align: left;
+  height: 100%;
+  border-top: 1px solid whitesmoke;
 }

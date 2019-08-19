@@ -96,7 +96,7 @@ class PersonaList extends Component {
 
         let helpIcon = <HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/79364100/Sandbox+Persona'/>;
         let pageProps = {
-            noTitle: this.props.noTitle, title, titleLeft: this.props.titleLeft, close: this.props.close, scrollContent: this.props.scrollContent
+            noTitle: this.props.noTitle, title, titleLeft: this.props.titleLeft, close: this.props.close, scrollContent: this.props.scrollContent, darkCloseIcon: true
         };
         !isPatient && !isPractitioner && (pageProps.helpIcon = helpIcon);
 
