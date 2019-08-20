@@ -41,8 +41,6 @@ export default class QueryBrowser extends Component {
 
         this.setState({canFit});
 
-        // this.refs.query.refs.searchTextField.input.addEventListener('keypress', this.submitMaybe);
-
         let element = document.getElementsByClassName('stage')[0];
         element.addEventListener('scroll', this.scroll);
 
@@ -50,7 +48,6 @@ export default class QueryBrowser extends Component {
     }
 
     componentWillUnmount() {
-        // this.refs.query.refs.searchTextField.input.removeEventListener('keypress', this.submitMaybe);
         let element = document.getElementsByClassName('stage')[0];
         element && element.removeEventListener('scroll', this.scroll);
     }
@@ -81,7 +78,7 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    <TextField ref='query' id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({query: e.target.value})}/>
+                    <TextField onKeyPress={this.submitMaybe} id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({query: e.target.value})}/>
                     {/*dataSource={SUGGESTIONS} onNewRequest={this.search}/>*/}
                 </div>
                 {this.state.query.length > 0 &&

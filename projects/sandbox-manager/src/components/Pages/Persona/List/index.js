@@ -203,7 +203,7 @@ class PersonaList extends Component {
                     {badge}
                 </TableCell>
                 <TableCell className={'persona-info name' + (isPractitioner ? ' pract' : '')}>
-                    {persona.fhirName || (persona.name && persona.name.length ? this.getName(persona.name[0] || persona.name) : '')}
+                    {persona.fhirName || (!!persona.name ? this.getName(persona.name[0] || persona.name) : '')}
                 </TableCell>
                 {!isPatient && !isPractitioner && <TableCell className='persona-info resource'>
                     {persona.resource + '/' + persona.fhirId}

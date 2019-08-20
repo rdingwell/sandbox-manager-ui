@@ -55,17 +55,16 @@ class TreeBrowser extends Component {
         };
 
         return <div className='tree-browser'>
-            <div className='tab-title'>Browse linked resources</div>
             <div className='tree-input-wrapper'>
-                {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal}>
+                {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal} className='select-patient-button'>
                     Select a patient
                 </Button>}
-                {this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={() => {
-                    this.props.selectPatient();
-                    this.toggleModal();
-                }}>
-                    Change patient
-                </Button>}
+                {/*{this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={() => {*/}
+                {/*    this.props.selectPatient();*/}
+                {/*    this.toggleModal();*/}
+                {/*}}>*/}
+                {/*    Change patient*/}
+                {/*</Button>}*/}
                 {!this.props.selectedPersona && this.state.patientSelectVisible &&
                 <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} classes={{paper: 'patient-select-dialog'}}>
                     <PersonaList {...props} titleLeft/>

@@ -1184,19 +1184,23 @@ export function doLaunch (app, persona, user, noUser, scenario) {
 }
 
 export function copyToClipboard (str) {
-    return dispatch => {
+    return async dispatch => {
         dispatch(setCopying(true));
-        let el = document.createElement('textarea');
-        document.body.appendChild(el);
+        let el = document.getElementById('copy-area');
         el.value = str;
         el.select();
-        console.log(el.value);
         try {
-            document.execCommand('copy');
+            function listener(e) {
+                console.log(e.clipboardData);
+                e.clipboardData.setData("text/plain", str);
+                e.preventDefault();
+            }
+            document.addEventListener("copy", listener);
+            document.execCommand("copy");
+            document.removeEventListener("copy", listener);
         } catch (e) {
             console.log(e);
         }
-        document.body.removeChild(el);
         setTimeout(function () {
             dispatch(setCopying(false));
         }, 1500);
