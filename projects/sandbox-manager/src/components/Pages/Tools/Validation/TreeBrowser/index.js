@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {getMetadata, lookupPersonasStart, fetchPersonas, getPersonasPage, getResourcesForPatient} from '../../../../../redux/action-creators';
 import {connect} from 'react-redux';
 import withErrorHandler from '../../../../UI/hoc/withErrorHandler';
-import {Dialog, ListItem, Button, IconButton, List, withTheme, Collapse, Tooltip} from '@material-ui/core';
+import {Dialog, ListItem, Button, IconButton, List, withTheme, Collapse, Tooltip, CircularProgress} from '@material-ui/core';
 import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
@@ -59,12 +59,6 @@ class TreeBrowser extends Component {
                 {!this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={this.toggleModal} className='select-patient-button'>
                     Select a patient
                 </Button>}
-                {/*{this.props.selectedPersona && !this.state.patientSelectVisible && <Button variant='contained' color='primary' onClick={() => {*/}
-                {/*    this.props.selectPatient();*/}
-                {/*    this.toggleModal();*/}
-                {/*}}>*/}
-                {/*    Change patient*/}
-                {/*</Button>}*/}
                 {!this.props.selectedPersona && this.state.patientSelectVisible &&
                 <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} classes={{paper: 'patient-select-dialog'}}>
                     <PersonaList {...props} titleLeft/>
@@ -93,11 +87,16 @@ class TreeBrowser extends Component {
                     </IconButton>
                 </Tooltip>
             </ListItem>
+            {this.props.loadingResources && <div className='resource-loader'>
+                <CircularProgress/>
+                <div>Fetching linked resources</div>
+            </div>}
+            {!this.props.loadingResources &&
             <Collapse unmountOnExit in>
                 <List>
                     {props}
                 </List>
-            </Collapse>
+            </Collapse>}
         </List>
     };
 

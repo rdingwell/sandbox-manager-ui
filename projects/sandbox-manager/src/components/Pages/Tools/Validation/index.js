@@ -108,7 +108,7 @@ class Validation extends Component {
                                     {this.state.activeTab === 'table' && <ResultsTable results={this.props.validationResults}/>}
                                 </Fragment>;
                             })()}
-                            {this.props.validationExecuting && <div className='loader-wrapper-small'>
+                            {this.props.validationExecuting && <div className='loader-wrapper-small' style={{position: 'relative', top: '80px'}}>
                                 <CircularProgress size={60} thickness={5}/>
                             </div>}
                         </div>}
