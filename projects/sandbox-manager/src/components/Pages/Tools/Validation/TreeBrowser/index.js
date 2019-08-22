@@ -8,7 +8,7 @@ import Remove from '@material-ui/icons/Remove';
 import Folder from '@material-ui/icons/Folder';
 import Description from '@material-ui/icons/Description';
 import ArrowDown from '@material-ui/icons/KeyboardArrowDown';
-import Compare from '@material-ui/icons/Compare';
+import Compare from "svg-react-loader?name=Patient!../../../../../assets/icons/validateIcon.svg";
 import PersonaList from '../../../Persona/List';
 import {getPatientName} from '../../../../../lib/utils';
 
@@ -83,7 +83,7 @@ class TreeBrowser extends Component {
                 <Description/> {`${getPatientName(persona)}`}
                 <Tooltip title='Select' aria-label='select'>
                     <IconButton variant='contained' color='secondary' onClick={e => this.toggle(e, id)}>
-                        <Compare/>
+                        <Compare style={{transform: 'scale(1.3)'}}/>
                     </IconButton>
                 </Tooltip>
             </ListItem>
@@ -166,7 +166,7 @@ class TreeBrowser extends Component {
                             <Description/> <span>{index}{listItem.id ? ` [${listItem.id}]` : ''}</span>
                             <Tooltip title='Select' aria-label='select'>
                                 <IconButton variant='contained' color='secondary' onClick={e => this.toggle(e, checked)}>
-                                    <Compare/>
+                                    <Compare style={{transform: 'scale(1.3)'}}/>
                                 </IconButton>
                             </Tooltip>
                         </ListItem>
