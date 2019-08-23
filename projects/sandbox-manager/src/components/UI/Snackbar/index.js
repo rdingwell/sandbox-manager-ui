@@ -6,8 +6,9 @@ import './index.less';
 
 class Snackbar extends Component {
     render () {
+        let style = { margin: '0 auto', backgroundColor: this.props.theme.p4, color: this.props.theme.p5 };
         return <div className='error-message-wrapper'>
-            <span className='custom-snack' style={{ margin: '0 auto', backgroundColor: this.props.theme.palette.p4, color: this.props.theme.palette.p5 }}>
+            <span className='custom-snack' style={style}>
                 {this.parseMessage(this.props.message).toString()}
                 <IconButton className='error-close-button' onClick={this.props.onClose}>
                     <CloseIcon color={this.props.theme.palette.p5}/>

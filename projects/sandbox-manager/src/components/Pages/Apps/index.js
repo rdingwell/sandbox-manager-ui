@@ -330,12 +330,6 @@ class Apps extends Component {
 
         return appsList.map((app, index) => {
             let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
-            if (!this.props.modal && !app.briefDescription) {
-                // titleStyle.height = '39%';
-                // titleStyle.bottom = '-18%';
-            }
-            this.state.toggledApp === app.id && console.log(app);
-            this.state.toggledApp === app.id && console.log(this.state.toggledApp);
             return <Card title={app.clientName} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledApp === app.id ? ' active' : ''}`} key={app.id} id={app.id}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
