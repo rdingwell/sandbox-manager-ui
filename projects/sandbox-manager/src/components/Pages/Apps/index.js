@@ -72,6 +72,9 @@ class Apps extends Component {
     componentWillReceiveProps(nextProps) {
         this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({appIsLoading: false});
         this.props.appCreating && !nextProps.appCreating && this.setState({createdApp: nextProps.createdApp});
+        (this.props.hookCards && this.props.hookCards.length && (!nextProps.hookCards || !nextProps.hookCards.length)
+            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards || !nextProps.hookCards.length))
+        ) && this.setState({toggledHook: undefined});
     }
 
     render() {
@@ -145,8 +148,8 @@ class Apps extends Component {
                 hook.title = hook.title ? hook.title : '';
                 hook.url = service.url;
                 let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
-                hooks.push(<Card title={hook.title} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledHook === hook.id ? 'active' : ''}`} key={service.url + index}
-                                 onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
+                hooks.push(<Card title={hook.title} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledHook === hook.id ? ' active' : ''}`} key={service.url + index}
+                                 onTouchStart={() => this.hookCardClick(index)} on Click={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
                     <div className={`hook-icon-wrapper ${hook.hook}`}>
                         {this.getHookIcon(hook.hook)}
                     </div>
@@ -208,9 +211,9 @@ class Apps extends Component {
         return (this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation} manifest={this.state.manifest}
                          app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
-                         onClose={this.closeAll} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
+                         onClose={() => this.closeAll()} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
             : this.state.appToLaunch || this.state.hookToLaunch
-                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={this.closeAll} className='launch-app-dialog'>
+                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={() => this.closeAll()} className='launch-app-dialog'>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
                         <Button variant='contained' color='primary' onClick={() => this.doLaunch()}>
                             Launch without a patient
@@ -220,9 +223,9 @@ class Apps extends Component {
                     {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                 </Dialog>
                 : this.state.createdApp
-                    ? <Dialog open={!!this.state.createdApp} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
+                    ? <Dialog open={!!this.state.createdApp} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
                         <Paper className='paper-card' data-qa='created-app-modal'>
-                            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
+                            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
                                 <i className="material-icons" data-qa="modal-close-button">close</i>
                             </IconButton>
                             <h3>Registered App Details</h3>
@@ -242,9 +245,9 @@ class Apps extends Component {
                         </Paper>
                     </Dialog>
                     : this.state.loadDialogVisible
-                        ? <Dialog open={!!this.state.loadDialogVisible} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
+                        ? <Dialog open={!!this.state.loadDialogVisible} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
                             <Paper className='paper-card'>
-                                <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
+                                <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
                                     <i className="material-icons">close</i>
                                 </IconButton>
                                 <h3>{this.props.hooks ? 'Register through service' : 'Register with manifest'}</h3>
@@ -280,15 +283,15 @@ class Apps extends Component {
                             </Paper>
                         </Dialog>
                         : !!this.state.selectedHook
-                            ? <HookDialog theme={this.props.theme} open={!!this.state.selectedHook} onClose={this.closeAll} hook={this.state.selectedHook} service={this.state.service}
+                            ? <HookDialog theme={this.props.theme} open={!!this.state.selectedHook} onClose={() => this.closeAll()} hook={this.state.selectedHook} service={this.state.service}
                                           onSubmit={(hookId, file) => {
                                               this.props.updateHook(hookId, file);
                                               this.closeAll();
                                           }}/>
                             : this.state.selectCreationType
-                                ? <Dialog open={!!this.state.selectCreationType} onClose={this.closeAll} classes={{paper: 'created-app-dialog'}}>
+                                ? <Dialog open={!!this.state.selectCreationType} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
                                     <Paper className='paper-card'>
-                                        <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.closeAll}>
+                                        <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
                                             <i className="material-icons">close</i>
                                         </IconButton>
                                         <h3>App creation</h3>
@@ -331,7 +334,9 @@ class Apps extends Component {
                 // titleStyle.height = '39%';
                 // titleStyle.bottom = '-18%';
             }
-            return <Card title={app.clientName} className={`app-card ${this.props.modal ? 'small' : ''} ${this.state.toggledApp === app.id ? 'active' : ''}`} key={index}
+            this.state.toggledApp === app.id && console.log(app);
+            this.state.toggledApp === app.id && console.log(this.state.toggledApp);
+            return <Card title={app.clientName} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledApp === app.id ? ' active' : ''}`} key={app.id} id={app.id}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
                     <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
@@ -445,28 +450,24 @@ class Apps extends Component {
     doLaunch = (persona = {}) => {
         this.state.appToLaunch && this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona.id);
         this.state.hookToLaunch && this.props.launchHook(this.state.hookToLaunch, {patientId: persona.id});
-        this.closeAll();
+        this.closeAll(true);
     };
 
-    closeAll = () => {
-        !this.state.loadingManifest &&
-        this.setState({
+    closeAll = (doNotRemoveHook = false) => {
+        let state = {
             selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false, createdApp: undefined, loadDialogVisible: false, loadingManifest: false,
             hookToLaunch: undefined, selectedHook: undefined, selectCreationType: false, manifestURL: '', toggledApp: undefined, toggledHook: undefined
-        });
+        };
+        !!doNotRemoveHook && (delete state.toggledHook);
+        !this.state.loadingManifest && this.setState(state);
     };
 
     handleAppSelect = (event, app) => {
-        // event.preventDefault();
-        // event.stopPropagation();
         this.props.loadApp(app);
         this.setState({selectedApp: app, toggledApp: app.id, registerDialogVisible: false, appIsLoading: true});
     };
 
     handleLaunch = (event, app) => {
-        event && event.preventDefault();
-        event && event.stopPropagation();
-
         if (!this.props.hooks && !!app) {
             let clientJSON = JSON.parse(app.clientJSON);
             let isPatientScoped = clientJSON.scope.find(i => i.toLowerCase().indexOf('patient/') >= 0);
@@ -503,7 +504,9 @@ const mapStateToProps = state => {
         pagination: state.persona.patientsPagination,
         copying: state.sandbox.copying,
         hooksList: state.hooks.services,
-        servicesLoading: state.hooks.servicesLoading
+        servicesLoading: state.hooks.servicesLoading,
+        hookCards: state.hooks.cards,
+        hookExecuting: state.hooks.executing
     };
 };
 

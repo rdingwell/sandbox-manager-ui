@@ -31,7 +31,7 @@ class AppDialog extends Component {
 
         return <Dialog classes={{paper: paperClasses}} open={!!this.props.open} onClose={this.props.onClose} scroll='paper'>
             <Paper className='paper-card'>
-                <IconButton style={{color: theme.p5}} className="close-button" onClick={this.handleClose}>
+                <IconButton style={{color: theme.p5}} className="close-button" onClick={this.props.onClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
                 <h3>CDS Service Info</h3>
@@ -92,11 +92,6 @@ class AppDialog extends Component {
         let input = this.refs.image;
         input.value = '';
         this.setState({logoURI: undefined, hasChanged: true});
-    };
-
-    handleClose = () => {
-        this.setState({modalOpen: false});
-        this.props.onClose();
     };
 
     onFileInput = () => {

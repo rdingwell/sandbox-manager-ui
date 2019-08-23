@@ -10,6 +10,7 @@ export default (state = initialState, action) => {
             break;
         case actionTypes.HOOKS_SET_CARDS:
             state.cards = cards.concat(action.payload.cards);
+            state.executing = false;
             break;
         case actionTypes.HOOKS_SERVICE_LOADING:
             state.servicesLoading = action.payload.loading;
