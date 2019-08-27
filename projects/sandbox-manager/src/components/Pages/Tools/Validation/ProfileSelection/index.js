@@ -10,20 +10,23 @@ class ProfileSelection extends Component {
         this.state = {};
     }
 
-    componentDidMount() {
+    componentWillMount() {
         // Query
-        if (this.props.query) {
+        if (!!this.props.query) {
             let type = this.props.query.split('/')[0];
             this.props.loadProfilesBySD(type);
             this.setState({type});
-        } else if (this.props.fileJson) {
+        } else if (!!this.props.fileJson) {
             try {
                 let json = JSON.parse(this.props.fileJson);
                 this.props.loadProfilesBySD(json.resourceType);
                 this.setState({type: json.resourceType});
             } catch (e) {
                 console.log(e);
+                this.setState({wrongFile: true});
             }
+        } else {
+            this.setState({wrongFile: true});
         }
     }
 
@@ -35,11 +38,11 @@ class ProfileSelection extends Component {
                     Searching for relevant profiles
                 </div>
             </div>}
-            {!this.props.fetchingProfilesByDefinition && <div className='profile-list'>
+            {!this.props.fetchingProfilesByDefinition && !this.state.wrongFile && <div className='profile-list'>
                 <List subheader={<ListSubheader>
                     Profiles with structure definition for "{this.state.type}"
                 </ListSubheader>}>
-                    {Object.keys(this.props.profiles).map((profile, id) =>
+                    {!this.state.wrongFile && !!this.props.profiles && Object.keys(this.props.profiles).map((profile, id) =>
                         <ListItem key={id} className='profile' button onClick={() => this.props.profileSelected({id: this.props.profiles[profile].fhirProfileId, profile: this.props.profiles[profile]})}>
                             {profile}
                         </ListItem>
@@ -48,6 +51,9 @@ class ProfileSelection extends Component {
                         There is no profile with structure definition for "{this.state.type}"
                     </ListItem>}
                 </List>
+            </div>}
+            {this.state.wrongFile && <div className='profile-list' style={{padding: '20px'}}>
+                The provided json does not match the requested format.
             </div>}
         </div>;
     }

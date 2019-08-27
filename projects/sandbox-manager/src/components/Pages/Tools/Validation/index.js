@@ -76,7 +76,7 @@ class Validation extends Component {
                         {!sv && st === 'uri' && !sp && <div>
                             <div className='tab-title'>Existing resource uri</div>
                             <TextField fullWidth id='query' onChange={e => this.setState({query: e.target.value, manualJson: '', file: '', fileJson: ''})} placeholder='Patient/smart-613876'
-                                       value={this.state.query}/>
+                                       value={this.state.query} onKeyPress={this.submitMaybe}/>
                         </div>}
                         {!sv && st === 'file' && !sp && <div>
                             <input value='' type='file' id='file' ref='file' style={{display: 'none'}} onChange={this.readFile} accept='application/json'/>
@@ -90,7 +90,7 @@ class Validation extends Component {
                         </div>}
                         {!sv && st === 'json' && !sp && <div>
                             <span className='tab-title'>JSON</span>
-                            <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson}
+                            <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson} onKeyPress={e => this.submitMaybe(e, true)}
                                        onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                         </div>}
                         {!sv && sp && <ProfileSelection {...this.state} {...this.props} profileSelected={this.profileSelected}/>}
@@ -119,6 +119,10 @@ class Validation extends Component {
             </Paper>
         </div>
     }
+
+    submitMaybe = (event, checkForCtrl) => {
+        [10, 13].indexOf(event.charCode) >= 0 && (!checkForCtrl || event.ctrlKey) && this.setState({activeStep: 1});
+    };
 
     profileSelected = (selectedProfile) => {
         this.setState({selectedProfile}, () => {
