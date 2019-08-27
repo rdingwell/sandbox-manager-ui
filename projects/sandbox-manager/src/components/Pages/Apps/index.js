@@ -149,7 +149,7 @@ class Apps extends Component {
                 hook.url = service.url;
                 let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
                 hooks.push(<Card title={hook.title} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledHook === hook.id ? ' active' : ''}`} key={service.url + index}
-                                 onTouchStart={() => this.hookCardClick(index)} on Click={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
+                                 onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
                     <div className={`hook-icon-wrapper ${hook.hook}`}>
                         {this.getHookIcon(hook.hook)}
                     </div>

@@ -105,7 +105,7 @@ class App extends React.Component {
                     <CircularProgress size={80} thickness={5}/>
                 </Dialog>}
                 {this.props.app.showGlobalSessionModal && <Dialog className='loader-wrapper' modal open={this.props.app.showGlobalSessionModal}>
-                    <p>Your session has expired. Reloading...</p>
+                    <p style={{padding: '30px'}}>Your session has expired. Reloading...</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
                 {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} classes={{paper: 'hooks-dialog'}} onClose={this.dismiss}>

@@ -43,12 +43,13 @@ class Manage extends Component {
             {!this.props.profilesLoading && ((!this.state.selectedResource && !this.state.selectedProfile)
                 ? <List className='profiles'>
                     {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
-                        let isNotFiltered = !this.state.filter.nameFilter || profile.profileId.indexOf(this.state.filter.nameFilter) >= 0;
+                        let isNotFiltered = (!this.state.filter.nameFilter || profile.profileId.indexOf(this.state.filter.nameFilter) >= 0) &&
+                            (!this.props.profilesByDefinition || Object.keys(this.props.profilesByDefinition).indexOf(profile.profileName) !== -1);
                         return isNotFiltered && <ListItem key={key} onClick={() => this.toggleProfile(profile.profileId)} button>
                             <ProfilesIcon className='avatar'/>
                             <span>{profile.profileName}</span>
                             <IconButton onClick={e => this.deleteProfile(e, profile)} className='delete-button'>
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </ListItem>
                     })}
@@ -168,9 +169,11 @@ class Manage extends Component {
     };
 
     onFilter = (a, b) => {
-        let filter = {};
+        let filter = Object.assign({}, this.state.filter);
         filter[a] = b;
-        this.setState({filter})
+        a === 'typeFilter' && !!b && this.props.loadProfilesBySD(b);
+        a === 'typeFilter' && !b && this.props.clearLoadedProfilesBySD(b);
+        this.setState({filter});
     };
 
     expand = (_, e) => {
@@ -234,9 +237,6 @@ class Manage extends Component {
     toggleProfileToBrowse = (id) => {
         let profileToBrowse = this.state.profileToBrowse === id ? undefined : id;
         this.setState({profileToBrowse});
-    };
-
-    filter = () => {
     };
 }
 

@@ -127,7 +127,7 @@ class AppDialog extends Component {
                     </div>
                     {clientId}
                     {clientSecret}
-                    <TextField multiline label='Description' value={this.state.app.briefDescription} fullWidth disabled={this.state.isReplica && !this.props.manifest} data-qa='description-input'
+                    <TextField multiline label='Description' value={this.state.app.briefDescription || ''} fullWidth disabled={this.state.isReplica && !this.props.manifest} data-qa='description-input'
                                onChange={e => this.onChange('briefDescription', e.target.value)} onKeyPress={this.submitMaybe} className='margin-top'/>
                     <TextField label='App Launch URI*' value={this.state.app.launchUri} fullWidth onChange={e => this.onChange('launchUri', e.target.value)}
                                placeholder='e.g.: https://mydomain.com/growth-chart/launch.html' className='margin-top'

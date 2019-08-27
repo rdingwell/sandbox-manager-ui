@@ -9,7 +9,7 @@ export default function (state = initialState, action) {
             state.context = action.payload;
             break;
         case types.FHIR_SET_META:
-            state.meta = { status: "ready", ...action.payload };
+            state.meta = {status: "ready", ...action.payload};
             break;
         case types.FHIR_SET_PARSED_PATIENT_DEMOGRAPHICS:
             state.parsed.patientDemographics = {
@@ -72,6 +72,19 @@ export default function (state = initialState, action) {
             break;
         case types.FHIR_SET_FILE_FETCHING:
             state.fetchingFile = action.payload.loading;
+            break;
+        case types.FHIR_SET_FETCHING_DEFINITION_TYPES:
+            state.fetchingDefinitionTypes = action.payload.fetching;
+            break;
+        case types.FHIR_SET_FETCHING_PROFILES_BY_DEFINITION:
+            state.fetchingProfilesByDefinition = action.payload.fetching;
+            !!action.payload.fetching && (state.profilesByDefinition = undefined);
+            break;
+        case types.FHIR_SET_PROFILES_BY_DEFINITION:
+            state.profilesByDefinition = action.payload.profiles;
+            break;
+        case types.FHIR_SET_DEFINITION_TYPES:
+            state.definitionTypes = action.payload.definitionTypes;
             break;
         case types.FHIR_SET_RESOURCES_LOADING:
             state.resourcesLoading = action.payload.loading;

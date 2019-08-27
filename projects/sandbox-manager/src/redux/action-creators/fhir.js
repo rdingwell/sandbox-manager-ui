@@ -167,6 +167,34 @@ export function fhir_setFetchingResource(fetching) {
     };
 }
 
+export function fhir_setFetchingDefinitionTypes(fetching) {
+    return {
+        type: types.FHIR_SET_FETCHING_DEFINITION_TYPES,
+        payload: {fetching}
+    };
+}
+
+export function fhir_setFetchingProfilesByDefinition(fetching) {
+    return {
+        type: types.FHIR_SET_FETCHING_PROFILES_BY_DEFINITION,
+        payload: {fetching}
+    };
+}
+
+export function fhir_setProfilesByDefinition(profiles) {
+    return {
+        type: types.FHIR_SET_PROFILES_BY_DEFINITION,
+        payload: {profiles}
+    };
+}
+
+export function fhir_setDefinitionTypes(definitionTypes) {
+    return {
+        type: types.FHIR_SET_DEFINITION_TYPES,
+        payload: {definitionTypes}
+    };
+}
+
 export function fhir_setResource(resource) {
     return {
         type: types.FHIR_SET_RESOURCE,
@@ -328,6 +356,43 @@ export function loadResource(resource) {
                     dispatch(fhir_setFetchingResource(false))
                 });
         }
+    }
+}
+
+export function fetchDefinitionTypes() {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(fhir_setFetchingDefinitionTypes(true));
+            API.get(`http://localhost:12000/profile/getAllProfileTypes?sandboxId=${sessionStorage.sandboxId}`)
+                .then(res => {
+                    dispatch(fhir_setDefinitionTypes(res));
+                })
+                .finally(() => {
+                    dispatch(fhir_setFetchingDefinitionTypes(false));
+                });
+        }
+    }
+}
+
+export function loadProfilesBySD(definition) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(fhir_setFetchingProfilesByDefinition(true));
+            API.get(`http://localhost:12000/profile?sandboxId=${sessionStorage.sandboxId}&type=${definition}`)
+                .then(res => {
+                    dispatch(fhir_setProfilesByDefinition(res));
+                })
+                .finally(() => {
+                    dispatch(fhir_setFetchingProfilesByDefinition(false));
+                });
+        }
+    }
+}
+
+export function clearLoadedProfilesBySD() {
+    return dispatch => {
+        dispatch(fhir_setFetchingProfilesByDefinition(true));
+        dispatch(fhir_setFetchingProfilesByDefinition(false));
     }
 }
 

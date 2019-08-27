@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {FormControlLabel, Switch, TextField, Button, Card, withTheme, Tabs, Tab, Paper, Step, StepButton, Stepper, CircularProgress} from '@material-ui/core';
+import {TextField, Button, Card, withTheme, Tabs, Tab, Paper, Step, StepButton, Stepper, CircularProgress} from '@material-ui/core';
 import Find from '@material-ui/icons/FindInPage';
 import Link from '@material-ui/icons/Link';
 import Folder from '@material-ui/icons/Folder';
@@ -17,6 +17,7 @@ class Validation extends Component {
 
         this.state = {
             query: '',
+            manualJson: '',
             activeStep: 0,
             activeTab: 'table',
             selectedType: undefined
@@ -31,13 +32,14 @@ class Validation extends Component {
         let st = this.state.selectedType;
         let sv = this.state.activeStep === 2;
         let sp = this.state.activeStep === 1;
+        let validateDisabled = (this.state.selectedType === 'uri' && this.state.query.length <= 5) || (this.state.selectedType === 'file' && !this.state.file) || (this.state.selectedType === 'json' && this.state.manualJson.length <= 5);
 
         return <div className='validation-content'>
             <Paper className='paper-card'>
                 <div className='validation-wrapper'>
                     <Stepper activeStep={this.state.activeStep}>
                         <Step>
-                            <StepButton onClick={() => this.setState({selectedType: undefined, selectedPersona: undefined, query: undefined, activeTab: 'table', activeStep: 0})}>Select resource</StepButton>
+                            <StepButton onClick={() => this.setState({selectedType: undefined, selectedPersona: undefined, query: '', activeTab: 'table', activeStep: 0})}>Select resource</StepButton>
                         </Step>
                         <Step>
                             <StepButton onClick={() => this.setState({activeTab: 'table', activeStep: 1})}>Select profile</StepButton>
@@ -88,11 +90,6 @@ class Validation extends Component {
                         </div>}
                         {!sv && st === 'json' && !sp && <div>
                             <span className='tab-title'>JSON</span>
-                            <div style={{textAlign: 'center'}}>
-                                <Button className='clear-json-button' disabled={!this.state.manualJson} color='primary' onClick={() => this.setState({manualJson: ''})}>
-                                    CLEAR
-                                </Button>
-                            </div>
                             <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson}
                                        onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                         </div>}
@@ -111,6 +108,11 @@ class Validation extends Component {
                             {this.props.validationExecuting && <div className='loader-wrapper-small' style={{position: 'relative', top: '80px'}}>
                                 <CircularProgress size={60} thickness={5}/>
                             </div>}
+                        </div>}
+                        {st && st !== 'browse' && this.state.activeStep < 1 && <div style={{textAlign: 'center'}}>
+                            <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({activeStep: 1})} disabled={validateDisabled}>
+                                next
+                            </Button>
                         </div>}
                     </div>
                 </div>
@@ -135,7 +137,6 @@ class Validation extends Component {
     };
 
     toggleTree = (query) => {
-        // query = this.state.query !== query ? query : '';
         this.setState({query, manualJson: '', file: '', fileJson: '', activeStep: 1});
     };
 
@@ -166,16 +167,8 @@ class Validation extends Component {
         }
 
         if (this.state.selectedProfile) {
-            let type = json.resourceType;
-            let SD = this.props.sds.find(i => i.profileType === type);
-
-            if (!SD) {
-                this.props.setGlobalError(`Unable to validate resource "${type}" against this profile.`);
-                return;
-            }
-
             !json.meta && (json.meta = {});
-            json.meta.profile = [SD.fullUrl];
+            json.meta.profile = [this.state.selectedProfile.profile.fullUrl];
         }
         return json;
     };

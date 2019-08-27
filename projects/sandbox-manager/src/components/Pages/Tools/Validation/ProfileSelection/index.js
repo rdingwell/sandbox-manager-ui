@@ -13,30 +13,40 @@ class ProfileSelection extends Component {
     componentDidMount() {
         // Query
         if (this.props.query) {
-            // let type = this.props.query.split('/')[0];
-            // this.props.loadResource(this.props.query);
-            // this.props.loadRelativeProfiles(type);
+            let type = this.props.query.split('/')[0];
+            this.props.loadProfilesBySD(type);
+            this.setState({type});
+        } else if (this.props.fileJson) {
+            try {
+                let json = JSON.parse(this.props.fileJson);
+                this.props.loadProfilesBySD(json.resourceType);
+                this.setState({type: json.resourceType});
+            } catch (e) {
+                console.log(e);
+            }
         }
-        this.props.loadProfiles();
     }
 
     render() {
         return <div className='profile-selection'>
-            {this.props.profilesLoading && <div className='loader'>
+            {this.props.fetchingProfilesByDefinition && <div className='loader'>
                 <CircularProgress/>
                 <div>
                     Searching for relevant profiles
                 </div>
             </div>}
-            {this.props.profiles && <div className='profile-list'>
+            {!this.props.fetchingProfilesByDefinition && <div className='profile-list'>
                 <List subheader={<ListSubheader>
-                    Profiles with structure definition for "{this.props.query.split('/')[0]}"
+                    Profiles with structure definition for "{this.state.type}"
                 </ListSubheader>}>
-                    {this.props.profiles.map((profile, id) =>
-                        <ListItem key={id} className='profile' button onClick={() => this.props.profileSelected(profile)}>
-                            {profile.profileId}
+                    {Object.keys(this.props.profiles).map((profile, id) =>
+                        <ListItem key={id} className='profile' button onClick={() => this.props.profileSelected({id: this.props.profiles[profile].fhirProfileId, profile: this.props.profiles[profile]})}>
+                            {profile}
                         </ListItem>
                     )}
+                    {!this.props.profiles && <ListItem className='profile'>
+                        There is no profile with structure definition for "{this.state.type}"
+                    </ListItem>}
                 </List>
             </div>}
         </div>;

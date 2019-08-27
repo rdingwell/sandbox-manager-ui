@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
+    loadProfilesBySD, clearLoadedProfilesBySD
 } from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -41,6 +42,7 @@ class Profiles extends Component {
 const mapStateToProps = state => {
     return {
         sds: state.fhir.sds,
+        definitionTypes: state.fhir.definitionTypes,
         profileSDsLoading: state.fhir.profileSDsLoading,
         profileResources: state.fhir.profileResources,
         results: state.fhir.customSearchResults,
@@ -58,13 +60,16 @@ const mapStateToProps = state => {
         validationExecuting: state.fhir.validationExecuting,
         fetchingProfileResource: state.fhir.fetchingResource,
         profilesUploadingStatus: state.fhir.profilesUploadingStatus,
-        fetchingFile: state.fhir.fetchingFile
+        fetchingFile: state.fhir.fetchingFile,
+        profilesByDefinition: state.fhir.profilesByDefinition,
+        fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition
     };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource
+    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
+    loadProfilesBySD, clearLoadedProfilesBySD
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles));

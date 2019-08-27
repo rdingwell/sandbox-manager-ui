@@ -10,13 +10,19 @@ class Filters extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {}
+        this.state = {
+            filter: ''
+        }
+    }
+
+    componentDidMount() {
+        this.props.fetchDefinitionTypes();
     }
 
     render() {
         let deleteCallbackTypeFilter = this.props.appliedTypeFilter ? () => this.filterByType() : undefined;
         let palette = this.props.theme;
-        let typeFilterTitle = this.props.appliedTypeFilter ? this.props.appliedTypeFilter : 'Type';
+        let typeFilterTitle = !!this.state.filter ? this.state.filter : 'Type';
 
         return <div className='profiles-filters'>
             <IconButton onClick={() => this.setState({desc: !this.state.desc})} className='sort-button'>
@@ -28,21 +34,17 @@ class Filters extends Component {
             <div>
                 <span ref='type-filter'/>
                 <Chip className={'chip' + (deleteCallbackTypeFilter ? ' active' : '')} onClick={() => this.showFilter('type-filter')} onDelete={deleteCallbackTypeFilter}
-                      title={<Fragment>
+                      label={<Fragment>
                           <span className='title'>{typeFilterTitle}</span>
                           <span className='icon-wrapper'>{!deleteCallbackTypeFilter && <DownIcon style={{color: palette.p3}}/>}</span>
                       </Fragment>}/>
                 {this.state.visibleFilter === 'type-filter' &&
                 <Menu open={true} anchorEl={this.refs['type-filter']} className='type-filter-menu' onExit={() => this.showFilter()}>
-                    <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Patient')}>
-                        Patient
-                    </MenuItem>
-                    <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Practitioner')}>
-                        Practitioner
-                    </MenuItem>
-                    <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Hook')}>
-                        CDS Hook
-                    </MenuItem>
+                    {this.props.definitionTypes.map(definition => {
+                        return <MenuItem key={definition} className='type-filter-menu-item' onClick={() => this.filterByType(definition)}>
+                            {definition}
+                        </MenuItem>
+                    })}
                 </Menu>}
             </div>
         </div>
@@ -53,8 +55,9 @@ class Filters extends Component {
         this.showFilter();
     };
 
-    filterByType = (type) => {
-        this.props.onFilter && this.props.onFilter('typeFilter', type);
+    filterByType = (filter) => {
+        this.setState({filter});
+        this.props.onFilter && this.props.onFilter('typeFilter', filter);
         this.showFilter();
     };
 
