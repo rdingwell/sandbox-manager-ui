@@ -152,7 +152,7 @@ class Manage extends Component {
                             </List>}
                     </div>
                 </div>)}
-            {this.props.profilesLoading && <div className='loader-wrapper'>
+            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper-small top'>
                 <CircularProgress size={40} thickness={5}/>
             </div>}
         </div>
