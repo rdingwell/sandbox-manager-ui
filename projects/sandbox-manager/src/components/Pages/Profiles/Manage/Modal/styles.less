@@ -4,6 +4,22 @@
   top: 24px;
 }
 
+.wrong-file-type-modal {
+  width: 300px;
+  height: 250px;
+
+  .profiles-modal {
+    height: 100%;
+
+    & > div:nth-child(2) {
+      height: ~'calc(100% - 68px)';
+      padding-top: 100px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
 .resources-modal {
   & > div > div:first-of-type {
     padding: 0 !important;

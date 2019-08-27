@@ -30,6 +30,8 @@ class ProfilesModal extends Component {
         this.state = {
             canFit: 10,
             project: '',
+            profileId: '',
+            profileName: '',
             menuActive: false,
             showZipWarning: false,
             simplifierProjectName: '',
@@ -48,21 +50,21 @@ class ProfilesModal extends Component {
             marginLeft: '0'
         };
         let actions = [
-            <div className='warning-modal-action'>
+            <div className='warning-modal-action' key={1}>
                 <Button variant='contained' color='primary' onClick={this.toggleWarningModal}>
                     OK
                 </Button>
             </div>
         ];
         let inputActions = [
-            <div className='warning-modal-action'>
+            <div className='warning-modal-action' key={2}>
                 <Button variant='contained' color='primary' onClick={this.saveProfile}>
                     OK
                 </Button>
             </div>
         ];
         let inputModalActions = [
-            <div key={1} className='input-modal-action'>
+            <div key={3} className='input-modal-action'>
                 <Button variant='contained' color='primary' onClick={this.loadRemoteFile} disabled={!this.state.project || (this.state.project === 'manual' && this.state.simplifierProjectName.length < 2)}>
                     Load
                 </Button>
@@ -73,7 +75,7 @@ class ProfilesModal extends Component {
 
 
         this.state.showZipWarning &&
-        modals.push(<Dialog open={this.state.showZipWarning} modal={false} onRequestClose={this.toggleWarningModal} actions={actions} key={1}>
+        modals.push(<Dialog open={this.state.showZipWarning} onClose={this.toggleWarningModal} key={1} classes={{paper: 'wrong-file-type-modal'}}>
             <div className='profiles-modal'>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={this.toggleWarningModal}>
@@ -86,6 +88,9 @@ class ProfilesModal extends Component {
                         Only zip files are allowed!
                     </p>
                 </div>
+                <DialogActions>
+                    {actions}
+                </DialogActions>
             </div>
         </Dialog>);
 
@@ -115,7 +120,7 @@ class ProfilesModal extends Component {
                     <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
                         <span>{this.refs.fileZip.files[0].name}</span>
                     </div>
-                    <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}}/>
+                    <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={this.submitMaybe}/>
                     <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
                 </div>
             </div>
@@ -146,7 +151,8 @@ class ProfilesModal extends Component {
                 </Fab>
             </div>
             {modals}
-            <input type='file' id='fileZip' ref='fileZip' style={{display: 'none'}} onChange={this.loadZip}/>
+            <input accept='application/x-bzip application/x-bzip2 application/gzip application/x-rar-compressed application/x-tar application/zip application/x-7z-compressed' type='file' id='fileZip'
+                   ref='fileZip' style={{display: 'none'}} onChange={this.loadZip}/>
         </Fragment>;
     }
 
@@ -156,7 +162,8 @@ class ProfilesModal extends Component {
     };
 
     toggleInputModal = () => {
-        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false});
+        this.refs.fileZip.value = [];
+        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, profileName: '', profileId: ''});
     };
 
     getModalContent = (palette) => {
@@ -228,6 +235,10 @@ class ProfilesModal extends Component {
             profileId = value.substring(0, 20);
         }
         this.setState({profileName, profileId});
+    };
+
+    submitMaybe = (event) => {
+        [10, 13].indexOf(event.charCode) >= 0 && this.saveProfile();
     };
 }
 

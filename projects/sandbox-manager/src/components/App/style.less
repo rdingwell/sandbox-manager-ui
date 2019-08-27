@@ -254,20 +254,28 @@
 }
 
 .hooks-dialog {
+  min-width: 35vw;
+  max-width: inherit;
+
+  .paper-body > div:last-child {
+    overflow: auto;
+    height: ~'calc(100% - 48px)';
+  }
+
   & > div:first-of-type {
     padding: 0 !important;
     height: 60vh;
     overflow: hidden;
   }
 
+  .no-cards-message {
+    text-align: center;
+    width: 100%;
+    padding-top: 100px;
+  }
+
   .cards-tabs-wrapper {
     overflow: hidden;
-
-    .no-cards-message {
-      text-align: center;
-      width: 100%;
-      padding-top: 100px;
-    }
 
     & > div:nth-child(2) {
       background-color: whitesmoke;
