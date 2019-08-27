@@ -360,10 +360,12 @@ export function loadResource(resource) {
 }
 
 export function fetchDefinitionTypes() {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(fhir_setFetchingDefinitionTypes(true));
-            API.get(`http://localhost:12000/profile/getAllProfileTypes?sandboxId=${sessionStorage.sandboxId}`)
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
+            API.get(`${configuration.sandboxManagerApiUrl}/profile/getAllProfileTypes?sandboxId=${sessionStorage.sandboxId}`)
                 .then(res => {
                     dispatch(fhir_setDefinitionTypes(res));
                 })
@@ -375,10 +377,12 @@ export function fetchDefinitionTypes() {
 }
 
 export function loadProfilesBySD(definition) {
-    return dispatch => {
+    return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(fhir_setFetchingProfilesByDefinition(true));
-            API.get(`http://localhost:12000/profile?sandboxId=${sessionStorage.sandboxId}&type=${definition}`)
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
+            API.get(`${configuration.sandboxManagerApiUrl}/profile?sandboxId=${sessionStorage.sandboxId}&type=${definition}`)
                 .then(res => {
                     dispatch(fhir_setProfilesByDefinition(res));
                 })
