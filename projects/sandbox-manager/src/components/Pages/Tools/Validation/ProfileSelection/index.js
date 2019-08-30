@@ -44,9 +44,10 @@ class ProfileSelection extends Component {
                     Profiles with structure definition for "{this.state.type}"
                 </ListSubheader>}>
                     {!this.state.wrongFile && !!this.props.profiles && Object.keys(this.props.profiles).map((profile, id) =>
-                        <ListItem key={id} className='profile' button onClick={() => this.props.profileSelected({id: this.props.profiles[profile].fhirProfileId, profile: this.props.profiles[profile]})}>
-                            {profile}
-                        </ListItem>
+                        this.props.profiles[profile].map((sd, i) =>
+                            <ListItem key={`${id}${i}`} className='profile' button onClick={() => this.props.profileSelected({id: this.props.profiles[profile][i].fhirProfileId, profile: this.props.profiles[profile][i]})}>
+                                <span style={{display: 'inline-block', minWidth: '200px'}}>{profile}</span> {this.props.profiles[profile].length > 1 && sd.relativeUrl.split('/')[1]}
+                            </ListItem>)
                     )}
                     {!this.props.profiles && <ListItem className='profile'>
                         There is no profile with structure definition for "{this.state.type}"
