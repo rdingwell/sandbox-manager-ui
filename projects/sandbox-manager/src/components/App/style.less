@@ -254,8 +254,9 @@
 }
 
 .hooks-dialog {
+  width: 800px;
   min-width: 35vw;
-  max-width: inherit;
+  max-width: inherit !important;
 
   .paper-body > div:last-child {
     overflow: auto;
@@ -288,6 +289,12 @@
 
   .react-json-view {
     padding: 10px;
+    .variable-value {
+      width: 100%;
+      overflow: hidden;
+      white-space: normal;
+      word-break: break-all;
+    }
   }
 
   .paper-card {

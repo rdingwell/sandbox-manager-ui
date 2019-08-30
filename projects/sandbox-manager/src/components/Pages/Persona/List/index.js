@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Badge, CircularProgress, Fab, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHead, TableRow, TableCell} from '@material-ui/core';
+import {Badge, CircularProgress, Fab, IconButton, Menu, MenuItem, Popover, Table, TableBody, TableHead, TableRow, TableCell, Tooltip} from '@material-ui/core';
 import DownIcon from "@material-ui/icons/KeyboardArrowDown";
 import ContentAdd from '@material-ui/icons/Add';
 import LaunchIcon from '@material-ui/icons/Edit';
@@ -203,7 +203,11 @@ class PersonaList extends Component {
                     {badge}
                 </TableCell>
                 <TableCell className={'persona-info name' + (isPractitioner ? ' pract' : '')}>
-                    {persona.fhirName || (!!persona.name ? this.getName(persona.name[0] || persona.name) : '')}
+                    <Tooltip title={persona.fhirName || (!!persona.name ? this.getName(persona.name[0] || persona.name) : '')}>
+                        <span>
+                        {persona.fhirName || (!!persona.name ? this.getName(persona.name[0] || persona.name) : '')}
+                        </span>
+                    </Tooltip>
                 </TableCell>
                 {!isPatient && !isPractitioner && <TableCell className='persona-info resource'>
                     {persona.resource + '/' + persona.fhirId}

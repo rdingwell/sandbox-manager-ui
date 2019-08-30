@@ -126,9 +126,9 @@ class Create extends Component {
 
         let actions = this.state.currentStep !== 3
             ? [<Button key={1} variant='outlined' disabled={!nextEnabled} style={{color: nextColor}} onClick={this.next}>
-                <RightIcon/> NEXT
+                NEXT <RightIcon/>
             </Button>]
-            : [<Button key={2} variant='contained' disabled={!nextEnabled} color='primary' onClick={this.createScenario}>
+            : [<Button key={2} variant='contained' disabled={!nextEnabled} color='primary' onClick={this.createScenario} style={{padding: '6px 30px'}}>
                 SAVE
             </Button>];
 
