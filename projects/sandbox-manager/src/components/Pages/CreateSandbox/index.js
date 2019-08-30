@@ -61,7 +61,7 @@ class Index extends Component {
                             </FormControl>
                             <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
-                            <FormControl style={{minWidth: '200px'}}>
+                            <FormControl style={{minWidth: '200px', marginTop: '20px'}}>
                                 <InputLabel htmlFor="age-simple" data-qa='sandbox-version'>FHIR version</InputLabel>
                                 <Select value={this.state.apiEndpointIndex || ''} onChange={e => this.sandboxFhirVersionChangedHandler('apiEndpointIndex', e.target.value)}
                                         inputProps={{name: 'age', id: 'age-simple'}} className='fhirVersion'>
