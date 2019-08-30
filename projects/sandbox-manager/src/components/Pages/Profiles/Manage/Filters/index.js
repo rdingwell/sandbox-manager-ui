@@ -29,9 +29,9 @@ class Filters extends Component {
                 <ContentSort className={!this.state.desc ? 'rev' : ''} style={{color: palette.p3}}/>
             </IconButton>
             <div>
-                <TextField id='profile-filter' placeholder='By name' onChange={e => this.filter(e.target.value)}/>
+                <TextField id='profile-filter' placeholder='By name' value={this.props.filter} onChange={e => this.filter(e.target.value)}/>
             </div>
-            <div>
+            {this.props.showType && <div>
                 <span ref='type-filter'/>
                 <Chip className={'chip' + (deleteCallbackTypeFilter ? ' active' : '')} onClick={() => this.showFilter('type-filter')} onDelete={deleteCallbackTypeFilter}
                       label={<Fragment>
@@ -46,7 +46,7 @@ class Filters extends Component {
                         </MenuItem>
                     })}
                 </Menu>}
-            </div>
+            </div>}
         </div>
     }
 

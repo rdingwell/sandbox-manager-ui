@@ -24,7 +24,8 @@ class Manage extends Component {
             profileId: '',
             resourceId: '',
             profileName: '',
-            activeTab: 'info'
+            activeTab: 'info',
+            itemsFilter: ''
         };
     }
 
@@ -38,7 +39,7 @@ class Manage extends Component {
     getList = () => {
         return <div className='profiles-list'>
             <div className='wrapper'>
-                <Filters {...this.props} onFilter={this.onFilter}/>
+                <Filters {...this.props} onFilter={this.onFilter} filter={this.state.itemsFilter} showType={!this.state.selectedProfile}/>
             </div>
             {!this.props.profilesLoading && ((!this.state.selectedResource && !this.state.selectedProfile)
                 ? <List className='profiles'>
@@ -169,11 +170,17 @@ class Manage extends Component {
     };
 
     onFilter = (a, b) => {
-        let filter = Object.assign({}, this.state.filter);
-        filter[a] = b;
-        a === 'typeFilter' && !!b && this.props.loadProfilesBySD(b);
-        a === 'typeFilter' && !b && this.props.clearLoadedProfilesBySD(b);
-        this.setState({filter});
+        if (!this.state.selectedProfile) {
+            let filter = Object.assign({}, this.state.filter);
+            filter[a] = b;
+            a === 'typeFilter' && !!b && this.props.loadProfilesBySD(b);
+            a === 'typeFilter' && !b && this.props.clearLoadedProfilesBySD(b);
+            let state = {filter};
+            a !== 'typeFilter' && (state.itemsFilter = b);
+            this.setState(state);
+        } else if (this.state.selectedProfile && !this.state.selectedResource) {
+            a !== 'typeFilter' && this.setState({itemsFilter: b});
+        }
     };
 
     expand = (_, e) => {
@@ -206,9 +213,11 @@ class Manage extends Component {
                 </div>
             </ListItem>]
             : this.props.profileResources.map(res => {
-                return <ListItem key={res.relativeUrl} onClick={() => this.selectResource(res)} button>
+                let item = <ListItem key={res.relativeUrl} onClick={() => this.selectResource(res)} button>
                     {res.relativeUrl}
-                </ListItem>
+                </ListItem>;
+                let shouldShow = (this.state.itemsFilter && res.relativeUrl.toLowerCase().indexOf(this.state.itemsFilter.toLowerCase()) >= 0) || !this.state.itemsFilter;
+                return shouldShow ? item : null;
             });
     };
 
@@ -231,7 +240,7 @@ class Manage extends Component {
             this.props.onProfileSelected && this.props.onProfileSelected(profile);
         }
 
-        this.setState({selectedProfile: profile, selectedResource: undefined});
+        this.setState({selectedProfile: profile, selectedResource: undefined, itemsFilter: '', filter: {}});
     };
 
     toggleProfileToBrowse = (id) => {
