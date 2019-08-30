@@ -33,13 +33,14 @@ class Validation extends Component {
         let sv = this.state.activeStep === 2;
         let sp = this.state.activeStep === 1;
         let validateDisabled = (this.state.selectedType === 'uri' && this.state.query.length <= 5) || (this.state.selectedType === 'file' && !this.state.file) || (this.state.selectedType === 'json' && this.state.manualJson.length <= 5);
+        let clearDisabled = (this.state.selectedType === 'json' && this.state.manualJson.length < 5);
 
         return <div className='validation-content'>
             <Paper className='paper-card'>
                 <div className='validation-wrapper'>
                     <Stepper activeStep={this.state.activeStep}>
                         <Step>
-                            <StepButton onClick={() => this.setState({selectedType: undefined, selectedPersona: undefined, query: '', activeTab: 'table', activeStep: 0})}>Select resource</StepButton>
+                            <StepButton onClick={this.goToStart}>Select resource</StepButton>
                         </Step>
                         <Step>
                             <StepButton onClick={() => this.setState({activeTab: 'table', activeStep: 1})}>Select profile</StepButton>
@@ -90,7 +91,7 @@ class Validation extends Component {
                         </div>}
                         {!sv && st === 'json' && !sp && <div>
                             <span className='tab-title'>JSON</span>
-                            <TextField className='manual-input' placeholder='Paste fhir resource json here' multiline fullWidth value={this.state.manualJson} onKeyPress={e => this.submitMaybe(e, true)}
+                            <TextField className='manual-input' placeholder='Paste FHIR resource JSON here' multiline fullWidth value={this.state.manualJson} onKeyPress={e => this.submitMaybe(e, true)}
                                        onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                         </div>}
                         {!sv && sp && <ProfileSelection {...this.state} {...this.props} profileSelected={this.profileSelected}/>}
@@ -113,12 +114,20 @@ class Validation extends Component {
                             <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({activeStep: 1})} disabled={validateDisabled}>
                                 next
                             </Button>
+                            {this.state.selectedType === 'json' && this.state.activeStep < 1 &&
+                            <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({manualJson: ''})} disabled={clearDisabled}>
+                                clear
+                            </Button>}
                         </div>}
                     </div>
                 </div>
             </Paper>
         </div>
     }
+
+    goToStart = () => {
+        this.setState({selectedType: undefined, selectedPersona: undefined, query: '', activeTab: 'table', activeStep: 0, fileJson: undefined, file: ''});
+    };
 
     submitMaybe = (event, checkForCtrl) => {
         [10, 13].indexOf(event.charCode) >= 0 && (!checkForCtrl || event.ctrlKey) && this.setState({activeStep: 1});
@@ -151,6 +160,7 @@ class Validation extends Component {
         fr.onload = (e) => {
             let fileJson = e.target.result;
             this.setState({query: '', manualJson: '', fileJson, file: file.name});
+            this.refs.file.value = undefined;
         };
 
         fr.readAsText(file);

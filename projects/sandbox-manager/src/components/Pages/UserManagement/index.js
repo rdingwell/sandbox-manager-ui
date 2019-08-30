@@ -186,8 +186,10 @@ class Users extends Component {
     };
 
     toggleImportUsersModal = () => {
+        let state = {importUsersModal: !this.state.importUsersModal};
+        state.importUsersModal && (state.usersToImport = '');
 
-        this.setState({importUsersModal: !this.state.importUsersModal}, () => {
+        this.setState(state, () => {
             setTimeout(() => {
                 let field = document.getElementById('emailList');
                 field && field.focus();

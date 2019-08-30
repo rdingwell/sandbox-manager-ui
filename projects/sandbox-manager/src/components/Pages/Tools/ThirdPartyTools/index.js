@@ -12,7 +12,8 @@ const TOOLS = [
         title: 'Inferno',
         description: 'Testing suite for FHIR to help developers implement the FHIR standard.',
         image: '/img/inferno_logo.png',
-        link: 'https://inferno.healthit.gov/inferno/'
+        link: 'https://inferno.healthit.gov/inferno/',
+        larger: true
     },
     {
         title: 'Crucible',
@@ -39,7 +40,7 @@ class ThirdPartyTools extends Component {
             <div className='third-party-tools'>
                 {TOOLS.map(t =>
                     <Card title={t.title} className='tool-card' onClick={() => this.openLink(t.link)} key={t.link}>
-                        <CardMedia className='media-wrapper' image={t.image}>
+                        <CardMedia className={`media-wrapper${t.larger ? ' larger' : ''}`} image={t.image}>
                             <span/>
                         </CardMedia>
                         <div className='card-title' style={titleStyle}>

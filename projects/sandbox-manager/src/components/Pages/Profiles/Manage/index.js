@@ -153,8 +153,11 @@ class Manage extends Component {
                             </List>}
                     </div>
                 </div>)}
-            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper-small top'>
+            {(this.props.profilesLoading || this.props.profilesUploading) && <div className='loader-wrapper-small'>
                 <CircularProgress size={40} thickness={5}/>
+                {!!this.props.profilesUploadingStatus.resourceSavedCount && <span className='info'>
+                    {this.props.profilesUploadingStatus.resourceSavedCount} resources processed
+                </span>}
             </div>}
         </div>
     };

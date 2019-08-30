@@ -39,7 +39,7 @@ class Filters extends Component {
                           <span className='icon-wrapper'>{!deleteCallbackTypeFilter && <DownIcon style={{color: palette.p3}}/>}</span>
                       </Fragment>}/>
                 {this.state.visibleFilter === 'type-filter' &&
-                <Menu open={true} anchorEl={this.refs['type-filter']} className='type-filter-menu' onExit={() => this.showFilter()}>
+                <Menu open={true} anchorEl={this.refs['type-filter']} className='type-filter-menu' onClose={() => this.showFilter()}>
                     {this.props.definitionTypes.map(definition => {
                         return <MenuItem key={definition} className='type-filter-menu-item' onClick={() => this.filterByType(definition)}>
                             {definition}

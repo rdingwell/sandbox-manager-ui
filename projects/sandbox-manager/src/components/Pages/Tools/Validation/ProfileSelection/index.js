@@ -16,9 +16,10 @@ class ProfileSelection extends Component {
             let type = this.props.query.split('/')[0];
             this.props.loadProfilesBySD(type);
             this.setState({type});
-        } else if (!!this.props.fileJson) {
+        } else if (!!this.props.fileJson || !!this.props.manualJson) {
+            let j = this.props.fileJson || this.props.manualJson;
             try {
-                let json = JSON.parse(this.props.fileJson);
+                let json = JSON.parse(j);
                 this.props.loadProfilesBySD(json.resourceType);
                 this.setState({type: json.resourceType});
             } catch (e) {
