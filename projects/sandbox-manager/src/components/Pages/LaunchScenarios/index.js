@@ -404,7 +404,8 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton} color='primary'>
+                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
+                             color={`${deleteEnabled ? 'secondary' : 'primary'}`}>
                             {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
                         </Fab>
                         <Table className='custom-context-table'>
@@ -452,7 +453,7 @@ class LaunchScenarios extends Component {
     };
 
     handleContextSelection = (selection) => {
-        !this.buttonClick && this.setState({selectedCustomContent: selection[0]});
+        !this.buttonClick && this.setState({selectedCustomContent: selection});
     };
 
     deleteCustomContext = () => {
@@ -476,7 +477,7 @@ class LaunchScenarios extends Component {
         let contexts = selectedScenario.contextParams || [];
         return !this.props.modifyingCustomContext
             ? contexts.map((context, i) => {
-                return <TableRow key={i} selected={this.state.selectedCustomContent === i} onClick={() => this.handleContextSelection(i)}>
+                return <TableRow hover key={i} selected={this.state.selectedCustomContent === i} onClick={() => this.handleContextSelection(i)} role='checkbox'>
                     <TableCell>
                         {context.name}
                     </TableCell>

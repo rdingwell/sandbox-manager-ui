@@ -46,7 +46,7 @@ class ProfileSelection extends Component {
             {!this.props.fetchingProfilesByDefinition && !this.state.wrongFile && <div className='profile-list'>
                 <List subheader={<ListSubheader>
                     Profiles with structure definition for "{this.state.type}"
-                    {!hasProfile && <Button variant='contained' color='primary' className='own-button' onClick={() => this.props.continue()}>
+                    {hasProfile && <Button variant='contained' color='primary' className='own-button' onClick={() => this.props.continue()}>
                         Use own
                     </Button>}
                 </ListSubheader>}>
