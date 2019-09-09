@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Tabs, Tab} from '@material-ui/core';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validate, validateExisting, loadProfilesBySD} from '../../../redux/action-creators';
+import {app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validate, validateExisting, loadProfilesBySD, loadQueryObject} from '../../../redux/action-creators';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import ThirdPartyTools from "./ThirdPartyTools";
 import Validation from "./Validation";
@@ -41,10 +41,11 @@ const mapStateToProps = state => {
         validationExecuting: state.fhir.validationExecuting,
         validationResults: state.fhir.validationResults,
         loadProfilesBySD: state.fhir.loadProfilesBySD,
+        queryObject: state.fhir.queryObject,
         fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition
     }
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD, loadQueryObject}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Tools));

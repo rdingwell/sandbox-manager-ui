@@ -44,7 +44,7 @@ class Manage extends Component {
             {!this.props.profilesLoading && ((!this.state.selectedResource && !this.state.selectedProfile)
                 ? <List className='profiles'>
                     {!this.props.profilesUploading && !this.props.fetchingFile && this.props.profiles && this.props.profiles.map((profile, key) => {
-                        let isNotFiltered = (!this.state.filter.nameFilter || profile.profileId.indexOf(this.state.filter.nameFilter) >= 0) &&
+                        let isNotFiltered = (!this.state.filter.nameFilter || profile.profileId.toLowerCase().indexOf(this.state.filter.nameFilter.toLowerCase()) >= 0) &&
                             (!this.props.profilesByDefinition || Object.keys(this.props.profilesByDefinition).indexOf(profile.profileName) !== -1);
                         return isNotFiltered && <ListItem key={key} onClick={() => this.toggleProfile(profile.profileId)} button>
                             <ProfilesIcon className='avatar'/>

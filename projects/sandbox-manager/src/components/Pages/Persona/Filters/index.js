@@ -65,7 +65,7 @@ export default class Filters extends Component {
 
         this.state = {
             filters: {},
-            maxAge: 99,
+            maxAge: 100,
             minAge: 0,
             ageChanged: false
         }
@@ -103,7 +103,7 @@ export default class Filters extends Component {
                           </span>
                       </Fragment>}/>
                 {this.state.visibleFilter === 'gender' &&
-                <Menu open={true} anchorEl={this.refs['gender-filter']} className='left-margin gender-filter-menu' width='200px' onClose={() => this.showFilter()}>
+                <Menu open={true} anchorEl={this.refs['gender-filter']} className='left-margin gender-filter-menu' onClose={() => this.showFilter()}>
                     <MenuItem className='gender-filter-menu-item' onClick={() => this.filter('gender', 'male')}>
                         Male
                     </MenuItem>
@@ -131,7 +131,8 @@ export default class Filters extends Component {
                             </IconButton>
                         </div>
                         <div className='slider-wrapper'>
-                            <CustomSlider valueLabelDisplay='auto' aria-label='slider' defaultValue={[0, 100]} getAriaValueText={() => <span>23</span>}/>
+                            <CustomSlider valueLabelDisplay='auto' aria-label='slider' defaultValue={[0, 100]} getAriaValueText={() => <span>23</span>} onChange={this.filterByAge}
+                                          defaultValue={[this.state.minAge, this.state.maxAge]}/>
                         </div>
                     </div>
                 </Popover>}
@@ -175,16 +176,10 @@ export default class Filters extends Component {
             : this.showFilter();
     };
 
-    sliderChange = (slider, value) => {
-        if (slider === 'maxAge') {
-            value = value >= this.state.minAge ? value : this.state.minAge + 1;
-            value = value > 99 ? 99 : value;
-        } else {
-            value = value <= this.state.maxAge ? value : this.state.maxAge - 1;
-            value = value < 0 ? 0 : value;
-        }
+    filterByAge = (_, val) => {
         let state = {ageChanged: true};
-        state[slider] = value;
+        state.minAge = val[0];
+        state.maxAge = val[1];
         this.setState(state)
     };
 

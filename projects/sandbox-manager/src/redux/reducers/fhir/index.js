@@ -42,6 +42,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_PROFDILES_UPLOADING:
             state.profilesUploading = action.payload.loading;
             break;
+        case types.FHIR_SET_QUERRY_BOJECT:
+            state.queryObject = action.payload.object;
+            break;
         case types.FHIR_SET_PROFDILES_UPLOADING_STATUS:
             state.profilesUploadingStatus = action.payload.status;
             break;

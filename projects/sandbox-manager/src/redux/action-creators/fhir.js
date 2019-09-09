@@ -188,6 +188,13 @@ export function fhir_setProfilesByDefinition(profiles) {
     };
 }
 
+export function setQueryObject(object) {
+    return {
+        type: types.FHIR_SET_QUERRY_BOJECT,
+        payload: {object}
+    };
+}
+
 export function fhir_setDefinitionTypes(definitionTypes) {
     return {
         type: types.FHIR_SET_DEFINITION_TYPES,
@@ -388,6 +395,19 @@ export function loadProfilesBySD(definition) {
                 })
                 .finally(() => {
                     dispatch(fhir_setFetchingProfilesByDefinition(false));
+                });
+        }
+    }
+}
+
+export function loadQueryObject(query) {
+    return (dispatch, getState) => {
+        if (window.fhirClient) {
+            let state = getState();
+            let configuration = state.config.xsettings.data.sandboxManager;
+            API.get(`${window.fhirClient.server.serviceUrl}/${query}`)
+                .then(res => {
+                    dispatch(setQueryObject(res));
                 });
         }
     }

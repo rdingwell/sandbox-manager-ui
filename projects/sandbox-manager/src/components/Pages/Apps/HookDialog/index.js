@@ -2,8 +2,9 @@ import React, {Component, Fragment} from 'react';
 import {Button, Paper, Dialog, IconButton, Fab, TextField, Tab, Tabs, Box} from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import HooksIcon from "svg-react-loader?name=Patient!../../../../assets/icons/hooks-logo-mono.svg";
-import './styles.less';
 import ReactJson from 'react-json-view';
+
+import './styles.less';
 
 class AppDialog extends Component {
     constructor(props) {

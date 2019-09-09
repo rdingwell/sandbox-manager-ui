@@ -433,8 +433,10 @@ export const importData = (data) => {
                 dispatch(setImportResults(res));
             })
             .catch(error => {
+                console.log(error);
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(error.error.responseJSON));
+                error && error.error && error.error.responseJSON && dispatch(setImportResults(error.error.responseJSON));
+                error && !error.error && dispatch(setImportResults(error));
             });
     }
 };

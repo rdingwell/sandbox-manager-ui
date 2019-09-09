@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {CircularProgress, List, ListItem, ListSubheader} from "@material-ui/core";
+import {CircularProgress, List, ListItem, ListSubheader, Button} from "@material-ui/core";
 
 import './styles.less';
 
@@ -15,6 +15,7 @@ class ProfileSelection extends Component {
         if (!!this.props.query) {
             let type = this.props.query.split('/')[0];
             this.props.loadProfilesBySD(type);
+            this.props.loadQueryObject(this.props.query);
             this.setState({type});
         } else if (!!this.props.fileJson || !!this.props.manualJson) {
             let j = this.props.fileJson || this.props.manualJson;
@@ -32,6 +33,9 @@ class ProfileSelection extends Component {
     }
 
     render() {
+        let obj = this.props.queryObject;
+        let hasProfile = !!obj && !!obj.meta && !!obj.meta.profle && obj.meta.profile.length > 0;
+
         return <div className='profile-selection'>
             {this.props.fetchingProfilesByDefinition && <div className='loader'>
                 <CircularProgress/>
@@ -42,10 +46,14 @@ class ProfileSelection extends Component {
             {!this.props.fetchingProfilesByDefinition && !this.state.wrongFile && <div className='profile-list'>
                 <List subheader={<ListSubheader>
                     Profiles with structure definition for "{this.state.type}"
+                    {!hasProfile && <Button variant='contained' color='primary' className='own-button' onClick={() => this.props.continue()}>
+                        Use own
+                    </Button>}
                 </ListSubheader>}>
                     {!this.state.wrongFile && !!this.props.profiles && Object.keys(this.props.profiles).map((profile, id) =>
                         this.props.profiles[profile].map((sd, i) =>
-                            <ListItem key={`${id}${i}`} className='profile' button onClick={() => this.props.profileSelected({id: this.props.profiles[profile][i].fhirProfileId, profile: this.props.profiles[profile][i]})}>
+                            <ListItem key={`${id}${i}`} className='profile' button
+                                      onClick={() => this.props.profileSelected({id: this.props.profiles[profile][i].fhirProfileId, profile: this.props.profiles[profile][i]})}>
                                 <span style={{display: 'inline-block', minWidth: '200px'}}>{profile}</span> {this.props.profiles[profile].length > 1 && sd.relativeUrl.split('/')[1]}
                             </ListItem>)
                     )}

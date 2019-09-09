@@ -94,7 +94,7 @@ class Validation extends Component {
                             <TextField className='manual-input' placeholder='Paste FHIR resource JSON here' multiline fullWidth value={this.state.manualJson} onKeyPress={e => this.submitMaybe(e, true)}
                                        onChange={e => this.setState({query: '', file: '', fileJson: '', manualJson: e.target.value})}/>
                         </div>}
-                        {!sv && sp && <ProfileSelection {...this.state} {...this.props} profileSelected={this.profileSelected}/>}
+                        {!sv && sp && <ProfileSelection {...this.state} {...this.props} profileSelected={this.profileSelected} continue={this.continueWithoutProfile}/>}
                         {sv && <div className='validate-result-wrapper'>
                             {this.props.validationResults && (() => {
                                 return <Fragment>
@@ -137,6 +137,10 @@ class Validation extends Component {
         this.setState({selectedProfile}, () => {
             this.validate();
         })
+    };
+
+    continueWithoutProfile = () => {
+        this.validate();
     };
 
     toggleScreen = (screen) => {
