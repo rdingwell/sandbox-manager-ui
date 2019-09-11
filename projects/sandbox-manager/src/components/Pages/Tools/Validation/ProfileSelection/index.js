@@ -46,8 +46,8 @@ class ProfileSelection extends Component {
             {!this.props.fetchingProfilesByDefinition && !this.state.wrongFile && <div className='profile-list'>
                 <List subheader={<ListSubheader>
                     Profiles with structure definition for "{this.state.type}"
-                    {hasProfile && <Button variant='contained' color='primary' className='own-button' onClick={() => this.props.continue()}>
-                        Use own
+                    {!hasProfile && <Button variant='contained' color='primary' className='own-button' onClick={() => this.props.continue()}>
+                        Use default
                     </Button>}
                 </ListSubheader>}>
                     {!this.state.wrongFile && !!this.props.profiles && Object.keys(this.props.profiles).map((profile, id) =>

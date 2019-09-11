@@ -103,7 +103,7 @@ class PersonaList extends Component {
         return <Page {...pageProps}>
             <ConfirmModal red open={this.state.showConfirmModal} confirmLabel='Delete' onConfirm={this.deletePersona} title='Confirm'
                           onCancel={() => this.setState({showConfirmModal: false, personaToDelete: undefined})}>
-                <p>
+                <p style={{padding: '15px 20px'}}>
                     Are you sure you want to delete this {this.props.type.toLowerCase()}?
                 </p>
             </ConfirmModal>
