@@ -4,6 +4,7 @@ export default {
     customExportResults: null,
     executing: false,
     profilesUploadingStatus: {},
+    definitionTypes: [],
     parsed: {
         needPatientBanner: true,
         patientDemographics: {

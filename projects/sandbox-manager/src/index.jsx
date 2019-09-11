@@ -2,8 +2,8 @@ import 'babel-polyfill';
 import 'whatwg-fetch';
 
 import * as React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import {render} from 'react-dom';
+import {Provider} from 'react-redux';
 import Router from './router/';
 import configStore from './redux/';
 

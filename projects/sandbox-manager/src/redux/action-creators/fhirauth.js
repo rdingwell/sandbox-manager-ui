@@ -206,7 +206,7 @@ export function afterFhirAuth (url) {
                     window.FHIR.oauth2.ready(function (newSmart) {
                         dispatch(fhirauth_setSmart(newSmart));
                     });
-                }, 1000);
+                }, 2000);
             } catch (e) {
                 goHome();
             }

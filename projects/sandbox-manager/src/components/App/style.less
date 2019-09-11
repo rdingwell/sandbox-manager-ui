@@ -17,6 +17,19 @@
   z-index: 10000;
 }
 
+.loader-wrapper {
+  padding: 16px;
+}
+
+.full-loader-wrapper {
+  max-width: 600px;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .app-root {
   .display-flex();
   .flex-direction(column);
@@ -241,31 +254,29 @@
 }
 
 .hooks-dialog {
+  width: 800px;
+  min-width: 35vw;
+  max-width: inherit !important;
+
+  .paper-body > div:last-child {
+    overflow: auto;
+    height: ~'calc(100% - 48px)';
+  }
+
   & > div:first-of-type {
     padding: 0 !important;
     height: 60vh;
     overflow: hidden;
   }
 
-  & > div:last-of-type {
-    border-top: 1px solid whitesmoke;
+  .no-cards-message {
+    text-align: center;
+    width: 100%;
+    padding-top: 100px;
   }
 
   .cards-tabs-wrapper {
-    height: 100%;
     overflow: hidden;
-
-    .no-cards-message {
-      text-align: center;
-      width: 100%;
-      padding-top: 100px;
-    }
-
-    & > div:last-of-type {
-      height: ~'calc(100% - 48px)';
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
 
     & > div:nth-child(2) {
       background-color: whitesmoke;
@@ -278,6 +289,12 @@
 
   .react-json-view {
     padding: 10px;
+    .variable-value {
+      width: 100%;
+      overflow: hidden;
+      white-space: normal;
+      word-break: break-all;
+    }
   }
 
   .paper-card {

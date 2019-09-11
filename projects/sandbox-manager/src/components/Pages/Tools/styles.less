@@ -1,0 +1,48 @@
+.tools {
+  .tools-tabs > div:first-of-type {
+    height: 57px;
+    background-color: white;
+    border-bottom: 2px solid whitesmoke;
+    width: 100% !important;
+    padding: 0 4px;
+
+    & > button {
+      max-width: 125px;
+    }
+
+    & > div:nth-child(2) {
+      max-width: 125px;
+    }
+
+    .MuiTabs-flexContainer {
+      margin-top: 5px;
+
+      button {
+        &.Mui-selected {
+          span {
+            color: #0E5676;
+          }
+        }
+
+        span:first-child {
+          font-size: 1.1rem;
+          line-height: 1.1rem;
+        }
+      }
+    }
+  }
+
+  .tools-tabs > div:nth-child(2) {
+    max-width: 375px;
+    padding: 0 4px;
+
+    & > div {
+      max-width: 125px;
+    }
+  }
+
+  .tools-tabs-container {
+    padding-right: 10px;
+    padding-bottom: 20px;
+  }
+}

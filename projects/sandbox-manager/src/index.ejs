@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>HSPC Sandbox Manager</title>
         <link href="/css/font-awesome/css/font-awesome.min.css?_=<%-webpack.hash%>" rel="stylesheet" type="text/css">
+        <link href="/css/rc-tree/css/index.css" rel="stylesheet" type="text/css">
         <link href="/css/iconfonts/index.css?_=<%-webpack.hash%>" rel="stylesheet" type="text/css">
         <link href="/css/roboto/index.css?_=<%-webpack.hash%>" rel="stylesheet" type="text/css">
         <link rel="icon" href="/favicon.ico" type="image/png"/>
@@ -26,5 +27,8 @@
         </div>
         <script src="/externals/moment.min.js?_=<%-webpack.hash%>"></script>
         <script src="/externals/fhir-client.min.js?_=<%-webpack.hash%>"></script>
+        <textarea id='copy-area' style='position: fixed; left: -1000px; top: -2000px; z-index: 100000;'>
+
+        </textarea>
     </body>
 </html>

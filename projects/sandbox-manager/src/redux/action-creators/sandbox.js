@@ -433,8 +433,10 @@ export const importData = (data) => {
                 dispatch(setImportResults(res));
             })
             .catch(error => {
+                console.log(error);
                 dispatch(setDataImporting(false));
-                dispatch(setImportResults(error.error.responseJSON));
+                error && error.error && error.error.responseJSON && dispatch(setImportResults(error.error.responseJSON));
+                error && !error.error && dispatch(setImportResults(error));
             });
     }
 };
@@ -1184,14 +1186,23 @@ export function doLaunch (app, persona, user, noUser, scenario) {
 }
 
 export function copyToClipboard (str) {
-    return dispatch => {
+    return async dispatch => {
         dispatch(setCopying(true));
-        let el = document.createElement('textarea');
+        let el = document.getElementById('copy-area');
         el.value = str;
-        document.body.appendChild(el);
         el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+        try {
+            function listener(e) {
+                console.log(e.clipboardData);
+                e.clipboardData.setData("text/plain", str);
+                e.preventDefault();
+            }
+            document.addEventListener("copy", listener);
+            document.execCommand("copy");
+            document.removeEventListener("copy", listener);
+        } catch (e) {
+            console.log(e);
+        }
         setTimeout(function () {
             dispatch(setCopying(false));
         }, 1500);

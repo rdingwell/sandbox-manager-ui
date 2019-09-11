@@ -1,0 +1,110 @@
+.file-load-wrapper {
+  position: absolute;
+  right: 32px;
+  top: 24px;
+}
+
+.wrong-file-type-modal {
+  width: 300px;
+  height: 250px;
+
+  .profiles-modal {
+    height: 100%;
+
+    & > div:nth-child(2) {
+      height: ~'calc(100% - 68px)';
+      padding-top: 100px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.resources-modal {
+  & > div > div:first-of-type {
+    padding: 0 !important;
+    border-bottom: 2px solid whitesmoke !important;
+  }
+
+  .profiles-modal {
+    height: 66vh;
+
+    .resources, .resource {
+      display: inline-block;
+      vertical-align: top;
+      height: ~'calc(100% - 68px)';
+      position: relative;
+      top: 68px;
+      margin-bottom: 68px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .resources {
+      padding: 18px;
+      width: 450px;
+
+      & > * {
+        cursor: pointer;
+        line-height: 40px;
+        margin-bottom: 10px;
+        padding-left: 10px;
+
+        &.active {
+          background-color: whitesmoke !important;
+        }
+      }
+    }
+
+    .resource {
+      border-right: 2px solid whitesmoke;
+      width: 0;
+      transition: all .5s;
+      overflow: hidden;
+      box-sizing: border-box;
+
+      &.active {
+        transition: all .5s;
+        width: ~'calc(100% - 450px)';
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+.project-input-modal {
+  padding: 0 !important;
+  max-width: initial;
+  width: 600px;
+
+  .client-details {
+    padding: 10px;
+    text-align: center;
+
+    .chip {
+      font-size: 1.1rem;
+      display: inline-block !important;
+      margin-right: 15px !important;
+    }
+
+    a {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .buttons-wrapper {
+      padding: 40px 0;
+      text-align: center;
+
+      & > * {
+        margin: 0 .5rem;
+        width: 180px;
+      }
+    }
+  }
+
+  .paper-card {
+    box-shadow: none;
+  }
+}

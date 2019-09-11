@@ -1,0 +1,88 @@
+.third-party-tools {
+  padding: 10px 0;
+  text-align: center;
+
+  .tool-card {
+    width: 278px;
+    height: 235px;
+    overflow: hidden;
+    cursor: pointer;
+    display: inline-block;
+    margin: 24px 32px 0 0;
+
+    &:hover {
+      .card-title {
+        bottom: 60%;
+        transition: all .5s;
+      }
+    }
+
+    & > div {
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+
+      & > div {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .card-title {
+        bottom: 20%;
+        height: 60%;
+        color: white;
+        transition: all .5s;
+
+        h3 {
+          margin-top: 0;
+        }
+      }
+
+      .media-wrapper {
+        & > div {
+          height: 100%;
+          text-align: center;
+
+          .tool-icon {
+            min-width: initial !important;
+            width: auto !important;
+            height: 100% !important;
+          }
+        }
+      }
+    }
+
+    .card-title {
+      bottom: 0;
+      height: 60%;
+      color: white;
+      transition: all .5s;
+      padding: 10px;
+
+      h3 {
+        margin-top: 0;
+      }
+    }
+
+    .text {
+      padding: 5px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .media-wrapper {
+      text-align: center;
+      background-size: contain;
+      transform: scale(.8);
+
+      &.larger {
+        transform: scale(1.2);
+      }
+
+      .tool-icon {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+}

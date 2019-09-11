@@ -1,0 +1,124 @@
+.import-wrapper {
+  padding: 3.5rem 2rem 2rem 2rem;
+
+  .import-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    & > * {
+      margin-left: 10px;
+    }
+  }
+
+  .import-tabs {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+
+    button {
+      position: relative;
+      z-index: 1000;
+
+      span {
+        font-size: 1.1rem;
+      }
+
+      &.Mui-selected {
+        span {
+          color: white;
+        }
+      }
+
+      svg {
+        position: relative;
+        top: 7px;
+      }
+    }
+
+    .MuiTabs-indicator {
+      height: 57px;
+      z-index: 10;
+    }
+  }
+
+  .import-tabs-container {
+    min-height: 600px;
+    box-sizing: border-box;
+    max-height: ~'calc(100vh - 340px)';
+    background-color: white;
+    overflow: auto;
+
+    & > div {
+      & > * {
+        &:first-child {
+          padding-top: 20px;
+          display: block;
+        }
+
+        &:last-child {
+          padding-bottom: 10px;
+          display: block;
+        }
+
+        padding: 10px 16px;
+      }
+
+      &:nth-of-type(2) {
+        padding-right: 10px;
+        min-height: 600px;
+        box-sizing: border-box;
+        max-height: ~'calc(100vh - 340px)';
+        overflow: auto;
+      }
+    }
+  }
+
+  .import-field-wrapper {
+    textarea {
+      max-height: ~'calc(100vh - 390px)';
+      overflow-y: auto;
+    }
+  }
+
+  .result-wrapper {
+    width: ~'calc(50% - 1rem)';
+    display: inline-block;
+    height: ~'calc(100vh - 210px)';
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+
+    .import-field-wrapper {
+      width: 99.5% !important;
+      max-height: ~'calc(100vh - 340px)';
+
+      & > div {
+        overflow: hidden;
+
+        & > textarea:nth-child(2) {
+          height: 100% !important;
+          padding: 10px !important;
+          margin: 0 !important;
+        }
+      }
+    }
+
+    & > div {
+      box-shadow: none !important;
+      height: 95%;
+
+      & > h2 {
+        margin: 0;
+        padding: 0;
+        color: darkgray;
+      }
+
+      & > h4 {
+        color: darkgray;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

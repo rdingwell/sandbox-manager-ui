@@ -1,6 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const fs = require('fs');
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -13,7 +12,6 @@ const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || 3001;
 const SRC_DIR = path.resolve(__dirname, "src");
 const DIST_DIR = path.resolve(__dirname, "build/www");
-const LIB_DIR = fs.realpathSync(path.resolve(__dirname, "../../node_modules/sandbox-manager-lib"));
 const APP_VERSION = JSON.stringify(pkg.version);
 const ENV = process.env.NODE_ENV || "production";
 
@@ -24,7 +22,9 @@ const config = {
             "jwt-decode",
             "lodash",
             "lodash.throttle",
-            "material-ui",
+            "@material-ui/core",
+            "@material-ui/icons",
+            "@material-ui/styles",
             "prop-types",
             "react",
             "react-dom",
@@ -49,24 +49,24 @@ const config = {
         rules: [
             {
                 test: /\.css$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
-                include: [SRC_DIR, LIB_DIR],
+                exclude: [/externals/, /__storage__/],
+                include: [SRC_DIR],
                 use: ExtractTextPlugin.extract({
                     use: ["css-loader?minimize", "postcss-loader"]
                 })
             },
             {
                 test: /\.less$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
-                include: [SRC_DIR, LIB_DIR],
+                exclude: [/externals/, /__storage__/],
+                include: [SRC_DIR],
                 use: ExtractTextPlugin.extract({
                     use: ["css-loader?minimize", "postcss-loader", "less-loader"]
                 })
             },
             {
                 test: /\.(js|jsx)?$/,
-                exclude: [/node_modules\/(?!(sandbox-manager-lib)\/).*/, /externals/, /__storage__/],
-                include: [SRC_DIR, LIB_DIR],
+                exclude: [/externals/, /__storage__/],
+                include: [SRC_DIR],
                 use: {
                     loader: "babel-loader",
                     options: {
@@ -141,6 +141,10 @@ const config = {
                     to: DIST_DIR + "/css/font-awesome/css/"
                 },
                 {
+                    from: SRC_DIR + "/../../../node_modules/rc-tree/assets",
+                    to: DIST_DIR + "/css/rc-tree/css/"
+                },
+                {
                     from: SRC_DIR + "/../../../node_modules/font-awesome/fonts",
                     to: DIST_DIR + "/css/font-awesome/fonts/"
                 },
@@ -186,8 +190,8 @@ const config = {
         port: PORT,
         publicPath: "/",
         watchOptions: {
-            ignored: /node_modules\/(?!(sandbox-manager-lib)\/).*/,
-            aggregateTimeout: 300
+            aggregateTimeout: 300,
+            poll: true
         }
     }
 };
@@ -196,7 +200,7 @@ const config = {
 if (ENV === "production") {
     config.plugins.push(new UglifyJsPlugin({
         sourceMap: true,
-        uglifyOptions: { ecma: 8 }
+        uglifyOptions: {ecma: 8}
     }));
 }
 

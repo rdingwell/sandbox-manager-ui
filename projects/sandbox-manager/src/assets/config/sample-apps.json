@@ -25,9 +25,9 @@
     "authClient": {
       "clientName": "My Web App",
       "clientId": "my_web_app",
-      "redirectUri": "http://localhost:8000/fhir-app/"
+      "redirectUri": "http://localhost:9090"
     },
-    "launchUri": "http://localhost:8000/fhir-app/launch.html",
+    "launchUri": "http://localhost:9090/launch.html",
     "logoUri": "https://content.hspconsortium.org/images/my-web-app/logo/my.png"
   },
   {

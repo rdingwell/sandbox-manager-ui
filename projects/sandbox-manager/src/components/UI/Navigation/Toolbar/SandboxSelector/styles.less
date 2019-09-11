@@ -1,0 +1,73 @@
+.sandbox-menu-wrapper {
+  position: relative;
+  padding-left: 20px;
+
+  .MuiButton-label {
+    position: relative;
+    top: -5px;
+
+    & > * {
+      vertical-align: middle;
+    }
+  }
+
+  .anchor {
+    position: absolute;
+    left: 20px;
+  }
+
+  .sandbox-menu-item {
+    font-family: "Open Sans", sans-serif;
+  }
+
+  .left-margin {
+    margin-left: 10px;
+  }
+
+  .down-button {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    font-family: "Open Sans", sans-serif !important;
+    text-align: left !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    font-size: 15px !important;
+    display: inline-block !important;
+    height: 35px !important;
+    line-height: 32px !important;
+    border: none !important;
+
+    div {
+      height: 100%;
+      padding-top: 1px;
+
+      span {
+        display: inline-block;
+        max-width: 200px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        float: left;
+        white-space: nowrap;
+        padding-left: 16px;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+      }
+
+      svg {
+        padding-right: 16px;
+      }
+    }
+  }
+}
+
+.sandbox-menu-item {
+  .sub {
+    font-size: 11px;
+    color: #d3d3d3;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

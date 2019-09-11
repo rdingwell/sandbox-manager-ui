@@ -1,48 +1,48 @@
 import * as actionTypes from "./types";
-import { parseNames } from "sandbox-manager-lib/utils/fhir";
+import {parseNames} from "../../lib/utils/fhir";
 import API from '../../lib/api';
-import { getDefaultUserForSandbox } from './sandbox';
+import {getDefaultUserForSandbox} from './sandbox';
 
-export function lookupPersonasStart (type) {
+export function lookupPersonasStart(type) {
     return {
         type: actionTypes.LOOKUP_PERSONAS_START,
-        payload: { type }
+        payload: {type}
     }
 }
 
-export function creatingPersonaStart () {
+export function creatingPersonaStart() {
     return {
         type: actionTypes.CREATE_PERSONA_START
     }
 }
 
-export function creatingPersonaEnd () {
+export function creatingPersonaEnd() {
     return {
         type: actionTypes.CREATE_PERSONA_END
     }
 }
 
-export function lookupPersonasFail (error) {
+export function lookupPersonasFail(error) {
     return {
         type: actionTypes.LOOKUP_PERSONAS_FAIL,
         error: error
     }
 }
 
-export function setPersonas (type, personas, pagination) {
+export function setPersonas(type, personas, pagination) {
     return {
         type: actionTypes.LOOKUP_PERSONAS_SUCCESS,
-        payload: { type, personas, pagination }
+        payload: {type, personas, pagination}
     };
 }
 
-export function resetPersonas () {
+export function resetPersonas() {
     return {
         type: actionTypes.RESET_PERSONAS
     }
 }
 
-export function deletePersona (persona) {
+export function deletePersona(persona) {
     return (dispatch, getState) => {
         let state = getState();
         let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/userPersona/" + persona.id;
@@ -55,7 +55,7 @@ export function deletePersona (persona) {
     }
 }
 
-export function deletePractitioner (practitioner) {
+export function deletePractitioner(practitioner) {
     return dispatch => {
         let url = `${window.fhirClient.server.serviceUrl}/Practitioner/${practitioner}`;
         API.delete(url, dispatch)
@@ -63,7 +63,7 @@ export function deletePractitioner (practitioner) {
     }
 }
 
-export function getPersonasPage (type = "Patient", pagination, direction) {
+export function getPersonasPage(type = "Patient", pagination, direction) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
@@ -97,7 +97,7 @@ export function getPersonasPage (type = "Patient", pagination, direction) {
     }
 }
 
-export function fetchPersonas (type = "Patient", searchCrit = null, count = 17) {
+export function fetchPersonas(type = "Patient", searchCrit = null, count = 17) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
@@ -134,7 +134,7 @@ export function fetchPersonas (type = "Patient", searchCrit = null, count = 17) 
     }
 }
 
-export function createPersona (type, persona) {
+export function createPersona(type, persona) {
     return (dispatch, getState) => {
         let state = getState();
 
