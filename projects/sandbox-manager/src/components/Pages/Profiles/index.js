@@ -5,6 +5,7 @@ import {
     cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
     loadProfilesBySD, clearLoadedProfilesBySD
 } from '../../../redux/action-creators';
+import {withTheme} from '@material-ui/core';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Manage from './Manage';
@@ -72,4 +73,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     loadProfilesBySD, clearLoadedProfilesBySD
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Profiles));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Profiles)));

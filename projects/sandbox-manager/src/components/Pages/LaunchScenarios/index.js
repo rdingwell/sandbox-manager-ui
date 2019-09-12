@@ -404,7 +404,7 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
+                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled && !this.state.addContext ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
                              color={`${deleteEnabled ? 'secondary' : 'primary'}`}>
                             {this.state.addContext ? <SaveIcon/> : deleteEnabled ? <DeleteIcon /> : <ContentAdd/>}
                         </Fab>

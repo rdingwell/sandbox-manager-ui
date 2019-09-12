@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, List, ListItem, Tab, Tabs, Stepper, Step, StepButton, StepConnector, IconButton} from '@material-ui/core';
+import {CircularProgress, List, ListItem, Tab, Tabs, Stepper, Step, StepButton, StepConnector, IconButton, Dialog, DialogActions, Button} from '@material-ui/core';
 import Tree, {TreeNode} from 'rc-tree';
 import ProfilesIcon from '@material-ui/icons/Spellcheck';
 import Delete from '@material-ui/icons/Delete';
@@ -20,18 +20,44 @@ class Manage extends Component {
         super(props);
 
         this.state = {
-            filter: {},
+            filter: {
+                nameFilter: ''
+            },
             profileId: '',
             resourceId: '',
             profileName: '',
+            itemsFilter: '',
             activeTab: 'info',
-            itemsFilter: ''
+            showConfirmation: false
         };
     }
 
     render() {
+        console.log(this.state.profileToDelete);
+        let titleStyle = {
+            backgroundColor: this.props.theme.p2,
+            color: this.props.theme.p7,
+            paddingLeft: '10px',
+            marginLeft: '0'
+        };
         return <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
             {!this.props.modal && <Modal {...this.props} toggleProfileToBrowse={this.toggleProfileToBrowse}/>}
+            <Dialog open={this.state.showConfirmation} onClose={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
+                <div className='screen-title' style={titleStyle}>
+                    <IconButton className="close-button" onClick={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
+                        <i className="material-icons">close</i>
+                    </IconButton>
+                    <h1 style={titleStyle}>Delete confirmation</h1>
+                </div>
+                <p style={{padding: '100px 30px 20px'}}>
+                    Are you sure you want to delete the profile?
+                </p>
+                <DialogActions>
+                    <Button variant='contained' onClick={this.deleteProfile} style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p7}}>
+                        DELETE
+                    </Button>
+                </DialogActions>
+            </Dialog>
             {this.getList()}
         </div>
     }
@@ -165,7 +191,12 @@ class Manage extends Component {
     deleteProfile = (e, profile) => {
         e.preventDefault();
         e.stopPropagation();
-        this.props.deleteDefinition(profile.id);
+        if (!this.state.showConfirmation) {
+            this.setState({showConfirmation: true, profileToDelete: profile});
+        } else {
+            this.props.deleteDefinition(this.state.profileToDelete.id);
+            this.setState({showConfirmation: false});
+        }
     };
 
     setActiveTab = (tab) => {
