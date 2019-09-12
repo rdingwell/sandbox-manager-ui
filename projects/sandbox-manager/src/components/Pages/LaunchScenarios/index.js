@@ -15,7 +15,7 @@ import {
 import PersonaList from '../Persona/List';
 import ContentSort from '@material-ui/icons/Sort';
 import ContentAdd from '@material-ui/icons/Add';
-import CheckIcon from '@material-ui/icons/Check';
+import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
 import LaunchIcon from '@material-ui/icons/PlayCircleOutline';
 import WebIcon from '@material-ui/icons/Web';
@@ -189,7 +189,7 @@ class LaunchScenarios extends Component {
 
     handleRowSelect = (row) => {
         let selection = this.state.selectedScenario !== row ? row : undefined;
-        this.setState({selectedScenario: selection, addContext: false, key: '', val: ''});
+        this.setState({selectedScenario: selection, addContext: false, key: '', val: '', selectedCustomContent: undefined});
     };
 
     createScenario = (data) => {
@@ -250,11 +250,11 @@ class LaunchScenarios extends Component {
                             </div>
                             <div className='actions-wrapper'>
                                 <IconButton onClick={e => this.launchScenario(e, sc)} tooltip='Launch'>
-                                    <LaunchIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
+                                    <LaunchIcon style={{width: '24px', height: '24px', fill: theme.p3}}/>
                                 </IconButton>
                                 <IconButton onClick={e => this.toggleMenuForItem(e, index)}>
                                     <span className='anchor' ref={'anchor' + index.toString()}/>
-                                    <MoreIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
+                                    <MoreIcon style={{width: '24px', height: '24px', fill: theme.p3}}/>
                                 </IconButton>
                                 {showMenuForItem &&
                                 <Menu width='100px' open={showMenuForItem} anchorEl={this.refs['anchor' + index]} onClose={this.toggleMenuForItem}>
@@ -266,7 +266,7 @@ class LaunchScenarios extends Component {
                                     </MenuItem>
                                 </Menu>}
                                 <IconButton className='expanded-toggle'>
-                                    <DownIcon style={{fill: theme.p3}} style={{width: '24px', height: '24px'}}/>
+                                    <DownIcon style={{width: '24px', height: '24px', fill: theme.p3}}/>
                                 </IconButton>
                             </div>
                             <div className='content' style={contentStyles} onClick={e => e.stopPropagation()}>
@@ -404,9 +404,9 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
+                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled && !this.state.addContext ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
                              color={`${deleteEnabled ? 'secondary' : 'primary'}`}>
-                            {this.state.addContext ? <CheckIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
+                            {this.state.addContext ? <SaveIcon/> : deleteEnabled ? <DeleteIcon /> : <ContentAdd/>}
                         </Fab>
                         <Table className='custom-context-table'>
                             <TableHead>

@@ -34,6 +34,7 @@ class ProfilesModal extends Component {
             profileName: '',
             menuActive: false,
             showZipWarning: false,
+            showProfileName: false,
             simplifierProjectName: '',
             simplifierInputVisible: false,
             profileInputModalVisible: false
@@ -118,7 +119,7 @@ class ProfilesModal extends Component {
                 </div>
                 <div style={{paddingTop: '80px', paddingLeft: '16px', paddingRight: '16px'}}>
                     <div style={{textAlign: 'center', fontSize: '.8rem', marginTop: '5px'}}>
-                        <span>{this.refs.fileZip.files[0].name}</span>
+                        <span>{this.refs.fileZip.files.length ? this.refs.fileZip.files[0].name : this.state.project !== 'manual' ? this.state.project : this.state.simplifierProjectName}</span>
                     </div>
                     <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={this.submitMaybe}/>
                     <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
@@ -163,39 +164,44 @@ class ProfilesModal extends Component {
 
     toggleInputModal = () => {
         this.refs.fileZip.value = [];
-        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, profileName: '', profileId: ''});
+        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, profileName: '', profileId: '', showProfileName: false});
     };
 
     getModalContent = (palette) => {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
-        let content = !this.state.simplifierInputVisible
-            ? <div className='buttons-wrapper'>
-                <Button variant='contained' color='primary' onClick={() => this.setState({simplifierInputVisible: true})}>
-                    Simplifier.net
-                </Button>
-                <Button variant='contained' color='primary' onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}>
-                    Package
-                </Button>
+        let content = this.state.showProfileName
+            ? <div style={{padding: '0 13px'}}>
+                <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={this.submitMaybe}/>
+                <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
             </div>
-            : <div style={{padding: '20px'}}>
-                <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({menuActive: true})}
-                      label={<Fragment>
-                          <span ref='project-menu'/>
-                          <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
-                          <span className='icon-wrapper'>
+            : !this.state.simplifierInputVisible
+                ? <div className='buttons-wrapper'>
+                    <Button variant='contained' color='primary' onClick={() => this.setState({simplifierInputVisible: true})}>
+                        Simplifier.net
+                    </Button>
+                    <Button variant='contained' color='primary' onClick={() => this.refs.fileZip.click() || this.toggleInputModal()}>
+                        Package
+                    </Button>
+                </div>
+                : <div style={{padding: '20px'}}>
+                    <Chip className={'chip' + (this.state.menuActive ? ' active' : '')} onClick={() => this.setState({menuActive: true})}
+                          label={<Fragment>
+                              <span ref='project-menu'/>
+                              <span className='title'>{this.state.project ? this.state.project : 'Select a project to import'}</span>
+                              <span className='icon-wrapper'>
                               <DownIcon style={{position: 'relative', top: '2px', color: !this.state.menuActive ? palette.p3 : 'white'}}/>
                           </span>
-                      </Fragment>}
-                />
-                {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
-                {this.state.project === 'manual' && <TextField value={this.state.simplifierProjectName} onChange={e => this.setState({simplifierProjectName: e.target.value})}
-                                                               id='simplifierProjectName' label='Simplifier.net Project ID' className='project-name' fullWidth/>}
-                <Menu open={this.state.menuActive} anchorEl={this.refs['project-menu']} className='type-filter-menu' onExit={() => this.setState({menuActive: false})}>
-                    {PROFILES.map(profile => <MenuItem key={profile.id} className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
-                        {profile.title}
-                    </MenuItem>)}
-                </Menu>
-            </div>;
+                          </Fragment>}
+                    />
+                    {this.state.project !== 'manual' && this.state.project !== '' && <a href={PROFILES.find(i => i.id === this.state.project).url} target='_blank'>Browse project on Simplifier.net</a>}
+                    {this.state.project === 'manual' && <TextField value={this.state.simplifierProjectName} onChange={e => this.setState({simplifierProjectName: e.target.value})} id='simplifierProjectName'
+                                                                   label='Simplifier.net Project ID' className='project-name' fullWidth/>}
+                    <Menu open={this.state.menuActive} anchorEl={this.refs['project-menu']} className='type-filter-menu' onClose={() => this.setState({menuActive: false})}>
+                        {PROFILES.map(profile => <MenuItem key={profile.id} className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
+                            {profile.title}
+                        </MenuItem>)}
+                    </Menu>
+                </div>;
 
         return <Fragment>
             <h3>{title}</h3>
@@ -215,14 +221,18 @@ class ProfilesModal extends Component {
     };
 
     loadRemoteFile = () => {
-        let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifierProjectName;
-        this.props.loadProject(project, this.state.canFit);
-        this.toggleInputModal();
+        if (this.state.profileName && this.state.profileId) {
+            let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifierProjectName;
+            this.props.loadProject(project, this.state.canFit, this.state.profileName, this.state.profileId);
+            this.toggleInputModal();
+        } else {
+            this.setState({showProfileName: true});
+        }
     };
 
     loadZip = () => {
         if (this.refs.fileZip.files && this.refs.fileZip.files[0] && (this.refs.fileZip.files[0].type.indexOf('zip') > -1 || this.refs.fileZip.files[0].type.indexOf('tar') > -1)) {
-            this.setState({profileInputModalVisible: true})
+            this.setState({profileInputModalVisible: true});
         } else {
             this.toggleWarningModal();
         }

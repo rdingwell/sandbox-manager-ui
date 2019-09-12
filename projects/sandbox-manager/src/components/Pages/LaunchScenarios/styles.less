@@ -3,6 +3,10 @@
   height: ~'calc(100% - 70px)';
   position: relative;
 
+  .red {
+    background-color: red;
+  }
+
   .anchor {
     position: relative;
     right: -25px;
@@ -134,8 +138,8 @@
     }
 
     .sort-button {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
+      //padding-left: 0 !important;
+      //padding-right: 0 !important;
       left: -12px;
     }
 
@@ -143,6 +147,7 @@
       width: 140px !important;
       margin: 0 !important;
       left: -7px;
+      overflow: hidden;
 
       & > div:nth-child(2) > div > div:nth-child(2) {
         padding-right: 10px !important;
@@ -475,7 +480,7 @@
           right: 0;
           z-index: 1000;
 
-          &.delete button {
+          &.delete {
             background-color: #9C0227 !important;
           }
         }

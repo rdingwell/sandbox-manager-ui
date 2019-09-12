@@ -462,7 +462,7 @@ export function uploadProfile(file, count, name, id) {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
 
-        API.post(`${configuration.sandboxManagerApiUrl}/profile/uploadProfile?file=${file.name}&sandboxId=${sessionStorage.sandboxId}&profileName=${encodeURI(name)}&profileId=${id}`, formData, dispatch, true)
+        API.post(`${configuration.sandboxManagerApiUrl}/profile/uploadProfile?${file.name ? `file=${file.name}` : ''}&sandboxId=${sessionStorage.sandboxId}&profileName=${encodeURI(name)}&profileId=${id}`, formData, dispatch, true)
             .then(data => {
                 let timeoutFunction = () => {
                     API.get(`${configuration.sandboxManagerApiUrl}/profile/profileUploadStatus?id=${data.id}`, dispatch)

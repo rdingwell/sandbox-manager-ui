@@ -103,7 +103,7 @@ export default class Filters extends Component {
                           </span>
                       </Fragment>}/>
                 {this.state.visibleFilter === 'gender' &&
-                <Menu open={true} anchorEl={this.refs['gender-filter']} className='left-margin gender-filter-menu' onClose={() => this.showFilter()}>
+                <Menu open={true} anchorEl={this.refs['gender-filter']} className='left-margin gender-filter-menu' onClose={() => this.showFilter()} classes={{paper: 'gender-filter'}}>
                     <MenuItem className='gender-filter-menu-item' onClick={() => this.filter('gender', 'male')}>
                         Male
                     </MenuItem>
@@ -131,8 +131,7 @@ export default class Filters extends Component {
                             </IconButton>
                         </div>
                         <div className='slider-wrapper'>
-                            <CustomSlider valueLabelDisplay='auto' aria-label='slider' defaultValue={[0, 100]} getAriaValueText={() => <span>23</span>} onChange={this.filterByAge}
-                                          defaultValue={[this.state.minAge, this.state.maxAge]}/>
+                            <CustomSlider valueLabelDisplay='auto' aria-label='slider' onChange={this.filterByAge} defaultValue={[this.state.minAge, this.state.maxAge]}/>
                         </div>
                     </div>
                 </Popover>}
@@ -159,12 +158,12 @@ export default class Filters extends Component {
                       <span className='icon-wrapper'>{!typeActive && <DownIcon style={{color: palette.p3}}/>}</span>
                   </Fragment>}/>
             {this.state.visibleFilter === 'resource' &&
-            <Menu className='persona-type-filter-menu left-margin' open={true} anchorEl={this.refs['persona-type-filter']} onClose={() => this.showFilter()}>
+            <Menu className='persona-type-filter-menu left-margin' open={true} anchorEl={this.refs['persona-type-filter']} onClose={() => this.showFilter()} classes={{paper: 'type-filter'}}>
                 <MenuItem className='persona-type-filter-menu-item' onClick={() => this.filter('resource', 'Patient')}>
-                    <Patient style={{fill: this.props.theme.p2}}/> Patient
+                    <Patient style={{fill: this.props.theme.p2, position: 'relative', top: '-3px', left: '-4px'}}/> Patient
                 </MenuItem>
                 <MenuItem className='persona-type-filter-menu-item' onClick={() => this.filter('resource', 'Practitioner')}>
-                    <i className='fa fa-user-md fa-lg' style={{color: this.props.theme.a1}}/> Practitioner
+                    <i className='fa fa-user-md fa-lg' style={{color: this.props.theme.a1, position: 'relative', top: '-1px', left: '-4px', width: '24px', height: '24px'}}/> Practitioner
                 </MenuItem>
             </Menu>}
         </div>]

@@ -111,13 +111,13 @@ class Validation extends Component {
                             </div>}
                         </div>}
                         {st && st !== 'browse' && this.state.activeStep < 1 && <div style={{textAlign: 'center'}}>
-                            <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({activeStep: 1})} disabled={validateDisabled}>
-                                next
-                            </Button>
                             {this.state.selectedType === 'json' && this.state.activeStep < 1 &&
                             <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({manualJson: ''})} disabled={clearDisabled}>
                                 clear
                             </Button>}
+                            <Button variant='contained' className='validate-button' color='primary' onClick={() => this.setState({activeStep: 1})} disabled={validateDisabled}>
+                                next
+                            </Button>
                         </div>}
                     </div>
                 </div>
