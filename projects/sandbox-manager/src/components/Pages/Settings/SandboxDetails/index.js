@@ -114,7 +114,8 @@ class SandboxDetails extends Component {
                     </Button>
                 </div>
                 : <div className='modal-bottom-actions-wrapper'>
-                    <Button variant='contained' disabled={!this.state.toggleDelete} onClick={this.deleteSandbox} data-qa='sandbox-delete-button'>
+                    <Button variant='contained' disabled={!this.state.toggleDelete} onClick={this.deleteSandbox} data-qa='sandbox-delete-button'
+                            style={this.state.toggleDelete ? {backgroundColor: this.props.theme.p4, color: this.props.theme.p7} : undefined}>
                         Delete sandbox
                     </Button>
                 </div>;
@@ -168,7 +169,7 @@ class SandboxDetails extends Component {
         this.setState({toggleReset});
     };
 
-    toggleDelete = (toggleDelete) => {
+    toggleDelete = (_, toggleDelete) => {
         this.setState({toggleDelete});
     };
 

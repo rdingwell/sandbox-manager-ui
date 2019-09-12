@@ -170,7 +170,7 @@ class ProfilesModal extends Component {
     getModalContent = (palette) => {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = this.state.showProfileName
-            ? <div>
+            ? <div style={{padding: '0 13px'}}>
                 <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={this.submitMaybe}/>
                 <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
             </div>
