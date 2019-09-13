@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Dialog, IconButton, Paper, Button} from '@material-ui/core';
+import {Dialog, IconButton, Paper, Button, DialogActions} from '@material-ui/core';
 import {withTheme} from '@material-ui/styles';
 import {app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite} from '../../../redux/action-creators';
 import AvailableSandboxes from './AvailableSandboxes';
@@ -40,11 +40,7 @@ class Dashboard extends Component {
         let dialog = this.state.open
             ? <CreateSandbox onCancel={this.toggle} open={this.state.open}/>
             : this.state.showAccept && invite
-                ? <Dialog open={this.state.showAccept} bodyClassName='invitation-dialog'
-                          actions={[
-                              <Button variant='contained' style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')} labelColor='#fff'/>,
-                              <Button variant='contained' secondary label='Reject' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')} labelColor='#fff'/>
-                          ]}>
+                ? <Dialog open={this.state.showAccept}>
                     <div className='sandbox-invitation-wrapper'>
                         <Paper className='paper-card'>
                             <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={this.handleCancel}>
@@ -53,7 +49,7 @@ class Dashboard extends Component {
                             <h3>
                                 Sandbox Invitation
                             </h3>
-                            <div className='paper-body'>
+                            <div className='paper-body-invitation'>
                                 <div>
                                     <span className='bold'>{invite.invitedBy.name} / {invite.invitedBy.email}</span> has invited you to join <span className='bold'>{invite.sandbox.name}</span> HSPC Sandbox.
                                 </div>
@@ -61,6 +57,14 @@ class Dashboard extends Component {
                         </Paper>
                         <div style={{clear: 'both'}}/>
                     </div>
+                    <DialogActions>
+                        <Button variant='contained' style={{marginRight: '10px'}} color='primary' onClick={() => this.updateSandboxInvite(invite, 'ACCEPTED')}>
+                            Accept
+                        </Button>
+                        <Button variant='contained' color='secondary' onClick={() => this.updateSandboxInvite(invite, 'REJECTED')}>
+                            Reject
+                        </Button>
+                    </DialogActions>
                 </Dialog>
                 : null;
 
