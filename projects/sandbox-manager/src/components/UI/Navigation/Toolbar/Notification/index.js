@@ -23,8 +23,7 @@ export default class Notification extends Component {
         </a>;
 
         let badge = pendingInvitations.length || unseenNotifications.length
-            ? <Badge badgeContent={pendingInvitations.length + unseenNotifications.length} onClick={this.showDropdown} className='badge'
-                     badgeStyle={{top: 12, right: 12, width: 18, height: 18, backgroundColor: '#9C0227', color: '#FFF'}}>
+            ? <Badge badgeContent={pendingInvitations.length + unseenNotifications.length} onClick={this.showDropdown} className='badge'>
                 {icon}
             </Badge>
             : icon;
@@ -53,16 +52,21 @@ export default class Notification extends Component {
                             <div>Invitations</div>
                         </MenuItem>
                         {pendingInvitations.map((p, key) =>
-                            <MenuItem className='notification-menu-item' key={key}
-                                      primaryText={<div>
-                                          <div>
-                                              <span className='bold'>{p.invitedBy.name} / {p.invitedBy.email}</span><br/>has invited you to join <span className='bold'>{p.sandbox.name}</span> HSPC Sandbox.
-                                          </div>
-                                          <div className='actions'>
-                                              <Button variant='contained' style={{marginRight: '10px'}} primary label='Accept' onClick={() => this.props.updateSandboxInvite(p, 'ACCEPTED')} labelColor='#fff'/>
-                                              <Button variant='contained' secondary label='Reject' onClick={() => this.props.updateSandboxInvite(p, 'REJECTED')} labelColor='#fff'/>
-                                          </div>
-                                      </div>}/>
+                            <MenuItem className='notification-menu-item' key={key}>
+                                <div>
+                                    <div>
+                                        <span className='bold'>{p.invitedBy.name} / {p.invitedBy.email}</span><br/>has invited you to join <span className='bold'>{p.sandbox.name}</span> HSPC Sandbox.
+                                    </div>
+                                    <div className='actions'>
+                                        <Button variant='contained' style={{marginRight: '10px'}} color='primary' onClick={() => this.props.updateSandboxInvite(p, 'ACCEPTED')}>
+                                            Accept
+                                        </Button>
+                                        <Button variant='contained' color='secondary' onClick={() => this.props.updateSandboxInvite(p, 'REJECTED')}>
+                                            Reject
+                                        </Button>
+                                    </div>
+                                </div>
+                            </MenuItem>
                         )}
                     </Fragment>}
                     {notifications.length > 0 &&
@@ -71,22 +75,21 @@ export default class Notification extends Component {
                             <div>Notifications</div>
                         </MenuItem>
                         {notifications.map((p, key) =>
-                            <MenuItem className='notification-menu-item' key={key}
-                                      primaryText={<div>
-                                          <div>
-                                              <span className='bold' style={{textAlign: 'center'}}>{p.newsItem.title}</span><br/><span>{p.newsItem.description}</span>
-                                          </div>
-                                          <div className='actions'>
-                                              <IconButton tooltip='Open' iconStyle={{color: '#1B9F7D'}}
-                                                          onClick={() => window.open(p.newsItem.link, '_blank')}>
-                                                  <OpenInNew/>
-                                              </IconButton>
-                                              <IconButton tooltip='Remove' iconStyle={{color: '#9C0227'}}
-                                                          onClick={() => this.props.hideNotification(p)}>
-                                                  <Delete/>
-                                              </IconButton>
-                                          </div>
-                                      </div>}/>
+                            <MenuItem className='notification-menu-item' key={key}>
+                                <div>
+                                    <div>
+                                        <span className='bold' style={{textAlign: 'center'}}>{p.newsItem.title}</span><br/><span>{p.newsItem.description}</span>
+                                    </div>
+                                    <div className='actions'>
+                                        <IconButton tooltip='Open' onClick={() => window.open(p.newsItem.link, '_blank')}>
+                                            <OpenInNew/>
+                                        </IconButton>
+                                        <IconButton tooltip='Remove' onClick={() => this.props.hideNotification(p)}>
+                                            <Delete/>
+                                        </IconButton>
+                                    </div>
+                                </div>
+                            </MenuItem>
                         )}
                     </Fragment>
                     }

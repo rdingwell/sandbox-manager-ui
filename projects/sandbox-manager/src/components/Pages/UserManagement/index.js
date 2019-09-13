@@ -311,7 +311,7 @@ class Users extends Component {
             </TableRow>
         } else {
             let buttonStyles = {width: '30px', height: '30px', color: this.props.theme.p3};
-            let style = {width: '55px', height: '55px'};
+            let style = {width: '40px', height: '40px'};
             let revokeStyle = {width: '30px', height: '30px', color: this.props.theme.p4};
 
             return this.props.invitations.map((invitation, key) => {
@@ -322,7 +322,7 @@ class Users extends Component {
                 } else {
                     timestamp = '';
                 }
-                return <TableRow key={key}>
+                return <TableRow key={key} className='invitation-table-row'>
                     <TableCell>{invitation.invitee.email}</TableCell>
                     <TableCell>{timestamp}</TableCell>
                     <TableCell className='invite-buttons-wrapper'>
