@@ -65,7 +65,8 @@ const RESOURCES = [
         "resourceType": "Organization",
         "displayValues": [
             { "label": "Name", "path": "name" },
-            { "label": "Alias", "path": "alias.0" }
+            { "label": "Alias", "path": "alias.0" },
+            { "label": "FHIR Id", "path": "id" }
         ],
         "patient": "patient.reference"
     },
