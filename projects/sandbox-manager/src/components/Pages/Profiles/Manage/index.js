@@ -44,7 +44,7 @@ class Manage extends Component {
             {!this.props.modal && <Modal {...this.props} toggleProfileToBrowse={this.toggleProfileToBrowse}/>}
             <Dialog open={this.state.showConfirmation} onClose={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
                 <div className='screen-title' style={titleStyle}>
-                    <IconButton className="close-button" onClick={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
+                    <IconButton className="close-button white" onClick={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
                         <i className="material-icons">close</i>
                     </IconButton>
                     <h1 style={titleStyle}>Delete confirmation</h1>
@@ -63,7 +63,6 @@ class Manage extends Component {
     }
 
     getList = () => {
-        console.log(this.state);
         return <div className='profiles-list'>
             <div className='wrapper'>
                 <Filters {...this.props} onFilter={this.onFilter} filter={this.state.itemsFilter} showType={!this.state.selectedProfile}/>
