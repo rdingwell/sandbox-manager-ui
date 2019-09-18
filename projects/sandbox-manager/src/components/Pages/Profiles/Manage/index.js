@@ -63,6 +63,7 @@ class Manage extends Component {
     }
 
     getList = () => {
+        console.log(this.state);
         return <div className='profiles-list'>
             <div className='wrapper'>
                 <Filters {...this.props} onFilter={this.onFilter} filter={this.state.itemsFilter} showType={!this.state.selectedProfile}/>

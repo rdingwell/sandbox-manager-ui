@@ -171,7 +171,7 @@ class ProfilesModal extends Component {
         let title = this.state.simplifierInputVisible ? 'Import profile from Simplifier.net' : 'Import profile';
         let content = this.state.showProfileName
             ? <div style={{padding: '0 13px'}}>
-                <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={this.submitMaybe}/>
+                <TextField id='profileName' label='Name' fullWidth onChange={this.setProfileName} value={this.state.profileName} style={{marginBottom: '16px'}} onKeyPress={e => this.submitMaybe(e, true)}/>
                 <TextField id='profileId' label='Id' fullWidth disabled value={this.state.profileId}/>
             </div>
             : !this.state.simplifierInputVisible
@@ -242,13 +242,13 @@ class ProfilesModal extends Component {
         let profileName = e.target.value;
         let profileId = profileName.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (profileId.length > 20) {
-            profileId = value.substring(0, 20);
+            profileId = profileId.substring(0, 20);
         }
         this.setState({profileName, profileId});
     };
 
-    submitMaybe = (event) => {
-        [10, 13].indexOf(event.charCode) >= 0 && this.saveProfile();
+    submitMaybe = (event, remote) => {
+        [10, 13].indexOf(event.charCode) >= 0 && (!remote ? this.saveProfile() : this.loadRemoteFile());
     };
 }
 
