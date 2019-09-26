@@ -38,17 +38,18 @@ class Users extends Component {
             color: palette.p7
         };
         let sending = this.state.action === 'sending';
+        let {currentIsAdmin, rows} = this.props.sandbox && this.getRows();
 
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <Button variant='contained' color='secondary' onClick={this.showInvitationsModal}>
+                    <Button variant='contained' color='secondary' onClick={this.showInvitationsModal} disabled={!currentIsAdmin}>
                         MANAGE INVITES
                     </Button>
-                    <Button variant='contained' color='primary' onClick={this.exportUsers}>
+                    <Button variant='contained' color='primary' onClick={this.exportUsers} disabled={!currentIsAdmin}>
                         EXPORT USERS
                     </Button>
-                    <Button variant='contained' color='secondary' onClick={this.toggleImportUsersModal}>
+                    <Button variant='contained' color='secondary' onClick={this.toggleImportUsersModal} disabled={!currentIsAdmin}>
                         IMPORT USERS
                     </Button>
                 </div>
@@ -145,7 +146,7 @@ class Users extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.sandbox && this.getRows()}
+                        {this.props.sandbox && rows}
                     </TableBody>
                 </Table>}
                 {this.props.updatingUser && <div className='loader-wrapper'>
@@ -237,8 +238,8 @@ class Users extends Component {
 
     getRows = () => {
         let users = {};
-        let currentIsAdmin = false;
         let adminCount = 0;
+        let currentIsAdmin = false;
         this.props.sandbox.userRoles.map(r => {
             users[r.user.id] = users[r.user.id] || {
                 name: r.user.name,
@@ -253,7 +254,7 @@ class Users extends Component {
 
         let keys = Object.keys(users);
 
-        return keys.map(key => {
+        let rows = keys.map(key => {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
@@ -296,6 +297,8 @@ class Users extends Component {
                 </TableCell>
             </TableRow>
         });
+
+        return {currentIsAdmin, rows};
     };
 
     handleInviteEmailChange = (email) => {

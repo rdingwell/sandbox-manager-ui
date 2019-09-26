@@ -6,6 +6,8 @@ import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {withRouter} from 'react-router';
 import './styles.less';
 
+const NOT_ALLOWED_SANDBOX_IDS = ['test'];
+
 class Index extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +33,7 @@ class Index extends Component {
     }
 
     render() {
-        let duplicate = this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase());
+        let notAllowed = this.checkAllowedId();
         let submittable = this.checkSubmittable();
 
         let actions = [
@@ -54,10 +56,10 @@ class Index extends Component {
                             <TextField id='name' label='Sandbox Name*' value={this.state.name} onChange={this.sandboxNameChangedHandler} className='margin-top' data-qa='sandbox-create-name'
                                        onKeyPress={this.submitMaybe}/>
                             <div className='subscript'>Must be fewer than 50 characters. e.g., NewCo Sandbox</div>
-                            <FormControl error={!!duplicate} className='margin-top'>
+                            <FormControl error={!!notAllowed} className='margin-top'>
                                 <InputLabel htmlFor="id">Sandbox Id*</InputLabel>
                                 <Input id='id' value={this.state.sandboxId} onChange={this.sandboxIdChangedHandler} onKeyPress={this.submitMaybe}/>
-                                {!!duplicate && <FormHelperText error>ID already in use</FormHelperText>}
+                                {!!notAllowed && <FormHelperText error>ID not allowed or already in use</FormHelperText>}
                             </FormControl>
                             <div className='subscript'>Letters and numbers only. Must be fewer than 20 characters.</div>
                             <div className='subscript'>Your sandbox will be available at {window.location.origin}/{this.state.sandboxId}</div>
@@ -105,9 +107,13 @@ class Index extends Component {
     }
 
     checkSubmittable = () => {
-        let duplicate = this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase());
+        let allowed = this.checkAllowedId();
 
-        return !this.state.createDisabled && !duplicate && !!this.state.apiEndpointIndex;
+        return !this.state.createDisabled && !allowed && !!this.state.apiEndpointIndex;
+    };
+
+    checkAllowedId = () => {
+        return this.props.sandboxes.find(i => i.sandboxId.toLowerCase() === this.state.sandboxId.toLowerCase()) || NOT_ALLOWED_SANDBOX_IDS.indexOf(this.state.sandboxId.toLowerCase()) >= 0;
     };
 
     submitMaybe = (event) => {

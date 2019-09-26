@@ -228,7 +228,7 @@ class LaunchScenarios extends Component {
                     };
 
                     let details = <div key={1} className='expanded-content'>
-                        {this.getDetailsContent(sc)}
+                        {isSelected && this.getDetailsContent(sc)}
                     </div>;
                     let filter = (!this.state.appIdFilter || (sc.app && this.state.appIdFilter === sc.app.clientId)) &&
                         (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'Hook' && !!sc.cdsHook)));
