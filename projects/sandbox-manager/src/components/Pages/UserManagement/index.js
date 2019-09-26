@@ -38,17 +38,18 @@ class Users extends Component {
             color: palette.p7
         };
         let sending = this.state.action === 'sending';
+        let [currentIsAdmin, rows] = this.props.sandbox && this.getRows();
 
         return <div className='users-wrapper'>
             <div>
                 <div className='invitation-buttons-wrapper'>
-                    <Button variant='contained' color='secondary' onClick={this.showInvitationsModal}>
+                    <Button variant='contained' color='secondary' onClick={this.showInvitationsModal} disabled={!currentIsAdmin}>
                         MANAGE INVITES
                     </Button>
-                    <Button variant='contained' color='primary' onClick={this.exportUsers}>
+                    <Button variant='contained' color='primary' onClick={this.exportUsers} disabled={!currentIsAdmin}>
                         EXPORT USERS
                     </Button>
-                    <Button variant='contained' color='secondary' onClick={this.toggleImportUsersModal}>
+                    <Button variant='contained' color='secondary' onClick={this.toggleImportUsersModal} disabled={!currentIsAdmin}>
                         IMPORT USERS
                     </Button>
                 </div>
@@ -145,7 +146,7 @@ class Users extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.props.sandbox && this.getRows()}
+                        {this.props.sandbox && rows}
                     </TableBody>
                 </Table>}
                 {this.props.updatingUser && <div className='loader-wrapper'>
@@ -235,9 +236,8 @@ class Users extends Component {
         this.setState({invitationsModal: true});
     };
 
-    getRows = () => {
+    getRows = (currentIsAdmin = false) => {
         let users = {};
-        let currentIsAdmin = false;
         let adminCount = 0;
         this.props.sandbox.userRoles.map(r => {
             users[r.user.id] = users[r.user.id] || {
@@ -271,30 +271,33 @@ class Users extends Component {
                 lastLogin = 'unknown';
             }
 
-            return <TableRow key={key}>
-                <TableCell>{user.name || ''}</TableCell>
-                <TableCell>{user.email || ''}</TableCell>
-                <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
-                <TableCell>{lastLogin}</TableCell>
-                <TableCell>
-                    <IconButton onClick={() => this.toggleMenu(key)}>
-                        <span className='anchor' ref={'anchor_' + key}/>
-                        <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
-                        {this.state.showMenu && key === this.state.menuItem &&
-                        <Menu anchorEl={this.refs['anchor_' + key]} open={this.state.showMenu && key === this.state.menuItem} onClose={this.toggleMenu}>
-                            {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                Revoke admin
-                            </MenuItem>}
-                            {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                Make admin
-                            </MenuItem>}
-                            <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
-                                {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
-                            </MenuItem>
-                        </Menu>}
-                    </IconButton>
-                </TableCell>
-            </TableRow>
+            return {
+                currentIsAdmin,
+                rows: <TableRow key={key}>
+                    <TableCell>{user.name || ''}</TableCell>
+                    <TableCell>{user.email || ''}</TableCell>
+                    <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
+                    <TableCell>{lastLogin}</TableCell>
+                    <TableCell>
+                        <IconButton onClick={() => this.toggleMenu(key)}>
+                            <span className='anchor' ref={'anchor_' + key}/>
+                            <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+                            {this.state.showMenu && key === this.state.menuItem &&
+                            <Menu anchorEl={this.refs['anchor_' + key]} open={this.state.showMenu && key === this.state.menuItem} onClose={this.toggleMenu}>
+                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                    Revoke admin
+                                </MenuItem>}
+                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                    Make admin
+                                </MenuItem>}
+                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
+                                    {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
+                                </MenuItem>
+                            </Menu>}
+                        </IconButton>
+                    </TableCell>
+                </TableRow>
+            }
         });
     };
 
