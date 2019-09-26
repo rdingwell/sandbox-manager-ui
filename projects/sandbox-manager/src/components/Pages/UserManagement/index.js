@@ -38,7 +38,7 @@ class Users extends Component {
             color: palette.p7
         };
         let sending = this.state.action === 'sending';
-        let [currentIsAdmin, rows] = this.props.sandbox && this.getRows();
+        let {currentIsAdmin, rows} = this.props.sandbox && this.getRows();
 
         return <div className='users-wrapper'>
             <div>
@@ -236,9 +236,10 @@ class Users extends Component {
         this.setState({invitationsModal: true});
     };
 
-    getRows = (currentIsAdmin = false) => {
+    getRows = () => {
         let users = {};
         let adminCount = 0;
+        let currentIsAdmin = false;
         this.props.sandbox.userRoles.map(r => {
             users[r.user.id] = users[r.user.id] || {
                 name: r.user.name,
@@ -253,7 +254,7 @@ class Users extends Component {
 
         let keys = Object.keys(users);
 
-        return keys.map(key => {
+        let rows = keys.map(key => {
             let user = users[key];
             let isAdmin = user.roles.indexOf('ADMIN') >= 0;
 
@@ -271,34 +272,33 @@ class Users extends Component {
                 lastLogin = 'unknown';
             }
 
-            return {
-                currentIsAdmin,
-                rows: <TableRow key={key}>
-                    <TableCell>{user.name || ''}</TableCell>
-                    <TableCell>{user.email || ''}</TableCell>
-                    <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
-                    <TableCell>{lastLogin}</TableCell>
-                    <TableCell>
-                        <IconButton onClick={() => this.toggleMenu(key)}>
-                            <span className='anchor' ref={'anchor_' + key}/>
-                            <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
-                            {this.state.showMenu && key === this.state.menuItem &&
-                            <Menu anchorEl={this.refs['anchor_' + key]} open={this.state.showMenu && key === this.state.menuItem} onClose={this.toggleMenu}>
-                                {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                    Revoke admin
-                                </MenuItem>}
-                                {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
-                                    Make admin
-                                </MenuItem>}
-                                <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
-                                    {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
-                                </MenuItem>
-                            </Menu>}
-                        </IconButton>
-                    </TableCell>
-                </TableRow>
-            }
+            return <TableRow key={key}>
+                <TableCell>{user.name || ''}</TableCell>
+                <TableCell>{user.email || ''}</TableCell>
+                <TableCell>{isAdmin ? 'Admin' : ''}</TableCell>
+                <TableCell>{lastLogin}</TableCell>
+                <TableCell>
+                    <IconButton onClick={() => this.toggleMenu(key)}>
+                        <span className='anchor' ref={'anchor_' + key}/>
+                        <MoreIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+                        {this.state.showMenu && key === this.state.menuItem &&
+                        <Menu anchorEl={this.refs['anchor_' + key]} open={this.state.showMenu && key === this.state.menuItem} onClose={this.toggleMenu}>
+                            {isAdmin && <MenuItem disabled={adminCount === 1} className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                Revoke admin
+                            </MenuItem>}
+                            {currentIsAdmin && !isAdmin && <MenuItem className='scenario-menu-item' onClick={() => this.toggleAdmin(user.sbmUserId, isAdmin)}>
+                                Make admin
+                            </MenuItem>}
+                            <MenuItem disabled={!canRemoveUser} className='scenario-menu-item' onClick={() => this.handleOpen(user.sbmUserId)}>
+                                {user.sbmUserId === this.props.user.sbmUserId ? 'Leave sandbox' : 'Remove user'}
+                            </MenuItem>
+                        </Menu>}
+                    </IconButton>
+                </TableCell>
+            </TableRow>
         });
+
+        return {currentIsAdmin, rows};
     };
 
     handleInviteEmailChange = (email) => {
