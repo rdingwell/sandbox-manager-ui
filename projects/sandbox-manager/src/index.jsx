@@ -23,3 +23,30 @@ configStore()
 
         render(provider, document.getElementById('app'));
     });
+
+
+// (() => {
+//     return a.users.map(user => {
+//         if (user.displayName) {
+//             let names = user.displayName.split(' ');
+//             return {
+//                 createdTimestamp: user.createdAt,
+//                 username: user.email,
+//                 emailVerified: user.emailVerified,
+//                 enabled: true,
+//                 totp: false,
+//                 firstName: names.shift(),
+//                 lastName: names.join(' '),
+//                 email: user.email,
+//                 credentials: [],
+//                 disableableCredentialTypes: [],
+//                 requiredActions: [],
+//                 federatedIdentities: [],
+//                 realmRoles: [ "offline_access", "uma_authorization" ],
+//                 clientRoles : {
+//                     account : [ "manage-account", "view-profile" ]
+//                 }
+//             }
+//         }
+//     })
+// })()

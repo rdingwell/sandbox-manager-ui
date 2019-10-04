@@ -201,7 +201,7 @@ class Apps extends Component {
 
     getDialog = () => {
         let props = {
-            type: 'Patient', click: this.doLaunch, personaList: this.props.personas, modal: true, theme: this.props.theme, lookupPersonasStart: this.props.lookupPersonasStart,
+            type: 'Patient', click: this.showSelectPersona, personaList: this.props.patients, modal: true, theme: this.props.theme, lookupPersonasStart: this.props.lookupPersonasStart,
             search: this.search, loading: this.props.personaLoading, close: this.handleLaunch, pagination: this.props.pagination, fetchPersonas: this.props.fetchPersonas,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
@@ -212,116 +212,129 @@ class Apps extends Component {
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation} manifest={this.state.manifest}
                          app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={() => this.closeAll()} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
-            : this.state.appToLaunch || this.state.hookToLaunch
-                ? <Dialog open={!!this.state.appToLaunch || !!this.state.hookToLaunch} onClose={() => this.closeAll()} className='launch-app-dialog'>
+            : (this.state.appToLaunch || this.state.hookToLaunch) && !!this.state.selectedPersonaForLaunch
+                ? <Dialog open onClose={() => this.closeAll()} className='launch-app-dialog'>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
                         <Button variant='contained' color='primary' onClick={() => this.doLaunch()}>
-                            Launch without a patient
+                            Launch with default practitioner
                         </Button>
                     </div>}
-                    {this.props.defaultUser && <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft scrollContent/>}
-                    {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
+                    {this.props.defaultUser &&
+                    <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft scrollContent type='Persona'
+                                 click={this.doLaunch} personaList={this.props.personas}/>}
+                    {!this.props.defaultUser && <DohMessage message='Please create at least one pratitioner persona.'/>}
                 </Dialog>
-                : this.state.createdApp
-                    ? <Dialog open={!!this.state.createdApp} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
-                        <Paper className='paper-card' data-qa='created-app-modal'>
-                            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
-                                <i className="material-icons" data-qa="modal-close-button">close</i>
-                            </IconButton>
-                            <h3>Registered App Details</h3>
-                            <div className="client-details">
-                                <div className="label-value">
-                                    <span>Client Id:</span> <span className='client-id' data-qa='new-app-client-id'>{this.state.createdApp.clientId}</span>
-                                    <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.state.createdApp.clientId)}/>
-                                </div>
-                                {createAppClientJSON.clientSecret && <div>
-                                    <div className="label-value">
-                                        <span>Client Secret:</span>
-                                        <span className='client-id'>{createAppClientJSON.clientSecret}</span>
-                                        <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(createAppClientJSON.clientSecret)}/>
-                                    </div>
-                                </div>}
-                            </div>
-                        </Paper>
+                : this.state.appToLaunch || this.state.hookToLaunch
+                    ? <Dialog open onClose={() => this.closeAll()} className='launch-app-dialog'>
+                        {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
+                            <Button variant='contained' color='primary' onClick={() => this.doLaunch()}>
+                                Launch without a patient
+                            </Button>
+                        </div>}
+                        {this.props.defaultUser && <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft scrollContent/>}
+                        {!this.props.defaultUser && <DohMessage message='Please create at least one user persona.'/>}
                     </Dialog>
-                    : this.state.loadDialogVisible
-                        ? <Dialog open={!!this.state.loadDialogVisible} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
-                            <Paper className='paper-card'>
+                    : this.state.createdApp
+                        ? <Dialog open={!!this.state.createdApp} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
+                            <Paper className='paper-card' data-qa='created-app-modal'>
                                 <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
-                                    <i className="material-icons">close</i>
+                                    <i className="material-icons" data-qa="modal-close-button">close</i>
                                 </IconButton>
-                                <h3>{this.props.hooks ? 'Register through service' : 'Register with manifest'}</h3>
-                                <div className={`manifest-load${this.props.hooks ? ' small' : ''}`}>
-                                    {this.props.hooks && <TextField value={this.state.serviceName} onChange={e => this.setState({serviceName: e.target.value})} fullWidth label='Service name' id='serviceName'
-                                                                    onKeyPress={event => {
-                                                                        [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
-                                                                    }}/>}
-                                    <div style={{width: '100%', verticalAlign: 'middle', marginTop: '20px'}}>
-                                        <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={e => this.setState({manifestURL: e.target.value.trim()})}
-                                                   label={this.props.hooks ? 'Service url' : 'Manifest URL'} className={!this.props.hooks ? 'manifest-url' : ''} id='url' style={{verticalAlign: 'bottom'}}
-                                                   onKeyPress={event => {
-                                                       [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
-                                                   }}/>
-                                        <Button variant='contained' color='primary' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}>
-                                            Load
-                                        </Button>
-                                        {!this.props.hooks && <span className='sub'>Example: https://bilirubin-risk-chart.hspconsortium.org(/.well-known/smart/manifest.json)</span>}
-                                        {this.props.hooks && <span className='sub'>Example: https://bilirubin-cdshooks.hspconsortium.org(/cds-services)</span>}
+                                <h3>Registered App Details</h3>
+                                <div className="client-details">
+                                    <div className="label-value">
+                                        <span>Client Id:</span> <span className='client-id' data-qa='new-app-client-id'>{this.state.createdApp.clientId}</span>
+                                        <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(this.state.createdApp.clientId)}/>
                                     </div>
-                                    {!this.props.hooks && <Fragment>
-                                        <div className='separator'>
-                                            <span>or</span>
+                                    {createAppClientJSON.clientSecret && <div>
+                                        <div className="label-value">
+                                            <span>Client Secret:</span>
+                                            <span className='client-id'>{createAppClientJSON.clientSecret}</span>
+                                            <ContentCopy className='copy-button' onClick={() => this.props.copyToClipboard(createAppClientJSON.clientSecret)}/>
                                         </div>
-                                        <div style={{width: '100%', verticalAlign: 'middle', textAlign: 'center'}}>
-                                            <Button variant='contained' color='primary' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}>
-                                                Load from file
-                                            </Button>
-                                            <input ref='file' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
-                                        </div>
-                                    </Fragment>}
+                                    </div>}
                                 </div>
                             </Paper>
                         </Dialog>
-                        : !!this.state.selectedHook
-                            ? <HookDialog theme={this.props.theme} open={!!this.state.selectedHook} onClose={() => this.closeAll()} hook={this.state.selectedHook} service={this.state.service}
-                                          onSubmit={(hookId, file) => {
-                                              this.props.updateHook(hookId, file);
-                                              this.closeAll();
-                                          }}/>
-                            : this.state.selectCreationType
-                                ? <Dialog open={!!this.state.selectCreationType} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
-                                    <Paper className='paper-card'>
-                                        <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
-                                            <i className="material-icons">close</i>
-                                        </IconButton>
-                                        <h3>App creation</h3>
-                                        <div className='app-creation-type-selection-wrapper apps-screen-wrapper modal'>
-                                            <div className='modal-screen-title' style={{color: this.props.theme.p3}}>How would you like to create the app</div>
-                                            <Card title='App launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, registerDialogVisible: true})}>
-                                                <CardMedia className='media-wrapper'>
-                                                    <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
-                                                </CardMedia>
-                                                <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
-                                                    <h3 className='app-name'>Manually</h3>
-                                                </div>
-                                            </Card>
-                                            <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, loadDialogVisible: true}, () => {
-                                                setTimeout(() => {
-                                                    let url = document.getElementById('url');
-                                                    url && url.focus();
-                                                }, 200);
-                                            })}>
-                                                <CardMedia className='media-wrapper'>
-                                                    <Publish className='default-hook-icon'/>
-                                                </CardMedia>
-                                                <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
-                                                    <h3 className='app-name'>Through a manifest</h3>
-                                                </div>
-                                            </Card>
+                        : this.state.loadDialogVisible
+                            ? <Dialog open={!!this.state.loadDialogVisible} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
+                                <Paper className='paper-card'>
+                                    <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
+                                        <i className="material-icons">close</i>
+                                    </IconButton>
+                                    <h3>{this.props.hooks ? 'Register through service' : 'Register with manifest'}</h3>
+                                    <div className={`manifest-load${this.props.hooks ? ' small' : ''}`}>
+                                        {this.props.hooks &&
+                                        <TextField value={this.state.serviceName} onChange={e => this.setState({serviceName: e.target.value})} fullWidth label='Service name' id='serviceName'
+                                                   onKeyPress={event => {
+                                                       [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
+                                                   }}/>}
+                                        <div style={{width: '100%', verticalAlign: 'middle', marginTop: '20px'}}>
+                                            <TextField disabled={this.state.loadingManifest} value={this.state.manifestURL} fullWidth onChange={e => this.setState({manifestURL: e.target.value.trim()})}
+                                                       label={this.props.hooks ? 'Service url' : 'Manifest URL'} className={!this.props.hooks ? 'manifest-url' : ''} id='url' style={{verticalAlign: 'bottom'}}
+                                                       onKeyPress={event => {
+                                                           [10, 13].indexOf(event.charCode) >= 0 && isUrlValid(this.state.manifestURL) && this.loadFromUrl();
+                                                       }}/>
+                                            <Button variant='contained' color='primary' onClick={this.loadFromUrl} disabled={!isUrlValid(this.state.manifestURL) || this.state.loadingManifest}>
+                                                Load
+                                            </Button>
+                                            {!this.props.hooks && <span className='sub'>Example: https://bilirubin-risk-chart.hspconsortium.org(/.well-known/smart/manifest.json)</span>}
+                                            {this.props.hooks && <span className='sub'>Example: https://bilirubin-cdshooks.hspconsortium.org(/cds-services)</span>}
                                         </div>
-                                    </Paper>
-                                </Dialog>
-                                : null;
+                                        {!this.props.hooks && <Fragment>
+                                            <div className='separator'>
+                                                <span>or</span>
+                                            </div>
+                                            <div style={{width: '100%', verticalAlign: 'middle', textAlign: 'center'}}>
+                                                <Button variant='contained' color='primary' onClick={() => this.refs.file.click()} disabled={this.state.loadingManifest}>
+                                                    Load from file
+                                                </Button>
+                                                <input ref='file' type='file' style={{'display': 'none'}} onChange={this.onFileInput}/>
+                                            </div>
+                                        </Fragment>}
+                                    </div>
+                                </Paper>
+                            </Dialog>
+                            : !!this.state.selectedHook
+                                ? <HookDialog theme={this.props.theme} open={!!this.state.selectedHook} onClose={() => this.closeAll()} hook={this.state.selectedHook} service={this.state.service}
+                                              onSubmit={(hookId, file) => {
+                                                  this.props.updateHook(hookId, file);
+                                                  this.closeAll();
+                                              }}/>
+                                : this.state.selectCreationType
+                                    ? <Dialog open={!!this.state.selectCreationType} onClose={() => this.closeAll()} classes={{paper: 'created-app-dialog'}}>
+                                        <Paper className='paper-card'>
+                                            <IconButton style={{color: this.props.theme.p5}} className="close-button" onClick={() => this.closeAll()}>
+                                                <i className="material-icons">close</i>
+                                            </IconButton>
+                                            <h3>App creation</h3>
+                                            <div className='app-creation-type-selection-wrapper apps-screen-wrapper modal'>
+                                                <div className='modal-screen-title' style={{color: this.props.theme.p3}}>How would you like to create the app</div>
+                                                <Card title='App launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, registerDialogVisible: true})}>
+                                                    <CardMedia className='media-wrapper'>
+                                                        <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
+                                                    </CardMedia>
+                                                    <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
+                                                        <h3 className='app-name'>Manually</h3>
+                                                    </div>
+                                                </Card>
+                                                <Card title='Hook launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, loadDialogVisible: true}, () => {
+                                                    setTimeout(() => {
+                                                        let url = document.getElementById('url');
+                                                        url && url.focus();
+                                                    }, 200);
+                                                })}>
+                                                    <CardMedia className='media-wrapper'>
+                                                        <Publish className='default-hook-icon'/>
+                                                    </CardMedia>
+                                                    <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
+                                                        <h3 className='app-name'>Through a manifest</h3>
+                                                    </div>
+                                                </Card>
+                                            </div>
+                                        </Paper>
+                                    </Dialog>
+                                    : null;
     };
 
     getApps = () => {
@@ -441,16 +454,22 @@ class Apps extends Component {
         this.closeAll();
     };
 
-    doLaunch = (persona = {}) => {
-        this.state.appToLaunch && this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, persona.id);
-        this.state.hookToLaunch && this.props.launchHook(this.state.hookToLaunch, {patientId: persona.id});
+    showSelectPersona = (selectedPersonaForLaunch = {}) => {
+        this.setState({selectedPersonaForLaunch});
+    };
+
+    doLaunch = (persona) => {
+        console.log(persona);
+        let patient = this.state.selectedPersonaForLaunch || {};
+        this.state.appToLaunch && this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, patient.id, persona);
+        this.state.hookToLaunch && this.props.launchHook(this.state.hookToLaunch, {patientId: patient.id}, persona);
         this.closeAll(true);
     };
 
     closeAll = (doNotRemoveHook = false) => {
         let state = {
             selectedApp: undefined, appToLaunch: undefined, registerDialogVisible: false, showConfirmModal: false, createdApp: undefined, loadDialogVisible: false, loadingManifest: false,
-            hookToLaunch: undefined, selectedHook: undefined, selectCreationType: false, manifestURL: '', toggledApp: undefined, toggledHook: undefined
+            hookToLaunch: undefined, selectedHook: undefined, selectCreationType: false, manifestURL: '', toggledApp: undefined, toggledHook: undefined, selectedPersonaForLaunch: undefined
         };
         !!doNotRemoveHook && (delete state.toggledHook);
         !this.state.loadingManifest && this.setState(state);
@@ -468,6 +487,8 @@ class Apps extends Component {
             if (isPatientScoped) {
                 app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
                 (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
+                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.persona, app.samplePatients.split('?')[1], 15);
+                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
                 this.setState({appToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
                 this.props.resetPersonas();
             } else {
@@ -476,6 +497,7 @@ class Apps extends Component {
         } else if (this.props.hooks && !!app) {
             //TODO add patient restriction to the HOOKS
             this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
+            this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
             this.setState({hookToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
             this.props.resetPersonas();
         } else {
@@ -493,7 +515,8 @@ const mapStateToProps = state => {
         appCreating: state.apps.creating,
         appDeleting: state.apps.deleting,
         defaultUser: state.sandbox.defaultUser,
-        personas: state.persona.patients,
+        patients: state.persona.patients,
+        personas: state.persona.personas,
         personaLoading: state.persona.loading,
         pagination: state.persona.patientsPagination,
         copying: state.sandbox.copying,

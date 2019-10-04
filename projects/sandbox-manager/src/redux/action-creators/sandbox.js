@@ -1127,6 +1127,7 @@ export function doLaunch (app, persona, user, noUser, scenario) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
+        console.log(state.sandbox.defaultUser);
         user = user ? user : state.sandbox.defaultUser;
 
         let params = {};
