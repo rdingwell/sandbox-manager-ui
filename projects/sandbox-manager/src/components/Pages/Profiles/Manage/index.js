@@ -33,7 +33,6 @@ class Manage extends Component {
     }
 
     render() {
-        console.log(this.state.profileToDelete);
         let titleStyle = {
             backgroundColor: this.props.theme.p2,
             color: this.props.theme.p7,

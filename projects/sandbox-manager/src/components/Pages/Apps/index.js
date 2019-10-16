@@ -154,7 +154,7 @@ class Apps extends Component {
                         {this.getHookIcon(hook.hook)}
                     </div>
                     <CardMedia className='media-wrapper'>
-                        {hook.logoUri && <img style={{height: '100%'}} src={hook.logoUri} alt='HSPC Logo'/>}
+                        {hook.logoUri && <img style={{height: '100%', maxWidth: '100%'}} src={hook.logoUri} alt='HSPC Logo'/>}
                         {!hook.logoUri && <HooksIcon className='default-hook-icon'/>}
                     </CardMedia>
                     <div className='card-title' style={titleStyle}>
@@ -201,7 +201,7 @@ class Apps extends Component {
 
     getDialog = () => {
         let props = {
-            type: 'Patient', click: this.showSelectPersona, personaList: this.props.patients, modal: true, theme: this.props.theme, lookupPersonasStart: this.props.lookupPersonasStart,
+            type: 'Patient', click: this.doLaunch, personaList: this.props.patients, modal: true, theme: this.props.theme, lookupPersonasStart: this.props.lookupPersonasStart,
             search: this.search, loading: this.props.personaLoading, close: this.handleLaunch, pagination: this.props.pagination, fetchPersonas: this.props.fetchPersonas,
             next: () => this.props.getNextPersonasPage(this.state.type, this.props.pagination), prev: () => this.props.getPrevPersonasPage(this.state.type, this.props.pagination)
         };
@@ -212,16 +212,16 @@ class Apps extends Component {
             ? <AppDialog key={this.state.selectedApp && this.state.selectedApp.clientId || 1} onSubmit={this.appSubmit} onDelete={this.toggleConfirmation} manifest={this.state.manifest}
                          app={app} open={(!!this.state.selectedApp && !this.state.appIsLoading) || this.state.registerDialogVisible}
                          onClose={() => this.closeAll()} doLaunch={this.doLaunch} copyToClipboard={this.props.copyToClipboard}/>
-            : (this.state.appToLaunch || this.state.hookToLaunch) && !!this.state.selectedPersonaForLaunch
+            : (this.state.appToLaunch || this.state.hookToLaunch) && !this.state.selectedPersonaForLaunch
                 ? <Dialog open onClose={() => this.closeAll()} className='launch-app-dialog'>
                     {!this.state.hookToLaunch && this.props.defaultUser && <div className='no-patient-button'>
-                        <Button variant='contained' color='primary' onClick={() => this.doLaunch()}>
-                            Launch with default practitioner
+                        <Button variant='contained' color='primary' onClick={() => this.showSelectPersona()}>
+                            Launch with default persona
                         </Button>
                     </div>}
                     {this.props.defaultUser &&
-                    <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} titleLeft scrollContent type='Persona'
-                                 click={this.doLaunch} personaList={this.props.personas}/>}
+                    <PersonaList {...props} idRestrictions={!this.state.hookToLaunch ? this.state.appToLaunch.samplePatients : undefined} scrollContent type='Persona'
+                                 click={this.showSelectPersona} personaList={this.props.personas}/>}
                     {!this.props.defaultUser && <DohMessage message='Please create at least one pratitioner persona.'/>}
                 </Dialog>
                 : this.state.appToLaunch || this.state.hookToLaunch
@@ -312,7 +312,7 @@ class Apps extends Component {
                                                 <div className='modal-screen-title' style={{color: this.props.theme.p3}}>How would you like to create the app</div>
                                                 <Card title='App launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, registerDialogVisible: true})}>
                                                     <CardMedia className='media-wrapper'>
-                                                        <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
+                                                        <img style={{height: '100%', maxWidth: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
                                                     </CardMedia>
                                                     <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                                                         <h3 className='app-name'>Manually</h3>
@@ -346,7 +346,7 @@ class Apps extends Component {
             return <Card title={app.clientName} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledApp === app.id ? ' active' : ''}`} key={app.id} id={app.id}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
-                    <img style={{height: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                    <img style={{height: '100%', maxWidth: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
                 </CardMedia>
                 <div className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
@@ -458,11 +458,9 @@ class Apps extends Component {
         this.setState({selectedPersonaForLaunch});
     };
 
-    doLaunch = (persona) => {
-        console.log(persona);
-        let patient = this.state.selectedPersonaForLaunch || {};
-        this.state.appToLaunch && this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, patient.id, persona);
-        this.state.hookToLaunch && this.props.launchHook(this.state.hookToLaunch, {patientId: patient.id}, persona);
+    doLaunch = (patient = {}) => {
+        this.state.appToLaunch && this.props.doLaunch(this.state.appToLaunch || this.state.selectedApp, patient.id, this.state.selectedPersonaForLaunch);
+        this.state.hookToLaunch && this.props.launchHook(this.state.hookToLaunch, {patientId: patient.id}, this.state.selectedPersonaForLaunch);
         this.closeAll(true);
     };
 

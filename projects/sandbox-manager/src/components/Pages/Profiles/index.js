@@ -30,7 +30,7 @@ class Profiles extends Component {
     }
 
     render() {
-        let helpIcon = <HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/79364100/Sandbox+Persona'/>;
+        let helpIcon = <HelpButton style={{marginLeft: '10px'}} url='https://healthservices.atlassian.net/wiki/spaces/HSPC/pages/431685680/Sandbox+Profiles'/>;
 
         return <div className='profiles-wrapper page-content-wrapper'>
             <Page title='Profiles' helpIcon={helpIcon}>
