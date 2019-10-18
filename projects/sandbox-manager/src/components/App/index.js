@@ -2,6 +2,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
 import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme} from "@material-ui/core";
+import ReactMarkdown from "react-markdown";
 import {ThemeProvider} from '@material-ui/styles';
 import {Feedback} from '@material-ui/icons';
 import Snackbar from '../UI/Snackbar';
@@ -155,7 +156,10 @@ class App extends React.Component {
                     <span className='hook-source-title'>Source:</span>
                     <span className='hook-source'> {card.source.label}</span>
                 </div>}
-                <div className='card-detail' dangerouslySetInnerHTML={{__html: card.detail}}/>
+                {/*<div className='card-detail' dangerouslySetInnerHTML={{__html: card.detail}}/>*/}
+                <div className='card-detail'>
+                    <ReactMarkdown source={card.detail}/>
+                </div>
                 {card.suggestions && <div>
                     {card.suggestions.map((suggestion, i) => {
                         return <button key={i} className='hook-suggestion-button' onClick={() => this.executeSuggestion(suggestion)}>
