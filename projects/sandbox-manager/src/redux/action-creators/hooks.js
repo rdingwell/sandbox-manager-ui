@@ -246,7 +246,7 @@ export const launchHook = (hook, launchContext) => {
                     Promise.all(promises)
                         .then(() => {
                             // Trigger the hook
-                            API.post(`${encodeURI(hook.hookUrl)}`, data)
+                            API.post(`${encodeURI(hook.hookUrl)}`, data, dispatch)
                                 .then(cards => {
                                     if (cards) {
                                         cards.cards = cards.cards || [{noCardsReturned: true}];
@@ -255,11 +255,14 @@ export const launchHook = (hook, launchContext) => {
                                         });
                                         dispatch(setResultCards(cards.cards));
                                     }
+                                })
+                                .finally(() => {
+                                    dispatch(hookExecuting(false));
                                 });
                         })
                 } else {
                     // Trigger the hook
-                    API.post(`${encodeURI(hook.hookUrl)}`, data)
+                    API.post(`${encodeURI(hook.hookUrl)}`, data, dispatch)
                         .then(cards => {
                             if (cards && cards.cards) {
                                 cards.cards.map(card => {
@@ -267,6 +270,9 @@ export const launchHook = (hook, launchContext) => {
                                 });
                                 dispatch(setResultCards(cards.cards));
                             }
+                        })
+                        .finally(() => {
+                            dispatch(hookExecuting(false));
                         });
                 }
             });

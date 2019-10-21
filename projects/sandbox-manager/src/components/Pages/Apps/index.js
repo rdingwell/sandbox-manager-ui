@@ -521,7 +521,8 @@ const mapStateToProps = state => {
         hooksList: state.hooks.services,
         servicesLoading: state.hooks.servicesLoading,
         hookCards: state.hooks.cards,
-        hookExecuting: state.hooks.executing
+        hookExecuting: state.hooks.executing,
+        errorToShow: state.app.errorToShow
     };
 };
 
