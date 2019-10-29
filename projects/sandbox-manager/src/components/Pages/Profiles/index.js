@@ -27,6 +27,44 @@ class Profiles extends Component {
         this.props.app_setScreen('profiles');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
         this.props.loadProfiles();
+
+        // setTimeout(() => {
+        //     let formData = new FormData();
+        //     formData.append('client_endpoint_key', 'static');
+        //     formData.append('module', 'onc_r4');
+        //     formData.append('fhir_server', 'https://api-test.logicahealth.org/tssst/open');
+        //     let request = new Request('https://inferno.healthit.gov/inferno/', {
+        //         method: 'POST',
+        //         redirect: 'manual',
+        //         body: formData
+        //     });
+        //     fetch(request)
+        //         .then(e => {
+        //             console.log(e);
+        //         })
+        //         .catch(e => {
+        //             console.log(e);
+        //         })
+        // }, 5000);
+        //
+        //
+        // setTimeout(() => {
+        //     let formData = new FormData();
+        //     formData.append('server[url]', 'https://api-test.logicahealth.org/tssst/open');
+        //     let request = new Request('https://projectcrucible.org/servers', {
+        //         method: 'POST',
+        //         redirect: 'manual',
+        //         body: formData
+        //     });
+        //     fetch(request)
+        //         .then(e => {
+        //             console.log(e);
+        //         })
+        //         .catch(e => {
+        //             console.log(e);
+        //         })
+        // }, 5000);
+
     }
 
     render() {

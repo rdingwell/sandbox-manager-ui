@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import NavigationItem from './NavigationItem';
 import StorageIcon from '@material-ui/icons/Storage';
 import ContactsIcon from '@material-ui/icons/Contacts';
@@ -16,19 +16,19 @@ import strings from '../../../../assets/strings';
 import './styles.less';
 
 export default class NavigationItems extends Component {
-    render () {
+    render() {
         let ehrSimulatorUrl = this.props.sandbox && window.fhirClient ? this.props.ehrUrl : undefined;
-        let ehrStyle = { borderBottom: `1px solid ${this.props.theme.p7}` };
-        let iconStyle = { color: this.props.theme.p3, marginRight: '24px' };
+        let ehrStyle = {borderBottom: `1px solid ${this.props.theme.p7}`};
+        let iconStyle = {color: this.props.theme.p3, marginRight: '24px'};
 
         return <ul className='navigation-items'>
             {this.props.sandbox &&
             <li className={'navigation-item' + (!this.props.defaultUser ? ' disabled' : '')} style={ehrStyle}>
-                <a href={!this.props.defaultUser ? undefined : ehrSimulatorUrl} target='_blank' style={{ color: this.props.theme.p3 }} onClick={ehrSimulatorUrl ? this.openEHR : undefined}>
+                <a href={!this.props.defaultUser ? undefined : ehrSimulatorUrl} target='_blank' style={{color: this.props.theme.p3}} onClick={ehrSimulatorUrl ? this.openEHR : undefined}>
                     <Desktop style={iconStyle}/>
                     <span>{strings.navigation.ehrSimulator}</span>
                 </a>
-                <a className='warning' style={{ color: this.props.theme.p3 }}>
+                <a className='warning' style={{color: this.props.theme.p3}}>
                     <Warning style={Object.assign({}, iconStyle, {color: this.props.theme.p4})}/>
                     <span>Persona needed</span>
                 </a>
@@ -58,10 +58,22 @@ export default class NavigationItems extends Component {
 
         date.setTime(date.getTime() + (3 * 60 * 1000));
         let isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+        let hooks = this.props.hooks.map(h => {
+            delete h.createdBy;
+            delete h.sandbox;
+            delete h.createdTimestamp;
+            delete h.visibility;
+            delete h.lastUpdated;
+            return h;
+        });
+        let hooksContent = JSON.stringify(hooks);
+        let tokenContent = JSON.stringify(token);
         if (isIE11) {
-            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
+            document.cookie = `hspc-launch-token=${tokenContent}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
+            document.cookie = `hspc-hooks-list=${hooksContent}; expires=${date.toUTCString()}; domain=${cookieUrl}; path=/`;
         } else {
-            document.cookie = `hspc-launch-token=${JSON.stringify(token)}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+            document.cookie = `hspc-launch-token=${tokenContent}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
+            document.cookie = `hspc-hooks-list=${hooksContent}; expires=${date.getTime()}; domain=${cookieUrl}; path=/`;
         }
     }
 }

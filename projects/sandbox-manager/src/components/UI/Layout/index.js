@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Toolbar from '../Navigation/Toolbar';
 import SideNav from '../Navigation/SideNav';
-import { withRouter } from 'react-router';
-import { CircularProgress, Dialog, IconButton } from '@material-ui/core';
-import { withTheme } from '@material-ui/styles';
+import {withRouter} from 'react-router';
+import {CircularProgress, Dialog, IconButton} from '@material-ui/core';
+import {withTheme} from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import Aux from '../hoc/Aux/Aux';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import './styles.less';
+import {bindActionCreators} from "redux";
+import {loadServices} from "../../../redux/action-creators";
 
 class Layout extends Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         let showNotification = !sessionStorage.getItem(`showSandboxNotification-${sessionStorage.sandboxId}`);
@@ -23,13 +25,14 @@ class Layout extends Component {
         };
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setState({
             sideBarOpened: localStorage.getItem('sandboxId') != null,
         });
+        !!this.props.sandbox && this.props.loadServices();
     }
 
-    render () {
+    render() {
         let theme = this.props.theme;
         let path = this.props.history.location.pathname;
         let isRoot = path === '/';
@@ -37,7 +40,7 @@ class Layout extends Component {
         let showSideNav = !isRoot && !isDashboard && this.props.sandbox;
         let mainClasses = 'layout-main' + (this.state.sideBarOpened && showSideNav ? ' open' : '') + (isRoot || isDashboard ? ' no-padding' : '') + (isRoot ? ' full-height' : '');
         let isLaunch = this.props.path === '/launchApp';
-        let mainStyles = { backgroundColor: '#F5F5F5', color: '#757575' };
+        let mainStyles = {backgroundColor: '#F5F5F5', color: '#757575'};
 
         return isLaunch
             ? <Aux>
@@ -54,7 +57,8 @@ class Layout extends Component {
                     <Toolbar isDashboard={isDashboard} showSideNav={showSideNav} {...this.props} click={this.drawerToggleClickedHandler}
                              loading={this.props.loadingNotifications || this.props.userInvitesLoading}/>
                     {showSideNav && <SideNav open={this.state.sideBarOpened} sandbox={this.props.sandbox} click={this.drawerToggleClickedHandler} defaultUser={this.props.defaultUser}
-                                             sandboxApiUrl={this.props.sandboxApiUrl} screen={this.props.screen} theme={this.props.theme} ehrUrl={this.props.ehrUrl}/>}
+                                             sandboxApiUrl={this.props.sandboxApiUrl} screen={this.props.screen} theme={this.props.theme} ehrUrl={this.props.ehrUrl}
+                                             hooks={this.props.hooks}/>}
                     <main className={mainClasses} style={mainStyles}>
                         {this.showExpirationMessageBanner()}
                         {this.props.children}
@@ -68,10 +72,10 @@ class Layout extends Component {
     }
 
     drawerToggleClickedHandler = () => {
-        this.setState({ sideBarOpened: !this.state.sideBarOpened });
+        this.setState({sideBarOpened: !this.state.sideBarOpened});
     };
 
-    showExpirationMessageBanner () {
+    showExpirationMessageBanner() {
         if (this.props.sandbox) {
             const exprDay = new Date(this.props.sandbox.expirationDate);
             const exprMessage = this.props.sandbox.expirationMessage;
@@ -88,14 +92,13 @@ class Layout extends Component {
                         let lastPart = exprMessage.slice(secondAIndex + 4, this.props.sandbox.expirationMessage.length);
                         return <header className="message-bar"><span style={{maxWidth: '90%', marginRight: '10%', display: 'inline-block'}}> {firstPart}
                             <a target="_blank" href={linkUrl}>{linkMessage}</a> {lastPart} </span>
-                            <IconButton onClick={this.removeNotification}><CloseIcon /></IconButton> </header>;
+                            <IconButton onClick={this.removeNotification}><CloseIcon/></IconButton></header>;
                     } else {
                         return <header className="message-bar">
                             <span style={{maxWidth: '90%', marginRight: '10%', display: 'inline-block'}}>{exprMessage}</span>
-                            <IconButton onClick={this.removeNotification}><CloseIcon /></IconButton> </header>;
+                            <IconButton onClick={this.removeNotification}><CloseIcon/></IconButton></header>;
                     }
-                }
-                else {
+                } else {
                     return null;
                 }
             } else {
@@ -131,8 +134,11 @@ const mapStateToProps = state => {
         terms: state.app.terms,
         invitations: state.sandbox.userInvites,
         loginInfo: state.sandbox.loginInfo,
-        notifications: state.sandbox.notifications
+        notifications: state.sandbox.notifications,
+        hooks: state.hooks.services
     }
 };
 
-export default withTheme(connect(mapStateToProps)(withRouter(Layout)));
+const mapDispatchToProps = dispatch => bindActionCreators({loadServices}, dispatch);
+
+export default withTheme(connect(mapStateToProps, mapDispatchToProps)(withRouter(Layout)));
