@@ -1123,11 +1123,11 @@ export function cancelDownload () {
     }
 }
 
-export function doLaunch (app, persona, user, noUser, scenario) {
+export function doLaunch (app, persona, user = {}, noUser, scenario) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
-        user = user ? user : state.sandbox.defaultUser;
+        user = user.id ? user : state.sandbox.defaultUser;
 
         let params = {};
         if (scenario) {
