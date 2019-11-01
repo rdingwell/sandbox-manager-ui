@@ -2,6 +2,6 @@
 
 echo "::: STARTING THE BUILD"
 
-npm run sandbox-manager:build:${TARGET_ENV}
+npm run sandbox-manager:build:prod
 
 echo "::: BUILD ENDED"
