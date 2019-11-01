@@ -3,7 +3,7 @@
 set -x
 
 # set values provided at build time
-export TARGET_ENV=test
+export TARGET_ENV=prod
 
 . ci-0-set-properties.sh
 . ci-1-prepare-sources.sh
