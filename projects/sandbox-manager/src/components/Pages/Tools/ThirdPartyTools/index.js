@@ -57,7 +57,7 @@ class ThirdPartyTools extends Component {
         // http://clinfhir.com/patientViewer.html?data=https:%2F%2Fapi-test.logicahealth.org%2Ftssst%2Fopen%2F&patientid=SMART-1288992
         let link = tool.link;
         if (tool.title === 'clinFHIR') {
-            link = `${tool.link}/patientViewer.html?data=${encodeURI(this.props.serviceUrl.replace('/data', '/open'))}&patientid=SMART-1288992`;
+            link = `${tool.link}/patientViewer.html?data=${encodeURI(this.props.serviceUrl.replace('/data', '/open/'))}&patientid=SMART-1288992`;
         }
         let openLink = this.refs.openLink;
         openLink.href = link;
