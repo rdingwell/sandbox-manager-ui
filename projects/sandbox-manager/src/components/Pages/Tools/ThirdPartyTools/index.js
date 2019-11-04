@@ -39,7 +39,7 @@ class ThirdPartyTools extends Component {
             <a ref='openLink' target='_blank'/>
             <div className='third-party-tools'>
                 {TOOLS.map(t =>
-                    <Card title={t.title} className='tool-card' onClick={() => this.openLink(t.link)} key={t.link}>
+                    <Card title={t.title} className='tool-card' onClick={() => this.openLink(t)} key={t.link}>
                         <CardMedia className={`media-wrapper${t.larger ? ' larger' : ''}`} image={t.image}>
                             <span/>
                         </CardMedia>
@@ -53,7 +53,12 @@ class ThirdPartyTools extends Component {
         </div>;
     }
 
-    openLink = (link) => {
+    openLink = (tool) => {
+        // http://clinfhir.com/patientViewer.html?data=https:%2F%2Fapi-test.logicahealth.org%2Ftssst%2Fopen%2F&patientid=SMART-1288992
+        let link = tool.link;
+        if (tool.title === 'clinFHIR') {
+            link = `${tool.link}/patientViewer.html?data=${encodeURI(this.props.serviceUrl.replace('/data', '/open'))}&patientid=SMART-1288992`;
+        }
         let openLink = this.refs.openLink;
         openLink.href = link;
         openLink.click();

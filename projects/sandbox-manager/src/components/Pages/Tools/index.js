@@ -28,7 +28,7 @@ class Tools extends Component {
                 <Tab label='Validation' id='validation' value='validation'/>
                 <Tab label='Other tools' id='tools' value='tools'/>
             </Tabs>
-            {this.state.activeTab === 'tools' && <ThirdPartyTools/>}
+            {this.state.activeTab === 'tools' && <ThirdPartyTools serviceUrl={this.props.serviceUrl}/>}
             {this.state.activeTab === 'validation' && <Validation {...this.props}/>}
         </div>
     }
@@ -42,7 +42,8 @@ const mapStateToProps = state => {
         validationResults: state.fhir.validationResults,
         loadProfilesBySD: state.fhir.loadProfilesBySD,
         queryObject: state.fhir.queryObject,
-        fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition
+        fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition,
+        serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl
     }
 };
 

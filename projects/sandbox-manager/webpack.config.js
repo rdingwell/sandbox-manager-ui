@@ -205,6 +205,7 @@ if (ENV === "production") {
 }
 
 console.log("::: ENV:", ENV);
+
 console.log("::: APP_VERSION:", APP_VERSION);
 
 module.exports = config;
