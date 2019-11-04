@@ -158,7 +158,7 @@ class Apps extends Component {
                     </CardMedia>
                     <div className='card-title' style={titleStyle}>
                         <h3 className='app-name'>{hook.title}</h3>
-                        <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
+                        <h3 className='app-name long'>{hook.title.substring(0, 52)}{hook.title.length > 52 && '...'}</h3>
                         {this.props.modal && <Radio className='app-radio' value="selected"
                                                     checked={this.props.selectedApp ? hook.hookUrl === this.props.selectedApp.hookUrl && hook.hookId === this.props.selectedApp.hookId : false}/>}
                         <div className='app-description'>{hook.description}</div>
@@ -349,7 +349,7 @@ class Apps extends Component {
                 </CardMedia>
                 <div className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
-                    <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
+                    <h3 className='app-name long'>{app.clientName.substring(0, 52)}{app.clientName.length > 52 && '...'}</h3>
                     {this.props.modal && <Radio className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </div>
