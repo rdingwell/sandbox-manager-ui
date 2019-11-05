@@ -4,6 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import CodeIcon from '@material-ui/icons/Code';
 import ListIcon from '@material-ui/icons/List';
 import CloseIcon from '@material-ui/icons/Close';
+import LaunchIcon from '@material-ui/icons/Edit';
 import {parseEntry} from '../../../../lib/utils';
 import ReactJson from 'react-json-view';
 import './styles.less';
@@ -112,6 +113,7 @@ export default class QueryBrowser extends Component {
                                                     <span>{item.value}</span>
                                                 </div>
                                             })}
+                                            {this.getPDM(e)}
                                         </ListItem>
                                     })
                                     : this.props.results != null && this.props.results.total === 0 ? <span>No Results Found</span>
@@ -124,6 +126,7 @@ export default class QueryBrowser extends Component {
                                                         <span>{item.value}</span>
                                                     </div>
                                                 })}
+                                                {this.getPDM({resource: this.props.results})}
                                             </ListItem>}
                                         </div>}
                             </List>}
@@ -137,6 +140,23 @@ export default class QueryBrowser extends Component {
             </div>
         </div>;
     }
+
+    getPDM = e => {
+        let hasPatient = e.resource && e.resource.subject && e.resource.subject.reference && e.resource.subject.reference.indexOf('Patient/') >= 0 && e.resource.subject.reference.split('Patient/')[1];
+        return hasPatient
+            ? <IconButton onClick={e => this.openInDM(e, hasPatient)} style={{position: 'absolute', right: '30px', top: '3px'}}>
+                <span/>
+                <LaunchIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
+            </IconButton>
+            : null;
+    };
+
+    openInDM = (e, persona) => {
+        e.stopPropagation();
+        this.props.doLaunch({
+            "launchUri": `${this.props.patientDataManagerUrl}/launch.html`
+        }, persona, undefined, true);
+    };
 
     clearQuery = () => {
         this.setState({query: ''});

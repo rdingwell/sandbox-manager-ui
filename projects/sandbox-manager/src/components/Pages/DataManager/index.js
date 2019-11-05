@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Tabs, Tab, withTheme} from '@material-ui/core';
 import * as QueryString from 'query-string';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
-import {importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage}
+import {importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, doLaunch}
     from '../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -38,7 +38,7 @@ class DataManager extends Component {
             <div className='data-tabs-container'>
                 {this.state.activeTab === 'browser' && <div className={'query-browser tab' + (this.state.activeTab === 'browser' ? ' active' : '')}>
                     <QueryBrowser search={this.search} results={this.props.results} clearResults={this.props.fhir_setCustomSearchResults} theme={this.props.theme} executing={this.props.executing}
-                                  next={this.next} gettingNextPage={this.props.gettingNextPage} query={query}/>
+                                  next={this.next} gettingNextPage={this.props.gettingNextPage} query={query} patientDataManagerUrl={this.props.patientDataManagerUrl} doLaunch={this.props.doLaunch}/>
                 </div>}
                 {this.state.activeTab === 'import' && <div className={'import tab' + (this.state.activeTab === 'import' ? ' active' : '')}>
                     <Import importData={this.props.importData} results={this.props.importResults} clearResults={this.props.clearResults} theme={this.props.theme}
@@ -63,7 +63,12 @@ class DataManager extends Component {
 
 const mapStateToProps = state => {
 
+    let patientDataManagerUrl = state.config.xsettings.data.sandboxManager
+        ? state.config.xsettings.data.sandboxManager.patientDataManager
+        : '';
+
     return {
+        patientDataManagerUrl,
         results: state.fhir.customSearchResults,
         validationResults: state.fhir.validationResults,
         gettingNextPage: state.fhir.gettingNextPage,
@@ -77,7 +82,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload
+    app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, doLaunch
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(DataManager)));

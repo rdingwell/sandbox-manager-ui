@@ -15,11 +15,12 @@ import CreatePersona from "../Create";
 import moment from 'moment';
 import HelpButton from '../../../UI/HelpButton';
 
-import './styles.less';
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {deletePractitioner, lookupPersonasStart, doLaunch, fetchPatientDetails, patientDetailsFetchStarted, deletePersona} from "../../../../redux/action-creators";
 import {getAge} from "../../../../lib/utils";
+
+import './styles.less';
 
 let chartData = [
     ['Allergy Intolerance', 0], ['Care Plan', 0], ['Care Team', 0], ['Condition', 0], ['Diagnostic Report', 0], ['Encounter', 0],
