@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {TextField, Fab, List, ListItem, Dialog, Paper, IconButton, Tabs, Tab, CircularProgress} from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
 import CodeIcon from '@material-ui/icons/Code';
 import ListIcon from '@material-ui/icons/List';
@@ -11,10 +12,9 @@ import './styles.less';
 
 // There are stored in a table at the BE but are not changed so I've hardcoded them
 // until we have time to build an algorithm to suggest based on the FHIR implementation
-const SUGGESTIONS = [
-    "Patient", "Patient?name=s", "Patient?birthdate=>2010-01-01&birthdate=<2011-12-31", "Observation",
-    "Observation?category=vital-signs", "Observation?date=>2010-01-01&date=<2011-12-31", "Condition", "Condition?onset=>2010-01-01&onset=<2011-12-31",
-    "Condition?code:text=diabetes", "Procedure", "Procedure?date=>2010-01-01&date=<2011-12-31", "AllergyIntolerance", "AllergyIntolerance?date=>1999-01-01&date=<2011-12-31"
+let SUGGESTIONS = [
+    {title: 'Observation'},
+    {title: 'Patient'}
 ];
 
 export default class QueryBrowser extends Component {
@@ -60,6 +60,7 @@ export default class QueryBrowser extends Component {
     render() {
         let palette = this.props.theme;
         let json = this.state.activeTab === 'json';
+        this.calcSuggestions();
 
         return <div className='query-browser-wrapper'>
             <Dialog classes={{paper: 'query-result-dialog'}} open={this.state.showDialog} onClose={this.toggle}>
@@ -79,13 +80,13 @@ export default class QueryBrowser extends Component {
             </Dialog>
             <div className='fhir-query-wrapper'>
                 <div className='input-wrapper'>
-                    <TextField onKeyPress={this.submitMaybe} id='query' value={this.state.query} fullWidth label='FHIR Query' onChange={e => this.setState({query: e.target.value})}/>
-                    {/*dataSource={SUGGESTIONS} onNewRequest={this.search}/>*/}
+                    {/*<TextField onKeyPress={this.submitMaybe} id='query' value={this.state.query} fullWidth label='' />*/}
+                    {/*dataSource={SUGGESTIONS} />*/}
+                    <Autocomplete options={SUGGESTIONS} onChange={this.search} getOptionLabel={option => option.title} freeSolo onKeyUp={this.updateQuery}
+                                  renderInput={params => {
+                                      return <TextField className='query' {...params} label='FHIR Query' fullWidth/>;
+                                  }}/>
                 </div>
-                {this.state.query.length > 0 &&
-                <Fab onClick={this.clearQuery} className='clear-query-button' size='small' color='secondary'>
-                    <CloseIcon/>
-                </Fab>}
                 <Fab onClick={this.search} size='small'>
                     <SearchIcon/>
                 </Fab>
@@ -141,10 +142,29 @@ export default class QueryBrowser extends Component {
         </div>;
     }
 
+    updateQuery = e => {
+        this.setState({query: e.target.value});
+    };
+
+    calcSuggestions = () => {
+        if (SUGGESTIONS.length === 2 && this.props.metadata.rest && this.props.metadata.rest[0] && this.props.metadata.rest[0].resource) {
+            SUGGESTIONS = [];
+            this.props.metadata.rest[0].resource.map(res => {
+                SUGGESTIONS.push({title: res.type});
+            });
+        }
+    };
+
     getPDM = e => {
         let hasPatient = e.resource && e.resource.subject && e.resource.subject.reference && e.resource.subject.reference.indexOf('Patient/') >= 0 && e.resource.subject.reference.split('Patient/')[1];
+        hasPatient = !hasPatient
+            ? e.resource && e.resource.patient && e.resource.patient.reference && e.resource.patient.reference.indexOf('Patient/') >= 0 && e.resource.patient.reference.split('Patient/')[1]
+            : hasPatient;
+        hasPatient = !hasPatient
+            ? e.resource.resourceType === 'Patient' && e.resource.id
+            : hasPatient;
         return hasPatient
-            ? <IconButton onClick={e => this.openInDM(e, hasPatient)} style={{position: 'absolute', right: '30px', top: '3px'}}>
+            ? <IconButton onClick={e => this.openInDM(e, hasPatient)} style={{position: 'absolute', right: '30px', top: 'calc(50% - 24px)'}}>
                 <span/>
                 <LaunchIcon style={{color: this.props.theme.p3, width: '24px', height: '24px'}}/>
             </IconButton>
@@ -178,14 +198,17 @@ export default class QueryBrowser extends Component {
         this.setState({activeTab: tab});
     };
 
-    search = () => {
-        let query = this.state.query;
-        if (query.indexOf('_count=') === -1) {
-            query += (query.indexOf('?') >= 0 ? '&' : '?');
-            query += `_count=${this.state.canFit}`;
+    search = (a, b) => {
+        let query = (b && b.title) || a.target.value || this.state.query;
+        if (!!query) {
+            if (query.indexOf('_count=') === -1) {
+                query += (query.indexOf('?') >= 0 ? '&' : '?');
+                query += `_count=${this.state.canFit}`;
+            }
+            this.setState({query});
+            query = encodeURI(query);
+            this.props.search(query);
         }
-        query = encodeURI(query);
-        this.props.search(query);
     };
 
     calcCanFit = () => {
