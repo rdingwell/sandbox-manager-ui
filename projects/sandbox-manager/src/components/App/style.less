@@ -258,6 +258,18 @@
   min-width: 35vw;
   max-width: inherit !important;
 
+  .response-time {
+    position: absolute;
+    right: 20px;
+    top: 86px;
+    font-size: .8rem;
+    color: green;
+
+    &.slow {
+      color: red;
+    }
+  }
+
   .paper-body > div:last-child {
     overflow: auto;
     height: ~'calc(100% - 48px)';
@@ -289,6 +301,7 @@
 
   .react-json-view {
     padding: 10px;
+
     .variable-value {
       width: 100%;
       overflow: hidden;

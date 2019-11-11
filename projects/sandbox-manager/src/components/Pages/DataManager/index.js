@@ -81,7 +81,7 @@ const mapStateToProps = state => {
         executing: state.fhir.executing,
         exportStatus: state.sandbox.exportStatus,
         profiles: state.fhir.profiles,
-        metadata: state.fhir.metadata
+        metadata: state.fhir.metadata || {}
     };
 };
 

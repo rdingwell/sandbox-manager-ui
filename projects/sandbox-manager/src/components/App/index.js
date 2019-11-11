@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
-import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme} from "@material-ui/core";
+import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme, Tooltip} from "@material-ui/core";
 import ReactMarkdown from "react-markdown";
 import {ThemeProvider} from '@material-ui/styles';
 import {Feedback} from '@material-ui/icons';
@@ -82,9 +82,9 @@ class App extends React.Component {
             updateSandboxInvite: this.props.updateSandboxInvite,
             markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
-        let open = !!this.props.cards.length;
-        let response = open ? Object.assign({}, this.props.cards[0]) : {};
-        let request = open ? this.props.cards[0].requestData : {};
+        let open = !!this.props.cards.cards.length;
+        let response = open ? Object.assign({}, this.props.cards.cards[0]) : {};
+        let request = open ? this.props.cards.cards[0].requestData : {};
         open && delete response.requestData;
         open && delete response.noCardsReturned;
 
@@ -121,11 +121,15 @@ class App extends React.Component {
                                 <Tab label='Request' value='request'/>
                                 <Tab label='Response' value='response'/>
                             </Tabs>
+                            {!this.props.cards.noCardsReturned && <Tooltip title='According to spec the service should respond in less than 500ms'
+                                                                           className={`response-time${this.props.cards.time > 500 ? ' slow' : ''}`}>
+                                <span>{this.props.cards.time.toFixed(2)} ms</span>
+                            </Tooltip>}
                             <div>
                                 {this.state.activeTab === 'parsed' && <div className={'hooks-wrapper parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')}>
                                     <a ref='openLink' target='_blank'/>
-                                    {!this.props.cards[0].noCardsReturned && this.getCards()}
-                                    {this.props.cards[0].noCardsReturned && <div className='no-cards-message'>
+                                    {!this.props.cards.noCardsReturned && this.getCards()}
+                                    {this.props.cards.noCardsReturned && <div className='no-cards-message'>
                                         <span>No cards were returned by the service</span>
                                     </div>}
                                 </div>}
@@ -149,7 +153,7 @@ class App extends React.Component {
     };
 
     getCards = () => {
-        return this.props.cards.map((card, i) => {
+        return this.props.cards.cards && this.props.cards.cards.map((card, i) => {
             return <div className={`hook-card-wrapper ${card.indicator}`} key={card.requestData.hookInstance + '_' + i}>
                 <span className='card-summary'>{card.summary}</span>
                 {card.source && <div className='hook-source-info'>
@@ -195,7 +199,6 @@ class App extends React.Component {
 
     executeSuggestion = (suggestion) => {
         suggestion.actions.map(action => {
-            console.log(action);
             this.props.executeAction(action);
         });
     };
@@ -240,7 +243,7 @@ const mapStateToProps = (state) => {
         resetting: state.sandbox.resetting,
         deleting: state.sandbox.deleting,
         errorToShow: state.app.errorToShow,
-        cards: state.hooks.cards || []
+        cards: state.hooks.cards || {cards: [], time: 0}
     }
 };
 const mapDispatchToProps = (dispatch) => bindActionCreators({...actionCreators}, dispatch);

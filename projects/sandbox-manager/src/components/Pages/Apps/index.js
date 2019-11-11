@@ -187,6 +187,7 @@ class Apps extends Component {
             case 'patient-view':
                 return <PatientIcon/>;
             case 'medication-prescribe':
+            case 'order-select':
                 return <PillIcon className='additional-rotation'/>;
         }
         return null;
@@ -519,7 +520,7 @@ const mapStateToProps = state => {
         copying: state.sandbox.copying,
         hooksList: state.hooks.services,
         servicesLoading: state.hooks.servicesLoading,
-        hookCards: state.hooks.cards,
+        hookCards: state.hooks.cards.cards,
         hookExecuting: state.hooks.executing,
         errorToShow: state.app.errorToShow
     };

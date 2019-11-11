@@ -246,6 +246,7 @@ export const launchHook = (hook, launchContext) => {
                     Promise.all(promises)
                         .then(() => {
                             // Trigger the hook
+                            let start = performance.now();
                             API.post(`${encodeURI(hook.hookUrl)}`, data, dispatch)
                                 .then(cards => {
                                     if (cards) {
@@ -253,7 +254,7 @@ export const launchHook = (hook, launchContext) => {
                                         cards.cards.map(card => {
                                             card.requestData = data;
                                         });
-                                        dispatch(setResultCards(cards.cards));
+                                        dispatch(setResultCards({cards: cards.cards, time: performance.now() - start}));
                                     }
                                 })
                                 .finally(() => {
