@@ -472,6 +472,7 @@ export function uploadProfile(file, count, name, id) {
                                 dispatch(fhir_setCustomSearchResults(data));
                                 dispatch(loadProfiles(count));
                                 dispatch(fhir_setProfilesUploadingStatus({}));
+                                dispatch(fhir_setProfilesByDefinition());
                                 status.error && dispatch(setGlobalError(status.error));
                             } else {
                                 dispatch(fhir_setProfilesUploadingStatus(status));
@@ -517,10 +518,10 @@ export function loadProject(project, canFit, profileName, profileId) {
             // Create an object URL for the response
             .then(response => response.blob())
             .then(blob => {
-                dispatch(fhir_setFetchingFile(false));
-                dispatch(fhir_setProfilesLoading(false));
                 let file = new File([blob], `${project}.zip`);
                 dispatch(uploadProfile(file, canFit, profileName, profileId));
+                dispatch(fhir_setFetchingFile(false));
+                dispatch(fhir_setProfilesLoading(false));
             })
             // Update image
             .catch(() => {
