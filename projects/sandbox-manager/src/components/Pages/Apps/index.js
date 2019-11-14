@@ -71,8 +71,8 @@ class Apps extends Component {
     componentWillReceiveProps(nextProps) {
         this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({appIsLoading: false});
         this.props.appCreating && !nextProps.appCreating && this.setState({createdApp: nextProps.createdApp});
-        (this.props.hookCards && this.props.hookCards.length && (!nextProps.hookCards || !nextProps.hookCards.length)
-            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards || !nextProps.hookCards.length))
+        (this.props.hookCards.cards && this.props.hookCards.cards.length && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length)
+            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
         ) && this.setState({toggledHook: undefined});
     }
 
@@ -520,7 +520,7 @@ const mapStateToProps = state => {
         copying: state.sandbox.copying,
         hooksList: state.hooks.services,
         servicesLoading: state.hooks.servicesLoading,
-        hookCards: state.hooks.cards.cards,
+        hookCards: state.hooks.cards.cards || {cards: []},
         hookExecuting: state.hooks.executing,
         errorToShow: state.app.errorToShow
     };

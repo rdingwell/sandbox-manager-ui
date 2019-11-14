@@ -82,7 +82,7 @@ class App extends React.Component {
             updateSandboxInvite: this.props.updateSandboxInvite,
             markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
-        let open = !!this.props.cards.cards.length;
+        let open = !!this.props.cards.cards.length && !this.props.cards.cards[0].noCardsReturned;
         let response = open ? Object.assign({}, this.props.cards.cards[0]) : {};
         let request = open ? this.props.cards.cards[0].requestData : {};
         open && delete response.requestData;
