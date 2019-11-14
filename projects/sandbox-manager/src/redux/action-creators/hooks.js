@@ -119,7 +119,7 @@ export function createService(url, serviceName) {
         url.indexOf(POSTFIX_SERVICE) === -1 && (url += POSTFIX_SERVICE);
 
         dispatch(setServicesLoading(true));
-        API.get(url)
+        API.get(url, dispatch)
             .then(result => {
                 let state = getState();
                 let services = state.hooks.services ? state.hooks.services.slice() : [];
