@@ -154,8 +154,8 @@ class AppDialog extends Component {
                                value={this.state.app.samplePatients} onChange={e => this.onChange('samplePatients', e.target.value)}/>
                     {this.props.app && <span className='subscript'>This is a FHIR query to limit the Patient Picker on launch.</span>}
                     {!this.props.app && <div className='toggle-wrapper'>
-                        <FormControlLabel control={<Switch onToggle={e => this.onChange('offlineAccess', e.target.value)}/>} label='Allow offline access'/>
-                        <FormControlLabel control={<Switch onToggle={e => this.onChange('patientScoped', e.target.value)}/>} label='Patient Scoped App'/>
+                        <FormControlLabel control={<Switch checked={this.state.app.offlineAccess} onChange={e => this.onChange('offlineAccess', e.target.checked)}/>} label='Allow offline access'/>
+                        <FormControlLabel control={<Switch checked={this.state.app.patientScoped} onChange={e => this.onChange('patientScoped', e.target.checked)}/>} label='Patient Scoped App'/>
                     </div>}
                     <div className='image-form margin-top'>
                         <div className='image-button-wrapper'>
