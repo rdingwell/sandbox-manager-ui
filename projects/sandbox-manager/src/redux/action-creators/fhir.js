@@ -517,10 +517,10 @@ export function loadProject(project, canFit, profileName, profileId) {
             // Create an object URL for the response
             .then(response => response.blob())
             .then(blob => {
-                let file = new File([blob], `${project}.zip`);
-                dispatch(uploadProfile(file, canFit, profileName, profileId));
                 dispatch(fhir_setFetchingFile(false));
                 dispatch(fhir_setProfilesLoading(false));
+                let file = new File([blob], `${project}.zip`);
+                dispatch(uploadProfile(file, canFit, profileName, profileId));
             })
             // Update image
             .catch(() => {
