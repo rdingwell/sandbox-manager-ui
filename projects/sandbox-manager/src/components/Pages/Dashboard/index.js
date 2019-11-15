@@ -51,7 +51,7 @@ class Dashboard extends Component {
                             </h3>
                             <div className='paper-body-invitation'>
                                 <div>
-                                    <span className='bold'>{invite.invitedBy.name} / {invite.invitedBy.email}</span> has invited you to join <span className='bold'>{invite.sandbox.name}</span> HSPC Sandbox.
+                                    <span className='bold'>{invite.invitedBy.name} / {invite.invitedBy.email}</span> has invited you to join <span className='bold'>{invite.sandbox.name}</span> Logica Sandbox.
                                 </div>
                             </div>
                         </Paper>

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Tabs, Tab} from '@material-ui/core';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validate, validateExisting, loadProfilesBySD, loadQueryObject} from '../../../redux/action-creators';
+import {app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validate, validateExisting, loadProfilesBySD, loadQueryObject, getDefaultUserForSandbox} from '../../../redux/action-creators';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import ThirdPartyTools from "./ThirdPartyTools";
 import Validation from "./Validation";
@@ -20,6 +20,7 @@ class Tools extends Component {
 
     componentDidMount() {
         this.props.app_setScreen('tools');
+        this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
     }
 
     render() {
@@ -47,6 +48,7 @@ const mapStateToProps = state => {
     }
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD, loadQueryObject}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD, loadQueryObject,
+    getDefaultUserForSandbox}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Tools));

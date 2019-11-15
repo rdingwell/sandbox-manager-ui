@@ -28,28 +28,28 @@ export default class Footer extends Component {
                         <div>
                             <a href="http://hspconsortium.org" target="_blank">
                             <span>
-                                <span>HSPC Official Site</span>
+                                <span>Logica Official Site</span>
                             </span>
                             </a>
                         </div>
                         <div>
                             <a href="http://gallery.hspconsortium.org/" target="_blank">
                             <span>
-                                <span>HSPC Gallery</span>
+                                <span>Logica Gallery</span>
                             </span>
                             </a>
                         </div>
                         <div>
                             <a href="http://sandbox.hspconsortium.org/" target="_blank">
                             <span>
-                                <span>HSPC Developer's Sandbox</span>
+                                <span>Logica Developer's Sandbox</span>
                             </span>
                             </a>
                         </div>
                         <div>
                             <a href="https://healthservices.atlassian.net/wiki/" target="_blank">
                             <span>
-                                <span>HSPC Confluence</span>
+                                <span>Logica Confluence</span>
                             </span>
                             </a>
                         </div>
@@ -63,7 +63,7 @@ export default class Footer extends Component {
                         <div>
                             <a href="https://healthservices.atlassian.net/wiki/display/HSPC/For+Developers" target="_blank">
                             <span>
-                                <span>HSPC Developer Resources</span>
+                                <span>Logica Developer Resources</span>
                             </span>
                             </a>
                         </div>
@@ -78,7 +78,7 @@ export default class Footer extends Component {
 
                             <a href="https://bitbucket.org/hspconsortium/" target="_blank">
                             <span>
-                                <span>HSPC BitBucket</span>
+                                <span>Logica BitBucket</span>
                             </span>
                             </a>
                         </div>
@@ -99,14 +99,14 @@ export default class Footer extends Component {
                         <div>
                             <a href="https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer" target="_blank">
                             <span>
-                                <span>HSPC Developers Forum</span>
+                                <span>Logica Developers Forum</span>
                             </span>
                             </a>
                         </div>
                         <div>
                             <a href="https://healthservices.atlassian.net/secure/RapidBoard.jspa?rapidView=3&amp;view=planning" target="_blank">
                             <span>
-                                <span>HSPC JIRA</span>
+                                <span>Logica JIRA</span>
                             </span>
                             </a>
                         </div>
@@ -114,7 +114,7 @@ export default class Footer extends Component {
                 </div>
                 <div>
                     <span>
-                        <span>HSPC Developers: Powering the Healthcare Innovation Ecosystem</span>
+                        <span>Logica Developers: Powering the Healthcare Innovation Ecosystem</span>
                     </span>
                 </div>
             </div>

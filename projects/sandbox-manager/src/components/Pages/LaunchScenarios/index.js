@@ -339,8 +339,8 @@ class LaunchScenarios extends Component {
                     <Card className='app-card small'>
                         <CardMedia className='media-wrapper'>
                             {selectedScenario.app && <img style={{height: '100%'}} src={selectedScenario.app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'}
-                                                          alt='HSPC Logo'/>}
-                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{height: '100%'}} src={selectedScenario.cdsHook.logoUri} alt='HSPC Logo'/>}
+                                                          alt='Logica Logo'/>}
+                            {selectedScenario.cdsHook && selectedScenario.cdsHook.logoUri && <img style={{height: '100%'}} src={selectedScenario.cdsHook.logoUri} alt='Logica Logo'/>}
                             {selectedScenario.cdsHook && !selectedScenario.cdsHook.logoUri && <HooksIcon className='default-hook-icon'/>}
                         </CardMedia>
                         <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>

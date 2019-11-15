@@ -19,7 +19,7 @@ class Start extends Component {
             <CircularProgress/>
             <div>
                 <span className='message'>
-                    Welcome to the HSPC Sandbox, <a href=''>click here</a> if you're not redirected to the login screen.
+                    Welcome to the Logica Sandbox, <a href=''>click here</a> if you're not redirected to the login screen.
                 </span>
             </div>
         </div>;

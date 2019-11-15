@@ -1,5 +1,5 @@
 export default {
-    logoAltText: 'HSPC Logo',
+    logoAltText: 'Logica Logo',
     footerLineOne: '© 2017 by Healthcare Services Platform Consortium ',
     footerLineTwo: 'Terms of Use & Privacy Statement ',
     footerLineThree: 'Help',
