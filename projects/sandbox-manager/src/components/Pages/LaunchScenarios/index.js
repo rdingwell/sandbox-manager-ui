@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {
     app_setScreen, loadLaunchScenarios, fetchPersonas, getPersonasPage, createScenario, deleteScenario, doLaunch, updateLaunchScenario, updateNeedPatientBanner, lookupPersonasStart, addCustomContext,
     fetchLocation, fetchPatient, setFetchingSinglePatientFailed, setSinglePatientFetched, setFetchSingleEncounter, setSingleEncounter, setFetchingSingleEncounterError, fetchEncounter, deleteCustomContext,
@@ -10,7 +10,7 @@ import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
     CircularProgress, Card, IconButton, Fab, CardMedia, Popover, Menu, MenuItem, Table, TableHead, TableRow, TableBody, TableCell,
-    TextField, Select, Switch, withTheme
+    TextField, Select, Switch, withTheme, Tooltip
 } from '@material-ui/core';
 import PersonaList from '../Persona/List';
 import ContentSort from '@material-ui/icons/Sort';
@@ -380,14 +380,15 @@ class LaunchScenarios extends Component {
                             <LinkIcon style={iconStyleLight}/>
                             {selectedScenario.smartStyleUrl ? selectedScenario.smartStyleUrl : '-'}
                         </span>
+                        <Tooltip title={selectedScenario.needPatientBanner === 'T' ? "Application will be launched in fullscreen" : "Application will be launched inside EHR Simulator"} placement='bottom'>
                         <span className='section-value' style={lightColor}>
-                            <FullScreenIcon style={iconStyleLight}/>
-                            <Switch className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} checked={selectedScenario.needPatientBanner === 'T'}
-                                    onChange={e => {
-                                        this.toggleNeedsPatientBanner(e, selectedScenario)
-                                    }}/>
-                            {selectedScenario.needPatientBanner !== 'T' && <span className='sub'>App will open in the EHR Simulator.</span>}
+                                    <FullScreenIcon style={iconStyleLight}/>
+                                        <Switch className='toggle' label='Needs Patient Banner' style={{display: 'inline-block', bottom: '2px'}} checked={selectedScenario.needPatientBanner === 'T'}
+                                                onChange={e => {
+                                                    this.toggleNeedsPatientBanner(e, selectedScenario)
+                                                }}/>
                         </span>
+                        </Tooltip>
                     </div>}
                     {selectedScenario.cdsHook && selectedScenario.contextParams.map(param => {
                         let patient = selectedScenario.contextParams.find(i => i.name === 'patientId').value;
@@ -404,9 +405,10 @@ class LaunchScenarios extends Component {
                 {selectedScenario.app && <div className='custom-context-wrapper'>
                     <span className='section-title' style={darkColor}><ContextIcon style={iconStyle}/>Custom Context</span>
                     <div className='custom-context-table-wrapper'>
-                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled && !this.state.addContext ? ' delete' : '')} disabled={disabled} onMouseDown={this.clickingOnTheButton}
+                        <Fab onClick={onClick} size='small' className={'add-custom-context' + (deleteEnabled && !this.state.addContext ? ' delete' : '')} disabled={disabled}
+                             onMouseDown={this.clickingOnTheButton}
                              color={`${deleteEnabled ? 'secondary' : 'primary'}`}>
-                            {this.state.addContext ? <SaveIcon/> : deleteEnabled ? <DeleteIcon /> : <ContentAdd/>}
+                            {this.state.addContext ? <SaveIcon/> : deleteEnabled ? <DeleteIcon/> : <ContentAdd/>}
                         </Fab>
                         <Table className='custom-context-table'>
                             <TableHead>

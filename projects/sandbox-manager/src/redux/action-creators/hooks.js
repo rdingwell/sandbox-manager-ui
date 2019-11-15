@@ -44,6 +44,51 @@ export function setServicesLoading(loading) {
     }
 }
 
+export function setChangedServices(changed) {
+    return {
+        type: types.HOOKS_SET_CHANGED_SERVICES,
+        payload: {changed}
+    }
+}
+
+export function checkForHookUpdates() {
+    return (dispatch, getState) => {
+        let state = getState();
+        let services = state.hooks.services;
+        let changed = [];
+        services.map(s => {
+            API.getNoErrorManagement(s.url, dispatch)
+                .then(result => {
+                    let hasChanged = false;
+                    if (result.services) {
+                        hasChanged = result.services.length !== s.cdsHooks.length;
+                        if (!hasChanged) {
+                            s.cdsHooks.map(hook => {
+                                let newHook = result.services.find(i => i.id === hook.hookId);
+                                hasChanged = newHook.description !== hook.description || newHook.hook !== hook.hook || newHook.title !== hook.title ||
+                                    ((hook.prefetch && !newHook.prefetch) || (!hook.prefetch && newHook.prefetch));
+                                if (!hasChanged && hook.prefetch && newHook.prefetch) {
+                                    let oldPrefetch = hook.prefetch || {};
+                                    let newPrefetch = newHook.prefetch || {};
+                                    let oldKeys = Object.keys(oldPrefetch);
+                                    let newKeys = Object.keys(newPrefetch);
+                                    hasChanged = oldKeys.length !== newKeys.length;
+                                    if (!hasChanged) {
+                                        oldKeys.map(key => {
+                                            oldPrefetch[key] !== newPrefetch[key] && (hasChanged = true);
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    hasChanged && changed.push(s.id);
+                    dispatch(setChangedServices(changed));
+                });
+        })
+    }
+}
+
 export function updateService(service) {
     return (dispatch, getState) => {
         let url = service.url;
@@ -193,6 +238,7 @@ export function loadServices() {
                 .then(services => dispatch(setServices(services)))
                 .finally(() => {
                     dispatch(setServicesLoading(false));
+                    dispatch(checkForHookUpdates());
                 });
         }
     }

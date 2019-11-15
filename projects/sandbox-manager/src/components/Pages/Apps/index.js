@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme} from '@material-ui/core';
+import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme, Tooltip} from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ContentAdd from '@material-ui/icons/Add';
 import InfoIcon from '@material-ui/icons/Info';
@@ -8,6 +8,10 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import UpdateIcon from '@material-ui/icons/Update';
 import ContentCopy from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Assignment from '@material-ui/icons/Assignment';
+import AlarmAdd from '@material-ui/icons/AlarmAdd';
+import Alarm from '@material-ui/icons/Alarm';
+import AlarmOn from '@material-ui/icons/AlarmOn';
 import Page from '../../UI/Page';
 import ConfirmModal from '../../UI/ConfirmModal';
 import API from '../../../lib/api';
@@ -134,14 +138,19 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <Fab onClick={() => this.toggleDeleteService(service)} className='remove-service-button' size='small'
-                                           style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p5}} disabled={this.state.isReplica}>
+                {!this.props.modal && this.props.changedServices.indexOf(service.id) >= 0 && <Fragment>
+                    <Tooltip title="The service seems to have changed." aria-label="add" placement='top'>
+                        <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
+                            <UpdateIcon/> Update
+                        </Button>
+                    </Tooltip>
+                    <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>
+                </Fragment>}
+                {!this.props.modal &&
+                <Fab onClick={() => this.toggleDeleteService(service)} className='remove-service-button' size='small'
+                     style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p5}} disabled={this.state.isReplica}>
                     <DeleteIcon/>
                 </Fab>}
-                {!this.props.modal && <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
-                    <UpdateIcon/> Refresh
-                </Button>}
-                {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';
@@ -186,6 +195,15 @@ class Apps extends Component {
         switch (hookType) {
             case 'patient-view':
                 return <PatientIcon/>;
+            case 'appointment-book':
+                return <AlarmAdd/>;
+            case 'encounter-start':
+                return <Alarm/>;
+            case 'encounter-discharge':
+                return <AlarmOn/>;
+            case 'order-review':
+            case 'order-sign':
+                return <Assignment/>;
             case 'medication-prescribe':
             case 'order-select':
                 return <PillIcon className='additional-rotation'/>;
@@ -522,7 +540,8 @@ const mapStateToProps = state => {
         servicesLoading: state.hooks.servicesLoading,
         hookCards: state.hooks.cards || {cards: []},
         hookExecuting: state.hooks.executing,
-        errorToShow: state.app.errorToShow
+        errorToShow: state.app.errorToShow,
+        changedServices: state.hooks.changed || []
     };
 };
 

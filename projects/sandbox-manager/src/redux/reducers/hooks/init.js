@@ -315,5 +315,6 @@ export default {
                 resourceType: 'Encounter'
             }
         }
-    }
+    },
+    changed: []
 }

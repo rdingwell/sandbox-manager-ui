@@ -7,6 +7,9 @@ export default (state = initialState, action) => {
         case actionTypes.HOOKS_EXECUTING:
             state.executing = action.payload.executing;
             break;
+        case actionTypes.HOOKS_SET_CHANGED_SERVICES:
+            state.changed = action.payload.changed;
+            break;
         case actionTypes.HOOKS_SET_CARDS:
             // state.cards = cards.concat(action.payload.cards);
             state.cards = action.payload.cards;
@@ -27,6 +30,7 @@ export default (state = initialState, action) => {
             state.hookContexts = initialState.hookContexts;
             state.servicesLoading = false;
             state.services = [];
+            state.changed = [];
             break;
     }
 
