@@ -96,11 +96,11 @@ class App extends React.Component {
                         {!this.getCheck() && this.props.children}
                     </div>
                 </div>}
-                {!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>
-                    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} color='primary'>
-                        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>
-                    </Button>
-                </div>}
+                {/*{!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>*/}
+                {/*    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} color='primary'>*/}
+                {/*        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>*/}
+                {/*    </Button>*/}
+                {/*</div>}*/}
                 {showLoader && <Dialog classes={{paper: 'full-loader-wrapper'}} open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
