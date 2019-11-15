@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme, Tooltip} from '@material-ui/core';
+import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme, Tooltip, MenuItem, Menu} from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ContentAdd from '@material-ui/icons/Add';
 import InfoIcon from '@material-ui/icons/Info';
@@ -12,6 +12,7 @@ import Assignment from '@material-ui/icons/Assignment';
 import AlarmAdd from '@material-ui/icons/AlarmAdd';
 import Alarm from '@material-ui/icons/Alarm';
 import AlarmOn from '@material-ui/icons/AlarmOn';
+import MoreVert from '@material-ui/icons/MoreVert';
 import Page from '../../UI/Page';
 import ConfirmModal from '../../UI/ConfirmModal';
 import API from '../../../lib/api';
@@ -34,6 +35,7 @@ import DohMessage from "../../UI/DohMessage";
 import './styles.less';
 import {isUrlValid} from '../../../lib/misc';
 import HelpButton from '../../UI/HelpButton';
+import EditIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const POSTFIX = '/.well-known/smart/manifest.json';
 const NEEDED_PROPS = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -141,16 +143,22 @@ class Apps extends Component {
                 {!this.props.modal && this.props.changedServices.indexOf(service.id) >= 0 && <Fragment>
                     <Tooltip title="The service seems to have changed." aria-label="add" placement='top'>
                         <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
-                            <UpdateIcon/> Update
+                            Update
                         </Button>
                     </Tooltip>
                     <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>
                 </Fragment>}
                 {!this.props.modal &&
-                <Fab onClick={() => this.toggleDeleteService(service)} className='remove-service-button' size='small'
-                     style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p5}} disabled={this.state.isReplica}>
-                    <DeleteIcon/>
-                </Fab>}
+                <Fragment>
+                    <Button ref={service.id} onClick={() => this.toggleMenuForItem(service.id)}>
+                        <MoreVert/>
+                    </Button>
+                    <Menu width='100px' open={this.state[`service_${service.id}`] || false} anchorEl={this.refs[service.id]} onClose={() => this.toggleMenuForItem(service.id)}>
+                        <MenuItem className='scenario-menu-item' onClick={() => this.toggleDeleteService(service)}>
+                            <DeleteIcon/> Delete
+                        </MenuItem>
+                    </Menu>
+                </Fragment>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';
@@ -184,6 +192,12 @@ class Apps extends Component {
             });
         });
         return hooks;
+    };
+
+    toggleMenuForItem = id => {
+        let state = {};
+        state[`service_${id}`] = !this.state[`service_${id}`];
+        this.setState(state);
     };
 
     toggleDeleteService = service => {

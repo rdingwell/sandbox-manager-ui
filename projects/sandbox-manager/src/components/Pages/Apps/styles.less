@@ -136,17 +136,26 @@
 
   .service-title-wrapper {
     position: relative;
+    background-color: white;
+    padding: 5px 20px 0 20px;
+    margin-top: 20px;
+    box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+    height: 60px;
 
-    .remove-service-button {
+    button {
       position: absolute;
-      right: 38px;
-      top: -10px;
+      right: 15px;
+      top: 15px;
+    }
+
+    h2 {
+      margin: 0 !important;
     }
 
     .service-update-button {
-      position: absolute;
-      right: 100px;
-      top: -8px;
+      right: 90px;
+      top: 5px;
+
       & svg {
         margin-right: 10px;
       }
@@ -155,10 +164,12 @@
     & > span {
       font-size: .8rem;
       position: absolute;
-      bottom: -18px;
+      top: 38px;
 
       &.service-last-updated {
-        right: 100px;
+        right: 91px;
+        top: 45px;
+        font-size: .7rem;
       }
     }
   }
