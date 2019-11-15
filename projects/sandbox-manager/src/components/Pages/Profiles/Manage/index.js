@@ -150,7 +150,7 @@ class Manage extends Component {
                                             <span>Url: </span>
                                             <span>{this.props.profileResource.url}</span>
                                         </div>
-                                        {this.props.profileResource && this.props.profileResource.text && <div className="label-value big">
+                                        {this.props.profileResource.text && this.props.profileResource.text.div && <div className="label-value big">
                                             <span>Text: </span>
                                             <span dangerouslySetInnerHTML={{__html: this.props.profileResource.text.div.replace(regex, replaceValue).replace(regex2, replaceValue2)}}/>
                                         </div>}
