@@ -1,7 +1,7 @@
 {
   "name": "sandbox-manager-v3",
-  "version": "3.3.0-SNAPSHOT",
-  "description": "Logica Sandbox Manager V3",
+  "version": "3.3.1-SNAPSHOT",
+  "description": "HSPC Sandbox Manager V3",
   "author": "Interopion",
   "license": "ISC",
   "repository": {
