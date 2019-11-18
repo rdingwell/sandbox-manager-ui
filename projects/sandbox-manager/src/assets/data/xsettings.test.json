@@ -7,7 +7,7 @@
       "client_id": "37a97381-5e00-4f95-bb4e-10b24b77aedc",
       "scope": "patient/*.* launch openid profile online_access"
     },
-    "https://api.logicahealth.org/maecloud/data": {
+    "https://api.hspconsortium.org/maecloud/data": {
       "client_id": "37a97381-5e00-4f95-bb4e-10b24b77aedc",
       "scope": "patient/*.* launch/patient openid profile online_access"
     }
@@ -20,12 +20,12 @@
     "baseServiceUrl_8": "https://api-test.logicahealth.org",
     "baseServiceUrl_9": "https://api-test.logicahealth.org",
     "baseServiceUrl_10": "https://api-test.logicahealth.org",
-    "oauthLogoutUrl": "https://auth-test.logicahealth.org/logout",
-    "oauthUserInfoUrl": "https://auth-test.logicahealth.org/userinfo",
+    "oauthLogoutUrl": "https://auth-test.hspconsortium.org/logout",
+    "oauthUserInfoUrl": "https://auth-test.hspconsortium.org/userinfo",
     "sbmUrlHasContextPath": "false",
-    "ehrSimulator": "https://ehr-app-test.logicahealth.org",
-    "patientDataManager": "https://patient-data-manager-test.logicahealth.org",
-    "userManagementUrl": "https://account-test.logicahealth.org",
+    "ehrSimulator": "https://ehr-app-test.hspconsortium.org",
+    "patientDataManager": "https://patient-data-manager-test.hspconsortium.org",
+    "userManagementUrl": "https://account-test.hspconsortium.org",
     "reservedEndpoints": [
       "this",
       "hspc",
@@ -70,8 +70,8 @@
     "hspcAccountCookieName": "hspc-token",
     "personaCookieName": "hspc-persona-token",
     "personaCookieTimeout": 180000,
-    "personaCookieDomain": "logicahealth.org",
-    "sandboxManagerApiUrl": "https://sandbox-api-test.logicahealth.org",
-    "sandboxManagerUrl": "https://sandbox-test.logicahealth.org"
+    "personaCookieDomain": "hspconsortium.org",
+    "sandboxManagerApiUrl": "https://sandbox-api-test.hspconsortium.org",
+    "sandboxManagerUrl": "https://sandbox-test.hspconsortium.org"
   }
 }
