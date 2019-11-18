@@ -26,13 +26,13 @@ export default class LinksPopover extends Component {
                      targetOrigin={{ horizontal: 'left', vertical: 'top' }} onClose={this.handleLinksDropdown}
                      className='sandbox-menu-item left-margin'>
                 <Menu className='links-menu'>
-                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://hspconsortium.org')}
+                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://logicahealth.org')}
                               primaryText={<span><img src={`${window.location.origin}\\img\\hspc-new-logo-md.png`} />
                               <div className='label'>Consortium</div></span>} />
-                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('https://gallery.hspconsortium.org')}
+                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('https://gallery.logicahealth.org')}
                               primaryText={<span><img className='small' src={`${window.location.origin}\\img\\hspc-gallery-icon.png`} />
                               <div className='label'>Gallery</div></span>} />
-                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://developers.hspconsortium.org')}
+                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://developers.logicahealth.org')}
                               primaryText={<span><img className='small' src={`${window.location.origin}\\img\\hspc-developers-icon.png`} />
                               <div className='label'>Developers</div></span>} />
                 </Menu>
