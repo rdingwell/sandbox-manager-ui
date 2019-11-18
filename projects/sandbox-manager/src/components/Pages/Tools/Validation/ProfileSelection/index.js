@@ -35,6 +35,7 @@ class ProfileSelection extends Component {
     render() {
         let obj = this.props.queryObject;
         let hasProfile = !!obj && !!obj.meta && !!obj.meta.profle && obj.meta.profile.length > 0;
+        let noProfilesMatched = true;
 
         return <div className='profile-selection'>
             {this.props.fetchingProfilesByDefinition && <div className='loader'>
@@ -51,13 +52,15 @@ class ProfileSelection extends Component {
                     </Button>}
                 </ListSubheader>}>
                     {!this.state.wrongFile && !!this.props.profiles && Object.keys(this.props.profiles).map((profile, id) =>
-                        this.props.profiles[profile].map((sd, i) =>
-                            <ListItem key={`${id}${i}`} className='profile' button
+                        this.props.profiles[profile].map((sd, i) => {
+                            noProfilesMatched = false;
+                            return <ListItem key={`${id}${i}`} className='profile' button
                                       onClick={() => this.props.profileSelected({id: this.props.profiles[profile][i].fhirProfileId, profile: this.props.profiles[profile][i]})}>
                                 <span style={{display: 'inline-block', minWidth: '200px'}}>{profile}</span> {this.props.profiles[profile].length > 1 && sd.relativeUrl.split('/')[1]}
-                            </ListItem>)
+                            </ListItem>
+                        })
                     )}
-                    {!this.props.profiles && <ListItem className='profile'>
+                    {noProfilesMatched && <ListItem className='profile'>
                         There is no profile with structure definition for "{this.state.type}"
                     </ListItem>}
                 </List>

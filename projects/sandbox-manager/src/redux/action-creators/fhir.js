@@ -472,6 +472,7 @@ export function uploadProfile(file, count, name, id) {
                                 dispatch(fhir_setCustomSearchResults(data));
                                 dispatch(loadProfiles(count));
                                 dispatch(fhir_setProfilesUploadingStatus({}));
+                                dispatch(fhir_setProfilesByDefinition());
                                 status.error && dispatch(setGlobalError(status.error));
                             } else {
                                 dispatch(fhir_setProfilesUploadingStatus(status));

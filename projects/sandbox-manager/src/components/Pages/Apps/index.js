@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme} from '@material-ui/core';
+import {CircularProgress, Card, CardMedia, Dialog, CardActions, Button, Fab, IconButton, Paper, Snackbar, TextField, Radio, withTheme, Tooltip, MenuItem, Menu} from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ContentAdd from '@material-ui/icons/Add';
 import InfoIcon from '@material-ui/icons/Info';
@@ -8,6 +8,11 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import UpdateIcon from '@material-ui/icons/Update';
 import ContentCopy from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Assignment from '@material-ui/icons/Assignment';
+import AlarmAdd from '@material-ui/icons/AlarmAdd';
+import Alarm from '@material-ui/icons/Alarm';
+import AlarmOn from '@material-ui/icons/AlarmOn';
+import MoreVert from '@material-ui/icons/MoreVert';
 import Page from '../../UI/Page';
 import ConfirmModal from '../../UI/ConfirmModal';
 import API from '../../../lib/api';
@@ -30,6 +35,7 @@ import DohMessage from "../../UI/DohMessage";
 import './styles.less';
 import {isUrlValid} from '../../../lib/misc';
 import HelpButton from '../../UI/HelpButton';
+import EditIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const POSTFIX = '/.well-known/smart/manifest.json';
 const NEEDED_PROPS = ['software_id', 'client_name', 'client_uri', 'logo_uri', 'launch_url', 'redirect_uris', 'scope', 'token_endpoint_auth_method', 'grant_types', 'fhir_versions'];
@@ -71,8 +77,8 @@ class Apps extends Component {
     componentWillReceiveProps(nextProps) {
         this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({appIsLoading: false});
         this.props.appCreating && !nextProps.appCreating && this.setState({createdApp: nextProps.createdApp});
-        (this.props.hookCards && this.props.hookCards.length && (!nextProps.hookCards || !nextProps.hookCards.length)
-            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards || !nextProps.hookCards.length))
+        ((this.props.hookCards.cards && this.props.hookCards.cards.length && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
+            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length || nextProps.hookCards.cards[0].noCardsReturned))
         ) && this.setState({toggledHook: undefined});
     }
 
@@ -134,14 +140,25 @@ class Apps extends Component {
             hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
-                {!this.props.modal && <Fab onClick={() => this.toggleDeleteService(service)} className='remove-service-button' size='small'
-                                           style={{backgroundColor: this.props.theme.p4, color: this.props.theme.p5}} disabled={this.state.isReplica}>
-                    <DeleteIcon/>
-                </Fab>}
-                {!this.props.modal && <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
-                    <UpdateIcon/> Refresh
-                </Button>}
-                {!this.props.modal && <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>}
+                {!this.props.modal && this.props.changedServices.indexOf(service.id) >= 0 && <Fragment>
+                    <Tooltip title="The service seems to have changed." aria-label="add" placement='top'>
+                        <Button variant='contained' className='service-update-button' onClick={() => this.props.updateService(service)} color='secondary'>
+                            Update
+                        </Button>
+                    </Tooltip>
+                    <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>
+                </Fragment>}
+                {!this.props.modal &&
+                <Fragment>
+                    <Button ref={service.id} onClick={() => this.toggleMenuForItem(service.id)}>
+                        <MoreVert/>
+                    </Button>
+                    <Menu width='100px' open={this.state[`service_${service.id}`] || false} anchorEl={this.refs[service.id]} onClose={() => this.toggleMenuForItem(service.id)}>
+                        <MenuItem className='scenario-menu-item' onClick={() => this.toggleDeleteService(service)}>
+                            <DeleteIcon/> Delete
+                        </MenuItem>
+                    </Menu>
+                </Fragment>}
             </div>);
             return service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';
@@ -153,12 +170,12 @@ class Apps extends Component {
                         {this.getHookIcon(hook.hook)}
                     </div>
                     <CardMedia className='media-wrapper'>
-                        {hook.logoUri && <img style={{height: '100%', maxWidth: '100%'}} src={hook.logoUri} alt='HSPC Logo'/>}
+                        {hook.logoUri && <img style={{height: '100%', maxWidth: '100%'}} src={hook.logoUri} alt='Logica Logo'/>}
                         {!hook.logoUri && <HooksIcon className='default-hook-icon'/>}
                     </CardMedia>
                     <div className='card-title' style={titleStyle}>
                         <h3 className='app-name'>{hook.title}</h3>
-                        <h3 className='app-name long'>{hook.title.substring(0, 50)}</h3>
+                        <h3 className='app-name long'>{hook.title.substring(0, 52)}{hook.title.length > 52 && '...'}</h3>
                         {this.props.modal && <Radio className='app-radio' value="selected"
                                                     checked={this.props.selectedApp ? hook.hookUrl === this.props.selectedApp.hookUrl && hook.hookId === this.props.selectedApp.hookId : false}/>}
                         <div className='app-description'>{hook.description}</div>
@@ -177,6 +194,12 @@ class Apps extends Component {
         return hooks;
     };
 
+    toggleMenuForItem = id => {
+        let state = {};
+        state[`service_${id}`] = !this.state[`service_${id}`];
+        this.setState(state);
+    };
+
     toggleDeleteService = service => {
         this.setState({serviceToDelete: service});
         this.toggleConfirmation();
@@ -186,7 +209,17 @@ class Apps extends Component {
         switch (hookType) {
             case 'patient-view':
                 return <PatientIcon/>;
+            case 'appointment-book':
+                return <AlarmAdd/>;
+            case 'encounter-start':
+                return <Alarm/>;
+            case 'encounter-discharge':
+                return <AlarmOn/>;
+            case 'order-review':
+            case 'order-sign':
+                return <Assignment/>;
             case 'medication-prescribe':
+            case 'order-select':
                 return <PillIcon className='additional-rotation'/>;
         }
         return null;
@@ -311,7 +344,7 @@ class Apps extends Component {
                                                 <div className='modal-screen-title' style={{color: this.props.theme.p3}}>How would you like to create the app</div>
                                                 <Card title='App launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, registerDialogVisible: true})}>
                                                     <CardMedia className='media-wrapper'>
-                                                        <img style={{height: '100%', maxWidth: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='HSPC Logo'/>
+                                                        <img style={{height: '100%', maxWidth: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='Logica Logo'/>
                                                     </CardMedia>
                                                     <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                                                         <h3 className='app-name'>Manually</h3>
@@ -345,11 +378,11 @@ class Apps extends Component {
             return <Card title={app.clientName} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledApp === app.id ? ' active' : ''}`} key={app.id} id={app.id}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
-                    <img style={{height: '100%', maxWidth: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='HSPC Logo'/>
+                    <img style={{height: '100%', maxWidth: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='Logica Logo'/>
                 </CardMedia>
                 <div className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
-                    <h3 className='app-name long'>{app.clientName.substring(0, 50)}</h3>
+                    <h3 className='app-name long'>{app.clientName.substring(0, 52)}{app.clientName.length > 52 && '...'}</h3>
                     {this.props.modal && <Radio className='app-radio' value="selected" checked={this.props.selectedApp ? app.id === this.props.selectedApp.id : false}/>}
                     <div className='app-description'>{app.briefDescription}</div>
                 </div>
@@ -519,9 +552,10 @@ const mapStateToProps = state => {
         copying: state.sandbox.copying,
         hooksList: state.hooks.services,
         servicesLoading: state.hooks.servicesLoading,
-        hookCards: state.hooks.cards,
+        hookCards: state.hooks.cards || {cards: []},
         hookExecuting: state.hooks.executing,
-        errorToShow: state.app.errorToShow
+        errorToShow: state.app.errorToShow,
+        changedServices: state.hooks.changed || []
     };
 };
 

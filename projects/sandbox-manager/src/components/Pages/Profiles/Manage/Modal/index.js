@@ -164,7 +164,7 @@ class ProfilesModal extends Component {
 
     toggleInputModal = () => {
         this.refs.fileZip.value = [];
-        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, profileName: '', profileId: '', showProfileName: false});
+        this.setState({inputModalVisible: !this.state.inputModalVisible, simplifierInputVisible: false, profileName: '', profileId: '', showProfileName: false, project: ''});
     };
 
     getModalContent = (palette) => {
@@ -197,7 +197,10 @@ class ProfilesModal extends Component {
                     {this.state.project === 'manual' && <TextField value={this.state.simplifierProjectName} onChange={e => this.setState({simplifierProjectName: e.target.value})} id='simplifierProjectName'
                                                                    label='Simplifier.net Project ID' className='project-name' fullWidth/>}
                     <Menu open={this.state.menuActive} anchorEl={this.refs['project-menu']} className='type-filter-menu' onClose={() => this.setState({menuActive: false})}>
-                        {PROFILES.map(profile => <MenuItem key={profile.id} className='type-filter-menu-item' onClick={() => this.setState({menuActive: false, project: profile.id})}>
+                        {PROFILES.map(profile => <MenuItem key={profile.id} className='type-filter-menu-item' onClick={() => {
+                            this.setProfileName(undefined, profile.title);
+                            this.setState({menuActive: false, project: profile.id})
+                        }}>
                             {profile.title}
                         </MenuItem>)}
                     </Menu>
@@ -221,7 +224,7 @@ class ProfilesModal extends Component {
     };
 
     loadRemoteFile = () => {
-        if (this.state.profileName && this.state.profileId) {
+        if (this.state.showProfileName && this.state.profileName && this.state.profileId) {
             let project = this.state.project !== 'manual' ? this.state.project : this.state.simplifierProjectName;
             this.props.loadProject(project, this.state.canFit, this.state.profileName, this.state.profileId);
             this.toggleInputModal();
@@ -238,8 +241,8 @@ class ProfilesModal extends Component {
         }
     };
 
-    setProfileName = (e) => {
-        let profileName = e.target.value;
+    setProfileName = (e, title) => {
+        let profileName = title || e.target.value;
         let profileId = profileName.replace(/[^a-z0-9]/gi, '').toLowerCase();
         if (profileId.length > 20) {
             profileId = profileId.substring(0, 20);

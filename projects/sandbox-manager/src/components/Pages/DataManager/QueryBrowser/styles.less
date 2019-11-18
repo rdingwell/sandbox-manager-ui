@@ -9,6 +9,13 @@
 
     .input-wrapper {
       width: 73%;
+      .query {
+        & > div {
+          button {
+            top: 0;
+          }
+        }
+      }
     }
 
     & > * {
@@ -197,6 +204,7 @@
   }
 
   .result-list-item {
+    min-height: 53px;
     flex-direction: column;
     justify-content: left;
     align-items: baseline;
