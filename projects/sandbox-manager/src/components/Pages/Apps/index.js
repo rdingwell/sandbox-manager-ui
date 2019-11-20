@@ -146,7 +146,7 @@ class Apps extends Component {
                             Update
                         </Button>
                     </Tooltip>
-                    <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY/MM/DD')}</span>
+                    <span className='service-last-updated'>Last updated: {moment(service.lastUpdated).format('YYYY-MM-DD')}</span>
                 </Fragment>}
                 {!this.props.modal &&
                 <Fragment>
@@ -160,11 +160,12 @@ class Apps extends Component {
                     </Menu>
                 </Fragment>}
             </div>);
-            return service.cdsHooks.map((hook, index) => {
+            let cards = [];
+            service.cdsHooks.map((hook, index) => {
                 hook.title = hook.title ? hook.title : '';
                 hook.url = service.url;
                 let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
-                hooks.push(<Card title={hook.title} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledHook === hook.id ? ' active' : ''}`} key={service.url + index}
+                cards.push(<Card title={hook.title} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledHook === hook.id ? ' active' : ''}`} key={service.url + index}
                                  onTouchStart={() => this.hookCardClick(index)} onClick={() => this.props.onCardClick && this.props.onCardClick(hook, service)}>
                     <div className={`hook-icon-wrapper ${hook.hook}`}>
                         {this.getHookIcon(hook.hook)}
@@ -190,6 +191,7 @@ class Apps extends Component {
                     </CardActions>}
                 </Card>);
             });
+            hooks.push(<div>{cards}</div>);
         });
         return hooks;
     };

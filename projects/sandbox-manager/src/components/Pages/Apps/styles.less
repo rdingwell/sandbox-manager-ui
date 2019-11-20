@@ -6,17 +6,24 @@
   .filter-wrapper {
     position: absolute;
     top: -46px;
+    width: 930px;
+
+    @media (max-width: 1255px) {
+      width: 620px;
+    }
 
     .dummy-expander {
       width: 828px;
       display: inline-block;
-      @media (max-width: 1228px) {
+      @media (max-width: 1255px) {
         width: 518px;
       }
     }
 
     & > .actions > *:last-child {
       margin-left: 1rem;
+      position: absolute;
+      right: 0;
     }
   }
 }
@@ -63,7 +70,7 @@
   width: 930px;
   display: inline-block;
   margin-top: 10px;
-  @media (max-width: 1228px) {
+  @media (max-width: 1255px) {
     width: 620px;
   }
 
@@ -136,16 +143,17 @@
 
   .service-title-wrapper {
     position: relative;
-    background-color: white;
-    padding: 5px 20px 0 20px;
+    background-color: #fff;
+    padding: 9px 17px 0;
     margin-top: 20px;
     box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
-    height: 60px;
+    height: 53px;
 
     button {
       position: absolute;
-      right: 15px;
+      right: 5px;
       top: 15px;
+      min-width: 50px;
     }
 
     h2 {
@@ -153,7 +161,7 @@
     }
 
     .service-update-button {
-      right: 90px;
+      right: 70px;
       top: 5px;
 
       & svg {
@@ -167,7 +175,7 @@
       top: 38px;
 
       &.service-last-updated {
-        right: 91px;
+        right: 71px;
         top: 45px;
         font-size: .7rem;
       }
@@ -180,7 +188,23 @@
     display: inline-block;
     position: relative;
     overflow: hidden;
-    margin: 24px 16px 0 16px;
+    margin-top: 24px;
+
+    @media (min-width: 1255px) {
+      &:nth-of-type(3n - 1) {
+        margin: 24px 48px 0 48px;
+      }
+    }
+
+    @media (max-width: 1254px) {
+      &:nth-of-type(2n) {
+        margin: 24px 0 0 32px;
+      }
+
+      &:nth-of-type(2n + 1) {
+        margin: 24px 32px 0 0;
+      }
+    }
 
     .hook-icon-wrapper {
       position: absolute;
