@@ -56,8 +56,10 @@ class ThirdPartyTools extends Component {
     openLink = (tool) => {
         // http://clinfhir.com/patientViewer.html?data=https:%2F%2Fapi-test.logicahealth.org%2Ftssst%2Fopen%2F&patientid=SMART-1288992
         let link = tool.link;
-        if (tool.title === 'clinFHIR') {
-            link = `${tool.link}/patientViewer.html?data=${encodeURI(this.props.serviceUrl.replace('/data', '/open/'))}&patientid=SMART-1288992`;
+        let url = encodeURI(this.props.serviceUrl.replace('/data', '/open/'));
+        let name = encodeURI(this.props.name);
+        if (tool.title === 'clinFHIR' && this.props.isOpen) {
+            link = `${tool.link}/?data=${url}&conf=${url}&term=${url}&dataname=${name}&confname=${name}&termname=${name}`;
         }
         let openLink = this.refs.openLink;
         openLink.href = link;
