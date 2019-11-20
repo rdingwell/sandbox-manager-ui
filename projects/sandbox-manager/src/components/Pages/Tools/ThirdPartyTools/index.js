@@ -58,7 +58,7 @@ class ThirdPartyTools extends Component {
         let link = tool.link;
         let url = encodeURI(this.props.serviceUrl.replace('/data', '/open/'));
         if (tool.title === 'clinFHIR' && this.props.isOpen) {
-            link = `${tool.link}/?data=${url}&conf=${url}&term=${url}`;
+            link = `${tool.link}/?data=${url}&conf=${url}&term=${url}&dataname=${this.props.name}&confname=${this.props.name}&termname=${this.props.name}`;
         }
         let openLink = this.refs.openLink;
         openLink.href = link;
