@@ -29,14 +29,18 @@ class Tools extends Component {
                 <Tab label='Validation' id='validation' value='validation'/>
                 <Tab label='Other tools' id='tools' value='tools'/>
             </Tabs>
-            {this.state.activeTab === 'tools' && <ThirdPartyTools serviceUrl={this.props.serviceUrl}/>}
+            {this.state.activeTab === 'tools' && <ThirdPartyTools serviceUrl={this.props.serviceUrl} isOpen={this.props.isOpen} name={this.props.sandboxName}/>}
             {this.state.activeTab === 'validation' && <Validation {...this.props}/>}
         </div>
     }
 }
 
 const mapStateToProps = state => {
+    let sandbox = state.sandbox.sandboxes.find(i => i.sandboxId === sessionStorage.sandboxId);
+    let isOpen = sandbox ? !!sandbox.allowOpenAccess : false;
     return {
+        isOpen,
+        sandboxName: sandbox.name,
         profiles: state.fhir.profilesByDefinition,
         profilesLoading: state.fhir.profilesLoading,
         validationExecuting: state.fhir.validationExecuting,
@@ -48,7 +52,9 @@ const mapStateToProps = state => {
     }
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD, loadQueryObject,
-    getDefaultUserForSandbox}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({
+    app_setScreen, loadRelativeProfiles, loadResource, loadProfiles, validateExisting, validate, loadProfilesBySD, loadQueryObject,
+    getDefaultUserForSandbox
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Tools));
