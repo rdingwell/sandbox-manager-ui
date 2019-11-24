@@ -97,7 +97,7 @@ class App extends React.Component {
                     </div>
                 </div>}
                 {/*{!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>*/}
-                {/*    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/hspconsortium.org/forum/#!forum/developer', '_blank')} color='primary'>*/}
+                {/*    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/logicahealth.org/forum/#!forum/developer', '_blank')} color='primary'>*/}
                 {/*        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>*/}
                 {/*    </Button>*/}
                 {/*</div>}*/}
