@@ -6,7 +6,7 @@ Welcome to the Logica Sandbox Manager!
 
 *Note:* If you are wanting to build and test SMART on FHIR Apps, it is recommended that you use the free cloud-hosted version of the HSPC Sandbox.
 
-[Logica Sandbox](https://sandbox.hspconsortium.org)
+[Logica Sandbox](https://sandbox.logicahealth.org)
 
 ### How do I get set up? ###
 
