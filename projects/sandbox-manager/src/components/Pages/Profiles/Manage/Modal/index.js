@@ -110,7 +110,7 @@ class ProfilesModal extends Component {
 
         this.state.profileInputModalVisible &&
         modals.push(<Dialog open={this.state.profileInputModalVisible} onClose={closeInputModal} key={3}>
-            <div className='profiles-modal'>
+            <div className='profiles-modal project-input-modal'>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button" onClick={closeInputModal} style={{color: 'whitesmoke'}}>
                         <i className="material-icons">close</i>
