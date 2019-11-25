@@ -51,7 +51,7 @@ class AppDialog extends Component {
                                     <TextField fullWidth value={this.props.hook.hookId} disabled={true} label='Id' className='margin-top'/>
                                     {!!this.props.hook.prefetch && <div className='prefetch-title margin-top'>Prefetch</div>}
                                     {!!this.props.hook.prefetch && Object.keys(this.props.hook.prefetch).map(key => {
-                                        return <TextField key={key} fullWidth value={this.props.hook.prefetch[key]} disabled={true} label={key} className='margin-top'/>;
+                                        return <TextField key={key} multiline fullWidth value={this.props.hook.prefetch[key]} disabled={true} label={key} className='margin-top'/>;
                                     })}
                                 </div>
                                 <form className='image-form'>
