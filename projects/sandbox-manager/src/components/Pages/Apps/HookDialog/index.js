@@ -30,7 +30,7 @@ class AppDialog extends Component {
         delete hook.url;
         delete hook.logoUri;
 
-        return <Dialog classes={{paper: paperClasses}} open={!!this.props.open} onClose={this.props.onClose} scroll='paper'>
+        return <Dialog classes={{paper: paperClasses}} open={!!this.props.open} onClose={this.props.onClose} scroll='paper' disableEnforceFocus>
             <Paper className='paper-card'>
                 <IconButton style={{color: theme.p5}} className="close-button" onClick={this.props.onClose}>
                     <i className="material-icons">close</i>

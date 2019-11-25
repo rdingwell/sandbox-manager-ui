@@ -109,7 +109,7 @@ class App extends React.Component {
                     <p style={{padding: '30px'}}>Your session has expired. Reloading...</p>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
-                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} classes={{paper: 'hooks-dialog'}} onClose={this.dismiss}>
+                {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} classes={{paper: 'hooks-dialog'}} onClose={this.dismiss} disableEnforceFocus>
                     <Paper className='paper-card'>
                         <IconButton style={{color: theme.p5}} className="close-button" onClick={this.dismiss}>
                             <i className="material-icons">close</i>
