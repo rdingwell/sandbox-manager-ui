@@ -12,7 +12,7 @@ cap.set('chromeOptions', {
 });
 const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
 // const rootURL = 'http://localhost:3001';
-const rootURL = 'https://sandbox-test.hspconsortium.org';
+const rootURL = 'https://sandbox-test.logicahealth.org';
 let driver;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 30 * 3;
 

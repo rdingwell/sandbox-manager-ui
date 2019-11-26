@@ -63,7 +63,7 @@ export default class QueryBrowser extends Component {
         this.calcSuggestions();
 
         return <div className='query-browser-wrapper'>
-            <Dialog classes={{paper: 'query-result-dialog'}} open={this.state.showDialog} onClose={this.toggle}>
+            <Dialog classes={{paper: 'query-result-dialog'}} open={this.state.showDialog} onClose={this.toggle} disableEnforceFocus>
                 <Paper className='paper-card'>
                     <h3>
                         Details
