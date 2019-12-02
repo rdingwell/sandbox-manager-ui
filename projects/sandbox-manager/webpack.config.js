@@ -71,13 +71,20 @@ const config = {
                     loader: "babel-loader",
                     options: {
                         presets: [
-                            "react-es2015",
-                            "es2015",
-                            "es2016",
-                            "stage-0",
-                            "stage-1",
-                            "stage-2",
-                            "stage-3"
+                            "@babel/preset-react",
+                            [
+                                "@babel/preset-env",
+                                {
+                                    "targets": {
+                                        "browsers": ["last 2 versions", "ie >= 11"],
+                                    },
+                                    "useBuiltIns": "usage"
+                                }
+                            ]
+                        ],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            'transform-class-properties'
                         ]
                     }
                 }
