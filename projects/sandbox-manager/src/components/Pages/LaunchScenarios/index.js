@@ -501,7 +501,6 @@ class LaunchScenarios extends Component {
     };
 
     openInDM = (_e, patient) => {
-        // e.stopPropagation();
         this.props.doLaunch({
             'launchUri': `${this.props.patientDataManagerUrl}/launch.html`
         }, patient, undefined, true);
