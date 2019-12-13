@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 
-echo "Cloning the 'lib' repo"
-cd ./projects
-git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
-cd sandbox-manager-lib
-npm link
-cd ..
-
 echo "::: Running NPM INSTALL"
 npm install
-npm link sandbox-manager-lib
 
 npm run sandbox-manager:build:local
 
