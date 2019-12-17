@@ -528,8 +528,8 @@ class Apps extends Component {
             }
         } else if (this.props.hooks && !!app) {
             //TODO add patient restriction to the HOOKS
-            this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-            this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
+            this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15, PersonaList.TYPES.patient);
+            // this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
             this.setState({hookToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
             this.props.resetPersonas();
         } else {
