@@ -85,6 +85,10 @@
     width: 100%;
     padding-top: 0;
 
+    & > *:last-child {
+      margin-right: 0 !important;
+    }
+
     .screen-content {
       padding-left: 20px;
     }
@@ -117,7 +121,7 @@
       }
 
       .card-title {
-        bottom: -35%;
+        bottom: -47%;
       }
     }
   }
@@ -194,7 +198,7 @@
 
   .app-card {
     width: 278px;
-    height: 235px;
+    height: 185px;
     display: inline-block;
     position: relative;
     overflow: hidden;
@@ -300,8 +304,8 @@
       padding: 8px !important;
       color: whitesmoke;
       width: 100%;
-      height: 60%;
-      bottom: -40%;
+      height: 75%;
+      bottom: -47%;
       box-sizing: border-box;
       transition: all .5s;
 
@@ -390,8 +394,7 @@
 
     &.small {
       width: 235px;
-      height: 148px;
-      min-height: 188px;
+      height: 156px;
 
       &:hover:not(.disabled) {
         cursor: pointer;
@@ -417,8 +420,8 @@
 }
 
 .created-app-dialog {
-  min-width: 600px;
-  max-width: 45vw !important;
+  min-width: 700px;
+  max-width: inherit !important;
   padding: 0 !important;
 
   .paper-body {
@@ -472,10 +475,10 @@
   }
 }
 
-.launch-scenario-dialog {
-  max-width: 900px !important;
-  width: 80%;
-}
+//.launch-scenario-dialog {
+//  max-width: 900px !important;
+//  width: 80%;
+//}
 
 .launch-app-dialog {
   .no-patient-button {
@@ -527,4 +530,8 @@
   text-align: center;
   padding-bottom: 20px;
   padding-top: 10px !important;
+
+  & > *:last-child {
+    margin-right: 48px;
+  }
 }
