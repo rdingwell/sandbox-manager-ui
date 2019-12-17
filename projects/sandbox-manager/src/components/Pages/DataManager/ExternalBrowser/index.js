@@ -12,7 +12,7 @@ export default class ExternalBrowser extends Component {
 
         this.state = {
             query: '',
-            endpoint: 'https://api3.hspconsortium.org/HSPCplusSynthea/open'
+            endpoint: 'https://api3.logicahealth.org/HSPCplusSynthea/open'
         };
     }
 
