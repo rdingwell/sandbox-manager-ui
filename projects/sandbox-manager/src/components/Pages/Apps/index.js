@@ -517,10 +517,10 @@ class Apps extends Component {
             let clientJSON = JSON.parse(app.clientJSON);
             let isPatientScoped = clientJSON.scope.find(i => i.toLowerCase().indexOf('patient/') >= 0);
             if (isPatientScoped) {
-                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.persona, app.samplePatients.split('?')[1], 15);
-                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
-                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
-                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
+                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.persona, app.samplePatients.split('?')[1], 15, PersonaList.TYPES.patient);
+                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15, PersonaList.TYPES.patient);
+                // app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
+                // (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
                 this.setState({appToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
                 this.props.resetPersonas();
             } else {
