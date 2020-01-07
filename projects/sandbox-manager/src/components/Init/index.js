@@ -13,7 +13,7 @@ export default class InitLoader extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.location.pathname !== "/launchApp" && this.props.location.pathname !== "/") {
+        if (this.props.location.pathname !== "/launchApp" && this.props.location.pathname !== "/after-auth" && this.props.location.pathname !== "/") {
             window.FHIR.oauth2.ready(
                 (smart) => {
                     Promise.resolve()
