@@ -1,6 +1,6 @@
 import * as actionTypes from './types';
-import { setOauthUserInfo, saveSandboxManagerUser } from './users';
-import { fetchSandboxes, fetchUserNotifications, loadInvites } from "./sandbox";
+import {setOauthUserInfo, saveSandboxManagerUser} from './users';
+import {fetchSandboxes, fetchUserNotifications, loadInvites} from "./sandbox";
 import API from '../../lib/api';
 
 let fhirClient = null;
@@ -23,15 +23,15 @@ const getQueryParams = (url) => {
     }
 };
 
-export function fhirLogin () {
+export function fhirLogin() {
     return {
         type: actionTypes.FHIR_LOGIN
     };
 }
 
-export function setServerUrl () {
-    const fhirClient = { ...state.fhirClient };
-    const server = { ...fhirClient.server };
+export function setServerUrl() {
+    const fhirClient = {...state.fhirClient};
+    const server = {...fhirClient.server};
     const sandboxId = action.sandboxId;
     const fhirVersion = state.fhirVersion;
     debugger
@@ -54,13 +54,13 @@ export function setServerUrl () {
     return state;
 }
 
-export function fhirLoginSuccess () {
+export function fhirLoginSuccess() {
     return {
         type: actionTypes.FHIR_LOGIN_SUCCESS
     };
 }
 
-export function goHome () {
+export function goHome() {
     sessionStorage && sessionStorage.clear && sessionStorage.clear();
     localStorage && localStorage.clear && localStorage.clear();
 
@@ -70,7 +70,7 @@ export function goHome () {
         deleteCookie(spcook[0]);
     }
 
-    function deleteCookie (cookiename) {
+    function deleteCookie(cookiename) {
         let d = new Date();
         d.setDate(d.getDate() - 1);
         let expires = ";expires=" + d;
@@ -81,52 +81,52 @@ export function goHome () {
     window.location = window.location.origin;
 }
 
-export function fhirLoginFail () {
+export function fhirLoginFail() {
     return {
         type: actionTypes.FHIR_LOGIN_FAIL
     }
 }
 
-export function clearToken () {
+export function clearToken() {
     return {
         type: actionTypes.FHIR_CLEAR_TOKEN
     }
 }
 
-export function fhirInit () {
+export function fhirInit() {
     return {
         type: actionTypes.FHIR_INIT
     }
 }
 
-export function setFhirClient (fhirClient) {
+export function setFhirClient(fhirClient) {
     return {
         type: actionTypes.FHIR_CLIENT,
         fhirClient: fhirClient
     }
 }
 
-export function hspcAuthorized () {
+export function hspcAuthorized() {
     return {
         type: actionTypes.FHIR_HSPC_AUTHORIZED
     }
 }
 
-export function setFhirVersion (fhirVersion) {
+export function setFhirVersion(fhirVersion) {
     return {
         type: actionTypes.FHIR_VERSION,
         fhirVersion: fhirVersion
     }
 }
 
-export function saveSandboxApiEndpointIndex (index) {
+export function saveSandboxApiEndpointIndex(index) {
     return {
         type: actionTypes.SAVE_ENDPOINT_INDEX,
         index: index
     }
 }
 
-function queryFhirVersion (dispatch, fhirClient, state) {
+function queryFhirVersion(dispatch, fhirClient, state) {
     fhirClient.api.conformance({})
         .then(
             response => {
@@ -140,7 +140,7 @@ function queryFhirVersion (dispatch, fhirClient, state) {
         );
 }
 
-export function authorize (url, state, sandboxId) {
+export function authorize(url, state, sandboxId) {
     let thisUri = sandboxId ? window.location.origin + "/" + sandboxId + "/apps" : window.location.origin + "/after-auth";
     let thisUrl = thisUri.replace(/\/+$/, "/");
 
@@ -186,35 +186,35 @@ export function authorize (url, state, sandboxId) {
     });
 }
 
-export function init () {
+export function init() {
     return (dispatch, getState) => {
         const state = getState();
         authorize(window.location, state);
     }
 }
 
-export function afterFhirAuth (url) {
+export function afterFhirAuth(url) {
     return dispatch => {
         let params = getQueryParams(url);
         if (params && params.code) {
             dispatch(clearToken());
-            try {
-                // For some reason if we make the call too quickly the server responds that the
-                // token is invalid... we need to slow down the call a bit to prevent random
-                // 400 errors
-                setTimeout(() => {
+            // For some reason if we make the call too quickly the server responds that the
+            // token is invalid... we need to slow down the call a bit to prevent random
+            // 400 errors
+            setTimeout(() => {
+                try {
                     window.FHIR.oauth2.ready(function (newSmart) {
                         dispatch(fhirauth_setSmart(newSmart));
                     });
-                }, 2000);
-            } catch (e) {
-                goHome();
-            }
+                } catch (e) {
+                    goHome();
+                }
+            }, 2000);
         }
     }
 }
 
-export function fhirauth_setSmart (smart, redirect = null) {
+export function fhirauth_setSmart(smart, redirect = null) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
