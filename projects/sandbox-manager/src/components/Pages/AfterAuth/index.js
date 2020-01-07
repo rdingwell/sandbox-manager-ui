@@ -8,7 +8,9 @@ class AfterAuth extends Component {
 
     componentDidMount () {
         let url = this.props.location;
-        this.props.afterFhirAuth(url);
+        setTimeout(() => {
+            this.props.afterFhirAuth(url);
+        }, 5000);
     }
 
     componentDidUpdate () {
