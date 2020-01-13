@@ -33,7 +33,7 @@
   padding: 20px 25px;
 
   & > div:last-of-type > div:first-of-type {
-    width: ~"calc(100% - 88px - 1rem)" !important;
+    width: ~"calc(100% - 88px)" !important;
     margin-right: 1rem;
   }
 
@@ -85,6 +85,22 @@
     width: 100%;
     padding-top: 0;
 
+    .app-card {
+      &:first-child {
+        margin: 24px 15px 0 !important;
+      }
+
+      &:nth-of-type(5n) {
+        margin: 24px 15px 0 !important;
+      }
+
+      &:nth-of-type(4n) {
+        margin: 24px 15px 0 !important;
+      }
+
+      margin: 24px 15px 0 !important;
+    }
+
     & > *:last-child {
       margin-right: 0 !important;
     }
@@ -93,11 +109,16 @@
       padding-left: 20px;
     }
 
+    .app-name {
+      position: relative;
+      top: -3px;
+    }
+
     .app-radio {
       width: auto !important;
       position: absolute !important;
       right: 0;
-      top: 11px;
+      top: 2px;
 
       svg {
         fill: white !important;
