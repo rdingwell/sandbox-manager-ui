@@ -172,7 +172,7 @@ class Create extends Component {
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>CDS Hook</h3>
+                            <h3 className='app-name'>CDS Service</h3>
                             <Radio className='app-radio' value='selected' checked={this.state.scenarioType === 'hook'}/>
                         </div>
                     </Card>}
@@ -181,7 +181,7 @@ class Create extends Component {
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>CDS Hook</h3>
+                            <h3 className='app-name'>CDS Service</h3>
                             <h3 className='app-name disabled'>No services</h3>
                         </div>
                     </Card>}
@@ -217,7 +217,7 @@ class Create extends Component {
                     <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/>
                         {this.state.scenarioType === 'app'
                             ? 'Which user will launch the app in this launch scenario?'
-                            : 'Which user invokes the CDS hook in this launch scenario?'}
+                            : 'Which user invokes the CDS Service in this launch scenario?'}
                     </span>
                     <div className='persona-selection'>
                         {this.state.selectedPersona && <span className='selected-text'><b>Selected:</b> {this.getSelectedName()}</span>}

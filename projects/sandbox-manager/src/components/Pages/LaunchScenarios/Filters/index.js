@@ -51,7 +51,7 @@ export default class Filters extends Component {
                         Practitioner
                     </MenuItem>
                     <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Hook')}>
-                        CDS Hook
+                        CDS Service
                     </MenuItem>
                 </Menu>}
             </div>
