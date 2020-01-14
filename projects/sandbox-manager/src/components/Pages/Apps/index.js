@@ -76,7 +76,9 @@ class Apps extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({appIsLoading: false});
-        this.props.appCreating && !nextProps.appCreating && this.setState({createdApp: nextProps.createdApp});
+        this.props.appCreating && !nextProps.appCreating && nextProps.location.pathname.indexOf('hook') === -1 && this.setState({createdApp: nextProps.createdApp});
+        // this.props.appCreating && !nextProps.appCreating && console.log('Will set created App');
+        // this.props.appCreating && !nextProps.appCreating && console.log(nextProps);
         ((this.props.hookCards.cards && this.props.hookCards.cards.length && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
             || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length || nextProps.hookCards.cards[0].noCardsReturned))
         ) && this.setState({toggledHook: undefined});
