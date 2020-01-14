@@ -60,7 +60,7 @@ class TreeBrowser extends Component {
                     Select a patient
                 </Button>}
                 {!this.props.selectedPersona && this.state.patientSelectVisible &&
-                <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} classes={{paper: 'patient-select-dialog'}}>
+                <Dialog open={this.state.patientSelectVisible} onClose={this.toggleModal} classes={{paper: 'patient-select-dialog'}} className='validation-select-modal'>
                     <PersonaList {...props} titleLeft/>
                 </Dialog>}
                 {this.props.selectedPersona && this.getTree()}
