@@ -231,7 +231,7 @@ class LaunchScenarios extends Component {
                         {isSelected && this.getDetailsContent(sc)}
                     </div>;
                     let filter = (!this.state.appIdFilter || (sc.app && this.state.appIdFilter === sc.app.clientId)) &&
-                        (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'Hook' && !!sc.cdsHook)));
+                        (!this.state.typeFilter || (this.state.typeFilter === sc.userPersona.resource || (this.state.typeFilter === 'CDS Service' && !!sc.cdsHook)));
                     let showMenuForItem = this.state.showMenuForItem === index;
                     if (filter) {
                         return <div key={index} style={itemStyles} onClick={() => this.handleRowSelect(index)} className={'scenarios-list-row' + (isSelected ? ' active' : '') + (isLast ? ' last' : '')}>
