@@ -97,9 +97,12 @@ class Index extends Component {
                 </Button>
             </h3>
             <div>
-                {!this.props.loading && <List>
+                {!this.props.loading && sandboxes.length > 0 && < List>
                     {sandboxes}
                 </List>}
+                {!this.props.loading && sandboxes.length === 0 && <div className='no-sandboxes-message'>
+                    <span>You do not have any sandboxes yet.</span>
+                </div>}
                 {this.props.loading && <div className='loader-wrapper' data-qa='sandbox-loading-loader'>
                     <p>
                         Loading sandboxes
