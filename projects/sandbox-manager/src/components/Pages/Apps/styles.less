@@ -1,21 +1,24 @@
 .apps-page-wrapper {
   position: relative;
-  width: 106%;
+  width: 100%;
   padding-top: 1px;
 
   .filter-wrapper {
     position: absolute;
     top: -46px;
-    width: 930px;
+    width: 100%;
 
-    @media (max-width: 1255px) {
+    @media (max-width: 1258px) {
       width: 620px;
+    }
+    @media (min-width: 1259px) and (max-width: 1600px) {
+      width: 955px;
     }
 
     .dummy-expander {
       width: 828px;
       display: inline-block;
-      @media (max-width: 1255px) {
+      @media (max-width: 1258px) {
         width: 518px;
       }
     }
@@ -33,7 +36,7 @@
   padding: 20px 25px;
 
   & > div:last-of-type > div:first-of-type {
-    width: ~"calc(100% - 88px - 1rem)" !important;
+    width: ~"calc(100% - 88px)" !important;
     margin-right: 1rem;
   }
 
@@ -67,15 +70,21 @@
 }
 
 .apps-screen-wrapper {
-  width: 930px;
+  width: 100%;
   display: inline-block;
   margin-top: 10px;
-  @media (max-width: 1255px) {
-    width: 620px;
+  @media (max-width: 1258px) {
+    width: 680px;
+  }
+  @media (min-width: 1259px) and (max-width: 1600px) {
+    width: 956px;
   }
 
   .screen-content {
     max-width: 1570px;
+    @media (max-width: 1258px) {
+      width: 630px;
+    }
   }
 
   &.modal {
@@ -85,15 +94,41 @@
     width: 100%;
     padding-top: 0;
 
+    .app-card {
+      &:first-child {
+        margin: 24px 15px 0 !important;
+      }
+
+      &:nth-of-type(5n) {
+        margin: 24px 15px 0 !important;
+      }
+
+      &:nth-of-type(4n) {
+        margin: 24px 15px 0 !important;
+      }
+
+      margin: 24px 15px 0 !important;
+    }
+
+    & > *:last-child {
+      margin-right: 0 !important;
+    }
+
     .screen-content {
       padding-left: 20px;
+      padding-right: 2px;
+    }
+
+    .app-name {
+      position: relative;
+      top: -3px;
     }
 
     .app-radio {
       width: auto !important;
       position: absolute !important;
       right: 0;
-      top: 11px;
+      top: 2px;
 
       svg {
         fill: white !important;
@@ -106,8 +141,18 @@
     }
 
     .app-card {
+      @media only screen and (max-width: 1255px) {
+        &:nth-of-type(2n) {
+          margin: 24px 32px 0 32px;
+        }
+
+        &:nth-of-type(2n + 1) {
+          margin: 24px 15px 0 0;
+        }
+      }
+
       .card-title {
-        bottom: -35%;
+        bottom: -47%;
       }
     }
   }
@@ -183,26 +228,40 @@
   }
 
   .app-card {
-    width: 278px;
-    height: 235px;
+    width: 300px;
+    height: 200px;
     display: inline-block;
     position: relative;
     overflow: hidden;
     margin-top: 24px;
 
-    @media (min-width: 1255px) {
-      &:nth-of-type(3n - 1) {
-        margin: 24px 48px 0 48px;
+    @media (min-width: 500px) and (max-width: 1258px) {
+      &:nth-of-type(odd) {
+        margin: 24px 14px 0 0;
+      }
+
+      &:nth-of-type(even) {
+        margin: 24px 0 0 14px;
       }
     }
 
-    @media (max-width: 1254px) {
-      &:nth-of-type(2n) {
-        margin: 24px 0 0 32px;
+    @media (min-width: 1259px) and (max-width: 1600px) {
+      &:nth-of-type(3n + 2) {
+        margin: 24px 14px 0 28px;
       }
 
-      &:nth-of-type(2n + 1) {
-        margin: 24px 32px 0 0;
+      &:nth-of-type(3n + 3) {
+        margin: 24px 0 0 14px;
+      }
+    }
+
+    @media (min-width: 1601px) {
+      &:nth-of-type(4n + 2) {
+        margin: 24px 18px 0 36px;
+      }
+
+      &:nth-of-type(4n + 3) {
+        margin: 36px 24px 0 18px;
       }
     }
 
@@ -245,7 +304,6 @@
 
     & > div {
       margin: 0 !important;
-      //padding: 0 !important;
       width: 100%;
       height: 100%;
     }
@@ -290,8 +348,8 @@
       padding: 8px !important;
       color: whitesmoke;
       width: 100%;
-      height: 60%;
-      bottom: -40%;
+      height: 75%;
+      bottom: -47%;
       box-sizing: border-box;
       transition: all .5s;
 
@@ -380,8 +438,7 @@
 
     &.small {
       width: 235px;
-      height: 148px;
-      min-height: 188px;
+      height: 156px;
 
       &:hover:not(.disabled) {
         cursor: pointer;
@@ -407,8 +464,8 @@
 }
 
 .created-app-dialog {
-  min-width: 600px;
-  max-width: 45vw !important;
+  min-width: 700px;
+  max-width: inherit !important;
   padding: 0 !important;
 
   .paper-body {
@@ -462,16 +519,22 @@
   }
 }
 
-.launch-scenario-dialog {
-  max-width: 900px !important;
-  width: 80%;
-}
-
 .launch-app-dialog {
   .no-patient-button {
     position: absolute;
     top: 17px;
     right: 70px;
+  }
+
+  .page-title {
+    margin-left: 48px;
+  }
+
+  .page-content-wrapper {
+    padding-left: 48px;
+    box-sizing: border-box;
+    padding-bottom: 32px;
+    padding-right: 35px;
   }
 
   & > div > div {
@@ -517,4 +580,8 @@
   text-align: center;
   padding-bottom: 20px;
   padding-top: 10px !important;
+
+  & > *:last-child {
+    margin-right: 48px;
+  }
 }

@@ -190,8 +190,8 @@ class SandboxDetails extends Component {
         this.toggleModal();
     };
 
-    handleSandboxNameChange = (_e, name) => {
-        this.setState({name, updateDone: true});
+    handleSandboxNameChange = (event) => {
+        this.setState({name: event.target.value, updateDone: true});
     };
 
     handleSandboxDescriptionChange = (event) => {

@@ -160,7 +160,7 @@ class Create extends Component {
                     <span className='modal-screen-title' style={titleStyle}>Select a launch scenario type</span>
                     <Card title='App launch' className={`app-card small`} onClick={() => this.setState({scenarioType: 'app'})}>
                         <CardMedia className='media-wrapper'>
-                            <img style={{height: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='Logica Logo'/>
+                            <img style={{height: '100%', width: '100%'}} src='https://content.logicahealth.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='Logica Logo'/>
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
                             <h3 className='app-name'>SMART App</h3>
@@ -172,7 +172,7 @@ class Create extends Component {
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>CDS Hook</h3>
+                            <h3 className='app-name'>CDS Service</h3>
                             <Radio className='app-radio' value='selected' checked={this.state.scenarioType === 'hook'}/>
                         </div>
                     </Card>}
@@ -181,7 +181,7 @@ class Create extends Component {
                             <HooksIcon className='default-hook-icon'/>
                         </CardMedia>
                         <div className='card-title' style={cardTitleStyle}>
-                            <h3 className='app-name'>CDS Hook</h3>
+                            <h3 className='app-name'>CDS Service</h3>
                             <h3 className='app-name disabled'>No services</h3>
                         </div>
                     </Card>}
@@ -217,7 +217,7 @@ class Create extends Component {
                     <span className='modal-screen-title' style={titleStyle}><AccountIcon style={iconStyle}/>
                         {this.state.scenarioType === 'app'
                             ? 'Which user will launch the app in this launch scenario?'
-                            : 'Which user invokes the CDS hook in this launch scenario?'}
+                            : 'Which user invokes the CDS Service in this launch scenario?'}
                     </span>
                     <div className='persona-selection'>
                         {this.state.selectedPersona && <span className='selected-text'><b>Selected:</b> {this.getSelectedName()}</span>}

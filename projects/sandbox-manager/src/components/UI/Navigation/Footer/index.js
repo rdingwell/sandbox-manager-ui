@@ -134,6 +134,6 @@ export default class Footer extends Component {
     };
 
     openPDF = () => {
-        window.open('https://content.hspconsortium.org/docs/hspc/privacyterms.pdf', '_blank');
+        window.open('https://content.logicahealth.org/docs/hspc/privacyterms.pdf', '_blank');
     };
 }

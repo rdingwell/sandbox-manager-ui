@@ -76,7 +76,9 @@ class Apps extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.state.selectedApp && !nextProps.appLoading && !nextProps.appDeleting && this.setState({appIsLoading: false});
-        this.props.appCreating && !nextProps.appCreating && this.setState({createdApp: nextProps.createdApp});
+        this.props.appCreating && !nextProps.appCreating && nextProps.location.pathname.indexOf('hook') === -1 && this.setState({createdApp: nextProps.createdApp});
+        // this.props.appCreating && !nextProps.appCreating && console.log('Will set created App');
+        // this.props.appCreating && !nextProps.appCreating && console.log(nextProps);
         ((this.props.hookCards.cards && this.props.hookCards.cards.length && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
             || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length || nextProps.hookCards.cards[0].noCardsReturned))
         ) && this.setState({toggledHook: undefined});
@@ -171,7 +173,7 @@ class Apps extends Component {
                         {this.getHookIcon(hook.hook)}
                     </div>
                     <CardMedia className='media-wrapper'>
-                        {hook.logoUri && <img style={{height: '100%', maxWidth: '100%'}} src={hook.logoUri} alt='Logica Logo'/>}
+                        {hook.logoUri && <img style={this.props.modal ? {height: '156px', width: '235px'} : {height: '200px', width: '300px'}} src={hook.logoUri} alt='Logica Logo'/>}
                         {!hook.logoUri && <HooksIcon className='default-hook-icon'/>}
                     </CardMedia>
                     <div className='card-title' style={titleStyle}>
@@ -346,7 +348,7 @@ class Apps extends Component {
                                                 <div className='modal-screen-title' style={{color: this.props.theme.p3}}>How would you like to create the app</div>
                                                 <Card title='App launch' className={`app-card small`} onClick={() => this.setState({selectCreationType: false, registerDialogVisible: true})}>
                                                     <CardMedia className='media-wrapper'>
-                                                        <img style={{height: '100%', maxWidth: '100%'}} src='https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png' alt='Logica Logo'/>
+                                                        <img style={{height: '156px', width: '235px'}} src='/img/HSPCSandboxNoIconApp.png' alt='Logica Logo'/>
                                                     </CardMedia>
                                                     <div className='card-title' style={{backgroundColor: 'rgba(0,87,120, 0.75)'}}>
                                                         <h3 className='app-name'>Manually</h3>
@@ -380,7 +382,7 @@ class Apps extends Component {
             return <Card title={app.clientName} className={`app-card${this.props.modal ? ' small' : ''}${this.state.toggledApp === app.id ? ' active' : ''}`} key={app.id} id={app.id}
                          onTouchStart={() => this.appCardClick(app)} onClick={() => this.props.onCardClick && this.props.onCardClick(app)} data-qa={`app-${app.clientId}`}>
                 <CardMedia className='media-wrapper'>
-                    <img style={{height: '100%', maxWidth: '100%'}} src={app.logoUri || 'https://content.hspconsortium.org/images/hspc/icon/HSPCSandboxNoIconApp-512.png'} alt='Logica Logo'/>
+                    <img style={this.props.modal ? {height: '156px', width: '235px'} : {height: '200px', width: '300px'}} src={app.logoUri || '/img/HSPCSandboxNoIconApp.png'} alt='Logica Logo'/>
                 </CardMedia>
                 <div className='card-title' style={titleStyle}>
                     <h3 className='app-name'>{app.clientName}</h3>
@@ -517,10 +519,10 @@ class Apps extends Component {
             let clientJSON = JSON.parse(app.clientJSON);
             let isPatientScoped = clientJSON.scope.find(i => i.toLowerCase().indexOf('patient/') >= 0);
             if (isPatientScoped) {
-                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
-                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.persona, app.samplePatients.split('?')[1], 15);
-                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
+                app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.persona, app.samplePatients.split('?')[1], 15, PersonaList.TYPES.patient);
+                (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15, PersonaList.TYPES.patient);
+                // app && app.samplePatients && this.props.fetchPersonas(PersonaList.TYPES.patient, app.samplePatients.split('?')[1], 15);
+                // (!app || !app.samplePatients) && this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
                 this.setState({appToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
                 this.props.resetPersonas();
             } else {
@@ -528,8 +530,8 @@ class Apps extends Component {
             }
         } else if (this.props.hooks && !!app) {
             //TODO add patient restriction to the HOOKS
-            this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
-            this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15);
+            this.props.fetchPersonas(PersonaList.TYPES.persona, null, 15, PersonaList.TYPES.patient);
+            // this.props.fetchPersonas(PersonaList.TYPES.patient, null, 15);
             this.setState({hookToLaunch: app, toggledApp: app.id, toggledHook: app.id, registerDialogVisible: false});
             this.props.resetPersonas();
         } else {

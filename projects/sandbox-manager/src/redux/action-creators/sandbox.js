@@ -585,6 +585,8 @@ export function updateNeedPatientBanner (scenario) {
         let configuration = state.config.xsettings.data.sandboxManager;
         let url = `${configuration.sandboxManagerApiUrl}/launchScenario/${scenario.id}`;
 
+        dispatch(modifyingCustomContext(true));
+
         API.put(url, scenario, dispatch).finally(() => dispatch(modifyingCustomContext(false)));
     }
 }

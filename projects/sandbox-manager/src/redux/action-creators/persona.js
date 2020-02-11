@@ -97,7 +97,7 @@ export function getPersonasPage(type = "Patient", pagination, direction) {
     }
 }
 
-export function fetchPersonas(type = "Patient", searchCrit = null, count = 17) {
+export function fetchPersonas(type = "Patient", searchCrit = null, count = 17, next) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(lookupPersonasStart(type));
@@ -108,6 +108,7 @@ export function fetchPersonas(type = "Patient", searchCrit = null, count = 17) {
                 API.get(`${url}/userPersona?sandboxId=${sessionStorage.sandboxId}`, dispatch)
                     .then(personas => {
                         dispatch(setPersonas(type, personas));
+                        next && dispatch(fetchPersonas(next, searchCrit, count));
                     })
             } else {
                 let url = `${window.fhirClient.server.serviceUrl}/${type}?${searchCrit ? (searchCrit + '&') : ''}_sort:asc=family&_count=${count}`;
@@ -125,6 +126,7 @@ export function fetchPersonas(type = "Patient", searchCrit = null, count = 17) {
                         };
 
                         dispatch(setPersonas(type, resourceResults, paginationData));
+                        next && dispatch(fetchPersonas(next, searchCrit, count));
                     })
                     .catch(e => {
                         dispatch(lookupPersonasFail(e));

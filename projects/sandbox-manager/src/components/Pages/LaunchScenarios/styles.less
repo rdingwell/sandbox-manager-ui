@@ -14,7 +14,7 @@
 
   .launch-scenario-wrapper {
     .app-card {
-      width: 206px;
+      width: 210px;
       height: 139px;
       display: inline-block;
       position: relative;
@@ -181,6 +181,13 @@
 }
 
 .launch-scenario-dialog {
+  min-width: 900px;
+  width: 1000px !important;
+
+  @media (max-width: 1255px) {
+    width: 80%;
+  }
+
   & > div {
     & > div {
       padding: 0 !important;

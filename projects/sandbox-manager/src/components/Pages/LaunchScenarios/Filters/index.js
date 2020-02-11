@@ -50,8 +50,8 @@ export default class Filters extends Component {
                     <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Practitioner')}>
                         Practitioner
                     </MenuItem>
-                    <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('Hook')}>
-                        CDS Hook
+                    <MenuItem className='type-filter-menu-item' onClick={() => this.filterByType('CDS Service')}>
+                        CDS Service
                     </MenuItem>
                 </Menu>}
             </div>

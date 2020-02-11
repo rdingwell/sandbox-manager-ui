@@ -1,20 +1,29 @@
 .page-wrapper {
-  max-width: 1100px;
+  max-width: 1300px;
   min-width: 40vw;
   width: 100%;
+
+  @media (max-width: 1600px) {
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
   &.scroll {
     height: 100%;
+
     .page-content-wrapper {
       height: ~'calc(100% - 68px)';
       overflow-x: hidden;
       overflow-y: auto;
     }
   }
+
   .page-title-wrapper {
     font-size: 36px;
     font-weight: 700;
-    margin-left: 48px;
+    //margin-left: 48px;
     margin-top: 32px;
+
     &.left {
       font-size: 20px;
       text-align: left;
@@ -22,16 +31,18 @@
       margin: 22px 24px;
     }
   }
+
   .close-button {
     position: absolute !important;
     top: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
   }
+
   .page-content-wrapper {
-    padding-left: 48px;
+    //padding-left: 48px;
     box-sizing: border-box;
     padding-bottom: 32px;
-    padding-right: 35px;
+    //padding-right: 35px;
   }
 }
