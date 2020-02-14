@@ -82,7 +82,7 @@ class App extends React.Component {
             updateSandboxInvite: this.props.updateSandboxInvite,
             markAllNotificationsSeen: this.props.markAllNotificationsSeen
         };
-        let open = !!this.props.cards.cards && !!this.props.cards.cards.length && !this.props.cards.cards[0].noCardsReturned;
+        let open = !!this.props.cards.cards && !!this.props.cards.cards.length;
         let response = open ? Object.assign({}, this.props.cards.cards[0]) : {};
         let request = open ? this.props.cards.cards[0].requestData : {};
         open && delete response.requestData;
@@ -96,11 +96,6 @@ class App extends React.Component {
                         {!this.getCheck() && this.props.children}
                     </div>
                 </div>}
-                {/*{!showLoader && this.props.location.pathname !== "/" && <div className='feedback-button'>*/}
-                {/*    <Button variant='contained' onClick={() => window.open('https://groups.google.com/a/logicahealth.org/forum/#!forum/developer', '_blank')} color='primary'>*/}
-                {/*        <span style={{marginRight: '10px', color: 'white'}}>Submit feedback</span><Feedback style={{color: 'white', marginTop: '5px'}}/>*/}
-                {/*    </Button>*/}
-                {/*</div>}*/}
                 {showLoader && <Dialog classes={{paper: 'full-loader-wrapper'}} open={showLoader} data-qa='full-page-loader'>
                     <p>{loaderText}</p>
                     <CircularProgress size={80} thickness={5}/>
@@ -121,17 +116,18 @@ class App extends React.Component {
                                 <Tab label='Request' value='request'/>
                                 <Tab label='Response' value='response'/>
                             </Tabs>
-                            {!this.props.cards.noCardsReturned && <Tooltip title='According to spec the service should respond in less than 500ms'
-                                                                           className={`response-time${this.props.cards.time > 500 ? ' slow' : ''}`}>
+                            {!this.props.cards.cards[0].noCardsReturned && <Tooltip title='According to spec the service should respond in less than 500ms'
+                                                                                    className={`response-time${this.props.cards.time > 500 ? ' slow' : ''}`}>
                                 <span>{this.props.cards.time.toFixed(2)} ms</span>
                             </Tooltip>}
                             <div>
                                 {this.state.activeTab === 'parsed' && <div className={'hooks-wrapper parsed tab' + (this.state.activeTab === 'parsed' ? ' active' : '')}>
                                     <a ref='openLink' target='_blank'/>
-                                    {!this.props.cards.noCardsReturned && this.getCards()}
-                                    {this.props.cards.noCardsReturned && <div className='no-cards-message'>
-                                        <span>No cards were returned by the service</span>
-                                    </div>}
+                                    {this.props.cards.cards[0].noCardsReturned
+                                        ? <div className='no-cards-message'>
+                                            <span>No cards were returned by the service</span>
+                                        </div>
+                                        : this.getCards()}
                                 </div>}
                                 {this.state.activeTab === 'request' && <div className={'request tab' + (this.state.activeTab === 'request' ? ' active' : '')}>
                                     <ReactJson className='json-view' src={request} name={false}/>
