@@ -80,7 +80,7 @@ class Apps extends Component {
         // this.props.appCreating && !nextProps.appCreating && console.log('Will set created App');
         // this.props.appCreating && !nextProps.appCreating && console.log(nextProps);
         ((this.props.hookCards.cards && this.props.hookCards.cards.length && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
-            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length || nextProps.hookCards.cards[0].noCardsReturned))
+            || (this.props.hookExecuting && !nextProps.hookExecuting && (!nextProps.hookCards.cards || !nextProps.hookCards.cards.length))
         ) && this.setState({toggledHook: undefined});
     }
 
@@ -139,7 +139,7 @@ class Apps extends Component {
     getHooks = () => {
         let hooks = [];
         this.props.hooksList.map(service => {
-            hooks.push(<div className='service-title-wrapper' key={service.url + '_div'}>
+            hooks.push(<div className='service-title-wrapper' key={`${service.url}_div_1`}>
                 <h2>{service.title}</h2>
                 <span>{service.url}</span>
                 {!this.props.modal && this.props.changedServices.indexOf(service.id) >= 0 && <Fragment>
@@ -193,7 +193,7 @@ class Apps extends Component {
                     </CardActions>}
                 </Card>);
             });
-            hooks.push(<div>{cards}</div>);
+            hooks.push(<div key={`${service.url}_div_2`}>{cards}</div>);
         });
         return hooks;
     };
