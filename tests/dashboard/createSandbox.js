@@ -1,4 +1,4 @@
-let { Key } = require('selenium-webdriver');
+let {Key} = require('selenium-webdriver');
 
 const UTILS = require('../utils');
 
@@ -55,6 +55,7 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
     });
 
     it('should create a sandbox', async () => {
+        await UTILS.waitForElementCSS('[data-qa="sandbox-submit-button"]');
         let createButton = await UTILS.getElementByCss('[data-qa="sandbox-submit-button"]');
         createButton.click();
 
@@ -62,6 +63,7 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
         await UTILS.waitForElementCSS('[data-qa="sandbox-creating-loader"]');
         await UTILS.wait(1500);
 
+        await UTILS.waitForElementCSS('[data-qa="app-page-wrapper"]');
         let appsPageWraooer = await UTILS.getElementByCss('[data-qa="app-page-wrapper"]', 5000);
         expect(appsPageWraooer).not.toBeNull();
         let currentUrl = await UTILS.getCurrentURL();

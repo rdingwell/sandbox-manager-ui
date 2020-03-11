@@ -4,6 +4,7 @@ const selectSandbox = async () => {
     let button = await UTILS.getElementByCss(`[data-qa="sandbox-${process.env.SANDBOX_NAME.replace(/ /g, '')}"]`);
     button.click();
 
+    await UTILS.waitForElementCSS('[data-qa="app-page-wrapper"]');
     let appsPageWraooer = await UTILS.getElementByCss('[data-qa="app-page-wrapper"]', 5000);
     expect(appsPageWraooer).not.toBeNull();
 
