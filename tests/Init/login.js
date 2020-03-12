@@ -28,6 +28,7 @@ exports.login = describe('Login into the system', function () {
         let password = await UTILS.getElementByXPath('/html/body/div/div[2]/div/div/div[1]/div/form/div[2]/input');
         await username.sendKeys(process.env.USERNAME, Key.TAB);
         await password.sendKeys(process.env.PASSWORD, Key.ENTER);
+        UTILS.shoot();
     });
 
     it('should redirect to the dashboard after login', async () => {
