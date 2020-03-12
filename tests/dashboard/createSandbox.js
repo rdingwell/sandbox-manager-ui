@@ -1,4 +1,4 @@
-let { Key } = require('selenium-webdriver');
+let {Key} = require('selenium-webdriver');
 
 const UTILS = require('../utils');
 
@@ -32,7 +32,7 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
         //Wait for the animation just in case
         await UTILS.wait(500);
 
-        let name = await UTILS.getElementByCss('[data-qa="sandbox-create-name"]');
+        let name = await UTILS.getElementById('name');
         name.sendKeys(process.env.SANDBOX_NAME, Key.TAB);
 
         // let id = await UTILS.getElementByCss('[data-qa="sandbox-create-id"]');
@@ -40,7 +40,7 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
 
         // expect(generatedId).toBe('AUTOTESTSANDBOX3');
 
-        let description = await UTILS.getElementByCss('[data-qa="sandbox-create-description"]');
+        let description = await UTILS.getElementById('description');
         description.sendKeys('Sample auto description');
     });
 
@@ -55,15 +55,18 @@ exports.createSandbox = () => describe('Testing sandbox creation', function () {
     });
 
     it('should create a sandbox', async () => {
+        await UTILS.waitForElementCSS('[data-qa="sandbox-submit-button"]');
         let createButton = await UTILS.getElementByCss('[data-qa="sandbox-submit-button"]');
         createButton.click();
 
+        await UTILS.wait(2500);
         await UTILS.waitForElementCSS('[data-qa="sandbox-creating-loader"]');
-        await UTILS.wait(500);
-        await UTILS.waitForElementCSS('[data-qa="sandbox-loading-loader"]');
         await UTILS.wait(1500);
 
+        await UTILS.waitForElementCSS('[data-qa="app-page-wrapper"]');
+        let appsPageWraooer = await UTILS.getElementByCss('[data-qa="app-page-wrapper"]', 5000);
+        expect(appsPageWraooer).not.toBeNull();
         let currentUrl = await UTILS.getCurrentURL();
-        // expect(currentUrl.toString()).toEqual(expect.stringContaining('AUTOTESTSANDBOX3'));
+        expect(currentUrl.toString()).toEqual(expect.stringContaining('STRESSTEST'));
     });
 });

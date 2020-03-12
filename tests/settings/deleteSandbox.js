@@ -3,10 +3,11 @@ const UTILS = require('../utils');
 exports.deleteSandbox = () => describe('Testing sandbox deletion', function () {
     it('should navigate to the settings page', async () => {
         let gotToSettingsButton = await UTILS.getElementByCss('[data-qa="nav-settings"]');
+        expect(gotToSettingsButton).not.toBeNull();
         gotToSettingsButton.click();
 
         //Wait for the animation just in case
-        await UTILS.wait(500);
+        await UTILS.waitForElementCSS('[data-qa="delete-sandbox-button"]');
     });
     it('should delete the sandbox', async () => {
         let deleteSandboxButton = await UTILS.getElementByCss('[data-qa="delete-sandbox-button"]');
@@ -22,7 +23,7 @@ exports.deleteSandbox = () => describe('Testing sandbox deletion', function () {
         sandboxDeleteButton.click();
 
         // await UTILS.waitForElementCSS('[data-qa="full-page-loader"]');
-        await UTILS.wait(500);
+        await UTILS.waitForElementCSS('[data-qa="dashboard-page"]');
         // await UTILS.waitForElementCSS('[data-qa="sandbox-loading-loader"]');
         // await UTILS.wait(1500);
 

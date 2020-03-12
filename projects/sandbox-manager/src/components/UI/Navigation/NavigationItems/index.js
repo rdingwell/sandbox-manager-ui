@@ -44,7 +44,7 @@ export default class NavigationItems extends Component {
             <NavigationItem theme={this.props.theme} link={'/' + this.props.sandbox.sandboxId + '/data-manager'} icon={StorageIcon} text={<span>{strings.navigation.dataManager}</span>}/>
             <NavigationItem theme={this.props.theme} link={'/' + this.props.sandbox.sandboxId + '/tools'} icon={ToolsIcon} text={<span>{strings.navigation.tools}</span>}/>
             <NavigationItem theme={this.props.theme} link={'/' + this.props.sandbox.sandboxId + '/settings'} active={this.props.screen === 'settings'} icon={SettingsIcon}
-                            text={<span>{strings.navigation.settings}</span>}/>
+                            text={<span>{strings.navigation.settings}</span>} data-qa="nav-settings"/>
         </ul>
     }
 

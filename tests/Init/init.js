@@ -1,18 +1,21 @@
-const { Builder, Capabilities } = require('selenium-webdriver');
-const { setDriver } = require('../utils');
+const {Builder} = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const {setDriver} = require('../utils');
 require('selenium-webdriver/chrome');
 // require('selenium-webdriver/firefox');
 // require('chromedriver');
 // require('geckodriver');
 
-const cap = Capabilities.chrome();
-cap.set('chromeOptions', {
-    // 'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--headless"]
-    'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
-});
-const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
-const rootURL = 'http://localhost:3001';
-// const rootURL = 'https://sandbox-test.logicahealth.org';
+// const cap = Capabilities.chrome();
+// cap.set('chromeOptions', {
+//     'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox", "--headless"]
+//     //'args': ["--disable-extensions", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
+// });
+// const d = new Builder().forBrowser('chrome').withCapabilities(cap).build();
+// const d = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+const d = new Builder().forBrowser('chrome').build();
+// const rootURL = 'http://localhost:3001';
+const rootURL = 'https://sandbox-test.logicahealth.org';
 let driver;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000 * 30 * 3;
 
