@@ -116,6 +116,10 @@ const config = {
                     to: DIST_DIR + "/data/xsettings.json"
                 },
                 {
+                    from: SRC_DIR + "/assets/config/termsOfUse.json",
+                    to: DIST_DIR + "/data/termsOfUse.json"
+                },
+                {
                     from: SRC_DIR + "/assets/config/export-resources_1_0_2.json",
                     to: DIST_DIR + "/data/export-resources_1_0_2.json"
                 },
