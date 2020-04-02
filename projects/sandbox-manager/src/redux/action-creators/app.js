@@ -48,8 +48,8 @@ export function loadTerms () {
         let state = getState();
         dispatch(setTermsLoading(true));
 
-        let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/termsofuse`;
-        API.get(url, dispatch)
+        // let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/termsofuse`;
+        API.get("/data/termsOfUse.json", dispatch)
             .then(terms => dispatch(setTerms(terms)))
             .catch(() => dispatch(setTermsLoading(false)));
     }
