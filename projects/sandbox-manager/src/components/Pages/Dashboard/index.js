@@ -73,7 +73,7 @@ class Dashboard extends Component {
             <div className='sandboxes-min-height' data-qa='dashboard-page'>
                 <AvailableSandboxes onToggleModal={this.toggle}/>
             </div>
-            <Footer loadTerms={this.props.loadTerms} terms={this.props.terms}/>
+            <Footer loadTerms={this.props.loadTerms} terms={this.props.terms} user={this.props.user}/>
         </Page>;
     }
 
@@ -112,7 +112,8 @@ const mapStateToProps = state => {
     return {
         terms: state.app.terms,
         loading: state.sandbox.loading || state.sandbox.fetchingLoginInfo,
-        userInvites: state.sandbox.userInvites
+        userInvites: state.sandbox.userInvites,
+        user: state.users.user
     }
 };
 const mapDispatchToProps = dispatch => bindActionCreators({app_setScreen, fetchSandboxes, loadTerms, loadInvites, fetchUserNotifications, updateSandboxInvite}, dispatch);

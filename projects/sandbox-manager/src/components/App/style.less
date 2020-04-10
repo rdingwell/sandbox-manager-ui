@@ -329,3 +329,30 @@
     color: #9C0227;
   }
 }
+
+.terms-dialog {
+  max-width: inherit !important;
+
+  .MuiDialog-paperScrollPaper {
+    min-width: 800px;
+  }
+
+  & > div > div {
+    padding: 0 !important;
+
+    h3 {
+      padding: 20px;
+    }
+
+    .paper-body {
+      height: 63vh;
+      overflow: auto;
+      padding: 20px;
+    }
+  }
+
+  .terms-dialog-actions {
+    padding: 1rem !important;
+    border-top: 1px solid whitesmoke;
+  }
+}

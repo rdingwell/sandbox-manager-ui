@@ -1,6 +1,6 @@
 export default {
     logoAltText: 'Logica Logo',
-    footerLineOne: '© 2017 by Healthcare Services Platform Consortium ',
+    footerLineOne: '© 2020 by Healthcare Services Platform Consortium ',
     footerLineTwo: 'Terms of Use & Privacy Statement ',
     footerLineThree: 'Help',
     settingsLabel: 'Settings',

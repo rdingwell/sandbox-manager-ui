@@ -14,7 +14,7 @@ export default class Footer extends Component {
     }
 
     render () {
-        return <footer className='footer-wrapper'>
+        return <footer  className={`footer-wrapper${this.props.small ? ' small' : ''}`}>
             <Dialog open={this.state.showTerms} onClose={this.toggleTerms} contentClassName='terms-dialog' actionsContainerClassName='terms-dialog-actions'
                     actions={[<Button variant='outlined' primary label='View PDF' onClick={this.openPDF} />, <Button variant='outlined' secondary label='Close' onClick={this.toggleTerms} />]}>
                 <Paper className='paper-card'>
@@ -22,7 +22,7 @@ export default class Footer extends Component {
                     {this.props.terms && <div className='paper-body' dangerouslySetInnerHTML={{ __html: this.props.terms.value }} />}
                 </Paper>
             </Dialog>
-            <div>
+            {!this.props.small && <div>
                 <div className='links-wrapper'>
                     <div>
                         <div>
@@ -117,8 +117,8 @@ export default class Footer extends Component {
                         <span>Logica Developers: Powering the Healthcare Innovation Ecosystem</span>
                     </span>
                 </div>
-            </div>
-            <div className='footer-text'>
+            </div>}
+            <div className={`footer-text${this.props.small ? ' small' : ''}`}>
                 <p>
                     {strings.footerLineOne}
                     • <a onClick={this.toggleTerms}>{strings.footerLineTwo}</a>
