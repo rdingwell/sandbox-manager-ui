@@ -65,10 +65,10 @@ class App extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.state.showAgreement && !this.props.users.user.hasAcceptedLatestTermsOfUse) {
+        if (!this.state.showAgreement && this.props.users.user && !this.props.users.user.hasAcceptedLatestTermsOfUse) {
             this.props.loadTerms();
             this.setState({showAgreement: true});
-        } else if (this.state.showAgreement && !prevProps.users.user.hasAcceptedLatestTermsOfUse && this.props.users.user.hasAcceptedLatestTermsOfUse) {
+        } else if (this.state.showAgreement && this.props.users.user && prevProps.users.user && !prevProps.users.user.hasAcceptedLatestTermsOfUse && this.props.users.user.hasAcceptedLatestTermsOfUse) {
             this.setState({showAgreement: false});
         }
     }
