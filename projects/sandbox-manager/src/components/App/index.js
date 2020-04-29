@@ -23,6 +23,8 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
+        sessionStorage.loading = true;
+
         if (props.location.pathname !== "/launchApp") {
             if (props.fhir.smart.data.server) {
                 let smart = FHIR.client(props.fhir.smart.data.server);
@@ -56,6 +58,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        sessionStorage.loading = true;
         this.setSandboxId();
         window.addEventListener('resize', this.onResize);
     }
@@ -65,7 +68,7 @@ class App extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.state.showAgreement && this.props.users.user && !this.props.users.user.hasAcceptedLatestTermsOfUse) {
+        if (!this.state.showAgreement && this.props.users.user && !this.props.users.user.hasAcceptedLatestTermsOfUse && sessionStorage.loading === 'false') {
             this.props.loadTerms();
             this.setState({showAgreement: true});
         } else if (this.state.showAgreement && this.props.users.user && prevProps.users.user && !prevProps.users.user.hasAcceptedLatestTermsOfUse && this.props.users.user.hasAcceptedLatestTermsOfUse) {

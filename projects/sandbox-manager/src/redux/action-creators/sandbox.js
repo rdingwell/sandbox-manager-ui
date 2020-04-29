@@ -56,6 +56,7 @@ export function setNotifications (notifications) {
 }
 
 export function setLoginInfo (loginInfo) {
+    sessionStorage.loading = false;
     return {
         type: actionTypes.SET_LOGIN_INFO,
         payload: { loginInfo }
