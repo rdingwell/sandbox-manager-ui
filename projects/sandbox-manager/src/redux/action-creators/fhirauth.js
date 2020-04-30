@@ -61,10 +61,12 @@ export function fhirLoginSuccess() {
 }
 
 export function goHome() {
+    let sandboxIdToRedirectTo = localStorage.sandboxIdToRedirectTo;
     sessionStorage && sessionStorage.clear && sessionStorage.clear();
     localStorage && localStorage.clear && localStorage.clear();
+    localStorage.setItem('sandboxIdToRedirectTo', sandboxIdToRedirectTo);
 
-    let cookies = document.cookie.split(";");
+        let cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
         let spcook = cookies[i].split("=");
         deleteCookie(spcook[0]);
