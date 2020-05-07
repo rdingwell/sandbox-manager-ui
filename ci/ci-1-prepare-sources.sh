@@ -23,7 +23,7 @@ echo "starting prepare_build.sh..."
 
 echo "::: Running NPM INSTALL"
 npm install
-npm link sandbox-manager-lib
+#npm link sandbox-manager-lib
 
 cd ci
 
