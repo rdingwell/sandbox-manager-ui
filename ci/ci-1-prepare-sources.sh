@@ -14,12 +14,12 @@ cat ${TEMPLATE_FILE}
 
 echo "starting prepare_build.sh..."
 
-echo "Cloning the 'lib' repo"
-cd ../projects
-git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
-cd sandbox-manager-lib
-npm link
-cd ../../
+#echo "Cloning the 'lib' repo"
+#cd ../projects
+#git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
+#cd sandbox-manager-lib
+#npm link
+#cd ../../
 
 echo "::: Running NPM INSTALL"
 npm install
