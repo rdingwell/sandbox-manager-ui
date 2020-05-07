@@ -25,7 +25,7 @@
     "oauthLogoutUrl": "http://localhost:8060/logout",
     "oauthUserInfoUrl": "http://localhost:8060/userinfo",
     "sbmUrlHasContextPath": "false",
-    "userManagementUrl": "https://id-test.logicahealth.org/auth/realms/Development/account/",
+    "userManagementUrl": "http://localhost:8065",
     "reservedEndpoints": [
       "this",
       "hspc",
