@@ -11,18 +11,7 @@ Welcome to the Logica Sandbox Manager!
 ### How do I set up? ###
 
 
-#### Step 1: Get the lib project into the 'projects' folder ####
-The following code will checkout the lib project into the correct folder
-and link it to npm so that it can be used as a standard node module. In the terminal, run the following commands:
-
-    cd projects
-    git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
-    cd sandbox-manager-lib
-    npm link
-    cd ../../
-    npm link sandbox-manager-lib
-
-#### Step 2: Build and Deploy ####
+#### Step 1: Build and Deploy ####
 
 You can build and deploy Locally or on Docker
 
