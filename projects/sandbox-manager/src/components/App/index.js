@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
-import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme, Tooltip} from "@material-ui/core";
+import {CircularProgress, Dialog, IconButton, Paper, Button, Tab, Tabs, createMuiTheme, withTheme, Tooltip, DialogActions} from "@material-ui/core";
 import ReactMarkdown from "react-markdown";
 import {ThemeProvider} from '@material-ui/styles';
 import {Feedback} from '@material-ui/icons';
@@ -22,6 +22,8 @@ import './style.less';
 class App extends React.Component {
     constructor(props) {
         super(props);
+
+        sessionStorage.loading = true;
 
         if (props.location.pathname !== "/launchApp") {
             if (props.fhir.smart.data.server) {
@@ -56,12 +58,22 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        sessionStorage.loading = true;
         this.setSandboxId();
         window.addEventListener('resize', this.onResize);
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onResize);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!this.state.showAgreement && this.props.users.user && !this.props.users.user.hasAcceptedLatestTermsOfUse && sessionStorage.loading === 'false') {
+            this.props.loadTerms();
+            this.setState({showAgreement: true});
+        } else if (this.state.showAgreement && this.props.users.user && prevProps.users.user && !prevProps.users.user.hasAcceptedLatestTermsOfUse && this.props.users.user.hasAcceptedLatestTermsOfUse) {
+            this.setState({showAgreement: false});
+        }
     }
 
     render() {
@@ -102,6 +114,17 @@ class App extends React.Component {
                 </Dialog>}
                 {this.props.app.showGlobalSessionModal && <Dialog className='loader-wrapper' modal open={this.props.app.showGlobalSessionModal}>
                     <p style={{padding: '30px'}}>Your session has expired. Reloading...</p>
+                </Dialog>}
+                {this.state.showAgreement && <Dialog open={this.state.showAgreement} onClose={this.toggleTerms} className='terms-dialog'>
+                    <Paper className='paper-card'>
+                        <h3>Terms of Use & Privacy Statement</h3>
+                        {this.props.app.terms && <div className='paper-body' dangerouslySetInnerHTML={{__html: this.props.app.terms.value}}/>}
+                    </Paper>
+                    <DialogActions>
+                        <Button variant='contained' color='primary' onClick={this.props.acceptTerms}>
+                            Accept
+                        </Button>
+                    </DialogActions>
                 </Dialog>}
                 {!!this.props.errorToShow && <Snackbar message={this.props.errorToShow} theme={theme} onClose={() => this.props.resetGlobalError()}/>}
                 {open && this.props.location.pathname !== "/launchApp" && <Dialog open={open} classes={{paper: 'hooks-dialog'}} onClose={this.dismiss} disableEnforceFocus>
@@ -209,11 +232,12 @@ class App extends React.Component {
         let check = this.getCheck();
         check && (sessionStorage.sandboxId = window.location.pathname.split('/')[1]);
         check && (localStorage.setItem('sandboxId', window.location.pathname.split('/')[1]));
+        check && (localStorage.setItem('sandboxIdToRedirectTo', window.location.pathname.split('/')[1]));
         check && sessionStorage.sandboxId && this.forceUpdate();
     };
 
     getCheck = () => {
-        return !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/').length >= 2;
+        return !sessionStorage.sandboxId && window.location.pathname.split('/')[1] && window.location.pathname.split('/')[1] !== 'dashboard' && window.location.pathname.split('/')[1] !== 'after-auth' && window.location.pathname.split('/').length >= 2;
     };
 
     // Event handlers ----------------------------------------------------------

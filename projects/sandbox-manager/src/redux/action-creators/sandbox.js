@@ -56,6 +56,7 @@ export function setNotifications (notifications) {
 }
 
 export function setLoginInfo (loginInfo) {
+    sessionStorage.loading = false;
     return {
         type: actionTypes.SET_LOGIN_INFO,
         payload: { loginInfo }
@@ -697,6 +698,10 @@ export const fetchSandboxes = (toSelect) => {
         const state = getState();
         if (!state.sandbox.loading) {
             dispatch(getLoginInfo());
+            if (!toSelect && localStorage.sandboxIdToRedirectTo) {
+                toSelect = localStorage.sandboxIdToRedirectTo;
+                localStorage.removeItem('sandboxIdToRedirectTo');
+            }
             !toSelect && dispatch(fetchSandboxesStart());
             let configuration = state.config.xsettings.data.sandboxManager;
             const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';

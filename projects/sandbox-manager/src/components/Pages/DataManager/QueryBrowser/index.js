@@ -214,7 +214,7 @@ export default class QueryBrowser extends Component {
     calcCanFit = () => {
         let containerHeight = document.getElementsByClassName('data-manager-wrapper')[0].clientHeight;
         // we calculate how much patients we can show on the screen and get just that much plus two so that we have content below the fold
-        return Math.ceil((containerHeight - 210) / 100) + 2;
+        return Math.ceil((containerHeight - 210) / 100) + 10;
     };
 
     scroll = () => {
