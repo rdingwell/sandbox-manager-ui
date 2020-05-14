@@ -27,6 +27,9 @@ export default function (state = initialState, action) {
         case types.FHIR_SET_PROFDILES_LOADING:
             state.profilesLoading = action.payload.loading;
             break;
+        case types.FHIR_SET_PROFDILE_LOADING_STATUS:
+            state.profileLoadingStatus = action.payload.status;
+            break;
         case types.FHIR_SET_PROFDILESDS_LOADING:
             state.profileSDsLoading = action.payload.loading;
             action.payload.loading && (state.sds = undefined);
@@ -140,6 +143,7 @@ export default function (state = initialState, action) {
             state.resourcesLoading = false;
             state.profilesUploadingStatus = {};
             state.profiles = [];
+            state.profileLoadingStatus = undefined;
             break;
     }
 

@@ -40,7 +40,7 @@ class Manage extends Component {
             marginLeft: '0'
         };
         return <div className='loaded-profiles-wrapper' ref='loaded-profiles-wrapper'>
-            {!this.props.modal && <Modal {...this.props} toggleProfileToBrowse={this.toggleProfileToBrowse}/>}
+            <Modal {...this.props} toggleProfileToBrowse={this.toggleProfileToBrowse}/>
             <Dialog open={this.state.showConfirmation} onClose={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
                 <div className='screen-title' style={titleStyle}>
                     <IconButton className="close-button white" onClick={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>

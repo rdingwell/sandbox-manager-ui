@@ -125,6 +125,13 @@ export function fhir_setProfilesUploading(loading) {
     };
 }
 
+export function fhir_setProfileLoadingStatus(status) {
+    return {
+        type: types.FHIR_SET_PROFDILE_LOADING_STATUS,
+        payload: {status}
+    };
+}
+
 export function fhir_setFetchingFile(loading) {
     return {
         type: types.FHIR_SET_FILE_FETCHING,
@@ -458,6 +465,7 @@ export function uploadProfile(file, count, name, id) {
         formData.append("file", file);
         dispatch(fhir_setProfilesUploading(true));
         dispatch(fhir_setProfilesLoading(true));
+        dispatch(fhir_setProfileLoadingStatus());
 
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -473,6 +481,7 @@ export function uploadProfile(file, count, name, id) {
                                 dispatch(loadProfiles(count));
                                 dispatch(fhir_setProfilesUploadingStatus({}));
                                 dispatch(fhir_setProfilesByDefinition());
+                                dispatch(fhir_setProfileLoadingStatus(status));
                                 status.error && dispatch(setGlobalError(status.error));
                             } else {
                                 dispatch(fhir_setProfilesUploadingStatus(status));
