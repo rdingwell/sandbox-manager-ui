@@ -44,9 +44,9 @@ export default class User extends Component {
                         {this.state.user.email}
                     </MenuItem>
                     <Divider/>
-                    {/*<MenuItem className='user-menu-item active' onClick={() => window.open(this.props.settings.sandboxManager.userManagementUrl, '_blank')}>*/}
-                    {/*    {<span><i className='fa fa-gear fa-lg'/>{strings.settingsLabel}</span>}*/}
-                    {/*</MenuItem>*/}
+                    <MenuItem className='user-menu-item active' onClick={() => window.open(this.props.settings.sandboxManager.userManagementUrl, '_blank')}>
+                        {<span><i className='fa fa-gear fa-lg'/>{strings.settingsLabel}</span>}
+                    </MenuItem>
                     <MenuItem className='user-menu-item active' onClick={this.props.signOut} data-qa='sign-out-button'>
                         {<span><i className='fa fa-sign-out'/>{strings.signOutLabel}</span>}
                     </MenuItem>
