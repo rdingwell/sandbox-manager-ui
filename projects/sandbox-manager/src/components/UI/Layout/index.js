@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 
 import './styles.less';
 import {bindActionCreators} from "redux";
-import {loadServices} from "../../../redux/action-creators";
+import {loadServices, loadTerms} from "../../../redux/action-creators";
 
 class Layout extends Component {
 
@@ -139,6 +139,6 @@ const mapStateToProps = state => {
     }
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({loadServices}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({loadServices, loadTerms}, dispatch);
 
 export default withTheme(connect(mapStateToProps, mapDispatchToProps)(withRouter(Layout)));

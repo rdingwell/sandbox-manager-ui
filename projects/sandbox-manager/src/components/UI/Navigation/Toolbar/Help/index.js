@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Divider, Typography, Menu, MenuItem} from '@material-ui/core';
+import {Divider, Typography, Menu, MenuItem, Button, Paper, Dialog} from '@material-ui/core';
 import ActionHelp from "@material-ui/icons/Help";
 
 import './styles.less';
@@ -11,12 +11,20 @@ export default class Help extends Component {
         this.state = {
             help: null,
             showHelpDropdown: false,
+            showTerms: false,
             anchorEl: undefined
         }
     }
 
     render() {
         return <div className='help-wrapper'>
+            <Dialog open={this.state.showTerms} onClose={this.toggleTerms} contentClassName='terms-dialog' actionsContainerClassName='terms-dialog-actions'
+                    actions={[<Button variant='outlined' primary label='View PDF' onClick={this.openPDF} />, <Button variant='outlined' secondary label='Close' onClick={this.toggleTerms} />]}>
+                <Paper className='paper-card'>
+                    <h3>Terms of Use & Privacy Statement</h3>
+                    {this.props.terms && <div className='paper-body' dangerouslySetInnerHTML={{ __html: this.props.terms.value }} />}
+                </Paper>
+            </Dialog>
             <div className='right'>
                 <a className={this.state.showHelpDropdown ? 'active' : ''} onClick={this.handleUserDropdown} data-qa='header-help-button'>
                     <ActionHelp style={{fill: this.props.theme.p8}}/>
@@ -82,6 +90,11 @@ export default class Help extends Component {
                         Maintenance Info
                     </MenuItem>
                 </a>
+                <a href='#' onClick={e => e.preventDefault()} style={{textDecoration: 'none', color: 'inherit'}}>
+                    <MenuItem className='help-menu-item' onClick={this.toggleTerms}>
+                        Terms of Use & Privacy Statement
+                    </MenuItem>
+                </a>
             </Menu>}
         </div>;
     };
@@ -96,5 +109,10 @@ export default class Help extends Component {
             showHelpDropdown: !this.state.showHelpDropdown,
             anchorEl: event.currentTarget
         });
+    };
+
+    toggleTerms = () => {
+        !this.state.showTerms && this.props.loadTerms();
+        this.setState({ showTerms: !this.state.showTerms });
     };
 }
