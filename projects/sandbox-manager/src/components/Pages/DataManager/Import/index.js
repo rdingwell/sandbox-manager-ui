@@ -3,6 +3,7 @@ import {TextField, Button, Tabs, Tab, CircularProgress} from '@material-ui/core'
 import ReactJson from 'react-json-view';
 import CodeIcon from '@material-ui/icons/Code';
 import ListIcon from '@material-ui/icons/List';
+import API from '../../../../lib/api';
 
 import './styles.less';
 
@@ -46,6 +47,9 @@ export default class Import extends Component {
                         <Button variant='contained' disabled={this.state.input.length === 0 || this.props.dataImporting} color='primary' onClick={this.import}>
                             Import
                         </Button>
+                        <Button variant='contained' color='primary' onClick={this.importSynthea}>
+                            Load sample from synthea
+                        </Button>
                     </div>
                 </div>}
                 {this.state.activeTab === 'result' && <div className={'result tab' + (!data ? ' active' : '')} ref='results'>
@@ -84,5 +88,9 @@ export default class Import extends Component {
     import = () => {
         this.props.importData && this.props.importData(this.state.input);
         this.setActiveTab('result');
+    };
+
+    importSynthea = () => {
+        API.get(`http://localhost:8080/greeting?sandbox=${sessionStorage.sandboxId}`);
     };
 }

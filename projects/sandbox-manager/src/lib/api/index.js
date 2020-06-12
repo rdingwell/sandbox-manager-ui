@@ -41,6 +41,15 @@ export default {
         });
     },
 
+    getCustom (url, dispatch) {
+        return new Promise((resolve, reject) => {
+            let config = get_config("GET");
+            fetch(`${url}?authorization=${config.headers.Authorization}`, config)
+                .then(response => parseResponse(response, dispatch, resolve, reject))
+                .catch(e => parseError(e, dispatch, reject));
+        });
+    },
+
     getNoAuth (url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config_no_auth("GET"))
