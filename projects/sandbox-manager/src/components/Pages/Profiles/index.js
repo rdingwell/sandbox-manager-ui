@@ -36,7 +36,7 @@ class Profiles extends Component {
         return <div className='profiles-wrapper page-content-wrapper'>
             <Page title='Profiles' helpIcon={helpIcon}>
                 <Manage {...this.props} />
-                <ResultModal open={!!this.props.profileLoadingStatus} theme={this.props.theme} onClose={() => this.props.fhir_setProfileLoadingStatus()} />
+                {/*<ResultModal open={!!this.props.profileLoadingStatus} theme={this.props.theme} onClose={() => this.props.fhir_setProfileLoadingStatus()} />*/}
             </Page>
         </div>
     }

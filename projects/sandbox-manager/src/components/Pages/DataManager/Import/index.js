@@ -47,9 +47,9 @@ export default class Import extends Component {
                         <Button variant='contained' disabled={this.state.input.length === 0 || this.props.dataImporting} color='primary' onClick={this.import}>
                             Import
                         </Button>
-                        <Button variant='contained' color='primary' onClick={this.importSynthea}>
-                            Load sample from synthea
-                        </Button>
+                        {/*<Button variant='contained' color='primary' onClick={this.importSynthea}>*/}
+                        {/*    Load sample from synthea*/}
+                        {/*</Button>*/}
                     </div>
                 </div>}
                 {this.state.activeTab === 'result' && <div className={'result tab' + (!data ? ' active' : '')} ref='results'>
