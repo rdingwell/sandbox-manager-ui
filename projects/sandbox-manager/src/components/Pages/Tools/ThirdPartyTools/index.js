@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, CardMedia} from '@material-ui/core';
+import {Button, Card, CardMedia, Dialog, DialogActions} from '@material-ui/core';
 
 const TOOLS = [
     {
@@ -32,10 +32,30 @@ const TOOLS = [
 import './styles.less';
 
 class ThirdPartyTools extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showModal: false
+        }
+    }
+
     render() {
         let titleStyle = {backgroundColor: 'rgba(0,87,120, 0.75)'};
 
         return <div>
+            <Dialog open={!!this.state.showModal} onClose={() => this.setState({showModal: false})} classes={{paper: 'settings-dialog'}}>
+                <div>
+                    <p>The default app "CDS HOOKS" is missing from this sandbox. Instead of launching it you are being redirected to the standard CDS HOOKS SANDBOX link.</p>
+                </div>
+                <DialogActions>
+                    <div className='modal-bottom-actions-wrapper'>
+                        <Button variant='contained' color='primary' onClick={() => this.setState({showModal: false})}>
+                            Close
+                        </Button>
+                    </div>
+                </DialogActions>
+            </Dialog>
             <a ref='openLink' target='_blank'/>
             <div className='third-party-tools'>
                 {TOOLS.map(t =>
@@ -54,16 +74,22 @@ class ThirdPartyTools extends Component {
     }
 
     openLink = (tool) => {
-        // http://clinfhir.com/patientViewer.html?data=https:%2F%2Fapi-test.logicahealth.org%2Ftssst%2Fopen%2F&patientid=SMART-1288992
         let link = tool.link;
-        let url = encodeURI(this.props.serviceUrl.replace('/data', '/open/'));
-        let name = encodeURI(this.props.name);
-        if (tool.title === 'clinFHIR' && this.props.isOpen) {
-            link = `${tool.link}/?data=${url}&conf=${url}&term=${url}&dataname=${name}&confname=${name}&termname=${name}`;
+        let isHooks = link === 'https://sandbox.cds-hooks.org/';
+        let hooks = (this.props.apps || []).find(app => app.clientId === "48163c5e-88b5-4cb3-92d3-23b800caa927");
+        if (isHooks && hooks) {
+            this.props.launch(hooks, this.props.patient.id, this.props.user);
+        } else {
+            isHooks && this.setState({showModal: true});
+            let url = encodeURI(this.props.serviceUrl.replace('/data', '/open/'));
+            let name = encodeURI(this.props.name);
+            if (tool.title === 'clinFHIR' && this.props.isOpen) {
+                link = `${tool.link}/?data=${url}&conf=${url}&term=${url}&dataname=${name}&confname=${name}&termname=${name}`;
+            }
+            let openLink = this.refs.openLink;
+            openLink.href = link;
+            openLink.click();
         }
-        let openLink = this.refs.openLink;
-        openLink.href = link;
-        openLink.click();
     }
 }
 

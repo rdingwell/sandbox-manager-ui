@@ -25,7 +25,7 @@
     "sbmUrlHasContextPath": "false",
     "ehrSimulator": "https://ehr-app-test.logicahealth.org",
     "patientDataManager": "https://patient-data-manager-test.logicahealth.org",
-    "userManagementUrl": "https://account-test.logicahealth.org",
+    "userManagementUrl": "https://id-test.logicahealth.org/auth/realms/Development/account/",
     "reservedEndpoints": [
       "this",
       "hspc",

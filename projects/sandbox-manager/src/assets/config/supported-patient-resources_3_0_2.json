@@ -1,0 +1,15 @@
+[
+    {"resourceType": "AllergyIntolerance", "title": "Allergy Intolerance", "patientSearch": "patient"},
+    {"resourceType": "CarePlan", "title": "Care Plan", "patientSearch": "subject"},
+    {"resourceType": "CareTeam", "title": "Care Team", "patientSearch": "subject"},
+    {"resourceType": "Condition", "patientSearch": "subject"},
+    {"resourceType": "DiagnosticReport", "patientSearch": "subject"},
+    {"resourceType": "Encounter", "patientSearch": "patient"},
+    {"resourceType": "Goal", "patientSearch": "subject"},
+    {"resourceType": "Immunization", "patientSearch": "patient"},
+    {"resourceType": "MedicationDispense", "patientSearch": "patient"},
+    {"resourceType": "MedicationRequest", "patientSearch": "patient"},
+    {"resourceType": "Observation", "patientSearch": "subject"},
+    {"resourceType": "Procedure", "patientSearch": "subject"},
+    {"resourceType": "ProcedureRequest", "patientSearch": "patient"}
+]

@@ -91,7 +91,7 @@ export default class Export extends Component {
         Object.keys(content).map(key => {
             if (content[key] > 1 || Object.keys(content).length > 1) {
                 content[key].map(item => {
-                    entry.push({
+                    item && item.resource && entry.push({
                         "resource": item.resource,
                         "request": {
                             "method": "PUT",

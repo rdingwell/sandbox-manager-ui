@@ -3,7 +3,7 @@ import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
     importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
     cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
-    loadProfilesBySD, clearLoadedProfilesBySD
+    loadProfilesBySD, clearLoadedProfilesBySD, fhir_setProfileLoadingStatus
 } from '../../../redux/action-creators';
 import {withTheme} from '@material-ui/core';
 import {connect} from 'react-redux';
@@ -13,6 +13,7 @@ import Page from '../../UI/Page';
 import HelpButton from '../../UI/HelpButton';
 
 import './styles.less';
+import ResultModal from "./Manage/ResultModal";
 
 class Profiles extends Component {
     constructor(props) {
@@ -27,44 +28,6 @@ class Profiles extends Component {
         this.props.app_setScreen('profiles');
         this.props.getDefaultUserForSandbox(sessionStorage.sandboxId);
         this.props.loadProfiles();
-
-        // setTimeout(() => {
-        //     let formData = new FormData();
-        //     formData.append('client_endpoint_key', 'static');
-        //     formData.append('module', 'onc_r4');
-        //     formData.append('fhir_server', 'https://api-test.logicahealth.org/tssst/open');
-        //     let request = new Request('https://inferno.healthit.gov/inferno/', {
-        //         method: 'POST',
-        //         redirect: 'manual',
-        //         body: formData
-        //     });
-        //     fetch(request)
-        //         .then(e => {
-        //             console.log(e);
-        //         })
-        //         .catch(e => {
-        //             console.log(e);
-        //         })
-        // }, 5000);
-        //
-        //
-        // setTimeout(() => {
-        //     let formData = new FormData();
-        //     formData.append('server[url]', 'https://api-test.logicahealth.org/tssst/open');
-        //     let request = new Request('https://projectcrucible.org/servers', {
-        //         method: 'POST',
-        //         redirect: 'manual',
-        //         body: formData
-        //     });
-        //     fetch(request)
-        //         .then(e => {
-        //             console.log(e);
-        //         })
-        //         .catch(e => {
-        //             console.log(e);
-        //         })
-        // }, 5000);
-
     }
 
     render() {
@@ -73,6 +36,7 @@ class Profiles extends Component {
         return <div className='profiles-wrapper page-content-wrapper'>
             <Page title='Profiles' helpIcon={helpIcon}>
                 <Manage {...this.props} />
+                {/*<ResultModal open={!!this.props.profileLoadingStatus} theme={this.props.theme} onClose={() => this.props.fhir_setProfileLoadingStatus()} />*/}
             </Page>
         </div>
     }
@@ -101,14 +65,15 @@ const mapStateToProps = state => {
         profilesUploadingStatus: state.fhir.profilesUploadingStatus,
         fetchingFile: state.fhir.fetchingFile,
         profilesByDefinition: state.fhir.profilesByDefinition,
-        fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition
+        fetchingProfilesByDefinition: state.fhir.fetchingProfilesByDefinition,
+        profileLoadingStatus: state.fhir.profileLoadingStatus
     };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
     cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
-    loadProfilesBySD, clearLoadedProfilesBySD
+    loadProfilesBySD, clearLoadedProfilesBySD, fhir_setProfileLoadingStatus
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Profiles)));

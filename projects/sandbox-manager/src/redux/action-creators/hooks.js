@@ -231,15 +231,18 @@ export function loadServices() {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             let state = getState();
-            dispatch(setServicesLoading(true));
+            let sandboxId = sessionStorage.sandboxId;
+            if (sandboxId) {
+                dispatch(setServicesLoading(true));
 
-            let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/cds-services?sandboxId=" + sessionStorage.sandboxId;
-            API.get(url, dispatch)
-                .then(services => dispatch(setServices(services)))
-                .finally(() => {
-                    dispatch(setServicesLoading(false));
-                    dispatch(checkForHookUpdates());
-                });
+                let url = state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl + "/cds-services?sandboxId=" + sandboxId;
+                API.get(url, dispatch)
+                    .then(services => dispatch(setServices(services)))
+                    .finally(() => {
+                        dispatch(setServicesLoading(false));
+                        dispatch(checkForHookUpdates());
+                    });
+            }
         }
     }
 }
