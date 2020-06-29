@@ -114,6 +114,12 @@ export function hspcAuthorized() {
     }
 }
 
+export function setSandboxMeta(metadata) {
+    return {
+        type: actionTypes.FHIR_SET_METADATA, payload: {metadata}
+    }
+}
+
 export function setFhirVersion(fhirVersion) {
     return {
         type: actionTypes.FHIR_VERSION,
@@ -133,6 +139,7 @@ function queryFhirVersion(dispatch, fhirClient, state) {
         .then(
             response => {
                 dispatch(setFhirVersion(response.data.fhirVersion));
+                dispatch(setSandboxMeta(response.data));
                 state.sandbox.sandboxApiEndpointIndexes.forEach((sandboxEndpoint) => {
                     if (response.data.fhirVersion === sandboxEndpoint.fhirVersion) {
                         dispatch(saveSandboxApiEndpointIndex(sandboxEndpoint.index));

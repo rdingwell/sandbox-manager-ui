@@ -89,6 +89,10 @@ class SandboxDetails extends Component {
                     <span>Sandbox FHIR Version: </span>
                     <span>{this.props.sandboxVersion.name}</span>
                 </div>
+                <div className='label-value'>
+                    <span>{this.props.metadata.software.name}: </span>
+                    <span>{this.props.metadata.software.version}</span>
+                </div>
             </div>
         </Card>;
     }
@@ -209,12 +213,13 @@ const mapStateToProps = state => {
     let sandboxId = sandbox ? sandbox.sandboxId : '';
     let sandboxDescription = sandbox ? sandbox.description : '';
     let sandboxAllowOpenAccess = sandbox ? !!sandbox.allowOpenAccess : false;
+    let metadata = state.fhir.metadata || {software: {}};
     let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
         ? state.sandbox.sandboxApiEndpointIndexes.find(i => i.index === state.sandbox.sandboxApiEndpointIndex)
         : {name: 'unknown'};
 
     return {
-        sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion, sandbox,
+        sandboxName, sandboxId, sandboxDescription, sandboxAllowOpenAccess, sandboxVersion, sandbox, metadata,
         user: state.users.user,
         serviceUrl: state.fhir.smart.data.server && state.fhir.smart.data.server.serviceUrl,
         resetting: state.sandbox.resetting,
