@@ -99,7 +99,7 @@ export default function (state = initialState, action) {
             }
             break;
         case types.FHIR_SET_METADATA:
-            state.metadata = action.payload.metadata;
+            state.metadata = action.payload.data;
             break;
         case types.FHIR_SET_RESOURCES:
             state.resources = action.payload.data;
