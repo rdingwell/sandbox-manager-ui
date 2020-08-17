@@ -12,7 +12,7 @@ jq ".containerDefinitions[0].memoryReservation=(${AWS_CONTAINER_MEMORY_RESERVE} 
 
 cat ${TEMPLATE_FILE}
 
-echo "starting prepare_build.sh..."
+#echo "starting prepare_build.sh..."
 
 #echo "Cloning the 'lib' repo"
 #cd ../projects
@@ -25,6 +25,6 @@ echo "starting prepare_build.sh..."
 #npm install
 #npm link sandbox-manager-lib
 
-cd ci
+#cd ci
 
-echo "finished prepare_build.sh"
+#echo "finished prepare_build.sh"
