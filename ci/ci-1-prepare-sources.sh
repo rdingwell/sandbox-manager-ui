@@ -19,12 +19,12 @@ pwd
 #git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
 #cd sandbox-manager-lib
 #npm link
-#cd ../../
+cd ../
 
 #echo "::: Running NPM INSTALL"
-#npm install
+npm install
 #npm link sandbox-manager-lib
 
-#cd ci
+cd ci
 
 #echo "finished prepare_build.sh"
