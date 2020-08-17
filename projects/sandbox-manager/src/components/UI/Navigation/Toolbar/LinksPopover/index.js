@@ -29,9 +29,6 @@ export default class LinksPopover extends Component {
                     <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://logicahealth.org')}
                               primaryText={<span><img src={`${window.location.origin}\\img\\hspc-new-logo-md.png`} />
                               <div className='label'>Consortium</div></span>} />
-                    <MenuItem className='links-menu-item image static' onClick={() => this.openLink('https://gallery.logicahealth.org')}
-                              primaryText={<span><img className='small' src={`${window.location.origin}\\img\\hspc-gallery-icon.png`} />
-                              <div className='label'>Gallery</div></span>} />
                     <MenuItem className='links-menu-item image static' onClick={() => this.openLink('http://developers.logicahealth.org')}
                               primaryText={<span><img className='small' src={`${window.location.origin}\\img\\hspc-developers-icon.png`} />
                               <div className='label'>Developers</div></span>} />

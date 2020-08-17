@@ -33,13 +33,6 @@ export default class Footer extends Component {
                             </a>
                         </div>
                         <div>
-                            <a href="http://gallery.logicahealth.org/" target="_blank">
-                            <span>
-                                <span>Logica Gallery</span>
-                            </span>
-                            </a>
-                        </div>
-                        <div>
                             <a href="http://sandbox.logicahealth.org/" target="_blank">
                             <span>
                                 <span>Logica Developer's Sandbox</span>
