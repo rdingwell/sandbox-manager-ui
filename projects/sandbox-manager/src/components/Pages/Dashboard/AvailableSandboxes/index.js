@@ -97,10 +97,15 @@ class Index extends Component {
                 </Button>
             </h3>
             <div>
-                {!this.props.loading && sandboxes.length > 0 && < List>
+                {this.props.isSandboxCreating &&
+                <div className='creater-wrapper' data-qa='sandbox-creating-loader'>
+                    <CircularProgress size={30} thickness={3}/>
+                    <span>Your new sandbox is being created. Please wait.</span>
+                </div>}
+                {!this.props.loading && sandboxes.length > 0 && <List>
                     {sandboxes}
                 </List>}
-                {!this.props.loading && sandboxes.length === 0 && <div className='no-sandboxes-message'>
+                {!this.props.isSandboxCreating && !this.props.loading && sandboxes.length === 0 && <div className='no-sandboxes-message'>
                     <span>You do not have any sandboxes yet. Please create a sandbox to get started.</span>
                 </div>}
                 {this.props.loading && <div className='loader-wrapper' data-qa='sandbox-loading-loader'>
@@ -162,7 +167,8 @@ const mapStateToProps = state => {
         sandboxes: state.sandbox.sandboxes,
         loading: state.sandbox.loading || state.sandbox.fetchingLoginInfo,
         creatingSandbox: state.sandbox.creatingSandbox,
-        loginInfo: state.sandbox.loginInfo
+        loginInfo: state.sandbox.loginInfo,
+        isSandboxCreating: state.sandbox.creatingSandbox,
     };
 };
 

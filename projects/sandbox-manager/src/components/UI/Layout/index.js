@@ -48,12 +48,6 @@ class Layout extends Component {
             </Aux>
             : !isRoot
                 ? <Aux>
-                    <Dialog classes={{paper: 'full-loader-wrapper'}} open={this.props.isSandboxCreating}>
-                        <p data-qa='sandbox-creating-loader'>
-                            Creating sandbox
-                        </p>
-                        <CircularProgress size={80} thickness={5}/>
-                    </Dialog>
                     <Toolbar isDashboard={isDashboard} showSideNav={showSideNav} {...this.props} click={this.drawerToggleClickedHandler}
                              loading={this.props.loadingNotifications || this.props.userInvitesLoading}/>
                     {showSideNav && <SideNav open={this.state.sideBarOpened} sandbox={this.props.sandbox} click={this.drawerToggleClickedHandler} defaultUser={this.props.defaultUser}
@@ -127,7 +121,6 @@ const mapStateToProps = state => {
         userInvitesLoading: state.sandbox.userInvitesLoading,
         sandboxes: state.sandbox.sandboxes,
         defaultUser: state.sandbox.defaultUser,
-        isSandboxCreating: state.sandbox.creatingSandbox,
         user: state.users.oauthUser,
         sandboxApiUrl,
         screen: state.app.screen,
