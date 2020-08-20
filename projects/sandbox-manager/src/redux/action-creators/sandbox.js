@@ -305,10 +305,10 @@ export const fetchSandboxInvitesFail = (error) => {
     }
 };
 
-export const setCreatingSandbox = (creating) => {
+export const setCreatingSandbox = (creating, info) => {
     return {
         type: actionTypes.CREATING_SANDBOX,
-        payload: {creating}
+        payload: {creating, info}
     }
 };
 
@@ -689,15 +689,31 @@ export const createSandbox = (sandboxDetails) => {
 
         API.post(configuration.sandboxManagerApiUrl + '/sandbox/clone', cloneBody, dispatch)
             .then(() => {
+                let creatingDetails = state.sandbox.creatingSandboxInfo ? state.sandbox.creatingSandboxInfo.slice() : [];
+                creatingDetails.push(sandboxDetails);
+                dispatch(setCreatingSandbox(true, creatingDetails));
                 let getCurrentState = () => {
                     API.get(`${configuration.sandboxManagerApiUrl}/sandbox/creationStatus/${sandboxDetails.sandboxId}`, dispatch)
-                        .then(status => {
-                            console.log(status);
-                            if (status === 'QUEUED') {
+                        .then(res => {
+                            let state = getState();
+                            let creatingDetails = (state.sandbox.creatingSandboxInfo || []).slice();
+                            let index = creatingDetails.findIndex(i => i.sandboxId === sandboxDetails.sandboxId);
+                            let obj = Object.assign({}, creatingDetails[index], {...sandboxDetails, queuePosition: res.queuePosition});
+                            index = index >= 0 ? index : 0;
+                            creatingDetails[index] = obj;
+                            if (res.sandboxCreationStatus === 'QUEUED') {
+                                dispatch(setCreatingSandbox(true, creatingDetails));
                                 setTimeout(getCurrentState, 1000)
                             } else {
-                                dispatch(setCreatingSandbox(false));
-                                dispatch(fetchSandboxes());
+                                dispatch(fetchSandboxes(undefined, data => {
+                                    let sandboxes = data.filter(s => s.creationStatus !== 'QUEUED');
+                                    creatingDetails.splice(index, 1);
+                                    dispatch(fetchSandboxesSuccess(sandboxes));
+                                    creatingDetails.length > 0
+                                        ? dispatch(setCreatingSandbox(true, creatingDetails))
+                                        : dispatch(setCreatingSandbox(false));
+                                }))
+                                // dispatch(fetchSandboxes());
                             }
                         });
                 };
@@ -707,16 +723,16 @@ export const createSandbox = (sandboxDetails) => {
     };
 };
 
-export const fetchSandboxes = (toSelect) => {
+export const fetchSandboxes = (toSelect, returnValue) => {
     return (dispatch, getState) => {
         const state = getState();
         if (!state.sandbox.loading) {
-            dispatch(getLoginInfo());
+            !returnValue && dispatch(getLoginInfo());
             if (!toSelect && localStorage.sandboxIdToRedirectTo) {
                 toSelect = localStorage.sandboxIdToRedirectTo;
                 localStorage.removeItem('sandboxIdToRedirectTo');
             }
-            !toSelect && dispatch(fetchSandboxesStart());
+            !toSelect && !returnValue && dispatch(fetchSandboxesStart());
             let configuration = state.config.xsettings.data.sandboxManager;
             const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
@@ -728,8 +744,12 @@ export const fetchSandboxes = (toSelect) => {
                             ...data[key], id: key
                         });
                     }
-                    dispatch(fetchSandboxesSuccess(sandboxes));
-                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                    if (!returnValue) {
+                        dispatch(fetchSandboxesSuccess(sandboxes));
+                        setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                    } else {
+                        returnValue(sandboxes);
+                    }
                 })
                 .catch(err => {
                     sessionStorage.clear();

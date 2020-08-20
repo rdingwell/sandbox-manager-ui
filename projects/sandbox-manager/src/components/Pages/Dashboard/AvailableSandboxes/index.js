@@ -30,28 +30,17 @@ class Index extends Component {
         sessionStorage.clear();
     }
 
-    componentDidUpdate(prevProps) {
-        let check = !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient;
-        check && this.props.fetchSandboxes();
-    }
+    // componentDidUpdate(prevProps) {
+    //     let check = !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient;
+    //     check && this.props.fetchSandboxes();
+    // }
 
     render() {
-        let sandboxes = null;
+        let sandboxes = [];
         if (!this.props.loading) {
             let list = this.sortSandboxes();
             sandboxes = list.map((sandbox, index) => {
-                let isThree = ['5', '8'].indexOf(sandbox.apiEndpointIndex) === -1;
-                let isFour = sandbox.apiEndpointIndex === '7' || sandbox.apiEndpointIndex === '10';
-                let avatarClasses = 'sandbox-avatar';
-                let avatarText = 'STU3';
-                let backgroundColor = this.props.theme.a1;
-                if (isFour) {
-                    backgroundColor = this.props.theme.p1;
-                    avatarText = 'R4';
-                } else if (!isThree) {
-                    backgroundColor = this.props.theme.p3;
-                    avatarText = 'DSTU2';
-                }
+                let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandbox.apiEndpointIndex);
 
                 let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
                 let rightIcon = sandbox.allowOpenAccess
@@ -73,7 +62,27 @@ class Index extends Component {
                     </ListItem>
                 </a>
             });
+            if(this.props.isSandboxCreating && this.props.creatingSandboxInfo) {
+                this.props.creatingSandboxInfo.map((sandboxInfo, i) => {
+                    let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandboxInfo.apiEndpointIndex);
+                    let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
+                    let info = sandboxInfo.queuePosition
+                        ? `Your sandbox is number ${sandboxInfo.queuePosition} in the creation que...`
+                        : 'Your new sandbox is being created...';
 
+                    sandboxes.push(<a key={`new-${i}`} style={{textDecoration: 'none'}}>
+                        <ListItem button disabled>
+                            <ListItemIcon>
+                                {leftAvatar}
+                            </ListItemIcon>
+                            <ListItemText primary={<span style={{color: this.props.theme.p6}}>{sandboxInfo.name}</span>} secondary={info}/>
+                            <ListItemIcon>
+                                <CircularProgress size={30} thickness={4} style={{marginLeft: '10px'}}/>
+                            </ListItemIcon>
+                        </ListItem>
+                    </a>)
+                });
+            }
         }
 
         return <Paper className='sandboxes-wrapper paper-card'>
@@ -97,11 +106,6 @@ class Index extends Component {
                 </Button>
             </h3>
             <div>
-                {this.props.isSandboxCreating &&
-                <div className='creater-wrapper' data-qa='sandbox-creating-loader'>
-                    <CircularProgress size={30} thickness={3}/>
-                    <span>Your new sandbox is being created. Please wait.</span>
-                </div>}
                 {!this.props.loading && sandboxes.length > 0 && <List>
                     {sandboxes}
                 </List>}
@@ -117,6 +121,22 @@ class Index extends Component {
             </div>
         </Paper>;
     }
+
+    getAvatarInfo = (apiEndpointIndex) => {
+        let isThree = ['5', '8'].indexOf(apiEndpointIndex) === -1;
+        let isFour = apiEndpointIndex === '7' || apiEndpointIndex === '10';
+        let avatarClasses = 'sandbox-avatar';
+        let avatarText = 'STU3';
+        let backgroundColor = this.props.theme.a1;
+        if (isFour) {
+            backgroundColor = this.props.theme.p1;
+            avatarText = 'R4';
+        } else if (!isThree) {
+            backgroundColor = this.props.theme.p3;
+            avatarText = 'DSTU2';
+        }
+        return {avatarClasses, backgroundColor, avatarText};
+    };
 
     sortSandboxes = () => {
         if (this.state.sort === SORT_VALUES[1].val) {
@@ -169,6 +189,7 @@ const mapStateToProps = state => {
         creatingSandbox: state.sandbox.creatingSandbox,
         loginInfo: state.sandbox.loginInfo,
         isSandboxCreating: state.sandbox.creatingSandbox,
+        creatingSandboxInfo: state.sandbox.creatingSandboxInfo
     };
 };
 
