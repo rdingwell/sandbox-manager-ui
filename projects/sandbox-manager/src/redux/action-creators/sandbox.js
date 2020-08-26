@@ -708,10 +708,10 @@ export const createSandbox = (sandboxDetails) => {
                                 dispatch(fetchSandboxes(undefined, data => {
                                     let sandboxes = data.filter(s => s.creationStatus !== 'QUEUED');
                                     creatingDetails.splice(index, 1);
-                                    dispatch(fetchSandboxesSuccess(sandboxes));
                                     creatingDetails.length > 0
                                         ? dispatch(setCreatingSandbox(true, creatingDetails))
                                         : dispatch(setCreatingSandbox(false));
+                                    dispatch(fetchSandboxesSuccess(sandboxes));
                                 }))
                                 // dispatch(fetchSandboxes());
                             }
