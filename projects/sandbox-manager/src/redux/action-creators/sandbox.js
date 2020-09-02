@@ -704,7 +704,6 @@ export const getCurrentState = (sandboxDetails) => {
         let configuration = state.config.xsettings.data.sandboxManager;
         API.get(`${configuration.sandboxManagerApiUrl}/sandbox/creationStatus/${sandboxDetails.sandboxId}`, dispatch)
             .then(res => {
-                console.log(res);
                 state = getState();
                 let creatingDetails = (state.sandbox.creatingSandboxInfo || []).slice();
                 let index = creatingDetails.findIndex(i => i.sandboxId === sandboxDetails.sandboxId);
