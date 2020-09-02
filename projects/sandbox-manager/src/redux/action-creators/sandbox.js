@@ -692,36 +692,43 @@ export const createSandbox = (sandboxDetails) => {
                 let creatingDetails = state.sandbox.creatingSandboxInfo ? state.sandbox.creatingSandboxInfo.slice() : [];
                 creatingDetails.push(sandboxDetails);
                 dispatch(setCreatingSandbox(true, creatingDetails));
-                let getCurrentState = () => {
-                    API.get(`${configuration.sandboxManagerApiUrl}/sandbox/creationStatus/${sandboxDetails.sandboxId}`, dispatch)
-                        .then(res => {
-                            let state = getState();
-                            let creatingDetails = (state.sandbox.creatingSandboxInfo || []).slice();
-                            let index = creatingDetails.findIndex(i => i.sandboxId === sandboxDetails.sandboxId);
-                            let obj = Object.assign({}, creatingDetails[index], {...sandboxDetails, queuePosition: res.queuePosition});
-                            index = index >= 0 ? index : 0;
-                            creatingDetails[index] = obj;
-                            if (res.sandboxCreationStatus === 'QUEUED') {
-                                dispatch(setCreatingSandbox(true, creatingDetails));
-                                setTimeout(getCurrentState, 1000)
-                            } else {
-                                dispatch(fetchSandboxes(undefined, data => {
-                                    let sandboxes = data.filter(s => s.creationStatus !== 'QUEUED');
-                                    creatingDetails.splice(index, 1);
-                                    creatingDetails.length > 0
-                                        ? dispatch(setCreatingSandbox(true, creatingDetails))
-                                        : dispatch(setCreatingSandbox(false));
-                                    dispatch(fetchSandboxesSuccess(sandboxes));
-                                }))
-                                // dispatch(fetchSandboxes());
-                            }
-                        });
-                };
-                getCurrentState();
+                dispatch(getCurrentState(sandboxDetails));
             })
             .catch(() => dispatch(createSandboxFail("error")));
     };
 };
+
+export const getCurrentState = (sandboxDetails) => {
+    return (dispatch, getState) => {
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        API.get(`${configuration.sandboxManagerApiUrl}/sandbox/creationStatus/${sandboxDetails.sandboxId}`, dispatch)
+            .then(res => {
+                console.log(res);
+                state = getState();
+                let creatingDetails = (state.sandbox.creatingSandboxInfo || []).slice();
+                let index = creatingDetails.findIndex(i => i.sandboxId === sandboxDetails.sandboxId);
+                let obj = Object.assign({}, creatingDetails[index], {...sandboxDetails, queuePosition: res.queuePosition});
+                index = index >= 0 ? index : creatingDetails.length;
+                creatingDetails[index] = obj;
+                if (res.sandboxCreationStatus === 'QUEUED') {
+                    dispatch(setCreatingSandbox(true, creatingDetails));
+                    setTimeout(() => dispatch(getCurrentState(sandboxDetails)), 1000);
+                } else {
+                    dispatch(getLoginInfo(false));
+                    dispatch(fetchSandboxes(undefined, data => {
+                        let sandboxes = data.filter(s => s.creationStatus !== 'QUEUED');
+                        creatingDetails.splice(index, 1);
+                        creatingDetails.length > 0
+                            ? dispatch(setCreatingSandbox(true, creatingDetails))
+                            : dispatch(setCreatingSandbox(false));
+                        dispatch(fetchSandboxesSuccess(sandboxes));
+                    }))
+                    // dispatch(fetchSandboxes());
+                }
+            });
+    }
+}
 
 export const fetchSandboxes = (toSelect, returnValue) => {
     return (dispatch, getState) => {
@@ -747,6 +754,13 @@ export const fetchSandboxes = (toSelect, returnValue) => {
                     if (!returnValue) {
                         dispatch(fetchSandboxesSuccess(sandboxes));
                         setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                        !toSelect && sandboxes.map(s => s.creationStatus === 'QUEUED' && dispatch(getCurrentState(s)));
+
+                        let toCreate = sandboxes.filter(s => s.creationStatus === 'QUEUED');
+                        dispatch(setCreatingSandbox(true, toCreate));
+                        // if (toCreate.length) {
+                        //     toCreate.map(i => () => dispatch(getCurrentState(i)));
+                        // }
                     } else {
                         returnValue(sandboxes);
                     }
@@ -1018,16 +1032,16 @@ export function deleteCustomContext(sc, context) {
     }
 }
 
-export function getLoginInfo() {
+export function getLoginInfo(showLoader = true) {
     return (dispatch, getState) => {
         let state = getState();
-        dispatch(setFetchingLoginInfo(true));
+        showLoader && dispatch(setFetchingLoginInfo(true));
 
         if (state.config.xsettings.data.sandboxManager) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
             API.get(url, dispatch)
                 .then(loginInfo => dispatch(setLoginInfo(loginInfo)))
-                .finally(() => dispatch(setFetchingLoginInfo(false)));
+                .finally(() => showLoader && dispatch(setFetchingLoginInfo(false)));
         } else {
             goHome();
         }

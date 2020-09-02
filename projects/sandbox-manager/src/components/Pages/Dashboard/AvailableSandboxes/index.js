@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Paper, Button, List, ListItem, Avatar, IconButton, CircularProgress, Select, MenuItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import {withTheme} from '@material-ui/styles';
-import {fetchSandboxes, selectSandbox, getLoginInfo} from '../../../../redux/action-creators';
+import {fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState} from '../../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../UI/hoc/withErrorHandler';
@@ -14,6 +14,7 @@ const SORT_VALUES = [
     {val: 'last_used', label: 'Last Used'},
     {val: 'alphabetical', label: 'Alphabetical'}
 ];
+let mainTimers = {};
 
 class Index extends Component {
 
@@ -22,7 +23,8 @@ class Index extends Component {
 
         this.state = {
             sort: 'last_used',
-            desc: true
+            desc: true,
+            timers: {}
         };
     }
 
@@ -30,59 +32,88 @@ class Index extends Component {
         sessionStorage.clear();
     }
 
-    // componentDidUpdate(prevProps) {
-    //     let check = !this.props.creatingSandbox && prevProps.creatingSandbox && window.fhirClient;
-    //     check && this.props.fetchSandboxes();
-    // }
+    componentDidUpdate(prevProps) {
+        (this.props.creatingSandboxInfo || []).map((si, i) => {
+            let prev = prevProps.creatingSandboxInfo ? prevProps.creatingSandboxInfo.find(a => a.sandboxId === si.sandboxId) : undefined;
+            if (!prev || prev.queuePosition !== si.queuePosition) {
+                if (!mainTimers[si.sandboxId]) {
+                    let timers = Object.assign({}, this.state.timers);
+                    timers[si.sandboxId] = (si.queuePosition || 0) * 15 + 15;
+                    this.setState({timers});
+
+                    mainTimers[si.sandboxId] = setInterval(() => {
+                        let timers = Object.assign({}, this.state.timers);
+                        timers[si.sandboxId] = timers[si.sandboxId] - 1;
+                        timers[si.sandboxId] >= 0
+                            ? this.setState({timers})
+                            : clearInterval(mainTimers[si.sandboxId]) && delete mainTimers[si.sandboxId];
+                    }, 1000);
+                } else {
+                    let timers = Object.assign({}, this.state.timers);
+                    timers[si.sandboxId] = (si.queuePosition || 0) * 15 + 15;
+                    this.setState({timers});
+                }
+            }
+        });
+    }
 
     render() {
         let sandboxes = [];
         if (!this.props.loading) {
             let list = this.sortSandboxes();
+            let loadingSandboxes = this.props.isSandboxCreating && this.props.creatingSandboxInfo
+                ? this.props.creatingSandboxInfo
+                : [];
+            // console.log(loadingSandboxes);
+
             sandboxes = list.map((sandbox, index) => {
-                let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandbox.apiEndpointIndex);
-
-                let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
-                let rightIcon = sandbox.allowOpenAccess
-                    ? <IconButton tooltip='Open endpoint'>
-                        <Public style={{fill: this.props.theme.p3}}/>
-                    </IconButton>
-                    : <IconButton tooltip='Authorization required'>
-                        <Lock style={{fill: this.props.theme.p3}}/>
-                    </IconButton>;
-                return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
-                    <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} onClick={() => this.selectSandbox(index)} id={sandbox.name} button>
-                        <ListItemIcon>
-                            {leftAvatar}
-                        </ListItemIcon>
-                        <ListItemText primary={<span style={{color: this.props.theme.p6}}>{sandbox.name}</span>} secondary={sandbox.description || 'no description available'}/>
-                        <ListItemIcon>
-                            {rightIcon}
-                        </ListItemIcon>
-                    </ListItem>
-                </a>
-            });
-            if(this.props.isSandboxCreating && this.props.creatingSandboxInfo) {
-                this.props.creatingSandboxInfo.map((sandboxInfo, i) => {
-                    let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandboxInfo.apiEndpointIndex);
+                if (sandbox.creationStatus === 'CREATED') {
+                    let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandbox.apiEndpointIndex);
                     let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
-                    let info = sandboxInfo.queuePosition
-                        ? `Your sandbox is number ${sandboxInfo.queuePosition} in the creation que...`
-                        : 'Your new sandbox is being created...';
-
-                    sandboxes.push(<a key={`new-${i}`} style={{textDecoration: 'none'}}>
-                        <ListItem button disabled>
+                    let rightIcon = sandbox.allowOpenAccess
+                        ? <IconButton tooltip='Open endpoint'>
+                            <Public style={{fill: this.props.theme.p3}}/>
+                        </IconButton>
+                        : <IconButton tooltip='Authorization required'>
+                            <Lock style={{fill: this.props.theme.p3}}/>
+                        </IconButton>;
+                    return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
+                        <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} onClick={() => this.selectSandbox(index)} id={sandbox.name} button>
                             <ListItemIcon>
                                 {leftAvatar}
                             </ListItemIcon>
-                            <ListItemText primary={<span style={{color: this.props.theme.p6}}>{sandboxInfo.name}</span>} secondary={info}/>
+                            <ListItemText primary={<span style={{color: this.props.theme.p6}}>{sandbox.name}</span>} secondary={sandbox.description || 'no description available'}/>
                             <ListItemIcon>
-                                <CircularProgress size={30} thickness={4} style={{marginLeft: '10px'}}/>
+                                {rightIcon}
                             </ListItemIcon>
                         </ListItem>
-                    </a>)
-                });
-            }
+                    </a>
+                }
+            });
+
+            loadingSandboxes.map((sandboxInfo, i) => {
+                let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandboxInfo.apiEndpointIndex);
+                let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
+                let info = sandboxInfo.queuePosition
+                    ? `Your sandbox is number ${sandboxInfo.queuePosition} in the creation que...`
+                    : 'Your new sandbox is being created...';
+                let time = `${this.state.timers[sandboxInfo.sandboxId]} sec.`;
+
+                sandboxes.unshift(<a key={`new-${i}`} style={{textDecoration: 'none'}}>
+                    <ListItem button disabled>
+                        <ListItemIcon>
+                            {leftAvatar}
+                        </ListItemIcon>
+                        <ListItemText primary={<span style={{color: this.props.theme.p6}}>{sandboxInfo.name}</span>} secondary={info}/>
+                        <ListItemIcon style={{display: 'block'}}>
+                            <CircularProgress size={30} thickness={4} style={{marginLeft: '10px'}}/>
+                            <div style={{textAlign: 'center'}}>
+                                <span style={{fontSize: '10px'}}>{time}</span>
+                            </div>
+                        </ListItemIcon>
+                    </ListItem>
+                </a>)
+            });
         }
 
         return <Paper className='sandboxes-wrapper paper-card'>
@@ -194,7 +225,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({fetchSandboxes, selectSandbox, getLoginInfo}, dispatch);
+    return bindActionCreators({fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState}, dispatch);
 };
 
 export default withTheme(withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index))));
