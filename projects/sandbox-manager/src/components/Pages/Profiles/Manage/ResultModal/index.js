@@ -20,7 +20,7 @@ class ResultModal extends Component {
 
         return <Dialog open={this.props.open} onClose={this.props.onClose} classes={{paper: 'loading-results'}}>
             <div className='screen-title' style={titleStyle}>
-                <IconButton className="close-button white" onClick={() => this.setState({showConfirmation: false, profileToDelete: undefined})}>
+                <IconButton className="close-button white" onClick={this.props.onClose}>
                     <i className="material-icons">close</i>
                 </IconButton>
                 <h1 style={titleStyle}>Profile loading results</h1>
