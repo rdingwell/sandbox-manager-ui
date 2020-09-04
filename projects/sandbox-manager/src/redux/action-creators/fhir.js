@@ -542,19 +542,19 @@ export function loadProject(project, canFit, profileName, profileId) {
 
 export function deleteDefinition(id) {
     return (dispatch, getState) => {
-        dispatch(fhir_setProfilesUploading(true));
-
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
+        let profiles = state.fhir.profiles;
 
         API.delete(`${configuration.sandboxManagerApiUrl}/profile?fhirProfileId=${id}&sandboxId=${sessionStorage.sandboxId}`, dispatch)
             .then(() => {
-                dispatch(fhir_setProfiles([]));
-                dispatch(fhir_setProfilesUploading(false));
-                dispatch(loadProfiles());
+                let index = profiles.findIndex(i => i.id === id);
+                let entry = profiles.slice();
+                entry.splice(index, 1);
+                dispatch(fhir_setProfiles({entry}));
             })
-            .catch(() => {
-                dispatch(fhir_setProfilesUploading(false));
+            .catch(e => {
+                console.log(e);
             });
     }
 }

@@ -1,8 +1,8 @@
 import * as actionTypes from './types';
-import { authorize, goHome, saveSandboxApiEndpointIndex } from './fhirauth';
-import { fhir_setCustomSearchExecuting, fhir_setExportSearchResults } from './fhir';
-import { fetchPersonas } from "./persona";
-import { resetState, setGlobalError } from "./app";
+import {authorize, goHome, saveSandboxApiEndpointIndex} from './fhirauth';
+import {fhir_setCustomSearchExecuting, fhir_setExportSearchResults} from './fhir';
+import {fetchPersonas} from "./persona";
+import {resetState, setGlobalError} from "./app";
 import API from '../../lib/api';
 
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -17,189 +17,189 @@ const setDefaultUrl = (sandboxId) => {
 export const selectSandboxById = (sandboxId) => {
     localStorage.setItem('sandboxId', sandboxId);
     sessionStorage['sandboxId'] = sandboxId;
-    return { type: actionTypes.SELECT_SANDBOX }
+    return {type: actionTypes.SELECT_SANDBOX}
 };
 
-export function setUpdatingUser (updating) {
+export function setUpdatingUser(updating) {
     return {
         type: actionTypes.UPDATING_USER,
-        payload: { updating }
+        payload: {updating}
     }
 }
 
-export function setSandboxExportStatus (status) {
+export function setSandboxExportStatus(status) {
     return {
         type: actionTypes.SET_SANDBOX_EXPORT_STATUS,
-        payload: { status }
+        payload: {status}
     }
 }
 
-export function setFetchSingleLocation (fetching) {
+export function setFetchSingleLocation(fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_LOCATION,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setNotificationLoading (loading) {
+export function setNotificationLoading(loading) {
     return {
         type: actionTypes.SET_NOTIFICATIONS_LOADING,
-        payload: { loading }
+        payload: {loading}
     }
 }
 
-export function setNotifications (notifications) {
+export function setNotifications(notifications) {
     return {
         type: actionTypes.SET_NOTIFICATIONS,
-        payload: { notifications }
+        payload: {notifications}
     }
 }
 
-export function setLoginInfo (loginInfo) {
+export function setLoginInfo(loginInfo) {
     sessionStorage.loading = false;
     return {
         type: actionTypes.SET_LOGIN_INFO,
-        payload: { loginInfo }
+        payload: {loginInfo}
     }
 }
 
-export function setUserLoginInfo (loginInfo) {
+export function setUserLoginInfo(loginInfo) {
     return {
         type: actionTypes.SET_USER_LOGIN_INFO,
-        payload: { loginInfo }
+        payload: {loginInfo}
     }
 }
 
-export function setFetchingLoginInfo (fetching) {
+export function setFetchingLoginInfo(fetching) {
     return {
         type: actionTypes.FETCHING_LOGIN_INFO,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setFetchingUserLoginInfo (fetching) {
+export function setFetchingUserLoginInfo(fetching) {
     return {
         type: actionTypes.FETCHING_USER_LOGIN_INFO,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setFetchSingleEncounter (fetching) {
+export function setFetchSingleEncounter(fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_ENCOUNTER,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setSingleEncounter (encounter) {
+export function setSingleEncounter(encounter) {
     return {
         type: actionTypes.SET_SINGLE_ENCOUNTER,
-        payload: { encounter }
+        payload: {encounter}
     }
 }
 
-export function setFetchingSingleEncounterError (error) {
+export function setFetchingSingleEncounterError(error) {
     return {
         type: actionTypes.SET_SINGLE_ENCOUNTER_LOAD_ERROR,
-        payload: { error }
+        payload: {error}
     }
 }
 
-export function setFetchSingleIntent (fetching) {
+export function setFetchSingleIntent(fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_INTENT,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setSingleIntent (intent) {
+export function setSingleIntent(intent) {
     return {
         type: actionTypes.SET_SINGLE_INTENT,
-        payload: { intent }
+        payload: {intent}
     }
 }
 
-export function setFetchingSingleIntentError (error) {
+export function setFetchingSingleIntentError(error) {
     return {
         type: actionTypes.SET_SINGLE_INTENT_LOAD_ERROR,
-        payload: { error }
+        payload: {error}
     }
 }
 
-export function setFetchSingleResource (fetching) {
+export function setFetchSingleResource(fetching) {
     return {
         type: actionTypes.FETCHING_SINGLE_RESOURCE,
-        payload: { fetching }
+        payload: {fetching}
     }
 }
 
-export function setFetchAnyResource (fetching, type) {
+export function setFetchAnyResource(fetching, type) {
     return {
         type: actionTypes.FETCHING_ANY_RESOURCE,
-        payload: { fetching, type }
+        payload: {fetching, type}
     }
 }
 
-export function setSingleResource (resource) {
+export function setSingleResource(resource) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE,
-        payload: { resource }
+        payload: {resource}
     }
 }
 
-export function addFetchedResource (resource) {
+export function addFetchedResource(resource) {
     return {
         type: actionTypes.SET_ANY_RESOURCE,
-        payload: { resource }
+        payload: {resource}
     }
 }
 
-export function clearResourceFetch (type) {
+export function clearResourceFetch(type) {
     return {
         type: actionTypes.CLEAR_RESOURCE_FETCH,
-        payload: { type }
+        payload: {type}
     }
 }
 
-export function setFetchingSingleResourceError (error) {
+export function setFetchingSingleResourceError(error) {
     return {
         type: actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR,
-        payload: { error }
+        payload: {error}
     }
 }
 
-export function setFetchingAnyResourceError (type, error) {
+export function setFetchingAnyResourceError(type, error) {
     return {
         type: actionTypes.SET_ANY_RESOURCE_LOAD_ERROR,
-        payload: { error, type }
+        payload: {error, type}
     }
 }
 
-export function setSingleLocation (location) {
+export function setSingleLocation(location) {
     return {
         type: actionTypes.SET_SINGLE_LOCATION,
-        payload: { location }
+        payload: {location}
     }
 }
 
-export function modifyingCustomContext (modifying) {
+export function modifyingCustomContext(modifying) {
     return {
         type: actionTypes.ADDING_CUSTOM_CONTENT,
-        payload: { modifying }
+        payload: {modifying}
     }
 }
 
-export function setFetchingSingleLocationError (error) {
+export function setFetchingSingleLocationError(error) {
     return {
         type: actionTypes.SET_SINGLE_LOCATION_LOAD_ERROR,
-        payload: { error }
+        payload: {error}
     }
 }
 
-export function setSandboxSelecting (selecting) {
+export function setSandboxSelecting(selecting) {
     return {
         type: actionTypes.SET_SANDBOX_SELECTING,
-        payload: { selecting }
+        payload: {selecting}
     }
 }
 
@@ -212,56 +212,56 @@ export const clearResults = () => {
 export const setDataImporting = (importing) => {
     return {
         type: actionTypes.SET_DATA_IMPORTING,
-        payload: { importing }
+        payload: {importing}
     }
 };
 
 export const setImportResults = (results) => {
     return {
         type: actionTypes.SET_IMPORT_RESULTS,
-        payload: { results }
+        payload: {results}
     }
 };
 
-export function setLaunchScenariosLoading (loading) {
+export function setLaunchScenariosLoading(loading) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_LOADING,
-        payload: { loading }
+        payload: {loading}
     }
 }
 
-export function setUserInviting (inviting) {
+export function setUserInviting(inviting) {
     return {
         type: actionTypes.SET_USER_INVITING,
-        payload: { inviting }
+        payload: {inviting}
     }
 }
 
-export function setCopying (copying) {
+export function setCopying(copying) {
     return {
         type: actionTypes.SET_COPYING,
-        payload: { copying }
+        payload: {copying}
     }
 }
 
-export function setScenarioCreating (creating) {
+export function setScenarioCreating(creating) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_CREATING,
-        payload: { creating }
+        payload: {creating}
     }
 }
 
-export function setScenarioDeleting (deleting) {
+export function setScenarioDeleting(deleting) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS_DELETING,
-        payload: { deleting }
+        payload: {deleting}
     }
 }
 
-export function setLaunchScenarios (scenarios) {
+export function setLaunchScenarios(scenarios) {
     return {
         type: actionTypes.SET_LAUNCH_SCENARIOS,
-        payload: { scenarios }
+        payload: {scenarios}
     }
 }
 
@@ -305,10 +305,10 @@ export const fetchSandboxInvitesFail = (error) => {
     }
 };
 
-export const setCreatingSandbox = (creating) => {
+export const setCreatingSandbox = (creating, info) => {
     return {
         type: actionTypes.CREATING_SANDBOX,
-        payload: { creating }
+        payload: {creating, info}
     }
 };
 
@@ -349,39 +349,39 @@ export const lookupSandboxByIdSuccess = (sandboxes) => {
 export const setDefaultSandboxUser = (user) => {
     return {
         type: actionTypes.SET_DEFAULT_SANDBOX_USER,
-        payload: { user }
+        payload: {user}
     }
 };
 
 export const setInvitesLoading = (loading) => {
     return {
         type: actionTypes.SET_INVITES_LOADING,
-        payload: { loading }
+        payload: {loading}
     }
 };
 
 export const setInvites = (invites) => {
     return {
         type: actionTypes.SET_INVITES,
-        payload: { invites }
+        payload: {invites}
     }
 };
 
 export const setResettingCurrentSandbox = (resetting) => {
     return {
         type: actionTypes.SET_RESETTING_CURRENT_SANDBOX,
-        payload: { resetting }
+        payload: {resetting}
     }
 };
 
 export const setDeletingCurrentSandbox = (deleting) => {
     return {
         type: actionTypes.SET_DELETING_CURRENT_SANDBOX,
-        payload: { deleting }
+        payload: {deleting}
     }
 };
 
-export function createResource (data) {
+export function createResource(data) {
     return dispatch => {
         let url = `${window.fhirClient.server.serviceUrl}/${data.resourceType}`;
         API.post(url, data, dispatch).finally(() => dispatch(fetchPersonas(data.resourceType)));
@@ -416,15 +416,15 @@ export const importData = (data) => {
                 id = id.getAttribute('value');
                 promises = [API.put(`${window.fhirClient.server.serviceUrl}/${xmlDoc.firstChild.tagName}/${id}`, dataObject, dispatch, true, type)];
             } else if (!type && dataObject.resourceType === 'Bundle') {
-                promises = [window.fhirClient.api.transaction({ data })];
+                promises = [window.fhirClient.api.transaction({data})];
             } else if (dataObject.id !== undefined) {
-                promises = [window.fhirClient.api.update({ type: dataObject.resourceType, id: dataObject.id, data: data })];
+                promises = [window.fhirClient.api.update({type: dataObject.resourceType, id: dataObject.id, data: data})];
             } else {
-                promises = [window.fhirClient.api.create({ type: dataObject.resourceType, data: data })];
+                promises = [window.fhirClient.api.create({type: dataObject.resourceType, data: data})];
             }
         } catch (err) {
             // This will take care of informing the user that the JSON was not formatted correctly
-            promises = [window.fhirClient.api.transaction({ data })];
+            promises = [window.fhirClient.api.transaction({data})];
         }
 
         Promise.all(promises)
@@ -467,7 +467,7 @@ export const resetCurrentSandbox = (applyDefaultDataSet) => {
         let sandboxId = sessionStorage.sandboxId;
         let configuration = state.config.xsettings.data.sandboxManager;
         let dataSet = (applyDefaultDataSet ? 'DEFAULT' : 'NONE');
-        let data = { sandboxId, dataSet };
+        let data = {sandboxId, dataSet};
         API.post(`${configuration.sandboxManagerApiUrl}/fhirdata/reset?sandboxId=${sandboxId}&dataSet=${dataSet}`, data, dispatch).finally(() => dispatch(setResettingCurrentSandbox(false)))
     }
 };
@@ -520,7 +520,7 @@ export const selectSandbox = (sandbox) => {
     };
 };
 
-export function toggleUserAdminRights (userId, toggle) {
+export function toggleUserAdminRights(userId, toggle) {
     return (dispatch, getState) => {
         dispatch(setUpdatingUser(true));
         let state = getState();
@@ -535,7 +535,7 @@ export function toggleUserAdminRights (userId, toggle) {
     };
 }
 
-export function deleteScenario (scenario) {
+export function deleteScenario(scenario) {
     return (dispatch, getState) => {
         dispatch(setScenarioDeleting(true));
         let state = getState();
@@ -545,7 +545,7 @@ export function deleteScenario (scenario) {
     }
 }
 
-export function createScenario (data) {
+export function createScenario(data) {
     return (dispatch, getState) => {
         dispatch(setScenarioCreating(true));
         let state = getState();
@@ -563,7 +563,7 @@ export function createScenario (data) {
     }
 }
 
-export function updateLaunchScenario (scenario, description, title) {
+export function updateLaunchScenario(scenario, description, title) {
     return (dispatch, getState) => {
         dispatch(setScenarioCreating(true));
         let state = getState();
@@ -579,7 +579,7 @@ export function updateLaunchScenario (scenario, description, title) {
     }
 }
 
-export function updateNeedPatientBanner (scenario) {
+export function updateNeedPatientBanner(scenario) {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -625,7 +625,7 @@ export const removeInvitation = (id) => {
     };
 };
 
-export function getDefaultUserForSandbox (sandboxId) {
+export function getDefaultUserForSandbox(sandboxId) {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             let state = getState();
@@ -641,7 +641,7 @@ export function getDefaultUserForSandbox (sandboxId) {
     }
 }
 
-export function authorizeSandbox (sandbox) {
+export function authorizeSandbox(sandbox) {
     return (dispatch, getState) => {
         if (sandbox !== undefined) {
             dispatch(saveSandboxApiEndpointIndex(sandbox.apiEndpointIndex));
@@ -688,21 +688,57 @@ export const createSandbox = (sandboxDetails) => {
         };
 
         API.post(configuration.sandboxManagerApiUrl + '/sandbox/clone', cloneBody, dispatch)
-            .then(() => dispatch(fetchSandboxes(sandboxDetails.sandboxId)))
+            .then(() => {
+                let creatingDetails = state.sandbox.creatingSandboxInfo ? state.sandbox.creatingSandboxInfo.slice() : [];
+                creatingDetails.push(sandboxDetails);
+                dispatch(setCreatingSandbox(true, creatingDetails));
+                dispatch(getCurrentState(sandboxDetails));
+            })
             .catch(() => dispatch(createSandboxFail("error")));
     };
 };
 
-export const fetchSandboxes = (toSelect) => {
+export const getCurrentState = (sandboxDetails) => {
+    return (dispatch, getState) => {
+        let state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        API.get(`${configuration.sandboxManagerApiUrl}/sandbox/creationStatus/${sandboxDetails.sandboxId}`, dispatch)
+            .then(res => {
+                state = getState();
+                let creatingDetails = (state.sandbox.creatingSandboxInfo || []).slice();
+                let index = creatingDetails.findIndex(i => i.sandboxId === sandboxDetails.sandboxId);
+                let obj = Object.assign({}, creatingDetails[index], {...sandboxDetails, queuePosition: res.queuePosition});
+                index = index >= 0 ? index : creatingDetails.length;
+                creatingDetails[index] = obj;
+                if (res.sandboxCreationStatus === 'QUEUED') {
+                    dispatch(setCreatingSandbox(true, creatingDetails));
+                    setTimeout(() => dispatch(getCurrentState(sandboxDetails)), 1000);
+                } else {
+                    dispatch(getLoginInfo(false));
+                    dispatch(fetchSandboxes(undefined, data => {
+                        let sandboxes = data.filter(s => s.creationStatus !== 'QUEUED');
+                        creatingDetails.splice(index, 1);
+                        creatingDetails.length > 0
+                            ? dispatch(setCreatingSandbox(true, creatingDetails))
+                            : dispatch(setCreatingSandbox(false));
+                        dispatch(fetchSandboxesSuccess(sandboxes));
+                    }))
+                    // dispatch(fetchSandboxes());
+                }
+            });
+    }
+}
+
+export const fetchSandboxes = (toSelect, returnValue) => {
     return (dispatch, getState) => {
         const state = getState();
         if (!state.sandbox.loading) {
-            dispatch(getLoginInfo());
+            !returnValue && dispatch(getLoginInfo());
             if (!toSelect && localStorage.sandboxIdToRedirectTo) {
                 toSelect = localStorage.sandboxIdToRedirectTo;
                 localStorage.removeItem('sandboxIdToRedirectTo');
             }
-            !toSelect && dispatch(fetchSandboxesStart());
+            !toSelect && !returnValue && dispatch(fetchSandboxesStart());
             let configuration = state.config.xsettings.data.sandboxManager;
             const queryParams = '?userId=' + state.users.oauthUser.sbmUserId + '&_sort:asc=name';
 
@@ -714,8 +750,19 @@ export const fetchSandboxes = (toSelect) => {
                             ...data[key], id: key
                         });
                     }
-                    dispatch(fetchSandboxesSuccess(sandboxes));
-                    setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                    if (!returnValue) {
+                        dispatch(fetchSandboxesSuccess(sandboxes));
+                        setTimeout(() => dispatch(selectSandbox(sandboxes.find(i => i.sandboxId === toSelect))), 300);
+                        !toSelect && sandboxes.map(s => s.creationStatus === 'QUEUED' && dispatch(getCurrentState(s)));
+
+                        let toCreate = sandboxes.filter(s => s.creationStatus === 'QUEUED');
+                        dispatch(setCreatingSandbox(true, toCreate));
+                        // if (toCreate.length) {
+                        //     toCreate.map(i => () => dispatch(getCurrentState(i)));
+                        // }
+                    } else {
+                        returnValue(sandboxes);
+                    }
                 })
                 .catch(err => {
                     sessionStorage.clear();
@@ -742,7 +789,7 @@ export const fetchSandboxInvites = () => {
 
                 const invitations = [];
                 for (let key in res) {
-                    invitations.push({ ...res[key] });
+                    invitations.push({...res[key]});
                 }
                 dispatch(fetchSandboxInvitesSuccess(invitations));
             })
@@ -802,7 +849,7 @@ export const markAllNotificationsSeen = () => {
     };
 };
 
-export function loadLaunchScenarios () {
+export function loadLaunchScenarios() {
     return (dispatch, getState) => {
         if (window.fhirClient) {
             dispatch(setLaunchScenariosLoading(true));
@@ -819,11 +866,11 @@ export function loadLaunchScenarios () {
     }
 }
 
-export function fetchEncounter (id) {
+export function fetchEncounter(id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleEncounter(true));
-            window.fhirClient.api.read({ type: 'Encounter', id })
+            window.fhirClient.api.read({type: 'Encounter', id})
                 .done(patient => {
                     dispatch(setSingleEncounter(patient.data));
                     dispatch(setFetchSingleEncounter(false));
@@ -836,11 +883,11 @@ export function fetchEncounter (id) {
     }
 }
 
-export function fetchLocation (id) {
+export function fetchLocation(id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleLocation(true));
-            window.fhirClient.api.read({ type: 'Location', id })
+            window.fhirClient.api.read({type: 'Location', id})
                 .done(patient => {
                     dispatch(setSingleLocation(patient.data));
                     dispatch(setFetchSingleLocation(false));
@@ -853,11 +900,11 @@ export function fetchLocation (id) {
     }
 }
 
-export function fetchIntent (id) {
+export function fetchIntent(id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleIntent(true));
-            window.fhirClient.api.read({ type: 'Intent', id })
+            window.fhirClient.api.read({type: 'Intent', id})
                 .done(patient => {
                     dispatch(setSingleIntent(patient.data));
                     dispatch(setFetchSingleIntent(false));
@@ -870,11 +917,11 @@ export function fetchIntent (id) {
     }
 }
 
-export function fetchResource (id) {
+export function fetchResource(id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchSingleResource(true));
-            window.fhirClient.api.read({ type: 'Resource', id })
+            window.fhirClient.api.read({type: 'Resource', id})
                 .done(patient => {
                     dispatch(setSingleResource(patient.data));
                     dispatch(setFetchSingleResource(false))
@@ -887,11 +934,11 @@ export function fetchResource (id) {
     }
 }
 
-export function fetchAnyResource (type, id) {
+export function fetchAnyResource(type, id) {
     return dispatch => {
         if (window.fhirClient) {
             dispatch(setFetchAnyResource(true, type));
-            window.fhirClient.api.read({ type, id })
+            window.fhirClient.api.read({type, id})
                 .done(patient => {
                     dispatch(addFetchedResource(patient.data));
                     dispatch(setFetchAnyResource(false, type))
@@ -904,7 +951,7 @@ export function fetchAnyResource (type, id) {
     }
 }
 
-export function removeUser (userId, history) {
+export function removeUser(userId, history) {
     return (dispatch, getState) => {
         dispatch(setInvitesLoading(true));
         let sandboxId = sessionStorage.sandboxId;
@@ -919,13 +966,13 @@ export function removeUser (userId, history) {
                     }
 
                     dispatch(setInvitesLoading(false));
-                    dispatch({ type: actionTypes.REMOVE_SANDBOX_USER, userId: userId });
+                    dispatch({type: actionTypes.REMOVE_SANDBOX_USER, userId: userId});
                 })
         }
     }
 }
 
-export function updateSandboxInvite (invite, answer) {
+export function updateSandboxInvite(invite, answer) {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -939,7 +986,7 @@ export function updateSandboxInvite (invite, answer) {
     }
 }
 
-export function loadInvites () {
+export function loadInvites() {
     return (dispatch, getState) => {
         let state = getState();
 
@@ -955,12 +1002,12 @@ export function loadInvites () {
     }
 }
 
-export function addCustomContext (sc, key, val) {
+export function addCustomContext(sc, key, val) {
     return (dispatch, getState) => {
         let state = getState();
         let data = Object.assign({}, sc);
         data.contextParams = data.contextParams ? data.contextParams : [];
-        data.contextParams.push({ name: key, value: val });
+        data.contextParams.push({name: key, value: val});
         dispatch(modifyingCustomContext(true));
 
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -970,7 +1017,7 @@ export function addCustomContext (sc, key, val) {
     }
 }
 
-export function deleteCustomContext (sc, context) {
+export function deleteCustomContext(sc, context) {
     return (dispatch, getState) => {
         let state = getState();
         let data = Object.assign({}, sc);
@@ -984,23 +1031,23 @@ export function deleteCustomContext (sc, context) {
     }
 }
 
-export function getLoginInfo () {
+export function getLoginInfo(showLoader = true) {
     return (dispatch, getState) => {
         let state = getState();
-        dispatch(setFetchingLoginInfo(true));
+        showLoader && dispatch(setFetchingLoginInfo(true));
 
         if (state.config.xsettings.data.sandboxManager) {
             let url = `${state.config.xsettings.data.sandboxManager.sandboxManagerApiUrl}/sandbox-access?sbmUserId=${encodeURIComponent(state.users.oauthUser.sbmUserId)}`;
             API.get(url, dispatch)
                 .then(loginInfo => dispatch(setLoginInfo(loginInfo)))
-                .finally(() => dispatch(setFetchingLoginInfo(false)));
+                .finally(() => showLoader && dispatch(setFetchingLoginInfo(false)));
         } else {
             goHome();
         }
     }
 }
 
-export function getUserLoginInfo () {
+export function getUserLoginInfo() {
     return (dispatch, getState) => {
         let state = getState();
         dispatch(setFetchingUserLoginInfo(true));
@@ -1016,35 +1063,35 @@ export function getUserLoginInfo () {
     }
 }
 
-export function loadExportResources (query) {
+export function loadExportResources(query) {
     return (dispatch, getState) => {
         let state = getState();
         let sandboxVersion = state.sandbox.sandboxApiEndpointIndex
             ? state.sandbox.sandboxApiEndpointIndexes.find(i => i.index === state.sandbox.sandboxApiEndpointIndex)
             : undefined;
 
-        dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details: undefined, content: undefined }));
+        dispatch(setSandboxExportStatus({loading: true, error: false, resourceList: [], details: undefined, content: undefined}));
         if (sandboxVersion) {
             API.get(`/data/export-resources_${sandboxVersion.fhirTag}.json`, dispatch)
                 .then(resourceList => {
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details: undefined, content: undefined }));
+                    dispatch(setSandboxExportStatus({loading: true, error: false, resourceList, details: undefined, content: undefined}));
                     dispatch(getTotalItemsToExport(resourceList, query));
                 });
         } else {
-            dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!' }));
+            dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [], details: undefined, content: undefined, errorText: 'Unknown sandbox API endpoint version!'}));
         }
 
     }
 }
 
-export function getTotalItemsToExport (resourceList, query) {
+export function getTotalItemsToExport(resourceList, query) {
     return (dispatch, getState) => {
         let content = {};
         let details = {};
 
         let getNext = function (data, type) {
             if (getState().sandbox.exportStatus.loading) {
-                window.fhirClient.api.nextPage({ bundle: data })
+                window.fhirClient.api.nextPage({bundle: data})
                     .then(d => {
                         if (d.data) {
                             let hasNext = d.data.link[1] && d.data.link[1].relation === "next";
@@ -1058,7 +1105,7 @@ export function getTotalItemsToExport (resourceList, query) {
                             !hasNext && (details[type].loading = false);
                         }
                         if (getState().sandbox.exportStatus.loading) {
-                            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [1], details, content }));
+                            dispatch(setSandboxExportStatus({loading: true, error: false, resourceList: [1], details, content}));
                         }
                     });
             }
@@ -1067,7 +1114,7 @@ export function getTotalItemsToExport (resourceList, query) {
         if (query.length === 0) {
             let promises = [];
             resourceList.map(resource => {
-                let params = { type: resource, count: 50 };
+                let params = {type: resource, count: 50};
 
                 promises.push(window.fhirClient.api.search(params));
             });
@@ -1087,10 +1134,10 @@ export function getTotalItemsToExport (resourceList, query) {
                             hasNext && getNext(d.data, d.config.type);
                         }
                     });
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                    dispatch(setSandboxExportStatus({loading: true, error: false, resourceList, details, content}));
                 })
         } else {
-            dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList: [], details, content: {} }));
+            dispatch(setSandboxExportStatus({loading: true, error: false, resourceList: [], details, content: {}}));
             let endpoint = window.fhirClient.server.serviceUrl;
             API.get(`${endpoint}/${query}`, dispatch)
                 .then(data => {
@@ -1114,23 +1161,23 @@ export function getTotalItemsToExport (resourceList, query) {
                     }
                     dispatch(fhir_setExportSearchResults(data));
                     dispatch(fhir_setCustomSearchExecuting(false));
-                    dispatch(setSandboxExportStatus({ loading: true, error: false, resourceList, details, content }));
+                    dispatch(setSandboxExportStatus({loading: true, error: false, resourceList, details, content}));
                 })
                 .catch(() => {
-                    dispatch(setSandboxExportStatus({ loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined }));
+                    dispatch(setSandboxExportStatus({loading: false, error: true, resourceList: [1], details: "Could not load data", content: undefined}));
                     dispatch(fhir_setCustomSearchExecuting(false));
                 });
         }
     }
 }
 
-export function cancelDownload () {
+export function cancelDownload() {
     return dispatch => {
-        dispatch(setSandboxExportStatus({ loading: false, error: false, resourceList: [], details: undefined, content: undefined }));
+        dispatch(setSandboxExportStatus({loading: false, error: false, resourceList: [], details: undefined, content: undefined}));
     }
 }
 
-export function doLaunch (app, persona, user = {}, noUser, scenario) {
+export function doLaunch(app, persona, user = {}, noUser, scenario) {
     return (dispatch, getState) => {
         let state = getState();
         let configuration = state.config.xsettings.data.sandboxManager;
@@ -1138,7 +1185,7 @@ export function doLaunch (app, persona, user = {}, noUser, scenario) {
 
         let params = {};
         if (scenario) {
-            persona && (params = { patient: persona });
+            persona && (params = {patient: persona});
             scenario.encounter && (params.encounter = scenario.encounter);
             scenario.location && (params.location = scenario.location);
             scenario.resource && (params.resource = scenario.resource);
@@ -1152,7 +1199,7 @@ export function doLaunch (app, persona, user = {}, noUser, scenario) {
                 }
             }
         } else if (persona) {
-            params = { patient: persona };
+            params = {patient: persona};
         }
 
         params["need_patient_banner"] = scenario ? scenario.needPatientBanner === 'T' : true;
@@ -1166,7 +1213,7 @@ export function doLaunch (app, persona, user = {}, noUser, scenario) {
 
         let appWindow = window.open('/launchApp?' + key, '_blank');
         let data = {};
-        user && !noUser && (data = { username: user.personaUserId, password: user.password });
+        user && !noUser && (data = {username: user.personaUserId, password: user.password});
         let launchDetails = {};
         persona && (launchDetails.patientContext = persona);
         user && !noUser && (launchDetails.userPersona = Object.assign({}, user));
@@ -1192,7 +1239,7 @@ export function doLaunch (app, persona, user = {}, noUser, scenario) {
     }
 }
 
-export function copyToClipboard (str) {
+export function copyToClipboard(str) {
     return async dispatch => {
         dispatch(setCopying(true));
         let el = document.getElementById('copy-area');
@@ -1204,6 +1251,7 @@ export function copyToClipboard (str) {
                 e.clipboardData.setData("text/plain", str);
                 e.preventDefault();
             }
+
             document.addEventListener("copy", listener);
             document.execCommand("copy");
             document.removeEventListener("copy", listener);
@@ -1216,7 +1264,7 @@ export function copyToClipboard (str) {
     }
 }
 
-export function random (length) {
+export function random(length) {
     let result = '';
     for (let i = length; i > 0; --i) {
         result += CHARS[Math.round(Math.random() * (CHARS.length - 1))];
@@ -1224,7 +1272,7 @@ export function random (length) {
     return result;
 }
 
-function registerAppContext (app, params, launchDetails, key, dispatch) {
+function registerAppContext(app, params, launchDetails, key, dispatch) {
     let appToLaunch = Object.assign({}, app);
     delete appToLaunch.clientJSON;
     delete appToLaunch.createdBy;
@@ -1232,7 +1280,7 @@ function registerAppContext (app, params, launchDetails, key, dispatch) {
     callRegisterContext(appToLaunch, params, window.fhirClient.server.serviceUrl, launchDetails, key, dispatch);
 }
 
-function callRegisterContext (appToLaunch, params, issuer, launchDetails, key, dispatch) {
+function callRegisterContext(appToLaunch, params, issuer, launchDetails, key, dispatch) {
     let data = {
         client_id: appToLaunch.clientId,
         parameters: params

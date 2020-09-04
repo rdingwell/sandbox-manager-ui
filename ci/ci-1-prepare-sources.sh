@@ -11,20 +11,20 @@ jq "(.containerDefinitions[0].environment[] | select(.name == \"TARGET_ENV\") | 
 jq ".containerDefinitions[0].memoryReservation=(${AWS_CONTAINER_MEMORY_RESERVE} | tonumber)" ${TEMPLATE_FILE} > tmp.json && mv tmp.json ${TEMPLATE_FILE}
 
 cat ${TEMPLATE_FILE}
+pwd
+#echo "starting prepare_build.sh..."
 
-echo "starting prepare_build.sh..."
+#echo "Cloning the 'lib' repo"
+#cd ../projects
+#git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
+#cd sandbox-manager-lib
+#npm link
+cd ../
 
-echo "Cloning the 'lib' repo"
-cd ../projects
-git clone git@bitbucket.org:hspconsortium/sandbox-manager-lib.git
-cd sandbox-manager-lib
-npm link
-cd ../../
-
-echo "::: Running NPM INSTALL"
+#echo "::: Running NPM INSTALL"
 npm install
-npm link sandbox-manager-lib
+#npm link sandbox-manager-lib
 
 cd ci
 
-echo "finished prepare_build.sh"
+#echo "finished prepare_build.sh"

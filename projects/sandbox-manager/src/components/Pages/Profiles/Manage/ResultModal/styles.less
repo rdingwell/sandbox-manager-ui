@@ -7,12 +7,43 @@
   margin-top: 68px;
   padding: 8px 16px;
 
+  .resource-type {
+    background-color: whitesmoke;
+    padding: 5px 15px;
+    cursor: pointer;
+    position: relative;
+
+    .chevron {
+      position: absolute;
+      right: 20px;
+      transition: transform .3s;
+      top: 4px;
+
+      &.turn {
+        transition: transform .3s;
+        transform: rotate(180deg);
+        top: -1px;
+      }
+    }
+  }
+
+  .resource-list {
+    &.closed {
+      height: 0;
+      overflow: hidden;
+    }
+
+     & > * {
+       margin: 5px 0;
+     }
+  }
+
   & > div {
     height: 35vh;
     overflow: hidden;
     margin-bottom: 5px;
 
-    div {
+    & > div {
       background-color: whitesmoke;
       padding: 5px 16px;
       border-top-left-radius: 5px;

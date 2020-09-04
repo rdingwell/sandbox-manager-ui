@@ -164,10 +164,12 @@ export default function (state = initialState, action) {
             break;
         case actionTypes.CREATING_SANDBOX:
             state.creatingSandbox = action.payload.creating;
+            state.creatingSandboxInfo = action.payload.info;
             break;
         case actionTypes.CREATE_SANDBOX_FAIL:
             state.createSandboxError = action.error;
             state.creatingSandbox = false;
+            state.creatingSandboxInfo = undefined;
             break;
         case actionTypes.LOOKUP_SANDBOX_BY_ID_START:
             state.lookingForSandbox = true;
@@ -226,6 +228,7 @@ export default function (state = initialState, action) {
             state.fetchingSingleResource = false;
             state.loadingNotifications = false;
             state.creatingSandbox = false;
+            state.creatingSandboxInfo = undefined;
             state.deleting = false;
             state.resetting = false;
             state.loading = false;

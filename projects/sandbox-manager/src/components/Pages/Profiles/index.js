@@ -1,9 +1,31 @@
 import React, {Component} from 'react';
 import withErrorHandler from '../../UI/hoc/withErrorHandler';
 import {
-    importData, app_setScreen, customSearch, fhir_setCustomSearchResults, clearResults, loadExportResources, getDefaultUserForSandbox, cancelDownload, customSearchNextPage, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
-    loadProfilesBySD, clearLoadedProfilesBySD, fhir_setProfileLoadingStatus
+    importData,
+    app_setScreen,
+    customSearch,
+    fhir_setCustomSearchResults,
+    clearResults,
+    loadExportResources,
+    getDefaultUserForSandbox,
+    cancelDownload,
+    customSearchNextPage,
+    validate,
+    validateExisting,
+    cleanValidationResults,
+    uploadProfile,
+    loadProfiles,
+    getProfilesPagination,
+    loadProject,
+    deleteDefinition,
+    loadProfileSDs,
+    setGlobalError,
+    loadProfileResources,
+    loadResource,
+    fetchDefinitionTypes,
+    loadProfilesBySD,
+    clearLoadedProfilesBySD,
+    fhir_setProfileLoadingStatus
 } from '../../../redux/action-creators';
 import {withTheme} from '@material-ui/core';
 import {connect} from 'react-redux';
@@ -36,7 +58,8 @@ class Profiles extends Component {
         return <div className='profiles-wrapper page-content-wrapper'>
             <Page title='Profiles' helpIcon={helpIcon}>
                 <Manage {...this.props} />
-                {/*<ResultModal open={!!this.props.profileLoadingStatus} theme={this.props.theme} onClose={() => this.props.fhir_setProfileLoadingStatus()} />*/}
+                <ResultModal open={!!this.props.profileLoadingStatus} theme={this.props.theme} onClose={() => this.props.fhir_setProfileLoadingStatus()}
+                             data={this.props.profileLoadingStatus}/>
             </Page>
         </div>
     }
@@ -71,9 +94,31 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    app_setScreen, customSearch, fhir_setCustomSearchResults, importData, clearResults, loadExportResources, getDefaultUserForSandbox, customSearchNextPage, cancelDownload, validate, validateExisting,
-    cleanValidationResults, uploadProfile, loadProfiles, getProfilesPagination, loadProject, deleteDefinition, loadProfileSDs, setGlobalError, loadProfileResources, loadResource, fetchDefinitionTypes,
-    loadProfilesBySD, clearLoadedProfilesBySD, fhir_setProfileLoadingStatus
+    app_setScreen,
+    customSearch,
+    fhir_setCustomSearchResults,
+    importData,
+    clearResults,
+    loadExportResources,
+    getDefaultUserForSandbox,
+    customSearchNextPage,
+    cancelDownload,
+    validate,
+    validateExisting,
+    cleanValidationResults,
+    uploadProfile,
+    loadProfiles,
+    getProfilesPagination,
+    loadProject,
+    deleteDefinition,
+    loadProfileSDs,
+    setGlobalError,
+    loadProfileResources,
+    loadResource,
+    fetchDefinitionTypes,
+    loadProfilesBySD,
+    clearLoadedProfilesBySD,
+    fhir_setProfileLoadingStatus
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(withTheme(Profiles)));

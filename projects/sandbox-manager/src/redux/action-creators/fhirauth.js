@@ -2,6 +2,7 @@ import * as actionTypes from './types';
 import {setOauthUserInfo, saveSandboxManagerUser} from './users';
 import {fetchSandboxes, fetchUserNotifications, loadInvites} from "./sandbox";
 import API from '../../lib/api';
+import {fhir_SetMeta} from "./fhir";
 
 let fhirClient = null;
 
@@ -133,6 +134,7 @@ function queryFhirVersion(dispatch, fhirClient, state) {
         .then(
             response => {
                 dispatch(setFhirVersion(response.data.fhirVersion));
+                dispatch(fhir_SetMeta(response.data));
                 state.sandbox.sandboxApiEndpointIndexes.forEach((sandboxEndpoint) => {
                     if (response.data.fhirVersion === sandboxEndpoint.fhirVersion) {
                         dispatch(saveSandboxApiEndpointIndex(sandboxEndpoint.index));

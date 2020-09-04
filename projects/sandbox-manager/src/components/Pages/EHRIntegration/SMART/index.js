@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-const smartGalery = 'https://apps.smarthealthit.org/';
 const smartSandbox = 'https://sandbox.smarthealthit.org';
 
 export default class Smart extends Component {
@@ -14,10 +13,6 @@ export default class Smart extends Component {
                 <p>Which FHIR versions does the SMART sandbox support?</p>
                 <p>
                     <span className='Answer'>DSTU2</span></p>
-                <p>Where can I see the SMART Gallery?</p>
-                <p>
-                    <span className='Answer'><a href={smartGalery}>{smartGalery}</a></span>
-                </p>
             </div>
         </div>
     }

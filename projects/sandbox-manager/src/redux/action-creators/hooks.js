@@ -299,7 +299,7 @@ export const launchHook = (hook, launchContext) => {
                             API.post(`${encodeURI(hook.hookUrl)}`, data, dispatch)
                                 .then(cards => {
                                     if (cards) {
-                                        cards.cards = cards.cards || [{noCardsReturned: true}];
+                                        cards.cards = cards.cards && cards.cards.length ? cards.cards : [{noCardsReturned: true}];
                                         cards.cards.map(card => {
                                             card.requestData = data;
                                         });
@@ -315,7 +315,8 @@ export const launchHook = (hook, launchContext) => {
                     // Trigger the hook
                     API.post(`${encodeURI(hook.hookUrl)}`, data, dispatch)
                         .then(cards => {
-                            if (cards && cards.cards) {
+                            if (cards) {
+                                cards.cards = cards.cards && cards.cards.length ? cards.cards : [{noCardsReturned: true}];
                                 cards.cards.map(card => {
                                     card.requestData = data;
                                 });
