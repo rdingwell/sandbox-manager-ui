@@ -156,7 +156,7 @@ const config = {
                     to: DIST_DIR + "/img/"
                 },
                 {
-                    from: SRC_DIR + "/../../../node_modules/fhirclient/fhir-client.min.js",
+                    from: SRC_DIR + "/../../../node_modules/fhirclient/fhir-client.js",
                     to: DIST_DIR + "/externals/"
                 },
                 {
