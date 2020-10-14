@@ -245,6 +245,8 @@ export default function (state = initialState, action) {
             state.singleEncounterLoadingError = undefined;
             state.importResults = undefined;
             state.launchScenarios = undefined;
+            !sessionStorage.sandboxId && (state.selecting = false);
+            !sessionStorage.sandboxId && (state.sandboxes = []);
             break;
     }
 
