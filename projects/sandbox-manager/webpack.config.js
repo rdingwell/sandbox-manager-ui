@@ -128,6 +128,10 @@ const config = {
                     to: DIST_DIR + "/data/export-resources_1_8_0.json"
                 },
                 {
+                    from: SRC_DIR + "/assets/fhir-client.min.js",
+                    to: DIST_DIR + "/data/fhir-client.min.js"
+                },
+                {
                     from: SRC_DIR + "/assets/config/export-resources_3_0_1.json",
                     to: DIST_DIR + "/data/export-resources_3_0_1.json"
                 },

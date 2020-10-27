@@ -245,8 +245,11 @@ export default function (state = initialState, action) {
             state.singleEncounterLoadingError = undefined;
             state.importResults = undefined;
             state.launchScenarios = undefined;
-            !sessionStorage.sandboxId && (state.selecting = false);
-            !sessionStorage.sandboxId && (state.sandboxes = []);
+            let path = window.location.pathname;
+            let search = window.location.search;
+            let resetSelecting = (!sessionStorage.sandboxId || path === '/dashboard' || (path === '/apps' && search.indexOf('code=') >= 0));
+            resetSelecting && (state.selecting = false);
+            resetSelecting && (state.sandboxes = []);
             break;
     }
 
