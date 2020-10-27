@@ -128,10 +128,6 @@ const config = {
                     to: DIST_DIR + "/data/export-resources_1_8_0.json"
                 },
                 {
-                    from: SRC_DIR + "/assets/fhir-client.min.js",
-                    to: DIST_DIR + "/data/fhir-client.min.js"
-                },
-                {
                     from: SRC_DIR + "/assets/config/export-resources_3_0_1.json",
                     to: DIST_DIR + "/data/export-resources_3_0_1.json"
                 },
@@ -158,6 +154,10 @@ const config = {
                 {
                     from: SRC_DIR + "/assets/img",
                     to: DIST_DIR + "/img/"
+                },
+                {
+                    from: SRC_DIR + "/../../../node_modules/fhirclient/fhir-client.min.js",
+                    to: DIST_DIR + "/externals/"
                 },
                 {
                     from: SRC_DIR + "/../../../node_modules/font-awesome/css",
