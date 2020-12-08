@@ -5,61 +5,79 @@ export default {
         'patient-view': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             }
         },
         'medication-prescribe': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             medications: {
                 required: true,
                 title: 'Medications',
+                type: 'object',
                 resourceType: {
                     5: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     8: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     6: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     9: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     7: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     10: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     }
                 }
@@ -67,56 +85,73 @@ export default {
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             }
         },
         'order-review': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             },
             orders: {
                 required: false,
                 title: 'Orders',
+                type: 'object',
                 resourceType: {
                     5: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     8: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     6: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     9: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     7: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     10: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     }
                 }
@@ -125,55 +160,72 @@ export default {
         'order-select': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             },
             selection: {
-                required: false,
+                required: true,
                 title: 'Selection',
-                resourceType: 'MedicationRequest'
+                resourceType: 'MedicationRequest',
+                type: 'array'
             },
             draftOrders: {
                 required: false,
                 title: 'Orders',
+                type: 'object',
                 resourceType: {
                     5: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     8: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     6: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     9: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     7: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     10: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     }
                 }
@@ -182,50 +234,66 @@ export default {
         'order-sign': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             },
             draftOrders: {
                 required: false,
                 title: 'Orders',
+                type: 'object',
                 resourceType: {
                     5: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     8: {
                         type: 'MedicationOrder',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationOrder?status=draft'
                     },
                     6: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     9: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     7: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     },
                     10: {
                         type: 'MedicationRequest',
-                        crit: 'status=draft',
+                        crit: {
+                            status: 'draft'
+                        },
                         query: 'MedicationRequest?status=draft'
                     }
                 }
@@ -234,50 +302,66 @@ export default {
         'appointment-book': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: false,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             },
             appointments: {
                 required: true,
                 title: 'Orders',
+                type: 'object',
                 resourceType: {
                     5: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     },
                     8: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     },
                     6: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     },
                     9: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     },
                     7: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     },
                     10: {
                         type: 'Appointment',
-                        crit: 'status=proposed',
+                        crit: {
+                            status: 'proposed'
+                        },
                         query: 'Appointment?status=proposed'
                     }
                 }
@@ -286,33 +370,39 @@ export default {
         'encounter-start': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: true,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             }
         },
         'encounter-discharge': {
             userId: {
                 required: true,
-                title: 'User id'
+                title: 'User id',
+                type: 'string'
             },
             patientId: {
                 required: true,
                 title: 'Patient id',
-                resourceType: 'Patient'
+                resourceType: 'Patient',
+                type: 'string'
             },
             encounterId: {
                 required: true,
                 title: 'Encounter id',
-                resourceType: 'Encounter'
+                resourceType: 'Encounter',
+                type: 'string'
             }
         }
     },

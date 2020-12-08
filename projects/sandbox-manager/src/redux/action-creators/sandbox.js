@@ -951,6 +951,24 @@ export function fetchAnyResource(type, id) {
     }
 }
 
+export function searchAnyResource(type, query) {
+    return dispatch => {
+        if (window.fhirClient) {
+            dispatch(setFetchAnyResource(true, type));
+            window.fhirClient.api.search({type, query})
+                .done(res => {
+                    res.data.resourceType = type;
+                    dispatch(addFetchedResource(res.data));
+                    dispatch(setFetchAnyResource(false, type));
+                })
+                .fail(e => {
+                    dispatch(setFetchingAnyResourceError(type, e));
+                    dispatch(setFetchAnyResource(false, type));
+                });
+        }
+    }
+}
+
 export function removeUser(userId, history) {
     return (dispatch, getState) => {
         dispatch(setInvitesLoading(true));
