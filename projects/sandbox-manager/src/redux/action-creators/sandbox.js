@@ -154,6 +154,12 @@ export function addFetchedResource(resource) {
     }
 }
 
+export function resetFetchedResource() {
+    return {
+        type: actionTypes.RESET_ANY_RESOURCE
+    }
+}
+
 export function clearResourceFetch(type) {
     return {
         type: actionTypes.CLEAR_RESOURCE_FETCH,
@@ -951,11 +957,12 @@ export function fetchAnyResource(type, id) {
     }
 }
 
-export function searchAnyResource(type, query) {
+export function searchAnyResource(type, crit) {
     return dispatch => {
         if (window.fhirClient) {
+            dispatch(resetFetchedResource());
             dispatch(setFetchAnyResource(true, type));
-            window.fhirClient.api.search({type, query})
+            window.fhirClient.api.search({type, query: crit})
                 .done(res => {
                     res.data.resourceType = type;
                     dispatch(addFetchedResource(res.data));

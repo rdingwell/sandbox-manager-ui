@@ -321,7 +321,9 @@ class Create extends Component {
 
         hasAllRequiredHookContext && this.state.requiredHookContext.map(item => {
             let resType = this.props.hookContexts[this.state.selectedApp.hook][item].type;
-            if (!this.state[item] || this.state[item].length === 0 || (typeof (resType) === 'object' && !this.props.resourceList[resType])) {
+            if (resType !== 'object' && (!this.state[item] || this.state[item].length === 0)) {
+                hasAllRequiredHookContext = false;
+            } else if (resType === 'object' && (!this.state[`${item}-context`] || !this.state[`${item}-context`].selected || Object.keys(this.state[`${item}-context`].selected).length === 0)) {
                 hasAllRequiredHookContext = false;
             }
         });
@@ -408,13 +410,13 @@ class Create extends Component {
                 let context = this.props.hookContexts[this.state.selectedApp.hook][key];
                 let isComplex = context.type === 'object';
                 let value = isComplex && this.state[`${key}-context`] && this.state[`${key}-context`].selected
-                    ? Object.keys(this.state[`${key}-context`].selected).join(',')
+                    ? Object.values(this.state[`${key}-context`].selected).join(',')
                     : this.state[key] || '';
                 return <div className='summary-item' key={index}>
                     <div className='summary-item-icon-left'>
                         <ContextIcon style={iconStyle}/> {context.required && <span className='required-tag'>*</span>}
                     </div>
-                    <span className='summary-item-text'><span>{context.title}</span>: {value ? value : '-'}</span>
+                    <span className='summary-item-text'><span>{context.title}</span>: <span>{value ? value : '-'}</span></span>
                 </div>
 
             })
@@ -558,7 +560,7 @@ class Create extends Component {
             let context = this.props.hookContexts[this.state.selectedApp.hook][key];
             let value = this.state[key] || '';
             if (this.state[`${key}-context`] && this.state[`${key}-context`].selected) {
-                value = Object.keys(this.state[`${key}-context`].selected).join(',');
+                value = Object.values(this.state[`${key}-context`].selected).join(',');
             }
             let isComplex = context.type === 'object';
             let disabled = key === 'userId' || isComplex || this.props.resourceListFetching[context.resourceType];
@@ -600,10 +602,13 @@ class Create extends Component {
 
     fetchContext = (context, key) => {
         if (this.state.patientId) {
-            let crit = {}; //Object.assign({}, context.resourceType[this.props.sandboxApiEndpointIndex].crit);
-            crit.patient = this.state.patientId;
-            this.props.searchAnyResource(context.resourceType[this.props.sandboxApiEndpointIndex].type, crit);
-            this.toggleContextPicker(context.resourceType[this.props.sandboxApiEndpointIndex].type, key);
+            let resources = context.resourceType[this.props.sandboxApiEndpointIndex];
+            resources.forEach(res => {
+                let crit = {}; //Object.assign({}, context.resourceType[this.props.sandboxApiEndpointIndex].crit);
+                crit.patient = this.state.patientId;
+                this.props.searchAnyResource(res.type, crit);
+            });
+            this.toggleContextPicker(resources, key);
         } else {
             alert('Please select a patient first');
         }
@@ -741,7 +746,7 @@ class Create extends Component {
             data.contextParams = [];
             Object.keys(this.props.hookContexts[this.state.selectedApp.hook]).map(key => {
                 if (this.state[`${key}-context`] && this.state[`${key}-context`].selected) {
-                    data.contextParams.push({name: key, value: Object.keys(this.state[`${key}-context`].selected).join(',')});
+                    data.contextParams.push({name: key, value: Object.values(this.state[`${key}-context`].selected).join(',')});
                 } else if (this.state[key] && this.state[key].length > 0) {
                     data.contextParams.push({name: key, value: this.state[key]});
                 }

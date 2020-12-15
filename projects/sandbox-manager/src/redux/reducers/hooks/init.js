@@ -5,406 +5,770 @@ export default {
         'patient-view': {
             userId: {
                 required: true,
-                title: 'User id',
-                type: 'string'
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
             },
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
             encounterId: {
                 required: false,
-                title: 'Encounter id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Encounter',
-                type: 'string'
+                title: 'Encounter id'
             }
         },
-        'medication-prescribe': {
+        'appointment-book': {
             userId: {
                 required: true,
-                title: 'User id',
-                type: 'string'
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
             },
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
-            medications: {
+            encounterId: {
+                required: false,
+                prefetch: true,
+                type: 'string',
+                resourceType: 'Encounter',
+                title: 'Encounter id'
+            },
+            appointments: {
                 required: true,
-                title: 'Medications',
+                prefetch: false,
                 type: 'object',
-                resourceType: {
-                    5: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    8: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    6: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    9: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    7: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    10: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    }
-                }
-            },
-            encounterId: {
-                required: false,
-                title: 'Encounter id',
-                resourceType: 'Encounter',
-                type: 'string'
-            }
-        },
-        'order-review': {
-            userId: {
-                required: true,
-                title: 'User id',
-                type: 'string'
-            },
-            patientId: {
-                required: true,
-                title: 'Patient id',
-                resourceType: 'Patient',
-                type: 'string'
-            },
-            encounterId: {
-                required: false,
-                title: 'Encounter id',
-                resourceType: 'Encounter',
-                type: 'string'
-            },
-            orders: {
-                required: false,
                 title: 'Orders',
-                type: 'object',
                 resourceType: {
-                    5: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    8: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    6: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    9: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    7: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    10: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
-                        },
-                        query: 'MedicationRequest?status=draft'
-                    }
+                    5: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ],
+                    8: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ],
+                    6: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ],
+                    9: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ],
+                    7: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ],
+                    10: [
+                        {
+                            type: 'Appointment',
+                            crit: {
+                                status: 'proposed'
+                            }
+                        }
+                    ]
                 }
+            }
+        },
+        'encounter-discharge': {
+            userId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
+            },
+            patientId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                resourceType: 'Patient',
+                title: 'Patient id'
+            },
+            encounterId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                resourceType: 'Encounter',
+                title: 'Encounter id'
+            }
+        },
+        'encounter-start': {
+            userId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
+            },
+            patientId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                resourceType: 'Patient',
+                title: 'Patient id'
+            },
+            encounterId: {
+                required: true,
+                prefetch: true,
+                type: 'string',
+                resourceType: 'Encounter',
+                title: 'Encounter id'
             }
         },
         'order-select': {
             userId: {
                 required: true,
-                title: 'User id',
-                type: 'string'
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
             },
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
             encounterId: {
                 required: false,
-                title: 'Encounter id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Encounter',
-                type: 'string'
+                title: 'Encounter id'
             },
             selection: {
                 required: true,
-                title: 'Selection',
-                resourceType: 'MedicationRequest',
-                type: 'array'
+                prefetch: false,
+                type: 'array',
+                title: 'Selection'
             },
             draftOrders: {
-                required: false,
-                title: 'Orders',
+                required: true,
+                prefetch: false,
                 type: 'object',
+                title: 'Orders',
                 resourceType: {
-                    5: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
+                    5: [
+                        {
+                            type: 'MedicationOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    8: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'DiagnosticOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    6: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'DeviceUseRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    9: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    7: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    10: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    }
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    8: [
+                        {
+                            type: 'MedicationOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'DiagnosticOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'DeviceUseRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    6: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    9: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    7: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ServiceRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    10: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ServiceRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ]
                 }
             }
         },
         'order-sign': {
             userId: {
                 required: true,
-                title: 'User id',
-                type: 'string'
+                prefetch: true,
+                type: 'string',
+                title: 'User id'
             },
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
             encounterId: {
                 required: false,
-                title: 'Encounter id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Encounter',
-                type: 'string'
+                title: 'Encounter id'
             },
             draftOrders: {
-                required: false,
-                title: 'Orders',
+                required: true,
+                prefetch: false,
                 type: 'object',
+                title: 'Orders',
                 resourceType: {
-                    5: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
+                    5: [
+                        {
+                            type: 'MedicationOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    8: {
-                        type: 'MedicationOrder',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'DiagnosticOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationOrder?status=draft'
-                    },
-                    6: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'DeviceUseRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    9: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    7: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    },
-                    10: {
-                        type: 'MedicationRequest',
-                        crit: {
-                            status: 'draft'
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
                         },
-                        query: 'MedicationRequest?status=draft'
-                    }
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    8: [
+                        {
+                            type: 'MedicationOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'DiagnosticOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'DeviceUseRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    6: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    9: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ReferralRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ProcedureRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    7: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ServiceRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ],
+                    10: [
+                        {
+                            type: 'MedicationRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'NutritionOrder',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'ServiceRequest',
+                            crit: {
+                                status: 'draft'
+                            }
+                        },
+                        {
+                            type: 'VisionPrescription',
+                            crit: {
+                                status: 'draft'
+                            }
+                        }
+                    ]
                 }
             }
         },
-        'appointment-book': {
-            userId: {
-                required: true,
-                title: 'User id',
-                type: 'string'
-            },
+        'medication-prescribe': {
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
             encounterId: {
                 required: false,
-                title: 'Encounter id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Encounter',
-                type: 'string'
+                title: 'Encounter id'
             },
-            appointments: {
+            medications: {
                 required: true,
-                title: 'Orders',
+                prefetch: false,
                 type: 'object',
+                title: 'Medications',
                 resourceType: {
-                    5: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    },
-                    8: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    },
-                    6: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    },
-                    9: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    },
-                    7: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    },
-                    10: {
-                        type: 'Appointment',
-                        crit: {
-                            status: 'proposed'
-                        },
-                        query: 'Appointment?status=proposed'
-                    }
+                    5: [
+                        {
+                            type: 'MedicationOrder'
+                        }
+                    ],
+                    8: [
+                        {
+                            type: 'MedicationOrder'
+                        }
+                    ],
+                    6: [
+                        {
+                            type: 'MedicationOrder'
+                        }
+                    ],
+                    9: [
+                        {
+                            type: 'MedicationOrder'
+                        }
+                    ]
                 }
             }
         },
-        'encounter-start': {
-            userId: {
-                required: true,
-                title: 'User id',
-                type: 'string'
-            },
+        'order-review': {
             patientId: {
                 required: true,
-                title: 'Patient id',
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Patient',
-                type: 'string'
+                title: 'Patient id'
             },
             encounterId: {
-                required: true,
-                title: 'Encounter id',
+                required: false,
+                prefetch: true,
+                type: 'string',
                 resourceType: 'Encounter',
-                type: 'string'
-            }
-        },
-        'encounter-discharge': {
-            userId: {
-                required: true,
-                title: 'User id',
-                type: 'string'
+                title: 'Encounter id'
             },
-            patientId: {
+            orders: {
                 required: true,
-                title: 'Patient id',
-                resourceType: 'Patient',
-                type: 'string'
-            },
-            encounterId: {
-                required: true,
-                title: 'Encounter id',
-                resourceType: 'Encounter',
-                type: 'string'
+                prefetch: false,
+                type: 'object',
+                title: 'Orders',
+                resourceType: {
+                    5: [
+                        {
+                            type: 'MedicationOrder'
+                        },
+                        {
+                            type: 'DiagnosticOrder'
+                        },
+                        {
+                            type: 'DeviceUseRequest'
+                        },
+                        {
+                            type: 'ReferralRequest'
+                        },
+                        {
+                            type: 'ProcedureRequest'
+                        },
+                        {
+                            type: 'NutritionOrder'
+                        },
+                        {
+                            type: 'VisionPrescription'
+                        }
+                    ],
+                    8: [
+                        {
+                            type: 'MedicationOrder'
+                        },
+                        {
+                            type: 'DiagnosticOrder'
+                        },
+                        {
+                            type: 'DeviceUseRequest'
+                        },
+                        {
+                            type: 'ReferralRequest'
+                        },
+                        {
+                            type: 'ProcedureRequest'
+                        },
+                        {
+                            type: 'NutritionOrder'
+                        },
+                        {
+                            type: 'VisionPrescription'
+                        }
+                    ],
+                    6: [
+                        {
+                            type: 'MedicationRequest'
+                        },
+                        {
+                            type: 'ReferralRequest'
+                        },
+                        {
+                            type: 'ProcedureRequest'
+                        },
+                        {
+                            type: 'NutritionOrder'
+                        },
+                        {
+                            type: 'VisionPrescription'
+                        }
+                    ],
+                    9: [
+                        {
+                            type: 'MedicationRequest'
+                        },
+                        {
+                            type: 'ReferralRequest'
+                        },
+                        {
+                            type: 'ProcedureRequest'
+                        },
+                        {
+                            type: 'NutritionOrder'
+                        },
+                        {
+                            type: 'VisionPrescription'
+                        }
+                    ]
+                }
             }
         }
     },
     changed: []
 }
+

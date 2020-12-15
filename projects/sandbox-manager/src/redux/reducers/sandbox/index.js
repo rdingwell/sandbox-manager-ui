@@ -78,6 +78,9 @@ export default function (state = initialState, action) {
         case actionTypes.SET_ANY_RESOURCE:
             state.resourceList[action.payload.resource.resourceType] = action.payload.resource;
             break;
+        case actionTypes.RESET_ANY_RESOURCE:
+            state.resourceList = {};
+            break;
         case actionTypes.SET_SINGLE_RESOURCE_LOAD_ERROR:
             state.singleResourceLoadingError = action.payload.error;
             break;
