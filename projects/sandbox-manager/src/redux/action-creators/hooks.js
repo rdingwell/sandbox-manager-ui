@@ -361,10 +361,18 @@ async function buildContext(hook, launchContext, state, dispatch) {
             let type = params[key].type;
             let val;
             if (type === 'object') {
-                let tmpVal = launchContext.find(x => x.name === key);
-                let resourceType = params[key].resourceType[state.sandbox.sandboxApiEndpointIndex].type;
-                let url = `${resourceType}?_id=${tmpVal.value}`;
-                val = await API.get(`${window.fhirClient.server.serviceUrl}/${encodeURI(url)}`);
+                let localContext = launchContext.find(x => x.name === key);
+                let resources = localContext.value.split(',');
+                let promises = [];
+                resources.forEach(res => {
+                    promises.push(API.get(`${window.fhirClient.server.serviceUrl}/${encodeURI(res)}`));
+                });
+                let data = await Promise.all(promises);
+                val = {
+                    resourceType : "Bundle",
+                    total: data.length,
+                    entry: data
+                }
             } else if (launchContext instanceof Array) {
                 val = launchContext.find(x => x.name === key);
             } else {

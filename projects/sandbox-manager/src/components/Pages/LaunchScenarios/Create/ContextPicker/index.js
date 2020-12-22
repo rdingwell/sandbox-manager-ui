@@ -37,21 +37,28 @@ class ContextPicker extends Component {
     }
 
     getList = () => {
-        let data = this.props.resourceList[this.props.type] || {};
-        return data.entry
-            ? data.entry.map(o => {
-                return <div className='context-item-checkbox' key={o.resource.id}>
-                    <FormControlLabel control={<Checkbox checked={this.state.selected[o.resource.id] || false} onChange={() => this.toggleItem(o)} value='open' color='primary'/>} label={o.resource.id} className='checkbox'/>
-                </div>
-            })
-            : <div style={{textAlign: 'center', marginTop: '20%'}}>
-                No resource matching the search criteria were found!
-            </div>;
+        return (this.props.type || []).map(type => {
+            let data = this.props.resourceList[type.type] || {};
+            let markup = data.entry
+                ? data.entry.map(o => {
+                    return <div className='context-item-checkbox' key={o.resource.id}>
+                        <FormControlLabel control={<Checkbox checked={this.state.selected[o.resource.id] || false} onChange={() => this.toggleItem(type.type, o)} value='open' color='primary'/>}
+                                          label={o.resource.id} className='checkbox'/>
+                    </div>
+                })
+                : <div style={{textAlign: 'center', margin: '16px 0'}}>
+                    No resource matching the search criteria were found!
+                </div>;
+            return <div key={type.type}>
+                <div style={{fontWeight: 'bold', marginLeft: '16px'}}>{type.type}:</div>
+                {markup}
+            </div>
+        });
     };
 
-    toggleItem = item => {
+    toggleItem = (type, item) => {
         let selected = Object.assign({}, this.state.selected);
-        !!selected[item.resource.id] ? delete selected[item.resource.id] : selected[item.resource.id] = true;
+        !!selected[item.resource.id] ? delete selected[item.resource.id] : selected[item.resource.id] = `${type}/${item.resource.id}`;
         this.setState({selected});
     };
 
