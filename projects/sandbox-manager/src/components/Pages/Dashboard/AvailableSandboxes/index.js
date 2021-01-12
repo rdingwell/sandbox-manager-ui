@@ -156,12 +156,16 @@ class Index extends Component {
     getAvatarInfo = (apiEndpointIndex) => {
         let isThree = ['5', '8'].indexOf(apiEndpointIndex) === -1;
         let isFour = apiEndpointIndex === '7' || apiEndpointIndex === '10';
+        let isFive = apiEndpointIndex === '11';
         let avatarClasses = 'sandbox-avatar';
         let avatarText = 'STU3';
         let backgroundColor = this.props.theme.a1;
         if (isFour) {
             backgroundColor = this.props.theme.p1;
             avatarText = 'R4';
+        } else if (isFive) {
+            backgroundColor = this.props.theme.p4;
+            avatarText = 'R5';
         } else if (!isThree) {
             backgroundColor = this.props.theme.p3;
             avatarText = 'DSTU2';
