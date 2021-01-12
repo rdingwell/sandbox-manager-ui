@@ -20,6 +20,7 @@
     "baseServiceUrl_8": "http://localhost:8078",
     "baseServiceUrl_9": "http://localhost:8079",
     "baseServiceUrl_10": "http://localhost:8070",
+    "baseServiceUrl_11": "http://localhost:8071",
     "ehrSimulator": "http://localhost:3000",
     "patientDataManager": "http://localhost:8096",
     "oauthLogoutUrl": "http://localhost:8060/logout",
