@@ -239,6 +239,7 @@ export default function (state = initialState, action) {
             state.resourceListFetching = {};
             state.resourceListLoadError = {};
             state.exportStatus = initialState.exportStatus;
+            state.sandboxApiEndpointIndexes = initialState.sandboxApiEndpointIndexes;
             state.createSandboxError = undefined;
             state.singleResource = undefined;
             state.singleResourceLoadingError = undefined;
