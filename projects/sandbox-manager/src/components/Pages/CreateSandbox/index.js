@@ -71,7 +71,7 @@ class Index extends Component {
                                         FHIR DSTU2 (v1.0.2)
                                     </MenuItem>
                                     <MenuItem value='9' data-qa='fhir-stu3'>
-                                        FHIR STU3 (v3.0.1)
+                                        FHIR STU3 (v3.0.2)
                                     </MenuItem>
                                     <MenuItem value='10' data-qa='fhir-r4'>
                                         FHIR R4 (v4.0.1)
