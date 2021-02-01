@@ -687,6 +687,11 @@ export const createSandbox = (sandboxDetails) => {
             if (sandboxDetails.dataSet === "NONE") {
                 clonedSandbox.sandboxId = "MasterR4Empty";
             }
+        } else if (sandboxDetails.apiEndpointIndex === "11") {
+            clonedSandbox.sandboxId = "MasterR5Empty";
+            // if (sandboxDetails.dataSet === "NONE") {
+            //     clonedSandbox.sandboxId = "MasterR5Empty";
+            // }
         }
         let cloneBody = {
             "clonedSandbox": clonedSandbox,
