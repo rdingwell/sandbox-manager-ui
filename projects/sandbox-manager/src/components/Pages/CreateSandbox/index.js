@@ -77,7 +77,7 @@ class Index extends Component {
                                         FHIR R4 (v4.0.1)
                                     </MenuItem>
                                     <MenuItem value='11' data-qa='fhir-r5'>
-                                        FHIR R5 (v4.2.0)
+                                        FHIR R5 (v4.5.0)
                                     </MenuItem>
                                 </Select>
                             </FormControl>
