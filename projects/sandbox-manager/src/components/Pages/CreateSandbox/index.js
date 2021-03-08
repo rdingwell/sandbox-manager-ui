@@ -87,12 +87,12 @@ class Index extends Component {
                                 <div>
                                     <FormControlLabel control={<Checkbox onChange={this.allowOpenChangeHandler} value='open' color='primary'/>} label='Allow Open FHIR Endpoint' className='checkbox'/>
                                 </div>
-                                {(!this.state.apiEndpointIndex || this.state.apiEndpointIndex !== '11') &&
+                                {!this.state.apiEndpointIndex &&
                                 <div>
                                     <FormControlLabel control={<Checkbox defaultChecked onChange={this.applyDefaultChangeHandler} value='open' color='primary'/>} label='Import sample patients and practitioners'
                                                       className='checkbox'/>
                                 </div>}
-                                {(!this.state.apiEndpointIndex || this.state.apiEndpointIndex !== '11') &&
+                                {!this.state.apiEndpointIndex &&
                                 <div>
                                     <FormControlLabel control={<Checkbox defaultChecked onChange={this.applyDefaultAppsChangeHandler} value='open' color='primary'/>} label='Import sample applications'
                                                       className='checkbox'/>
