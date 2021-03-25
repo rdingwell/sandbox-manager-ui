@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {Paper, Button, List, ListItem, Avatar, IconButton, CircularProgress, Select, MenuItem, ListItemIcon, ListItemText} from '@material-ui/core';
+import {Paper, Button, List, ListItem, Avatar, IconButton, CircularProgress, Select, MenuItem, ListItemIcon, ListItemText, Tooltip} from '@material-ui/core';
 import {withTheme} from '@material-ui/styles';
-import {fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState} from '../../../../redux/action-creators';
+import {fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState, exportSandbox} from '../../../../redux/action-creators';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import withErrorHandler from '../../../UI/hoc/withErrorHandler';
 import {withRouter} from 'react-router';
-import {Lock, Public, Sort} from "@material-ui/icons";
+import {Lock, Public, Sort, CloudDownload} from "@material-ui/icons";
 
 import './styles.less';
 
@@ -44,15 +44,29 @@ class Index extends Component {
                 if (sandbox.creationStatus === 'CREATED') {
                     let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandbox.apiEndpointIndex);
                     let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
-                    let rightIcon = sandbox.allowOpenAccess
-                        ? <IconButton tooltip='Open endpoint'>
-                            <Public style={{fill: this.props.theme.p3}}/>
-                        </IconButton>
-                        : <IconButton tooltip='Authorization required'>
-                            <Lock style={{fill: this.props.theme.p3}}/>
-                        </IconButton>;
-                    return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
-                        <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} onClick={() => this.selectSandbox(index)} id={sandbox.name} button>
+                    let rightIcon = <>
+                        {sandbox.allowOpenAccess
+                            ? <Tooltip title='Open endpoint'>
+                                <IconButton>
+                                    <Public style={{fill: this.props.theme.p3}}/>
+                                </IconButton>
+                            </Tooltip>
+                            : <Tooltip title='Authorization required'>
+                                <IconButton>
+                                    <Lock style={{fill: this.props.theme.p3}}/>
+                                </IconButton>
+                            </Tooltip>}
+                        <Tooltip title='Export Sandbox'>
+                            <IconButton onClick={e => {
+                                e.preventDefault();
+                                this.props.exportSandbox(sandbox.sandboxId)
+                            }}>
+                                <CloudDownload style={{fill: this.props.theme.p3}}/>
+                            </IconButton>
+                        </Tooltip>
+                    </>;
+                    return <a key={index} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
+                        <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} id={sandbox.name} button>
                             <ListItemIcon>
                                 {leftAvatar}
                             </ListItemIcon>
@@ -203,7 +217,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState}, dispatch);
+    return bindActionCreators({fetchSandboxes, selectSandbox, getLoginInfo, getCurrentState, exportSandbox}, dispatch);
 };
 
 export default withTheme(withRouter(connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Index))));

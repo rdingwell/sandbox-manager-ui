@@ -810,6 +810,21 @@ export const fetchSandboxInvites = () => {
     };
 };
 
+export const exportSandbox = sandboxId => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+
+        API.download(configuration.sandboxManagerApiUrl + '/sandbox/download/' + sandboxId, dispatch, `${sandboxId}_export.zip`)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    };
+};
+
 export const fetchUserNotifications = () => {
     return (dispatch, getState) => {
         const state = getState();
