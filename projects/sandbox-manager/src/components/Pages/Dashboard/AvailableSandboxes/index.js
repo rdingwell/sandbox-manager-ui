@@ -59,14 +59,15 @@ class Index extends Component {
                         <Tooltip title='Export Sandbox'>
                             <IconButton onClick={e => {
                                 e.preventDefault();
+                                e.stopPropagation();
                                 this.props.exportSandbox(sandbox.sandboxId)
-                            }}>
+                            }} style={{zIndex: 1000}}>
                                 <CloudDownload style={{fill: this.props.theme.p3}}/>
                             </IconButton>
                         </Tooltip>
                     </>;
-                    return <a key={index} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
-                        <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} id={sandbox.name} button>
+                    return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
+                        <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} onClick={() => this.selectSandbox(index)} id={sandbox.name} button>
                             <ListItemIcon>
                                 {leftAvatar}
                             </ListItemIcon>
