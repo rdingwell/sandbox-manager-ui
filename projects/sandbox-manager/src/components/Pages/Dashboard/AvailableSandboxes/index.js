@@ -44,6 +44,7 @@ class Index extends Component {
                 if (sandbox.creationStatus === 'CREATED') {
                     let {avatarClasses, backgroundColor, avatarText} = this.getAvatarInfo(sandbox.apiEndpointIndex);
                     let leftAvatar = <Avatar className={avatarClasses} style={{backgroundColor}}>{avatarText}</Avatar>;
+                    let isExtracting = this.props.extractingSandboxes.indexOf(sandbox.sandboxId) >= 0;
                     let rightIcon = <>
                         {sandbox.allowOpenAccess
                             ? <Tooltip title='Open endpoint'>
@@ -56,15 +57,22 @@ class Index extends Component {
                                     <Lock style={{fill: this.props.theme.p3}}/>
                                 </IconButton>
                             </Tooltip>}
-                        <Tooltip title='Export Sandbox'>
-                            <IconButton onClick={e => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.props.exportSandbox(sandbox.sandboxId)
-                            }} style={{zIndex: 1000}}>
-                                <CloudDownload style={{fill: this.props.theme.p3}}/>
-                            </IconButton>
-                        </Tooltip>
+                        {!isExtracting
+                            ? <Tooltip title='Export Sandbox'>
+                                <IconButton onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    this.props.exportSandbox(sandbox.sandboxId);
+                                }} style={{zIndex: 1000}}>
+                                    <CloudDownload style={{fill: this.props.theme.p3}}/>
+                                </IconButton>
+                            </Tooltip>
+                            : <Tooltip title='Extracting Sandbox'>
+                                <IconButton style={{zIndex: 1000}}>
+                                    <CircularProgress size={24} />
+                                </IconButton>
+                            </Tooltip>
+                        }
                     </>;
                     return <a key={index} href={`${window.location.origin}/${sandbox.sandboxId}/apps`} onClick={e => e.preventDefault()} style={{textDecoration: 'none'}}>
                         <ListItem data-qa={`sandbox-${sandbox.sandboxId}`} onClick={() => this.selectSandbox(index)} id={sandbox.name} button>
@@ -213,7 +221,8 @@ const mapStateToProps = state => {
         creatingSandbox: state.sandbox.creatingSandbox,
         loginInfo: state.sandbox.loginInfo,
         isSandboxCreating: state.sandbox.creatingSandbox,
-        creatingSandboxInfo: state.sandbox.creatingSandboxInfo
+        creatingSandboxInfo: state.sandbox.creatingSandboxInfo,
+        extractingSandboxes: state.sandbox.extractingSandboxes
     };
 };
 

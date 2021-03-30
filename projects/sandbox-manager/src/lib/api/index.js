@@ -76,6 +76,7 @@ export default {
                     a.href = bloburl;
                     a.download = fileName;
                     a.click();
+                    resolve();
                 })
                 .catch(e => parseError(e, dispatch, reject));
         });
