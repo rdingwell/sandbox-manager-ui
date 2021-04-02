@@ -1,7 +1,7 @@
-import { goHome, setGlobalError, showGlobalSessionModal } from '../../redux/action-creators';
+import {goHome, setGlobalError, showGlobalSessionModal} from '../../redux/action-creators';
 
 export default {
-    post (url, data, dispatch, isFormData, type = "application/json") {
+    post(url, data, dispatch, isFormData, type = "application/json") {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("POST", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
@@ -9,7 +9,7 @@ export default {
         });
     },
 
-    postNoErrorManagement (url, data, dispatch, isFormData) {
+    postNoErrorManagement(url, data, dispatch, isFormData) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("POST", data, isFormData))
                 .then(response => parseResponse(response, dispatch, resolve, reject, true))
@@ -17,7 +17,7 @@ export default {
         });
     },
 
-    put (url, data, dispatch, isFormData, type = "application/json") {
+    put(url, data, dispatch, isFormData, type = "application/json") {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("PUT", data, isFormData, type))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
@@ -25,7 +25,7 @@ export default {
         });
     },
 
-    getNoErrorManagement (url, dispatch) {
+    getNoErrorManagement(url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("GET"))
                 .then(response => parseResponse(response, dispatch, resolve, reject, true))
@@ -33,7 +33,7 @@ export default {
         });
     },
 
-    get (url, dispatch) {
+    get(url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("GET"))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
@@ -41,7 +41,7 @@ export default {
         });
     },
 
-    getCustom (url, dispatch) {
+    getCustom(url, dispatch) {
         return new Promise((resolve, reject) => {
             let config = get_config("GET");
             fetch(`${url}?authorization=${config.headers.Authorization}`, config)
@@ -50,7 +50,7 @@ export default {
         });
     },
 
-    getNoAuth (url, dispatch) {
+    getNoAuth(url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config_no_auth("GET"))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
@@ -58,13 +58,29 @@ export default {
         });
     },
 
-    delete (url, dispatch) {
+    delete(url, dispatch) {
         return new Promise((resolve, reject) => {
             fetch(url, get_config("DELETE"))
                 .then(response => parseResponse(response, dispatch, resolve, reject))
                 .catch(e => parseError(e, dispatch, reject));
         });
-    }
+    },
+
+    download(url, dispatch, fileName) {
+        return new Promise((resolve, reject) => {
+            fetch(url, get_config("GET"))
+                .then(async response => {
+                    let blob = await response.blob();
+                    let bloburl = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = bloburl;
+                    a.download = fileName;
+                    a.click();
+                    resolve();
+                })
+                .catch(e => parseError(e, dispatch, reject));
+        });
+    },
 };
 
 // Helpers

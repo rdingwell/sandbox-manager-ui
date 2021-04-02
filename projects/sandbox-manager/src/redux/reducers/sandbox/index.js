@@ -193,6 +193,15 @@ export default function (state = initialState, action) {
         case actionTypes.SAVE_ENDPOINT_INDEX:
             state.sandboxApiEndpointIndex = action.index;
             break;
+        case actionTypes.EXTRACTING_SANDBOX:
+            state.extractingSandboxes = state.extractingSandboxes.slice();
+            let index = state.extractingSandboxes.indexOf(action.payload.sandboxId);
+            if (index >= 0) {
+                state.extractingSandboxes.splice(index, 1);
+            } else {
+                state.extractingSandboxes.push(action.payload.sandboxId);
+            }
+            break;
         case actionTypes.SET_DEFAULT_SANDBOX_USER:
             state.defaultUser = action.payload.user && action.payload.user.id ? action.payload.user : undefined;
             break;
@@ -236,6 +245,7 @@ export default function (state = initialState, action) {
             state.resetting = false;
             state.loading = false;
             state.resourceList = {};
+            state.extractingSandboxes = [];
             state.resourceListFetching = {};
             state.resourceListLoadError = {};
             state.exportStatus = initialState.exportStatus;

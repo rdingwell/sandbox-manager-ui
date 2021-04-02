@@ -318,6 +318,13 @@ export const setCreatingSandbox = (creating, info) => {
     }
 };
 
+export const setSandboxExtracting = sandboxId => {
+    return {
+        type: actionTypes.EXTRACTING_SANDBOX,
+        payload: {sandboxId}
+    }
+};
+
 export const createSandboxFail = (error) => {
     return {
         type: actionTypes.CREATE_SANDBOX_FAIL,
@@ -806,6 +813,22 @@ export const fetchSandboxInvites = () => {
             })
             .catch(err => {
                 dispatch(fetchSandboxInvitesFail(err));
+            })
+    };
+};
+
+export const exportSandbox = sandboxId => {
+    return (dispatch, getState) => {
+        const state = getState();
+        let configuration = state.config.xsettings.data.sandboxManager;
+        dispatch(setSandboxExtracting(sandboxId));
+
+        API.download(configuration.sandboxManagerApiUrl + '/sandbox/download/' + sandboxId, dispatch, `${sandboxId}_export.zip`)
+            .then(() => {
+                dispatch(setSandboxExtracting(sandboxId));
+            })
+            .catch(() => {
+                dispatch(setSandboxExtracting(sandboxId));
             })
     };
 };

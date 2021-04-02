@@ -2,6 +2,7 @@ export default {
     loading: false,
     selectedSandbox : '',
     sandboxes : [],
+    extractingSandboxes : [],
     invitations : [],
     resourceList : {},
     resourceListFetching : {},
