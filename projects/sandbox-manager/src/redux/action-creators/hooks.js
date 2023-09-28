@@ -371,7 +371,8 @@ async function buildContext(hook, launchContext, state, dispatch) {
                 val = {
                     resourceType : "Bundle",
                     total: data.length,
-                    entry: data
+                    entry: data.map(x => { return {resource: x}})
+
                 }
             } else if (launchContext instanceof Array) {
                 val = launchContext.find(x => x.name === key);
